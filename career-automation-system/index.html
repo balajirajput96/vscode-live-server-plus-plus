@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Automation Dashboard - बायोटेक्नोलॉजी प्रोफेशनल</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-rocket"></i> AI Career Automation Dashboard</h1>
+                <p>बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक - आपका पूर्ण करियर सिस्टम</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="portfolio">
+                <i class="fas fa-briefcase"></i> Portfolio Builder
+            </button>
+            <button class="nav-tab" data-tab="social">
+                <i class="fas fa-share-alt"></i> Social Media Generator
+            </button>
+            <button class="nav-tab" data-tab="resume">
+                <i class="fas fa-file-alt"></i> Resume Optimizer
+            </button>
+            <button class="nav-tab" data-tab="jobs">
+                <i class="fas fa-search"></i> Job Tracker
+            </button>
+            <button class="nav-tab" data-tab="prompts">
+                <i class="fas fa-magic"></i> AI Prompts
+            </button>
+            <button class="nav-tab" data-tab="analytics">
+                <i class="fas fa-chart-line"></i> Analytics
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Portfolio Builder Section -->
+            <section id="portfolio" class="tab-content active">
+                <div class="section-header">
+                    <h2><i class="fas fa-briefcase"></i> Portfolio Builder</h2>
+                    <p>अपने प्रोजेक्ट्स को AI की मदद से प्रोफेशनल तरीके से प्रस्तुत करें</p>
+                </div>
+                
+                <div class="form-container">
+                    <form id="portfolioForm">
+                        <div class="form-group">
+                            <label for="projectName">प्रोजेक्ट का नाम:</label>
+                            <input type="text" id="projectName" placeholder="जैसे: Gene Expression Analysis" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="projectDescription">प्रोजेक्ट का विवरण:</label>
+                            <textarea id="projectDescription" placeholder="प्रोजेक्ट का लक्ष्य और उपयोग किए गए टूल्स बताएं..." rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="toolsUsed">उपयोग किए गए टूल्स:</label>
+                            <input type="text" id="toolsUsed" placeholder="Python, Pandas, Matplotlib, SQL">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="datasetSource">डेटासेट स्रोत:</label>
+                            <input type="text" id="datasetSource" placeholder="जैसे: Kaggle, NCBI, TCGA">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="keyFindings">मुख्य निष्कर्ष:</label>
+                            <textarea id="keyFindings" placeholder="आपके विश्लेषण के मुख्य परिणाम..." rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-magic"></i> AI से README बनाएं
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="portfolioOutput" class="output-container" style="display: none;">
+                    <h3>Generated README.md</h3>
+                    <div class="code-block">
+                        <pre id="readmeOutput"></pre>
+                        <button class="btn-secondary" onclick="copyToClipboard('readmeOutput')">
+                            <i class="fas fa-copy"></i> कॉपी करें
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Social Media Generator Section -->
+            <section id="social" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-share-alt"></i> Social Media Generator</h2>
+                    <p>LinkedIn और Facebook के लिए आकर्षक पोस्ट बनाएं</p>
+                </div>
+                
+                <div class="form-container">
+                    <form id="socialForm">
+                        <div class="form-group">
+                            <label for="platform">प्लेटफॉर्म:</label>
+                            <select id="platform">
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="both">दोनों</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="projectTitle">प्रोजेक्ट का शीर्षक:</label>
+                            <input type="text" id="projectTitle" placeholder="जैसे: DNA Sequence Analysis">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="projectGoal">प्रोजेक्ट का लक्ष्य:</label>
+                            <textarea id="projectGoal" placeholder="प्रोजेक्ट का संक्षिप्त विवरण..." rows="2"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="keyInsight">मुख्य अंतर्दृष्टि:</label>
+                            <textarea id="keyInsight" placeholder="सबसे महत्वपूर्ण निष्कर्ष..." rows="2"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-pen"></i> सोशल मीडिया पोस्ट बनाएं
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="socialOutput" class="output-container" style="display: none;">
+                    <h3>Generated Social Media Posts</h3>
+                    <div class="post-container">
+                        <div class="post-card">
+                            <h4>LinkedIn Post</h4>
+                            <div id="linkedinPost" class="post-content"></div>
+                            <button class="btn-secondary" onclick="copyToClipboard('linkedinPost')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                        <div class="post-card">
+                            <h4>Facebook Post</h4>
+                            <div id="facebookPost" class="post-content"></div>
+                            <button class="btn-secondary" onclick="copyToClipboard('facebookPost')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resume Optimizer Section -->
+            <section id="resume" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> Resume & LinkedIn Optimizer</h2>
+                    <p>अपने प्रोफेशनल प्रोफाइल को AI की मदद से बेहतर बनाएं</p>
+                </div>
+                
+                <div class="form-container">
+                    <form id="resumeForm">
+                        <div class="form-group">
+                            <label for="experience">अनुभव (वर्षों में):</label>
+                            <input type="number" id="experience" min="0" max="20" value="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="targetRole">लक्ष्य भूमिका:</label>
+                            <select id="targetRole">
+                                <option value="bioinformatics">Bioinformatics Analyst</option>
+                                <option value="data-scientist">Data Scientist</option>
+                                <option value="research-associate">Research Associate</option>
+                                <option value="clinical-research">Clinical Research</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="keySkills">मुख्य कौशल:</label>
+                            <textarea id="keySkills" placeholder="Python, SQL, Data Analysis, Web Design..." rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-wand-magic-sparkles"></i> LinkedIn प्रोफाइल बनाएं
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="resumeOutput" class="output-container" style="display: none;">
+                    <h3>Generated LinkedIn Profile</h3>
+                    <div class="profile-container">
+                        <div class="profile-section">
+                            <h4>Headline</h4>
+                            <div id="headlineOutput" class="profile-content"></div>
+                            <button class="btn-secondary" onclick="copyToClipboard('headlineOutput')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                        <div class="profile-section">
+                            <h4>About Section</h4>
+                            <div id="aboutOutput" class="profile-content"></div>
+                            <button class="btn-secondary" onclick="copyToClipboard('aboutOutput')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Job Tracker Section -->
+            <section id="jobs" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-search"></i> Job Tracker</h2>
+                    <p>भारतीय फार्मा कंपनियों में नौकरी के अवसर ट्रैक करें</p>
+                </div>
+                
+                <div class="job-container">
+                    <div class="job-filters">
+                        <input type="text" id="jobSearch" placeholder="नौकरी खोजें..." class="search-input">
+                        <select id="jobLocation" class="filter-select">
+                            <option value="">सभी स्थान</option>
+                            <option value="mumbai">मुंबई</option>
+                            <option value="bangalore">बैंगलोर</option>
+                            <option value="hyderabad">हैदराबाद</option>
+                            <option value="pune">पुणे</option>
+                            <option value="ahmedabad">अहमदाबाद</option>
+                        </select>
+                    </div>
+                    
+                    <div class="company-list">
+                        <div class="company-card">
+                            <h3>Sun Pharmaceutical Industries</h3>
+                            <p><strong>पद:</strong> Bioinformatics Analyst</p>
+                            <p><strong>स्थान:</strong> मुंबई, महाराष्ट्र</p>
+                            <p><strong>अनुभव:</strong> 1-3 वर्ष</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card">
+                            <h3>Zydus Cadila</h3>
+                            <p><strong>पद:</strong> Clinical Data Analyst</p>
+                            <p><strong>स्थान:</strong> अहमदाबाद, गुजरात</p>
+                            <p><strong>अनुभव:</strong> 0-2 वर्ष</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card">
+                            <h3>Alembic Pharmaceuticals</h3>
+                            <p><strong>पद:</strong> Research Associate</p>
+                            <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
+                            <p><strong>अनुभव:</strong> 1-4 वर्ष</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card">
+                            <h3>Dr. Reddy's Laboratories</h3>
+                            <p><strong>पद:</strong> Data Scientist</p>
+                            <p><strong>स्थान:</strong> हैदराबाद, तेलंगाना</p>
+                            <p><strong>अनुभव:</strong> 2-5 वर्ष</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Prompts Section -->
+            <section id="prompts" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-magic"></i> AI Prompt Library</h2>
+                    <p>सभी AI टूल्स के लिए तैयार प्रॉम्प्ट्स</p>
+                </div>
+                
+                <div class="prompts-container">
+                    <div class="prompt-category">
+                        <h3><i class="fas fa-globe"></i> वेबसाइट बिल्डर प्रॉम्प्ट्स</h3>
+                        <div class="prompt-card">
+                            <h4>Wix AI Website Builder</h4>
+                            <div class="prompt-content">
+                                <p>Create a professional portfolio website for a biotechnology professional transitioning into bioinformatics and data analysis featuring skills in Python, SQL, web design, and digital marketing. Use modern, clean design in blue, white, grey. Add pages: Home, About Me, Skills, Projects, Blog, Contact.</p>
+                                <button class="btn-copy" onclick="copyPrompt(this)">कॉपी करें</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prompt-category">
+                        <h3><i class="fas fa-file-code"></i> GitHub डॉक्यूमेंटेशन</h3>
+                        <div class="prompt-card">
+                            <h4>DocuWriter.ai</h4>
+                            <div class="prompt-content">
+                                <p>Analyze the provided Python script. Generate a comprehensive README.md file with sections: Project Title, Description, Data Source, Methodology, Key Findings, How to Run the Code.</p>
+                                <button class="btn-copy" onclick="copyPrompt(this)">कॉपी करें</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prompt-category">
+                        <h3><i class="fab fa-linkedin"></i> LinkedIn ऑप्टिमाइज़ेशन</h3>
+                        <div class="prompt-card">
+                            <h4>LinkedIn Headline</h4>
+                            <div class="prompt-content">
+                                <p>Act as a professional career coach. Write 5 powerful and professional LinkedIn headlines. I have Diploma in Biotechnology, skills in Python, web design, digital marketing, seeking bioinformatics/data analysis role in pharmaceutical industry.</p>
+                                <button class="btn-copy" onclick="copyPrompt(this)">कॉपी करें</button>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-card">
+                            <h4>LinkedIn About Section</h4>
+                            <div class="prompt-content">
+                                <p>Act as a professional resume writer. Write a compelling About section (~150-200 words) with my key details: Diploma in Biotechnology, 1‑month internship in bioinformatics, skills Python, SQL, web design, digital marketing; and goal to work in pharmaceutical or clinical research companies.</p>
+                                <button class="btn-copy" onclick="copyPrompt(this)">कॉपी करें</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prompt-category">
+                        <h3><i class="fas fa-share-alt"></i> सोशल मीडिया पोस्ट्स</h3>
+                        <div class="prompt-card">
+                            <h4>LinkedIn/Facebook Post</h4>
+                            <div class="prompt-content">
+                                <p>Act as a social media marketing expert for biotech. Create an engaging LinkedIn post about my portfolio project: [Project Name], Goal: [Description], Tools Used: Python, Pandas, Matplotlib, Key Finding: [Insight], Call to Action: Visit my portfolio website. Include: compelling hook, simple explanation, highlight result, skills mention, CTA, 5–7 hashtags (#Bioinformatics #DataAnalysis #Biotechnology #Python #Pharma #ClinicalResearch).</p>
+                                <button class="btn-copy" onclick="copyPrompt(this)">कॉपी करें</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
+                    <p>अपनी करियर प्रगति को ट्रैक करें</p>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Portfolio Views</h3>
+                            <p class="metric-value">1,247</p>
+                            <p class="metric-change positive">+12% इस सप्ताह</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>LinkedIn Connections</h3>
+                            <p class="metric-value">89</p>
+                            <p class="metric-change positive">+5 इस सप्ताह</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Applications Sent</h3>
+                            <p class="metric-value">23</p>
+                            <p class="metric-change neutral">+2 इस सप्ताह</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Interviews</h3>
+                            <p class="metric-value">3</p>
+                            <p class="metric-change positive">+1 इस सप्ताह</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress-section">
+                    <h3>साप्ताहिक लक्ष्य प्रगति</h3>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>GitHub प्रोजेक्ट्स अपडेट</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>LinkedIn पोस्ट्स</span>
+                            <span>60%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>नौकरी आवेदन</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
