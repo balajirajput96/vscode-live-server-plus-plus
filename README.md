@@ -1,456 +1,266 @@
-# 🚀 AI-Powered Career Automation System
-## Complete Professional Growth Solution for Biotechnology Professionals
+# Live Server++ 
+## A truly live server for VS Code with advanced reloading strategies
 
-[![Status](https://img.shields.io/badge/Status-Active-green.svg)]()
-[![Language](https://img.shields.io/badge/Language-Hindi%2FEnglish-blue.svg)]()
-[![Industry](https://img.shields.io/badge/Industry-Biotechnology-purple.svg)]()
-[![Target](https://img.shields.io/badge/Target-Pharmaceutical%20Industry-orange.svg)]()
-
----
-
-## 📋 Overview / अवलोकन
-
-This is a comprehensive AI-powered career automation system specifically designed for biotechnology professionals transitioning into bioinformatics and data analysis roles in the pharmaceutical industry. The system provides tools, templates, and automation workflows to accelerate career growth and job placement success.
-
-यह एक व्यापक AI-संचालित करियर ऑटोमेशन सिस्टम है जो विशेष रूप से बायोटेक्नोलॉजी पेशेवरों के लिए डिज़ाइन किया गया है जो बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस की भूमिकाओं में फार्मास्यूटिकल उद्योग में संक्रमण कर रहे हैं।
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/ritwickdey.vscode-live-server-plus-plus)]()
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/ritwickdey.vscode-live-server-plus-plus)]()
+[![GitHub](https://img.shields.io/github/license/balajirajput96/vscode-live-server-plus-plus)](./LICENCE)
 
 ---
 
-## 🎯 Target Audience / लक्षित दर्शक
+## 📋 Overview
 
-- **Primary**: Biotechnology graduates seeking bioinformatics roles
-- **Secondary**: Data science professionals entering pharmaceutical industry  
-- **Tertiary**: Career changers with scientific background
-- **Focus**: Indian pharmaceutical and clinical research companies
+Live Server++ is an advanced VS Code extension that provides a truly live development server for your static HTML, CSS, and JavaScript projects. Unlike traditional live servers that only reload the entire page, Live Server++ offers intelligent reloading strategies including hot reloading, partial DOM updates, and CSS injection without page refresh.
 
-**मुख्य**: बायोइन्फॉर्मेटिक्स भूमिकाओं की तलाश में बायोटेक्नोलॉजी स्नातक
-**द्वितीयक**: फार्मास्यूटिकल उद्योग में प्रवेश करने वाले डेटा साइंस पेशेवर
-**फोकस**: भारतीय फार्मास्यूटिकल और क्लिनिकल रिसर्च कंपनियां
+Perfect for front-end developers who want instant feedback while coding without losing their browser state or form data.
 
 ---
 
-## 🌟 Key Features / मुख्य विशेषताएं
+## 🌟 Key Features
 
-### 🔬 Portfolio Builder
-- AI-powered project documentation generator
-- Professional README templates
-- GitHub optimization tools
-- Portfolio website creation prompts
+### 🔥 Advanced Reloading Strategies
+- **Hot Reload**: In-place DOM updates without page refresh (experimental)
+- **Partial Reload**: Reload DOM content without losing browser state
+- **Full Reload**: Traditional page refresh when needed
+- **CSS Injection**: Live CSS updates without page refresh
 
-### 📱 Social Media Automation
-- LinkedIn content generator
-- Facebook career updates
-- Twitter thread templates
-- Automated posting schedules
+### ⚡ Real-time Development
+- Instant file change detection with configurable debounce timeout
+- WebSocket-based communication for minimal latency
+- Smart file watching that targets only the files you're working on
+- No manual save required - updates happen as you type
 
-### 💼 Job Application System
-- Resume optimization prompts
-- Cover letter generators
-- Application tracking dashboard
-- Follow-up email templates
+### 🛠️ Highly Configurable
+- **Custom Port**: Use any port (0 for random port assignment)
+- **Root Directory**: Serve from any subfolder in your workspace
+- **Index File**: Configurable default file (default: index.html)
+- **Browser Choice**: Support for Chrome, Firefox, Edge, or system default
+- **Timeout Settings**: Configurable debounce timeout for file changes
 
-### 🤖 AI Prompt Library
-- 100+ ready-to-use prompts
-- Industry-specific templates
-- Multi-language support (Hindi/English)
-- Copy-paste functionality
-
-### 📊 Analytics Dashboard
-- Progress tracking
-- Career metrics monitoring
-- Goal setting and review
-- Performance analytics
+### 🎯 Developer Experience
+- Simple command-based operation
+- Status bar integration showing server status
+- Automatic browser opening when server starts
+- Graceful error handling and user notifications
 
 ---
 
-## 🚀 Quick Start / त्वरित शुरुआत
+## 🚀 Quick Start
 
-### Step 1: Setup / सेटअप
-```bash
-# Clone or download the system files
-# Open index.html in your web browser
-# Bookmark the dashboard for daily use
-```
+### Installation
+1. Open VS Code
+2. Go to Extensions (Ctrl+Shift+X)
+3. Search for "Live Server++"
+4. Click Install
 
-### Step 2: Initial Configuration / प्रारंभिक कॉन्फ़िगरेशन
-1. Open the career dashboard
-2. Fill in your basic information
-3. Set your career goals
-4. Configure your target companies
+### Basic Usage
+1. **Start Server**: 
+   - Open Command Palette (Ctrl+Shift+P)
+   - Type "Live Server++ : Open Server"
+   - Or use the status bar button
 
-### Step 3: First Project / पहला प्रोजेक्ट
-1. Go to Portfolio Builder section
-2. Enter your project details
-3. Generate AI prompts
-4. Use prompts with ChatGPT/Claude/Gemini
+2. **Stop Server**:
+   - Open Command Palette (Ctrl+Shift+P)
+   - Type "Live Server++ : Close Server"
+   - Or use the status bar button
 
-### Step 4: Social Media Setup / सोशल मीडिया सेटअप
-1. Optimize your LinkedIn profile using provided prompts
-2. Generate content using Social Media Generator
-3. Set up posting schedule
-4. Start building your professional network
+### First Project
+1. Create a new HTML file or open an existing project
+2. Start Live Server++ 
+3. Your default browser will open showing your project
+4. Start editing your files and see instant updates!
+
+📚 **[Complete Getting Started Guide](./docs/getting-started.md)** - Detailed setup instructions with examples
 
 ---
 
-## 📁 File Structure / फ़ाइल संरचना
+## ⚙️ Configuration
 
-```
-📦 AI-Career-Automation-System/
-├── 📄 index.html                 # Main dashboard interface
-├── 📄 README.md                  # This file
-├── 📄 automation-guide.md        # Complete step-by-step guide
-├── 📄 quick-prompts.md          # Copy-paste prompt collection
-└── 📁 assets/                   # Additional resources (if any)
+Live Server++ can be configured through VS Code settings. Go to File > Preferences > Settings and search for "Live Server++".
+
+### Available Settings
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `liveServer++.port` | number | 5555 | Port number for the server (use 0 for random port) |
+| `liveServer++.browser` | string | "default" | Browser to open: "default", "chrome", "firefox", "microsoft-edge", or null |
+| `liveServer++.root` | string | "./" | Root directory to serve files from |
+| `liveServer++.timeout` | number | 300 | Debounce timeout in milliseconds |
+| `liveServer++.indexFile` | string | "index.html" | Default index file |
+| `liveServer++.reloadingStrategy` | string | "hot" | Reloading strategy: "hot", "partial-reload", or "reload" |
+
+### Example Configuration
+```json
+{
+  "liveServer++.port": 3000,
+  "liveServer++.browser": "chrome",
+  "liveServer++.root": "./dist",
+  "liveServer++.timeout": 500,
+  "liveServer++.reloadingStrategy": "partial-reload"
+}
 ```
 
 ---
 
-## 🛠️ System Components / सिस्टम घटक
+## 🔄 Reloading Strategies Explained
 
-### 1. Portfolio Builder / पोर्टफोलियो बिल्डर
-**Purpose**: Generate professional documentation for projects
-**Features**:
-- Project prompt generator
-- README.md templates
-- Documentation automation
-- Portfolio website prompts
+### Hot Reload (Experimental)
+- Updates DOM elements in-place without page refresh
+- Preserves form data, scroll position, and JavaScript state
+- Best for: Development with forms, single-page applications
+- Note: Still experimental, may not work with all content types
 
-**उद्देश्य**: प्रोजेक्ट्स के लिए पेशेवर डॉक्यूमेंटेशन जनरेट करना
+### Partial Reload
+- Reloads page content without full browser refresh
+- Faster than full reload, preserves some browser state
+- Best for: General development when hot reload isn't suitable
 
-### 2. Social Media Generator / सोशल मीडिया जेनरेटर
-**Purpose**: Create engaging professional content
-**Features**:
-- LinkedIn post templates
-- Facebook career updates
-- Twitter thread generators
-- Platform-specific optimization
+### Full Reload
+- Traditional page refresh
+- Most compatible but slower
+- Best for: Complex applications or when other methods fail
 
-**उद्देश्य**: आकर्षक पेशेवर सामग्री बनाना
-
-### 3. Resume & LinkedIn Optimizer / रिज्यूमे और लिंक्डइन अनुकूलक
-**Purpose**: Optimize professional profiles
-**Features**:
-- Resume content generation
-- LinkedIn profile optimization
-- ATS-friendly formatting
-- Industry keyword optimization
-
-**उद्देश्य**: पेशेवर प्रोफाइल को अनुकूलित करना
-
-### 4. Job Tracker / जॉब ट्रैकर
-**Purpose**: Manage job applications systematically
-**Features**:
-- Application tracking
-- Company database
-- Follow-up reminders
-- Interview preparation
-
-**उद्देश्य**: जॉब एप्लिकेशन का व्यवस्थित प्रबंधन
-
-### 5. AI Prompt Library / AI प्रॉम्प्ट लाइब्रेरी
-**Purpose**: Provide ready-to-use AI prompts
-**Features**:
-- 100+ professional prompts
-- Copy-paste functionality
-- Multi-category organization
-- Regular updates
-
-**उद्देश्य**: तुरंत उपयोग के लिए AI प्रॉम्प्ट्स प्रदान करना
-
-### 6. Analytics Dashboard / एनालिटिक्स डैशबोर्ड
-**Purpose**: Track career progress and metrics
-**Features**:
-- Progress visualization
-- Goal tracking
-- Performance metrics
-- Weekly/monthly reviews
-
-**उद्देश्य**: करियर प्रगति और मेट्रिक्स को ट्रैक करना
+### CSS Injection
+- Automatically applied for .css files regardless of strategy
+- Updates styles without any page refresh
+- Preserves all application state
 
 ---
 
-## 🎯 Target Companies / लक्षित कंपनियां
+## 📁 Project Structure
 
-### Tier 1 (Priority) / टियर 1 (प्राथमिकता)
-- Sun Pharmaceutical Industries
-- Dr. Reddy's Laboratories
-- Cipla
-- Lupin
-- Aurobindo Pharma
-- Zydus Cadila
-- Torrent Pharmaceuticals
-- Alembic Pharmaceuticals
-- Glenmark Pharmaceuticals
-- Biocon
+Live Server++ works with any static web project:
 
-### Tier 2 / टियर 2
-- Piramal Enterprises
-- Divis Laboratories
-- Syngene International
-- Jubilant Life Sciences
-- Laurus Labs
-- Suven Life Sciences
-- Strides Pharma Science
-- Granules India
-- Natco Pharma
-- Hetero Drugs
+```
+your-project/
+├── index.html
+├── styles/
+│   ├── main.css
+│   └── components.css
+├── scripts/
+│   ├── app.js
+│   └── utils.js
+├── images/
+│   └── logo.png
+└── pages/
+    ├── about.html
+    └── contact.html
+```
 
 ---
 
-## 🤖 Recommended AI Tools / अनुशंसित AI टूल्स
+## 🎯 Use Cases
 
-### Content Generation / सामग्री निर्माण
-- **Primary**: ChatGPT, Claude, Gemini
-- **Specialized**: Copy.ai, Jasper, Writesonic
-- **Free Options**: Perplexity AI, Bing Chat
+### Front-end Development
+- HTML/CSS/JavaScript projects
+- Static site development
+- Prototyping and mockups
+- CSS framework testing
 
-### Website Creation / वेबसाइट निर्माण
-- **Primary**: Wix AI Website Builder
-- **Alternative**: Framer AI, Zyro AI Builder
-- **Free**: GitHub Pages with AI-generated content
+### Learning and Education
+- Web development tutorials
+- Code examples and demos
+- Student projects
+- Workshop materials
 
-### Documentation / डॉक्यूमेंटेशन
-- **Primary**: GitHub Copilot
-- **Alternative**: DocuWriter.ai, Mintlify
-- **Free**: ChatGPT with documentation prompts
-
-### Social Media Management / सोशल मीडिया प्रबंधन
-- **Scheduling**: Buffer, Hootsuite, Later
-- **AI-Enhanced**: Predis.ai, Hypefury
-- **Analytics**: LinkedIn Analytics, Facebook Insights
+### Testing and Debugging
+- Cross-browser testing
+- Responsive design testing
+- Performance optimization
+- User experience testing
 
 ---
 
-## 📅 Weekly Automation Schedule / साप्ताहिक ऑटोमेशन शेड्यूल
+## 🔧 Advanced Usage
 
-| Day | Time | Activity | Tools Used |
-|-----|------|----------|------------|
-| **Monday** | 9:00 AM | Project & Content Planning | Dashboard, AI Prompts |
-| **Tuesday** | 8:00 AM | LinkedIn Engagement | Social Media Generator |
-| **Wednesday** | 10:00 AM | Job Applications | Resume Optimizer, Job Tracker |
-| **Thursday** | 2:00 PM | Skill Development | GitHub, Documentation Tools |
-| **Friday** | 11:00 AM | Networking & Follow-ups | Email Templates |
-| **Weekend** | Flexible | Analysis & Planning | Analytics Dashboard |
+### Custom Root Directory
+Serve files from a specific subdirectory:
+```json
+{
+  "liveServer++.root": "./build"
+}
+```
 
----
+### Multiple Projects
+Use different ports for different projects:
+```json
+{
+  "liveServer++.port": 0  // Automatic port assignment
+}
+```
 
-## 💡 Usage Tips / उपयोग सुझाव
-
-### For Beginners / शुरुआती लोगों के लिए
-1. Start with the Portfolio Builder section
-2. Focus on one project at a time
-3. Use simple prompts initially
-4. Gradually expand to other sections
-
-### For Advanced Users / उन्नत उपयोगकर्ताओं के लिए
-1. Customize prompts for specific needs
-2. Integrate with external automation tools
-3. Set up advanced analytics tracking
-4. Create personalized workflows
-
-### Best Practices / सर्वोत्तम प्रथाएं
-- Always personalize AI-generated content
-- Review and edit before publishing
-- Maintain consistency across platforms
-- Track and measure results
-- Stay updated with industry trends
+### Browser-specific Development
+Target specific browsers for testing:
+```json
+{
+  "liveServer++.browser": "firefox"
+}
+```
 
 ---
 
-## 🔧 Customization Guide / अनुकूलन गाइड
+## 🐛 Troubleshooting
 
-### Personalizing Prompts / प्रॉम्प्ट्स को व्यक्तिगत बनाना
-1. Replace bracketed placeholders with your information
-2. Add industry-specific details
-3. Include personal experiences and achievements
-4. Adjust tone and style to match your voice
+### Common Issues
 
-### Adding New Companies / नई कंपनियों को जोड़ना
-1. Research target companies
-2. Update the job tracker database
-3. Customize application templates
-4. Add company-specific keywords
+**Server won't start**
+- Check if the port is already in use
+- Try using port 0 for automatic assignment
+- Verify workspace has appropriate permissions
 
-### Modifying Templates / टेम्प्लेट्स को संशोधित करना
-1. Identify frequently used content types
-2. Create variations of successful templates
-3. Test different approaches
-4. Save effective combinations
+**Files not updating**
+- Check if file is being saved (auto-save should be enabled)
+- Verify the file is within the configured root directory
+- Check if file type is supported for hot reload
 
----
+**Browser not opening**
+- Verify browser setting is correct
+- Check if default browser is set in your system
+- Try setting `liveServer++.browser` to null to disable auto-open
 
-## 📊 Success Metrics / सफलता मेट्रिक्स
-
-### Weekly KPIs / साप्ताहिक KPI
-- Projects completed and documented
-- Social media posts published
-- Job applications submitted
-- Professional connections made
-- Profile views and engagement
-
-### Monthly Goals / मासिक लक्ष्य
-- Complete 2-3 portfolio projects
-- Apply to 10-15 relevant positions
-- Gain 50+ new LinkedIn connections
-- Publish 8-12 professional posts
-- Attend 2-3 industry networking events
-
-### Quarterly Reviews / त्रैमासिक समीक्षा
-- Career progression assessment
-- Skill development evaluation
-- Network growth analysis
-- Job search effectiveness review
-- Strategy adjustment and refinement
+**Performance Issues**
+- Increase the timeout setting for slower systems
+- Use "reload" strategy instead of "hot" for better compatibility
+- Exclude large directories from workspace if possible
 
 ---
 
-## 🛡️ Privacy & Security / गोपनीयता और सुरक्षा
+## 🤝 Contributing
 
-### Data Storage / डेटा स्टोरेज
-- All data stored locally in browser
-- No external server dependencies
-- User maintains full control
-- Easy data export/import
-
-### Privacy Considerations / गोपनीयता विचार
-- No personal data shared with third parties
-- AI prompts don't include sensitive information
-- User responsible for content review
-- Secure handling of professional information
-
----
-
-## 🔄 Updates & Maintenance / अपडेट और रखरखाव
-
-### Regular Updates / नियमित अपडेट
-- Monthly prompt library additions
-- Quarterly feature enhancements
-- Industry trend integration
-- User feedback implementation
-
-### Version History / संस्करण इतिहास
-- **v1.0** (January 2025): Initial release
-- **v1.1** (Planned): Enhanced analytics
-- **v1.2** (Planned): Mobile optimization
-- **v2.0** (Planned): Advanced automation features
-
----
-
-## 🤝 Support & Community / सहायता और समुदाय
-
-### Getting Help / सहायता प्राप्त करना
-1. Check the automation guide for detailed instructions
-2. Review the quick prompts collection
-3. Test different AI tools and approaches
-4. Connect with industry professionals for feedback
-
-### Contributing / योगदान
-- Share successful prompt variations
-- Report bugs or issues
+We welcome contributions! Please feel free to:
+- Report bugs through GitHub issues
 - Suggest new features
-- Provide industry insights
+- Submit pull requests
+- Improve documentation
+
+### Development Setup
+```bash
+# Clone the repository
+git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
+
+# Install dependencies
+npm install
+
+# Compile the extension
+npm run compile
+
+# Run tests
+npm test
+```
 
 ---
 
-## 📈 Expected Outcomes / अपेक्षित परिणाम
+## 📄 License
 
-### Short-term (1-3 months) / अल्पकालिक
-- Professional online presence established
-- 5-10 quality portfolio projects documented
-- 100+ professional LinkedIn connections
-- 10-20 job applications submitted
-- Improved technical documentation skills
-
-### Medium-term (3-6 months) / मध्यकालिक
-- Interview opportunities with target companies
-- Recognition as industry thought leader
-- Strong professional network
-- Consistent content publication
-- Enhanced personal brand
-
-### Long-term (6-12 months) / दीर्घकालिक
-- Job placement in pharmaceutical industry
-- Established expertise in bioinformatics
-- Mentor role for other professionals
-- Industry speaking opportunities
-- Career advancement and growth
+This project is licensed under the MIT License - see the [LICENCE](./LICENCE) file for details.
 
 ---
 
-## 🎉 Success Stories / सफलता की कहानियां
+## 🙏 Acknowledgments
 
-### Case Study 1: Portfolio Impact
-*"Using the AI-generated prompts, I created professional documentation for my bioinformatics projects. This led to 3 interview calls within 2 weeks of updating my GitHub profile."*
-
-### Case Study 2: LinkedIn Growth
-*"The social media templates helped me grow my LinkedIn network from 50 to 500+ connections in 3 months, with 5 direct job referrals."*
-
-### Case Study 3: Job Placement
-*"Following the weekly automation schedule, I landed a bioinformatics analyst role at a leading pharmaceutical company within 4 months."*
+- Inspired by the original Live Server extension
+- Built with TypeScript and VS Code Extension API
+- Uses WebSocket for real-time communication
 
 ---
 
-## 📞 Contact & Feedback / संपर्क और प्रतिक्रिया
-
-### Questions / प्रश्न
-- Technical issues: Check browser compatibility
-- Content questions: Review provided guides
-- Strategy advice: Follow weekly schedule
-- Industry guidance: Connect with professionals
-
-### Feedback / प्रतिक्रिया
-We welcome feedback on:
-- System effectiveness
-- Feature requests
-- Prompt improvements
-- Success stories
-- Bug reports
-
----
-
-## 📄 License & Terms / लाइसेंस और शर्तें
-
-### Usage Rights / उपयोग अधिकार
-- Free for personal and professional use
-- Modification and customization allowed
-- Commercial use permitted
-- Attribution appreciated but not required
-
-### Disclaimer / अस्वीकरण
-- System provides tools and templates
-- Success depends on consistent usage
-- AI-generated content requires review
-- User responsible for accuracy and compliance
-
----
-
-## 🔗 Additional Resources / अतिरिक्त संसाधन
-
-### Learning Platforms / शिक्षा प्लेटफॉर्म
-- Coursera (Bioinformatics specializations)
-- edX (Data Science courses)
-- Udemy (Python for Biology)
-- LinkedIn Learning (Professional skills)
-
-### Industry Resources / उद्योग संसाधन
-- BioPharma Dive (Industry news)
-- Nature Biotechnology (Research updates)
-- ISCB (Professional organization)
-- BioSpace (Career opportunities)
-
-### Technical Resources / तकनीकी संसाधन
-- Bioconductor (R packages)
-- BioPython (Python libraries)
-- NCBI (Biological databases)
-- Galaxy Project (Analysis platform)
-
----
-
-**Ready to transform your biotech career with AI automation? Start with the dashboard and begin your journey to pharmaceutical industry success!**
-
-**AI ऑटोमेशन के साथ अपने बायोटेक करियर को बदलने के लिए तैयार हैं? डैशबोर्ड से शुरुआत करें और फार्मास्यूटिकल उद्योग की सफलता की अपनी यात्रा शुरू करें!**
-
----
-
-*Last Updated: January 2025 | अंतिम अपडेट: जनवरी 2025*
-*Version: 1.0 | संस्करण: 1.0*
+**Ready to supercharge your web development workflow? Install Live Server++ and experience truly live development!**
