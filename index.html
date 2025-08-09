@@ -311,6 +311,12 @@
         <div class="header">
             <h1>🚀 AI-Powered Career Automation Dashboard</h1>
             <p>आपका Complete Biotech & Bioinformatics Career Success System</p>
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="downloadApp()" style="background: #28a745; border: none; padding: 15px 30px; font-size: 16px; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <i class="fas fa-download"></i> Download Complete App
+                </button>
+                <p style="margin-top: 10px; font-size: 14px; opacity: 0.8;">Get the complete automation system offline</p>
+            </div>
         </div>
 
         <div class="dashboard-grid">
@@ -1058,6 +1064,111 @@ Open to connecting with professionals in pharmaceutical research, clinical trial
             
             // Show confirmation
             alert('Prompt copied to clipboard! अब इसे किसी भी AI tool में paste करें।');
+        }
+
+        function downloadApp() {
+            // Show loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing Download...';
+            button.disabled = true;
+            
+            // Create download package info
+            const replicationUrl = 'https://e3a286d2-bc51-42b3-b8ac-cca11017e321-00-2cwuo29b6djjv.sisko.replit.dev';
+            
+            // Create a comprehensive package manifest
+            const packageManifest = {
+                name: "AI-Powered Career Automation System",
+                version: "1.0.0",
+                description: "Complete Biotech & Bioinformatics Career Success Platform",
+                sourceUrl: replicationUrl,
+                downloadDate: new Date().toISOString(),
+                files: [
+                    "index.html",
+                    "Job_Tracking_System.html", 
+                    "README.md",
+                    "AI_Career_Automation_Guide.md",
+                    "Social_Media_Templates.md",
+                    "complete-action-plan.md"
+                ],
+                features: [
+                    "AI-Powered Portfolio Builder",
+                    "Social Media Content Generator",
+                    "Resume & LinkedIn Optimizer",
+                    "Job Application Tracker",
+                    "AI Prompt Library",
+                    "Analytics Dashboard"
+                ],
+                installation: "Open index.html in any modern web browser",
+                usage: "Follow the step-by-step automation guide for best results"
+            };
+            
+            // Create download instructions
+            const downloadInstructions = `
+# 🚀 AI-Powered Career Automation System - Download Package
+
+## Quick Setup
+1. Extract all files to a folder on your computer
+2. Open index.html in your web browser
+3. Follow the complete guide in AI_Career_Automation_Guide.md
+
+## Replication URL
+Source: ${replicationUrl}
+
+## Package Contents
+${packageManifest.files.map(file => `- ${file}`).join('\n')}
+
+## Get Complete Package
+To download the complete system with all files:
+1. Visit: ${replicationUrl}
+2. Use the download option available there
+3. Or clone from the source repository
+
+## Support
+For issues or updates, refer to the documentation or visit the source URL.
+
+Downloaded on: ${new Date().toLocaleString()}
+`;
+
+            // Create and download the instructions file
+            const blob = new Blob([downloadInstructions], { type: 'text/markdown' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'AI-Career-Automation-Setup-Instructions.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            // Show success message and replication link
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                
+                // Show detailed download options
+                const downloadModal = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;" onclick="this.remove()">
+                        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; text-align: center;" onclick="event.stopPropagation()">
+                            <h3 style="color: #667eea; margin-bottom: 20px;">📦 Download Options</h3>
+                            
+                            <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                <p><strong>Setup instructions downloaded!</strong></p>
+                                <p style="font-size: 14px; color: #666;">Check your Downloads folder for the setup guide.</p>
+                            </div>
+                            
+                            <div style="margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                                <p><strong>🔗 Complete System Available At:</strong></p>
+                                <a href="${replicationUrl}" target="_blank" style="color: #1976d2; text-decoration: none; font-weight: bold; word-break: break-all;">${replicationUrl}</a>
+                                <p style="font-size: 12px; margin-top: 10px; color: #666;">Click to access the full downloadable version</p>
+                            </div>
+                            
+                            <button onclick="this.parentElement.parentElement.remove()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close</button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', downloadModal);
+            }, 1000);
         }
 
         // Initialize dashboard
