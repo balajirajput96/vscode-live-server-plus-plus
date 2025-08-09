@@ -1,6 +1,7 @@
 import * as path from 'path';
 
-export { INJECTED_TEXT } from './injectedText';
+export { INJECTED_TEXT, getInjectedText } from './injectedText';
+export { performanceMonitor, PerformanceMonitor, type PerformanceMetrics } from './performance';
 
 /**
  * Live Server++ only do dirty read if it's supported
