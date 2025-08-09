@@ -1,18 +1,42 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es6",
+		"module": "es2020",
+		"target": "es2018",
 		"outDir": "out",
 		"lib": [
-			"es6"
+			"es2018",
+			"dom"
 		],
 		"sourceMap": true,
 		"rootDir": "src",
 		"strict": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"declaration": false,
+		"removeComments": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"baseUrl": "./src",
+		"paths": {
+			"@core/*": ["core/*"],
+			"@extension/*": ["extension/*"]
+		}
 	},
+	"include": [
+		"src/**/*"
+	],
 	"exclude": [
 		"node_modules",
-		".vscode-test"
+		".vscode-test",
+		"out",
+		"**/*.test.ts"
 	]
 }
