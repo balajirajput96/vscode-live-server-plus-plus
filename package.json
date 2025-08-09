@@ -16,20 +16,35 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "live",
+    "server",
+    "preview",
+    "browser",
+    "html",
+    "css",
+    "javascript",
+    "reload",
+    "hot reload",
+    "development",
+    "localhost",
+    "static server",
+    "web development"
+  ],
   "preview": true,
   "galleryBanner": {
     "color": "#3c1c59",
     "theme": "dark"
   },
   "bugs": {
-    "url": "https://github.com/ritwickdey/vscode-live-server-plus-plus/issues",
+    "url": "https://github.com/balajirajput96/vscode-live-server-plus-plus/issues",
     "email": "ritwickdey@outlook.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ritwickdey/vscode-live-server-plus-plus.git"
+    "url": "https://github.com/balajirajput96/vscode-live-server-plus-plus.git"
   },
-  "homepage": "https://ritwickdey.github.io/vscode-live-server-plus-plus",
+  "homepage": "https://github.com/balajirajput96/vscode-live-server-plus-plus",
   "activationEvents": [
     "*"
   ],
