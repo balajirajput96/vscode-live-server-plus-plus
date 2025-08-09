@@ -1,0 +1,234 @@
+{
+  "name": "AI Career Automation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyWeek",
+        "weekday": 1,
+        "hour": 9,
+        "minute": 0
+      },
+      "id": "weekly-trigger",
+      "name": "Weekly Trigger - Monday 9 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_GOOGLE_SHEET_ID",
+        "range": "Projects!A2:D2",
+        "options": {}
+      },
+      "id": "get-next-project",
+      "name": "Get Next Project from Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [400, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": "YOUR_GOOGLE_SHEETS_CREDENTIAL"
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a biotech career content specialist. Create professional social media posts for LinkedIn and Facebook."
+            },
+            {
+              "role": "user", 
+              "content": "Create a LinkedIn and Facebook post based on this bioinformatics project:\n\nProject: {{$node[\"Get Next Project from Google Sheets\"].json[\"Project\"]}}\nDescription: {{$node[\"Get Next Project from Google Sheets\"].json[\"Description\"]}}\nTools Used: {{$node[\"Get Next Project from Google Sheets\"].json[\"Tools\"]}}\nKey Results: {{$node[\"Get Next Project from Google Sheets\"].json[\"Results\"]}}\n\nThe post should:\n- Include a friendly professional introduction\n- Highlight key technical achievements\n- Mention specific tools and skills used\n- Include call-to-action to visit portfolio\n- Add relevant hashtags: #Bioinformatics #DataAnalysis #Python #Biotechnology #Pharma #MachineLearning\n\nGenerate separate versions for LinkedIn (professional) and Facebook (more casual but still professional)."
+            }
+          ]
+        }
+      },
+      "id": "generate-social-content",
+      "name": "ChatGPT Generate Social Media Content",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [600, 300],
+      "credentials": {
+        "openAIApi": "YOUR_OPENAI_API_KEY"
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.predis.ai/v1/generate-image",
+        "headers": {
+          "Authorization": "Bearer YOUR_PREDIS_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "prompt": "Professional biotechnology laboratory data visualization featuring DNA sequences, molecular structures, and data charts. Clean, modern, blue and white color scheme suitable for social media.",
+          "style": "corporate",
+          "size": "1080x1080"
+        }
+      },
+      "id": "generate-image",
+      "name": "Predis AI Generate Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bufferapp.com/1/updates/create.json",
+        "headers": {
+          "Authorization": "Bearer YOUR_BUFFER_ACCESS_TOKEN",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "profile_ids": ["YOUR_LINKEDIN_PROFILE_ID"],
+          "text": "{{$node[\"ChatGPT Generate Social Media Content\"].json.choices[0].message.content}}",
+          "media": {
+            "picture": "{{$node[\"Predis AI Generate Image\"].json.image_url}}"
+          },
+          "scheduled_at": "{{new Date(Date.now() + 24*60*60*1000).toISOString()}}"
+        }
+      },
+      "id": "schedule-linkedin-post",
+      "name": "Buffer Schedule LinkedIn Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bufferapp.com/1/updates/create.json",
+        "headers": {
+          "Authorization": "Bearer YOUR_BUFFER_ACCESS_TOKEN",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "profile_ids": ["YOUR_FACEBOOK_PROFILE_ID"],
+          "text": "{{$node[\"ChatGPT Generate Social Media Content\"].json.choices[0].message.content}}",
+          "media": {
+            "picture": "{{$node[\"Predis AI Generate Image\"].json.image_url}}"
+          },
+          "scheduled_at": "{{new Date(Date.now() + 2*24*60*60*1000).toISOString()}}"
+        }
+      },
+      "id": "schedule-facebook-post",
+      "name": "Buffer Schedule Facebook Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 360]
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_GOOGLE_SHEET_ID",
+        "range": "Analytics!A:E",
+        "values": [
+          [
+            "{{new Date().toISOString()}}",
+            "{{$node[\"Get Next Project from Google Sheets\"].json[\"Project\"]}}",
+            "Automated Post",
+            "LinkedIn + Facebook",
+            "Scheduled"
+          ]
+        ]
+      },
+      "id": "log-activity",
+      "name": "Log Activity to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1200, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": "YOUR_GOOGLE_SHEETS_CREDENTIAL"
+      }
+    }
+  ],
+  "connections": {
+    "Weekly Trigger - Monday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Get Next Project from Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Next Project from Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "ChatGPT Generate Social Media Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatGPT Generate Social Media Content": {
+      "main": [
+        [
+          {
+            "node": "Predis AI Generate Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Predis AI Generate Image": {
+      "main": [
+        [
+          {
+            "node": "Buffer Schedule LinkedIn Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Buffer Schedule Facebook Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buffer Schedule LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Log Activity to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buffer Schedule Facebook Post": {
+      "main": [
+        [
+          {
+            "node": "Log Activity to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "timezone": "Asia/Kolkata"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "career-automation",
+      "name": "Career Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "versionId": "1"
+}
