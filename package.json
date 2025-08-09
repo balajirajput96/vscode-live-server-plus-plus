@@ -31,7 +31,8 @@
   },
   "homepage": "https://ritwickdey.github.io/vscode-live-server-plus-plus",
   "activationEvents": [
-    "*"
+    "onCommand:extension.live-server++.open",
+    "onCommand:extension.live-server++.close"
   ],
   "scripts": {
     "vscode:prepublish": "npm run compile",

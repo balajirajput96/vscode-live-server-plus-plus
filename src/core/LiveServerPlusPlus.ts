@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as http from 'http';
-import * as WebSocket from 'ws';
+import type WebSocketType from 'ws';
 import * as path from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
@@ -19,9 +19,20 @@ import { LSPPError } from './LSPPError';
 import { urlJoin } from '../extension/utils/urlJoin';
 import { ReloadingStrategy } from '../extension/utils/extensionConfig';
 
+// Lazy-loaded WebSocket module. We only require it when we actually start the server
+let WebSocketRuntime: typeof import('ws') | undefined;
+
+function getWebSocket(): typeof import('ws') {
+  if (!WebSocketRuntime) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    WebSocketRuntime = require('ws') as typeof import('ws');
+  }
+  return WebSocketRuntime;
+}
+
 interface IWsWatcher {
   watchingPaths: string[]; //relative paths
-  client: WebSocket;
+  client: WebSocketType;
 }
 
 type BroadcastActions = 'hot' | 'partial-reload' | 'reload' | 'refreshcss';
@@ -30,7 +41,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   port!: number;
   private cwd: string | undefined;
   private server: http.Server | undefined;
-  private ws: WebSocket.Server | undefined;
+  private ws: WebSocketType.Server | undefined;
   private indexFile!: string;
   private debounceTimeout!: number;
   private reloadingStrategy!: ReloadingStrategy;
@@ -209,7 +220,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   ) {
     if (!this.ws) return;
 
-    let clients: WebSocket[] = this.ws.clients as any;
+    const WebSocket = getWebSocket();
+    let clients: WebSocketType[] = this.ws.clients as any;
 
     //TODO: WE SHOULD WATCH ALL FILE. FOR NOW, THE LIB WORKS ONLY FOR HTML
     if (isInjectableFile(data.fileName)) {
@@ -219,7 +231,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
             allClients.push(client);
           return allClients;
         },
-        [] as WebSocket[]
+        [] as WebSocketType[]
       );
     }
 
@@ -253,6 +265,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   private attachWSListeners() {
     if (!this.server) throw new Error('Server is not defined');
 
+    const WebSocket = getWebSocket();
     this.ws = new WebSocket.Server({ noServer: true });
 
     this.ws.on('connection', ws => {
@@ -281,14 +294,14 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  private removeFromWsWatcherList(client: WebSocket) {
+  private removeFromWsWatcherList(client: WebSocketType) {
     const index = this.wsWatcherList.findIndex(e => e.client === client);
     if (index !== -1) {
       this.wsWatcherList.splice(index, 1);
     }
   }
 
-  private addToWsWatcherList(client: WebSocket, watchDirs: string | string[]) {
+  private addToWsWatcherList(client: WebSocketType, watchDirs: string | string[]) {
     const _watchDirs = Array.isArray(watchDirs) ? watchDirs : [watchDirs];
 
     this.wsWatcherList.push({ client, watchingPaths: _watchDirs });
