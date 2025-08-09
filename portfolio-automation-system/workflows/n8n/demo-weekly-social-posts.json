@@ -1,0 +1,116 @@
+{
+  "name": "Weekly Social Posts (Demo - Uses Custom Nodes)",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyWeek",
+        "weekday": "1",
+        "hour": 9,
+        "minute": 0
+      },
+      "id": "1",
+      "name": "Weekly Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "sheetId": "YOUR_GOOGLE_SHEET_ID",
+        "range": "Sheet1!A2:B2"
+      },
+      "id": "2",
+      "name": "Get Next Topic from Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [420, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": "YOUR_GOOGLE_SHEETS_CREDENTIAL"
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "prompt": "Write a LinkedIn and Facebook post based on this project: {{$json[\"Project\"] || $json[\"A\"]}}. Include a friendly intro, key result, skills used, and link to portfolio {{ $json[\"Link\"] || $json[\"B\"]}}. Add hashtags: #Bioinformatics #DataAnalysis #Python #Pharma"
+      },
+      "id": "3",
+      "name": "ChatGPT Generate Post",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 3,
+      "position": [660, 300],
+      "credentials": {
+        "openAIApi": "YOUR_OPENAI_KEY"
+      }
+    },
+    {
+      "parameters": {
+        "caption": "{{$json[\"text\"] || $json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "imagePrompt": "Generate an AI image for a biotechnology/bioinformatics data project."
+      },
+      "id": "4",
+      "name": "Predis AI Image Generator",
+      "type": "custom-predisai-node",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "profile": "LinkedIn",
+        "message": "{{$json[\"text\"] || $json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "imageUrl": "{{$json[\"imageUrl\"]}}"
+      },
+      "id": "5",
+      "name": "Buffer Schedule",
+      "type": "custom-buffer-api",
+      "typeVersion": 1,
+      "position": [1140, 300]
+    }
+  ],
+  "connections": {
+    "Weekly Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Next Topic from Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Next Topic from Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "ChatGPT Generate Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatGPT Generate Post": {
+      "main": [
+        [
+          {
+            "node": "Predis AI Image Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Predis AI Image Generator": {
+      "main": [
+        [
+          {
+            "node": "Buffer Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
