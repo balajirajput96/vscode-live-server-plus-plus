@@ -2,3 +2,13 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Career automation system environment
+career-automation-system/.env
+career-automation-system/.env.local

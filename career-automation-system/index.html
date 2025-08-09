@@ -57,13 +57,13 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="projectDescription">प्रोजेक्ट का विवरण:</label>
-                            <textarea id="projectDescription" placeholder="प्रोजेक्ट का लक्ष्य और उपयोग किए गए टूल्स बताएं..." rows="3"></textarea>
+                            <label for="projectDesc">प्रोजेक्ट का विवरण:</label>
+                            <textarea id="projectDesc" placeholder="प्रोजेक्ट का लक्ष्य और उपयोग किए गए टूल्स बताएं..." rows="3"></textarea>
                         </div>
                         
                         <div class="form-group">
-                            <label for="toolsUsed">उपयोग किए गए टूल्स:</label>
-                            <input type="text" id="toolsUsed" placeholder="Python, Pandas, Matplotlib, SQL">
+                            <label for="projectTech">उपयोग किए गए टूल्स:</label>
+                            <input type="text" id="projectTech" placeholder="Python, Pandas, Matplotlib, SQL">
                         </div>
                         
                         <div class="form-group">
@@ -72,13 +72,18 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="keyFindings">मुख्य निष्कर्ष:</label>
-                            <textarea id="keyFindings" placeholder="आपके विश्लेषण के मुख्य परिणाम..." rows="3"></textarea>
+                            <label for="projectConclusion">मुख्य निष्कर्ष:</label>
+                            <textarea id="projectConclusion" placeholder="आपके विश्लेषण के मुख्य परिणाम..." rows="3"></textarea>
                         </div>
                         
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-magic"></i> AI से README बनाएं
-                        </button>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-magic"></i> AI से README बनाएं
+                            </button>
+                            <button type="button" class="btn btn-github" onclick="showGitHubSetup()">
+                                <i class="fab fa-github"></i> GitHub Setup
+                            </button>
+                        </div>
                     </form>
                 </div>
                 
@@ -416,6 +421,8 @@
         </main>
     </div>
 
+    <!-- GitHub API Integration -->
+    <script src="github-api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

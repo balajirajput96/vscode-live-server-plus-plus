@@ -590,3 +590,340 @@ const debouncedFilterJobs = debounce(filterJobs, 300);
 if (document.getElementById('jobSearch')) {
     document.getElementById('jobSearch').addEventListener('input', debouncedFilterJobs);
 }
+
+// GitHub Integration Functions
+function showGitHubSetup() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fab fa-github"></i> GitHub API Setup</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>GitHub automation के लिए API token की जरूरत है:</p>
+                <div class="form-group">
+                    <label for="githubToken">GitHub Personal Access Token:</label>
+                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    <small>GitHub Settings > Developer settings > Personal access tokens से token बनाएं</small>
+                </div>
+                <div class="form-group">
+                    <label for="githubUsername">GitHub Username:</label>
+                    <input type="text" id="githubUsername" placeholder="your-username">
+                </div>
+                <div class="form-actions">
+                    <button onclick="initializeGitHubAPI()" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Setup Complete करें
+                    </button>
+                    <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function closeModal() {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+async function initializeGitHubAPI() {
+    const token = document.getElementById('githubToken').value.trim();
+    const username = document.getElementById('githubUsername').value.trim();
+    
+    if (!token || !username) {
+        showNotification('कृपया Token और Username दोनों भरें', 'error');
+        return;
+    }
+    
+    showLoading('GitHub API को initialize कर रहे हैं...');
+    
+    try {
+        const initialized = window.GitHubAPI.initialize(token, username);
+        
+        if (initialized) {
+            const isValid = await window.GitHubAPI.validateToken();
+            
+            if (isValid) {
+                // Store in sessionStorage for this session
+                sessionStorage.setItem('github_token', token);
+                sessionStorage.setItem('github_username', username);
+                
+                hideLoading();
+                closeModal();
+                showNotification('GitHub API successfully initialized!', 'success');
+                
+                // Enable GitHub features
+                enableGitHubFeatures();
+            } else {
+                hideLoading();
+                showNotification('Invalid GitHub token. कृपया सही token डालें।', 'error');
+            }
+        }
+    } catch (error) {
+        hideLoading();
+        showNotification('GitHub API initialization failed: ' + error.message, 'error');
+    }
+}
+
+function enableGitHubFeatures() {
+    // Add GitHub automation buttons to portfolio section
+    const portfolioSection = document.getElementById('portfolio');
+    const existingGitHubBtn = portfolioSection.querySelector('.github-automation-btn');
+    
+    if (!existingGitHubBtn) {
+        const portfolioActions = portfolioSection.querySelector('.form-actions');
+        if (portfolioActions) {
+            const githubBtn = document.createElement('button');
+            githubBtn.type = 'button';
+            githubBtn.className = 'btn btn-github github-automation-btn';
+            githubBtn.innerHTML = '<i class="fab fa-github"></i> GitHub Repository बनाएं';
+            githubBtn.onclick = createGitHubRepository;
+            portfolioActions.appendChild(githubBtn);
+        }
+    }
+    
+    // Add book automation section
+    addBookAutomationSection();
+}
+
+function addBookAutomationSection() {
+    const analyticsSection = document.getElementById('analytics');
+    
+    if (!document.getElementById('book-automation')) {
+        const bookAutomationHTML = `
+            <div class="section-header">
+                <h3><i class="fas fa-books"></i> Book/Task Automation</h3>
+                <p>GitHub का उपयोग करके books और tasks को automate करें</p>
+            </div>
+            
+            <div id="book-automation" class="automation-section">
+                <div class="card">
+                    <h4>📚 Book Management Automation</h4>
+                    <div class="form-group">
+                        <label>Book/Task Details (JSON format):</label>
+                        <textarea id="bookData" rows="10" placeholder='[
+  {
+    "title": "Machine Learning Basics",
+    "author": "AI Expert",
+    "category": "Technology",
+    "description": "Comprehensive guide to ML",
+    "status": "In Progress"
+  },
+  {
+    "title": "Career Development",
+    "author": "Professional Guide",
+    "category": "Career",
+    "description": "Guide to career growth",
+    "status": "Planning"
+  }
+]'></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="automateBookManagement()" class="btn btn-primary">
+                            <i class="fas fa-magic"></i> Books को Automate करें
+                        </button>
+                        <button onclick="loadSampleBooks()" class="btn btn-secondary">
+                            <i class="fas fa-file-import"></i> Sample Data Load करें
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="automation-results" id="automationResults" style="display: none;">
+                    <h4>Automation Results:</h4>
+                    <div class="results-content"></div>
+                </div>
+            </div>
+        `;
+        
+        analyticsSection.innerHTML += bookAutomationHTML;
+    }
+}
+
+async function createGitHubRepository() {
+    if (!window.GitHubAPI.isInitialized()) {
+        showGitHubSetup();
+        return;
+    }
+    
+    const formData = getPortfolioFormData();
+    if (!formData.projectName) {
+        showNotification('कृपया पहले project details भरें', 'error');
+        return;
+    }
+    
+    showLoading('GitHub repository बना रहे हैं...');
+    
+    try {
+        const readme = generateREADMEContent(formData);
+        
+        const projectData = {
+            name: formData.projectName.toLowerCase().replace(/\s+/g, '-'),
+            description: formData.projectDesc,
+            readme: readme,
+            private: false,
+            files: [
+                {
+                    path: 'project-details.json',
+                    content: JSON.stringify(formData, null, 2),
+                    commitMessage: 'Add project details'
+                }
+            ]
+        };
+        
+        const result = await window.GitHubAPI.createCompleteProject(projectData);
+        
+        hideLoading();
+        
+        if (result.success) {
+            showNotification('🎉 GitHub repository successfully created!', 'success');
+            
+            // Show repository link
+            const repoUrl = result.repository.html_url;
+            const linkHTML = `
+                <div class="repo-link-card">
+                    <h4>✅ Repository Created Successfully!</h4>
+                    <p><strong>Repository URL:</strong> <a href="${repoUrl}" target="_blank">${repoUrl}</a></p>
+                    <button onclick="window.open('${repoUrl}', '_blank')" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt"></i> Repository Open करें
+                    </button>
+                </div>
+            `;
+            
+            const portfolioOutput = document.getElementById('portfolioOutput');
+            portfolioOutput.innerHTML = linkHTML + portfolioOutput.innerHTML;
+            portfolioOutput.style.display = 'block';
+        } else {
+            showNotification('Repository creation failed: ' + result.error, 'error');
+        }
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Error creating repository: ' + error.message, 'error');
+    }
+}
+
+async function automateBookManagement() {
+    if (!window.GitHubAPI.isInitialized()) {
+        showGitHubSetup();
+        return;
+    }
+    
+    const bookDataText = document.getElementById('bookData').value.trim();
+    
+    if (!bookDataText) {
+        showNotification('कृपया book data भरें', 'error');
+        return;
+    }
+    
+    try {
+        const books = JSON.parse(bookDataText);
+        
+        if (!Array.isArray(books)) {
+            throw new Error('Book data should be an array');
+        }
+        
+        showLoading(`${books.length} books के लिए repositories बना रहे हैं...`);
+        
+        const result = await window.GitHubAPI.automateBookManagement(books);
+        
+        hideLoading();
+        
+        if (result.success) {
+            showNotification('🎉 Book automation completed successfully!', 'success');
+            displayAutomationResults(result.results);
+        } else {
+            showNotification('Book automation failed: ' + result.error, 'error');
+        }
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Error in book automation: ' + error.message, 'error');
+    }
+}
+
+function displayAutomationResults(results) {
+    const resultsSection = document.getElementById('automationResults');
+    const resultsContent = resultsSection.querySelector('.results-content');
+    
+    let html = '';
+    results.forEach((item, index) => {
+        const success = item.result.success;
+        const statusIcon = success ? '✅' : '❌';
+        const repoUrl = success ? item.result.repository.html_url : '';
+        
+        html += `
+            <div class="result-item ${success ? 'success' : 'error'}">
+                <h5>${statusIcon} ${item.book}</h5>
+                ${success ? 
+                    `<p>Repository: <a href="${repoUrl}" target="_blank">${repoUrl}</a></p>` :
+                    `<p>Error: ${item.result.error}</p>`
+                }
+            </div>
+        `;
+    });
+    
+    resultsContent.innerHTML = html;
+    resultsSection.style.display = 'block';
+}
+
+function loadSampleBooks() {
+    const sampleData = [
+        {
+            title: "Advanced Bioinformatics",
+            author: "Dr. Research Expert",
+            category: "Bioinformatics",
+            description: "Comprehensive guide to advanced bioinformatics techniques and algorithms",
+            status: "In Progress"
+        },
+        {
+            title: "Career Development in Biotech",
+            author: "Industry Professional",
+            category: "Career",
+            description: "Strategic guide for career advancement in biotechnology industry",
+            status: "Planning"
+        },
+        {
+            title: "Machine Learning for Biology",
+            author: "AI Researcher",
+            category: "Technology",
+            description: "Application of ML techniques in biological research and analysis",
+            status: "Completed"
+        },
+        {
+            title: "Wedding Planning Project",
+            author: "Event Manager",
+            category: "Project Management",
+            description: "Complete automation system for wedding and party event management",
+            status: "Active"
+        }
+    ];
+    
+    document.getElementById('bookData').value = JSON.stringify(sampleData, null, 2);
+    showNotification('Sample book data loaded successfully!', 'success');
+}
+
+function getPortfolioFormData() {
+    return {
+        projectName: document.getElementById('projectName')?.value || '',
+        projectDesc: document.getElementById('projectDesc')?.value || '',
+        projectTech: document.getElementById('projectTech')?.value || '',
+        projectConclusion: document.getElementById('projectConclusion')?.value || ''
+    };
+}
+
+// Check if GitHub is already initialized from session
+document.addEventListener('DOMContentLoaded', function() {
+    const token = sessionStorage.getItem('github_token');
+    const username = sessionStorage.getItem('github_username');
+    
+    if (token && username) {
+        window.GitHubAPI.initialize(token, username);
+        enableGitHubFeatures();
+        console.log('GitHub API restored from session');
+    }
+});

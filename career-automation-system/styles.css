@@ -706,3 +706,331 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #5a67d8;
 }
+
+/* GitHub Integration Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    padding: 0;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.close-modal:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-body p {
+    margin-bottom: 20px;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.modal-body .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-body .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.modal-body .form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-body .form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-body .form-group small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-github {
+    background: linear-gradient(135deg, #24292e 0%, #586069 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.btn-github:hover {
+    background: linear-gradient(135deg, #1c2025 0%, #4a5058 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(36, 41, 46, 0.3);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e0;
+}
+
+.automation-section {
+    margin-top: 30px;
+}
+
+.automation-section .card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.automation-section .card h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.automation-section textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.automation-section textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.automation-results {
+    background: #f7fafc;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.automation-results h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+}
+
+.result-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #48bb78;
+}
+
+.result-item.error {
+    border-left-color: #f56565;
+}
+
+.result-item h5 {
+    margin: 0 0 10px 0;
+    color: #2d3748;
+    font-size: 1.1rem;
+}
+
+.result-item p {
+    margin: 0;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.result-item a {
+    color: #667eea;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.result-item a:hover {
+    text-decoration: underline;
+}
+
+.repo-link-card {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.repo-link-card h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+}
+
+.repo-link-card p {
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+}
+
+.repo-link-card a {
+    color: #fff;
+    text-decoration: none;
+    word-break: break-all;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.repo-link-card a:hover {
+    background: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+}
+
+.repo-link-card .btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    margin-top: 10px;
+}
+
+.repo-link-card .btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Loading Animation Enhancement */
+.loading-overlay {
+    background: rgba(102, 126, 234, 0.95);
+    color: white;
+}
+
+.loading-content {
+    color: white;
+}
+
+/* Mobile Responsiveness for GitHub Features */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+    
+    .repo-link-card {
+        text-align: left;
+    }
+    
+    .automation-section .form-actions {
+        flex-direction: column;
+    }
+}

@@ -4,6 +4,17 @@
 
 **AI Career Automation Dashboard** एक पूर्ण वेब-आधारित सिस्टम है जो बायोटेक्नोलॉजी प्रोफेशनल्स को उनकी करियर यात्रा में मदद करता है। यह सिस्टम AI की मदद से पोर्टफोलियो बिल्डिंग, सोशल मीडिया कंटेंट जनरेशन, और करियर ऑप्टिमाइज़ेशन को स्वचालित करता है।
 
+## ✨ NEW: GitHub API Integration
+
+अब सिस्टम में **GitHub API automation** जोड़ा गया है जो निम्नलिखित features प्रदान करता है:
+
+### 🔗 GitHub Automation Features
+- **Repository Creation**: Projects के लिए automatically GitHub repositories बनाएं
+- **README Generation**: AI-powered README.md files generate करें और GitHub पर commit करें
+- **Book/Task Management**: Books और tasks के लिए automated repository management
+- **Project Documentation**: Complete project structure के साथ professional documentation
+- **Secure API Integration**: Environment variables के साथ secure token management
+
 ## 🎯 मुख्य विशेषताएं
 
 ### 1. 📁 Portfolio Builder
@@ -125,7 +136,59 @@ http://localhost:8000
 </div>
 ```
 
-## 🔧 API Integration
+## 🔧 GitHub API Integration
+
+### सिक्यूरिटी पहले
+सिस्टम में secure GitHub API integration है जो environment variables का उपयोग करती है:
+
+1. **GitHub Personal Access Token** बनाएं:
+   - GitHub Settings > Developer settings > Personal access tokens
+   - Required scopes: `repo`, `user`
+
+2. **Environment Configuration**:
+   ```bash
+   # .env file में अपना token add करें
+   GITHUB_TOKEN=your_github_token_here
+   GITHUB_USERNAME=your_username_here
+   ```
+
+### GitHub Automation Features
+
+#### 🏗️ Repository Creation
+```javascript
+// Example: Project को GitHub पर automatically upload करें
+const projectData = {
+    name: "my-bioinformatics-project",
+    description: "ML-based gene expression analysis",
+    readme: generatedREADME,
+    private: false
+};
+
+const result = await GitHubAPI.createCompleteProject(projectData);
+```
+
+#### 📚 Book/Task Management
+```javascript
+// Example: Books और tasks को automate करें
+const books = [
+    {
+        title: "Advanced Bioinformatics",
+        author: "Dr. Expert",
+        category: "Research",
+        description: "Comprehensive guide",
+        status: "In Progress"
+    },
+    {
+        title: "Wedding Planning Project",
+        author: "Event Manager", 
+        category: "Project Management",
+        description: "Complete automation for wedding/party events",
+        status: "Active"
+    }
+];
+
+await GitHubAPI.automateBookManagement(books);
+```
 
 ### Real AI Integration के लिए
 वर्तमान में सिस्टम सिमुलेटेड AI रिस्पॉन्स का उपयोग करता है। Real AI API के साथ इंटीग्रेट करने के लिए:
