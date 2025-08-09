@@ -40,7 +40,7 @@
 
     socket.onerror = event => {
       log(event);
-      console.log(`Live Server++: Opps! Can't able to connect.`);
+      console.log(`Live Server++: Oops! Cannot connect to the server.`);
     };
   });
 
