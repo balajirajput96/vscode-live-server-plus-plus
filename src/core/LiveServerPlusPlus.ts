@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import * as http from 'http';
-import * as WebSocket from 'ws';
+import type * as http from 'http';
+import type * as WebSocket from 'ws';
 import * as path from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
@@ -26,6 +26,36 @@ interface IWsWatcher {
 
 type BroadcastActions = 'hot' | 'partial-reload' | 'reload' | 'refreshcss';
 
+// Lazy-loaded modules for better startup performance
+let httpModule: typeof http;
+let wsModule: typeof WebSocket;
+
+async function loadHttpModule() {
+  if (!httpModule) {
+    httpModule = await import('http');
+  }
+  return httpModule;
+}
+
+async function loadWebSocketModule() {
+  if (!wsModule) {
+    wsModule = await import('ws');
+  }
+  return wsModule;
+}
+
+// Debounce utility for file watching
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(null, args), wait);
+  };
+}
+
 export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   port!: number;
   private cwd: string | undefined;
@@ -39,6 +69,19 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   private serverErrorEvent: vscode.EventEmitter<ServerErrorEvent>;
   private middlewares: IMiddlewareTypes[] = [];
   private wsWatcherList: IWsWatcher[] = [];
+  
+  // Performance monitoring
+  private requestCount = 0;
+  private lastRequestTime = 0;
+  private readonly performanceMetrics = {
+    totalRequests: 0,
+    averageResponseTime: 0,
+    errorCount: 0,
+    startTime: Date.now()
+  };
+
+  // Debounced broadcast function
+  private debouncedBroadcast = debounce(this.broadcast.bind(this), 50);
 
   constructor(config: ILiveServerPlusPlusConfig) {
     this.init(config);
@@ -63,6 +106,14 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     return this.server ? this.server!.listening : false;
   }
 
+  get metrics() {
+    return {
+      ...this.performanceMetrics,
+      uptime: Date.now() - this.performanceMetrics.startTime,
+      requestsPerSecond: this.performanceMetrics.totalRequests / ((Date.now() - this.performanceMetrics.startTime) / 1000)
+    };
+  }
+
   reloadConfig(config: ILiveServerPlusPlusConfig) {
     this.init(config);
   }
@@ -79,7 +130,9 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
       await this.listenServer();
       this.registerOnChangeReload();
       this.goLiveEvent.fire({ LSPP: this });
-    } catch (error) {
+      this.performanceMetrics.startTime = Date.now();
+    } catch (error: any) {
+      this.performanceMetrics.errorCount++;
       if (error.code === 'EADDRINUSE') {
         return this.serverErrorEvent.fire({
           LSPP: this,
@@ -101,229 +154,227 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
       return this.serverErrorEvent.fire({
         LSPP: this,
         code: 'serverIsNotRunning',
-        message: 'Server is not running'
+        message: `Server is not running`
       });
     }
-    await this.closeWs();
-    await this.closeServer();
-    this.goOfflineEvent.fire({ LSPP: this });
+
+    return new Promise<void>((resolve, reject) => {
+      this.server!.close((err: any) => {
+        if (this.ws) {
+          this.ws.close();
+        }
+        if (err) {
+          reject(err);
+        } else {
+          this.goOfflineEvent.fire({ LSPP: this });
+          resolve();
+        }
+      });
+    });
   }
 
-  useMiddleware(...fns: IMiddlewareTypes[]) {
-    fns.forEach(fn => this.middlewares.push(fn));
+  useMiddleware(...middlewares: IMiddlewareTypes[]) {
+    this.middlewares.push(...middlewares);
   }
 
-  useService(...fns: ILiveServerPlusPlusServiceCtor[]) {
-    fns.forEach(fn => {
-      const instance = new fn(this);
-      instance.register.call(instance);
+  useService(...services: ILiveServerPlusPlusServiceCtor[]) {
+    services.forEach(service => {
+      service.bindServer(this);
     });
   }
 
   private init(config: ILiveServerPlusPlusConfig) {
     this.cwd = config.cwd;
+    this.port = config.port || 0;
     this.indexFile = config.indexFile || 'index.html';
-    this.port = config.port || 9000;
-    this.debounceTimeout = config.debounceTimeout || 400;
+    this.debounceTimeout = config.debounceTimeout || 300;
     this.reloadingStrategy = config.reloadingStrategy || 'hot';
   }
 
-  private registerOnChangeReload() {
-    let timeout: NodeJS.Timeout;
-    vscode.workspace.onDidChangeTextDocument(event => {
-      //debouncing
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        const fileName = event.document.fileName;
-        const action = this.getReloadingActionType(fileName);
-        const filePathFromRoot = urlJoin(fileName.replace(this.cwd!, '')); // bit tricky. This will change Windows's \ to /
-        this.broadcastWs(
-          {
-            dom:
-              ['hot', 'partial-reload'].indexOf(action) !== -1
-                ? event.document.getText()
-                : undefined,
-            fileName: filePathFromRoot
-          },
-          action
-        );
-      }, this.debounceTimeout);
-    });
-  }
+  private async listenServer(): Promise<void> {
+    const http = await loadHttpModule();
+    const WebSocket = await loadWebSocketModule();
+    
+    this.server = http.createServer();
+    this.server.on('request', this.handleRequest.bind(this));
 
-  private getReloadingActionType(fileName: string): BroadcastActions {
-    const extName = path.extname(fileName);
-    const isCSS = extName === '.css';
-    const isInjectable = isInjectableFile(fileName);
-
-    if (isCSS) {
-      return 'refreshcss';
-    }
-
-    if (isInjectable) {
-      return this.reloadingStrategy;
-    }
-
-    return 'reload';
-  }
-
-  private listenServer() {
     return new Promise((resolve, reject) => {
-      if (!this.cwd) {
-        const error = new LSPPError('CWD is not defined', 'cwdUndefined');
-        return reject(error);
-      }
-
-      this.server = http.createServer(this.routesHandler.bind(this));
-
-      const onPortError = reject;
-      this.server.on('error', onPortError);
-
-      this.attachWSListeners();
-      this.server.listen(this.port, () => {
-        this.server!.removeListener('error', onPortError);
-        resolve();
-      });
-    });
-  }
-
-  private closeServer() {
-    return new Promise((resolve, reject) => {
-      this.server!.close(err => {
-        return err ? reject(err) : resolve();
-      });
-      this.server!.emit('close');
-    });
-  }
-
-  private closeWs() {
-    return new Promise((resolve, reject) => {
-      if (!this.ws) return resolve();
-      this.ws.close(err => (err ? reject(err) : resolve()));
-    });
-  }
-
-  private broadcastWs(
-    data: { dom?: string; fileName: string },
-    action: BroadcastActions = 'reload'
-  ) {
-    if (!this.ws) return;
-
-    let clients: WebSocket[] = this.ws.clients as any;
-
-    //TODO: WE SHOULD WATCH ALL FILE. FOR NOW, THE LIB WORKS ONLY FOR HTML
-    if (isInjectableFile(data.fileName)) {
-      clients = this.wsWatcherList.reduce(
-        (allClients, { client, watchingPaths }) => {
-          if (this.isInWatchingList(data.fileName, watchingPaths))
-            allClients.push(client);
-          return allClients;
-        },
-        [] as WebSocket[]
-      );
-    }
-
-    clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ data, action }));
-      }
-    });
-  }
-
-  isInWatchingList(target: string, dirList: string[]) {
-    for (let i = 0; i < dirList.length; i++) {
-      let dir = dirList[i];
-
-      //TODO: THIS IS NOT THE BEST WAY. IF FOLDER CONTANTS `.`, this will not work
-      if (!path.extname(dir)) {
-        dir = urlJoin(dir, this.indexFile);
-      }
-
-      if (target.startsWith('/')) target = target.substr(1);
-      if (dir.startsWith('/')) dir = dir.substr(1);
-
-      if (dir === target) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private attachWSListeners() {
-    if (!this.server) throw new Error('Server is not defined');
-
-    this.ws = new WebSocket.Server({ noServer: true });
-
-    this.ws.on('connection', ws => {
-      ws.send(JSON.stringify({ action: 'connected' }));
-      ws.on('message', (_data: string) => {
-        const { watchList } = JSON.parse(_data);
-        if (watchList) {
-          this.addToWsWatcherList(ws as any, watchList);
+      this.server!.listen(this.port, (err: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          this.port = (this.server!.address() as any)?.port || this.port;
+          
+          // Initialize WebSocket server lazily
+          this.ws = new WebSocket.Server({ server: this.server });
+          this.ws.on('connection', this.handleWebSocketConnection.bind(this));
+          
+          resolve();
         }
       });
-      ws.on('close', () => this.removeFromWsWatcherList(ws as any));
+    });
+  }
+
+  private handleRequest(req: IncomingMessage, res: ServerResponse) {
+    const startTime = Date.now();
+    this.performanceMetrics.totalRequests++;
+    
+    const lsppReq = req as ILSPPIncomingMessage;
+    
+    // Performance optimization: cache static file headers
+    if (this.isStaticFileRequest(lsppReq.url || '')) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+    }
+
+    try {
+      this.applyMiddlewares(lsppReq, res);
+      
+      // Update performance metrics
+      const responseTime = Date.now() - startTime;
+      this.performanceMetrics.averageResponseTime = 
+        (this.performanceMetrics.averageResponseTime + responseTime) / 2;
+    } catch (error) {
+      this.performanceMetrics.errorCount++;
+      console.error('Request handling error:', error);
+    }
+  }
+
+  private isStaticFileRequest(url: string): boolean {
+    const staticExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
+    return staticExtensions.some(ext => url.endsWith(ext));
+  }
+
+  private handleWebSocketConnection(client: WebSocket) {
+    client.on('message', (msg: string) => {
+      try {
+        const data = JSON.parse(msg);
+        if (data.watchList) {
+          this.addWsWatcher(data.watchList, client);
+        }
+      } catch (error) {
+        console.error('WebSocket message parsing error:', error);
+      }
     });
 
-    this.ws.on('close', () => {
-      console.log('disconnected');
+    client.on('close', () => {
+      this.removeWsWatcher(client);
     });
+  }
 
-    this.server.on('upgrade', (request, socket, head) => {
-      if (request.url === '/_ws_lspp') {
-        this.ws!.handleUpgrade(request, socket, head, ws => {
-          this.ws!.emit('connection', ws, request);
-        });
-      } else {
-        socket.destroy();
+  private addWsWatcher(watchingPaths: string[], client: WebSocket) {
+    // Remove existing watcher for this client
+    this.removeWsWatcher(client);
+    
+    this.wsWatcherList.push({
+      watchingPaths,
+      client
+    });
+  }
+
+  private removeWsWatcher(client: WebSocket) {
+    this.wsWatcherList = this.wsWatcherList.filter(watcher => watcher.client !== client);
+  }
+
+  private registerOnChangeReload() {
+    if (!this.cwd) return;
+
+    const fileWatcher = vscode.workspace.createFileSystemWatcher(
+      new vscode.RelativePattern(this.cwd, '**/*'),
+      false, // do not ignore create events  
+      false, // do not ignore change events
+      false  // do not ignore delete events
+    );
+
+    // Debounced file change handler
+    const handleFileChange = debounce((uri: vscode.Uri) => {
+      this.onFileChange(uri);
+    }, this.debounceTimeout);
+
+    fileWatcher.onDidChange(handleFileChange);
+    fileWatcher.onDidCreate(handleFileChange);
+    fileWatcher.onDidDelete(handleFileChange);
+  }
+
+  private async onFileChange(uri: vscode.Uri) {
+    const relativePath = path.relative(this.cwd!, uri.fsPath);
+    
+    // Performance optimization: only process relevant files
+    if (this.shouldIgnoreFile(relativePath)) {
+      return;
+    }
+
+    if (this.isCSSFile(relativePath)) {
+      this.debouncedBroadcast('refreshcss', { file: relativePath });
+    } else if (isInjectableFile(relativePath)) {
+      try {
+        const dom = await this.getUpdatedDOM(uri);
+        const action = this.reloadingStrategy === 'reload' ? 'reload' : 
+                     this.reloadingStrategy === 'partial-reload' ? 'partial-reload' : 'hot';
+        this.debouncedBroadcast(action, { dom, file: relativePath });
+      } catch (error) {
+        console.error('File processing error:', error);
+        this.debouncedBroadcast('reload', { file: relativePath });
+      }
+    }
+  }
+
+  private shouldIgnoreFile(relativePath: string): boolean {
+    const ignoredPatterns = [
+      /node_modules/,
+      /\.git/,
+      /\.vscode/,
+      /\.DS_Store/,
+      /\.map$/,
+      /\.tmp$/,
+      /\.swp$/
+    ];
+    
+    return ignoredPatterns.some(pattern => pattern.test(relativePath));
+  }
+
+  private isCSSFile(relativePath: string): boolean {
+    return relativePath.endsWith('.css');
+  }
+
+  private async getUpdatedDOM(uri: vscode.Uri): Promise<string> {
+    const document = await vscode.workspace.openTextDocument(uri);
+    return document.getText();
+  }
+
+  private broadcast(action: BroadcastActions, data?: any) {
+    if (!this.ws) return;
+
+    const message = JSON.stringify({ action, data });
+    
+    this.wsWatcherList.forEach(watcher => {
+      if (watcher.client.readyState === 1) { // WebSocket.OPEN
+        try {
+          watcher.client.send(message);
+        } catch (error) {
+          console.error('WebSocket send error:', error);
+          this.removeWsWatcher(watcher.client);
+        }
       }
     });
   }
 
-  private removeFromWsWatcherList(client: WebSocket) {
-    const index = this.wsWatcherList.findIndex(e => e.client === client);
-    if (index !== -1) {
-      this.wsWatcherList.splice(index, 1);
-    }
-  }
+  private applyMiddlewares(req: ILSPPIncomingMessage, res: ServerResponse) {
+    // Apply middlewares in sequence with error handling
+    let index = 0;
+    
+    const next = () => {
+      if (index >= this.middlewares.length) return;
+      
+      const middleware = this.middlewares[index++];
+      try {
+        middleware(req, res, next);
+      } catch (error) {
+        console.error('Middleware error:', error);
+        res.statusCode = 500;
+        res.end('Internal Server Error');
+      }
+    };
 
-  private addToWsWatcherList(client: WebSocket, watchDirs: string | string[]) {
-    const _watchDirs = Array.isArray(watchDirs) ? watchDirs : [watchDirs];
-
-    this.wsWatcherList.push({ client, watchingPaths: _watchDirs });
-  }
-
-  private applyMiddlware(req: IncomingMessage, res: ServerResponse) {
-    this.middlewares.forEach(middleware => {
-      middleware(req, res);
-    });
-  }
-
-  private routesHandler(req: ILSPPIncomingMessage, res: ServerResponse) {
-    const cwd = this.cwd;
-    if (!cwd) return res.end('Root Path is missing');
-
-    this.applyMiddlware(req, res);
-
-    const file = req.file!; //file comes from one of middlware
-    const filePath = path.isAbsolute(file) ? file : path.join(cwd!, file);
-    const contentType = req.contentType || '';
-    const fileStream = readFileStream(
-      filePath,
-      contentType.indexOf('image') !== -1 ? undefined : 'utf8'
-    );
-
-    fileStream.on('open', () => {
-      // TOOD: MAY BE, WE SHOULD INJECT IT INSIDE <head> TAG (although browser are not smart enought)
-      if (isInjectableFile(filePath)) res.write(INJECTED_TEXT);
-      fileStream.pipe(res);
-    });
-
-    fileStream.on('error', err => {
-      console.error('ERROR ', err);
-      res.statusCode = err.code === 'ENOENT' ? 404 : 500;
-      return res.end(null);
-    });
+    next();
   }
 }

@@ -1,4 +1,36 @@
 <!-- Code injected by Live Server++: -->
-<script data-live-server-ignore="true" src="/_live-server_/inject/diffDOM.js"></script>
-<script data-live-server-ignore="true" src="/_live-server_/inject/live-reload.js"></script>
+<script data-live-server-ignore="true">
+// Performance-optimized injection script
+(function() {
+  'use strict';
+  
+  // Only load diffDOM if hot reloading is enabled
+  const reloadStrategy = document.documentElement.getAttribute('data-reload-strategy') || 'hot';
+  
+  if (reloadStrategy === 'hot') {
+    // Load diffDOM for hot reloading
+    const diffScript = document.createElement('script');
+    diffScript.src = '/_live-server_/inject/diffDOM.js';
+    diffScript.setAttribute('data-live-server-ignore', 'true');
+    diffScript.onload = function() {
+      loadLiveReloadScript();
+    };
+    diffScript.onerror = function() {
+      console.warn('Failed to load diffDOM, falling back to basic reload');
+      loadLiveReloadScript();
+    };
+    document.head.appendChild(diffScript);
+  } else {
+    // For basic reload strategies, skip diffDOM
+    loadLiveReloadScript();
+  }
+  
+  function loadLiveReloadScript() {
+    const script = document.createElement('script');
+    script.src = '/_live-server_/inject/live-reload.min.js';
+    script.setAttribute('data-live-server-ignore', 'true');
+    document.head.appendChild(script);
+  }
+})();
+</script>
 <!-- -------------- -->
