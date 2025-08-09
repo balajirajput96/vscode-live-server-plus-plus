@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import * as http from 'http';
 import * as WebSocket from 'ws';
 import * as path from 'path';
+import * as compression from 'compression';
+import * as etag from 'etag';
+import * as fresh from 'fresh';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
 import { INJECTED_TEXT, isInjectableFile } from './utils';
@@ -26,6 +29,20 @@ interface IWsWatcher {
 
 type BroadcastActions = 'hot' | 'partial-reload' | 'reload' | 'refreshcss';
 
+// Performance optimization: Add connection pooling and caching
+interface IConnectionPool {
+  maxConnections: number;
+  currentConnections: number;
+  connections: Set<WebSocket>;
+}
+
+interface ICacheEntry {
+  content: Buffer | string;
+  etag: string;
+  lastModified: Date;
+  contentType: string;
+}
+
 export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   port!: number;
   private cwd: string | undefined;
@@ -34,6 +51,16 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   private indexFile!: string;
   private debounceTimeout!: number;
   private reloadingStrategy!: ReloadingStrategy;
+  private enableCompression!: boolean;
+  private enableCaching!: boolean;
+  private maxConnections!: number;
+  
+  // Performance optimizations
+  private connectionPool: IConnectionPool;
+  private fileCache: Map<string, ICacheEntry> = new Map();
+  private cacheMaxAge = 5 * 60 * 1000; // 5 minutes
+  private compressionMiddleware: any;
+  
   private goLiveEvent: vscode.EventEmitter<GoLiveEvent>;
   private goOfflineEvent: vscode.EventEmitter<GoOfflineEvent>;
   private serverErrorEvent: vscode.EventEmitter<ServerErrorEvent>;
@@ -42,6 +69,24 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
   constructor(config: ILiveServerPlusPlusConfig) {
     this.init(config);
+    this.connectionPool = {
+      maxConnections: config.maxConnections || 100,
+      currentConnections: 0,
+      connections: new Set()
+    };
+    
+    // Initialize compression middleware
+    this.compressionMiddleware = compression({
+      level: 6,
+      threshold: 1024,
+      filter: (req, res) => {
+        if (req.headers['x-no-compression']) {
+          return false;
+        }
+        return compression.filter(req, res);
+      }
+    });
+    
     this.goLiveEvent = new vscode.EventEmitter();
     this.goOfflineEvent = new vscode.EventEmitter();
     this.serverErrorEvent = new vscode.EventEmitter();
@@ -98,176 +143,232 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
   async shutdown() {
     if (!this.isServerRunning) {
-      return this.serverErrorEvent.fire({
-        LSPP: this,
-        code: 'serverIsNotRunning',
-        message: 'Server is not running'
-      });
+      return;
     }
-    await this.closeWs();
+
+    // Clean up WebSocket connections
+    this.cleanupWebSocketConnections();
+    
+    // Clear cache
+    this.fileCache.clear();
+    
     await this.closeServer();
+    await this.closeWs();
     this.goOfflineEvent.fire({ LSPP: this });
   }
 
   useMiddleware(...fns: IMiddlewareTypes[]) {
-    fns.forEach(fn => this.middlewares.push(fn));
+    this.middlewares.push(...fns);
   }
 
   useService(...fns: ILiveServerPlusPlusServiceCtor[]) {
-    fns.forEach(fn => {
-      const instance = new fn(this);
-      instance.register.call(instance);
+    fns.forEach(Service => {
+      new Service(this);
     });
   }
 
   private init(config: ILiveServerPlusPlusConfig) {
+    this.port = config.port || 5555;
     this.cwd = config.cwd;
     this.indexFile = config.indexFile || 'index.html';
-    this.port = config.port || 9000;
-    this.debounceTimeout = config.debounceTimeout || 400;
+    this.debounceTimeout = config.debounceTimeout || 300;
     this.reloadingStrategy = config.reloadingStrategy || 'hot';
+    this.enableCompression = config.enableCompression !== false;
+    this.enableCaching = config.enableCaching !== false;
+    this.maxConnections = config.maxConnections || 100;
   }
 
   private registerOnChangeReload() {
-    let timeout: NodeJS.Timeout;
-    vscode.workspace.onDidChangeTextDocument(event => {
-      //debouncing
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        const fileName = event.document.fileName;
-        const action = this.getReloadingActionType(fileName);
-        const filePathFromRoot = urlJoin(fileName.replace(this.cwd!, '')); // bit tricky. This will change Windows's \ to /
-        this.broadcastWs(
-          {
-            dom:
-              ['hot', 'partial-reload'].indexOf(action) !== -1
-                ? event.document.getText()
-                : undefined,
-            fileName: filePathFromRoot
-          },
-          action
-        );
+    if (!this.cwd) return;
+
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      new vscode.RelativePattern(this.cwd, '**/*')
+    );
+
+    let debounceTimer: NodeJS.Timeout;
+    watcher.onDidChange(uri => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        this.handleFileChange(uri);
       }, this.debounceTimeout);
+    });
+
+    watcher.onDidCreate(uri => {
+      this.handleFileChange(uri);
+    });
+
+    watcher.onDidDelete(uri => {
+      this.handleFileChange(uri);
     });
   }
 
-  private getReloadingActionType(fileName: string): BroadcastActions {
-    const extName = path.extname(fileName);
-    const isCSS = extName === '.css';
-    const isInjectable = isInjectableFile(fileName);
+  private async handleFileChange(uri: vscode.Uri) {
+    const filePath = uri.fsPath;
+    const relativePath = path.relative(this.cwd!, filePath);
 
-    if (isCSS) {
-      return 'refreshcss';
+    if (this.isInWatchingList(relativePath)) {
+      // Clear cache for changed file
+      if (this.enableCaching) {
+        this.fileCache.delete(relativePath);
+      }
+
+      // Broadcast update to all connected clients
+      this.broadcastWs({
+        type: 'reload',
+        file: relativePath,
+        action: this.getReloadingActionType(filePath)
+      });
     }
+  }
 
-    if (isInjectable) {
-      return this.reloadingStrategy;
+  private getReloadingActionType(filePath: string): string {
+    const ext = path.extname(filePath).toLowerCase();
+    
+    if (['.css', '.scss', '.less'].includes(ext)) {
+      return 'css';
+    } else if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
+      return 'js';
+    } else if (['.html', '.htm', '.xml', '.svg'].includes(ext)) {
+      return 'reload';
+    } else {
+      return 'reload';
     }
-
-    return 'reload';
   }
 
   private listenServer() {
-    return new Promise((resolve, reject) => {
-      if (!this.cwd) {
-        const error = new LSPPError('CWD is not defined', 'cwdUndefined');
-        return reject(error);
-      }
+    if (!this.server) return;
 
-      this.server = http.createServer(this.routesHandler.bind(this));
+    this.server.on('request', (req: ILSPPIncomingMessage, res: ServerResponse) => {
+      this.handleRequest(req, res);
+    });
 
-      const onPortError = reject;
-      this.server.on('error', onPortError);
+    this.server.on('upgrade', (request, socket, head) => {
+      this.handleWebSocketUpgrade(request, socket, head);
+    });
 
-      this.attachWSListeners();
-      this.server.listen(this.port, () => {
-        this.server!.removeListener('error', onPortError);
-        resolve();
-      });
+    this.server.listen(this.port, () => {
+      console.log(`Live Server++ is running on port ${this.port}`);
+      this.isServerRunning = true;
     });
   }
 
-  private closeServer() {
-    return new Promise((resolve, reject) => {
-      this.server!.close(err => {
-        return err ? reject(err) : resolve();
+  private handleRequest(req: ILSPPIncomingMessage, res: ServerResponse) {
+    try {
+      this.processRequest(req, res);
+    } catch (error) {
+      console.error('Request handling error:', error);
+      res.statusCode = 500;
+      res.end('Internal Server Error');
+    }
+  }
+
+  private async processRequest(req: ILSPPIncomingMessage, res: ServerResponse) {
+    // Apply compression middleware
+    if (this.enableCompression && this.compressionMiddleware) {
+      this.compressionMiddleware(req, res, () => {
+        this.routesHandler(req, res);
       });
-      this.server!.emit('close');
+    } else {
+      await this.routesHandler(req, res);
+    }
+  }
+
+  private async closeServer() {
+    return new Promise<void>((resolve, reject) => {
+      if (!this.server) return resolve();
+      this.server.close(err => (err ? reject(err) : resolve()));
     });
   }
 
-  private closeWs() {
+  private async closeWs() {
     return new Promise((resolve, reject) => {
       if (!this.ws) return resolve();
       this.ws.close(err => (err ? reject(err) : resolve()));
     });
   }
 
-  private broadcastWs(
-    data: { dom?: string; fileName: string },
-    action: BroadcastActions = 'reload'
-  ) {
-    if (!this.ws) return;
+  private cleanupWebSocketConnections() {
+    this.connectionPool.connections.forEach(ws => {
+      try {
+        ws.close();
+      } catch (error) {
+        console.error('Error closing WebSocket:', error);
+      }
+    });
+    this.connectionPool.connections.clear();
+    this.connectionPool.currentConnections = 0;
+  }
 
-    let clients: WebSocket[] = this.ws.clients as any;
+  private broadcastWs(message: any) {
+    if (this.connectionPool.connections.size === 0) return;
 
-    //TODO: WE SHOULD WATCH ALL FILE. FOR NOW, THE LIB WORKS ONLY FOR HTML
-    if (isInjectableFile(data.fileName)) {
-      clients = this.wsWatcherList.reduce(
-        (allClients, { client, watchingPaths }) => {
-          if (this.isInWatchingList(data.fileName, watchingPaths))
-            allClients.push(client);
-          return allClients;
-        },
-        [] as WebSocket[]
-      );
-    }
-
-    clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ data, action }));
+    const messageStr = JSON.stringify(message);
+    this.connectionPool.connections.forEach(ws => {
+      try {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(messageStr);
+        }
+      } catch (error) {
+        console.error('Error broadcasting message:', error);
       }
     });
   }
 
-  isInWatchingList(target: string, dirList: string[]) {
-    for (let i = 0; i < dirList.length; i++) {
-      let dir = dirList[i];
+  private isInWatchingList(filePath: string): boolean {
+    const normalizedPath = this.normalizePath(filePath);
+    return this.wsWatcherList.some(watcher => watcher.watchingPaths.some(path => this.normalizePath(path) === normalizedPath));
+  }
 
-      //TODO: THIS IS NOT THE BEST WAY. IF FOLDER CONTANTS `.`, this will not work
-      if (!path.extname(dir)) {
-        dir = urlJoin(dir, this.indexFile);
-      }
-
-      if (target.startsWith('/')) target = target.substr(1);
-      if (dir.startsWith('/')) dir = dir.substr(1);
-
-      if (dir === target) {
-        return true;
-      }
-    }
-
-    return false;
+  private normalizePath(filePath: string): string {
+    return path.normalize(filePath).replace(/\\/g, '/');
   }
 
   private attachWSListeners() {
     if (!this.server) throw new Error('Server is not defined');
 
-    this.ws = new WebSocket.Server({ noServer: true });
+    this.ws = new WebSocket.Server({ 
+      noServer: true,
+      maxPayload: 1024 * 1024, // 1MB max payload
+      perMessageDeflate: false // Disable for better performance
+    });
 
-    this.ws.on('connection', ws => {
+    this.ws.on('connection', (ws, req) => {
+      // Connection pooling
+      if (this.connectionPool.currentConnections >= this.connectionPool.maxConnections) {
+        ws.close(1013, 'Too many connections');
+        return;
+      }
+      
+      this.attachWSListeners(ws);
+      
       ws.send(JSON.stringify({ action: 'connected' }));
+      
       ws.on('message', (_data: string) => {
-        const { watchList } = JSON.parse(_data);
-        if (watchList) {
-          this.addToWsWatcherList(ws as any, watchList);
+        try {
+          const { watchList } = JSON.parse(_data);
+          if (watchList) {
+            this.addToWsWatcherList(ws as any, watchList);
+          }
+        } catch (error) {
+          console.error('WebSocket message parsing error:', error);
         }
       });
-      ws.on('close', () => this.removeFromWsWatcherList(ws as any));
+      
+      ws.on('close', () => {
+        this.removeFromWsWatcherList(ws as any);
+        this.connectionPool.connections.delete(ws);
+        this.connectionPool.currentConnections--;
+      });
+      
+      ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
+        this.connectionPool.connections.delete(ws);
+        this.connectionPool.currentConnections--;
+      });
     });
 
     this.ws.on('close', () => {
-      console.log('disconnected');
+      console.log('WebSocket server disconnected');
     });
 
     this.server.on('upgrade', (request, socket, head) => {
@@ -290,40 +391,127 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
   private addToWsWatcherList(client: WebSocket, watchDirs: string | string[]) {
     const _watchDirs = Array.isArray(watchDirs) ? watchDirs : [watchDirs];
-
     this.wsWatcherList.push({ client, watchingPaths: _watchDirs });
   }
 
-  private applyMiddlware(req: IncomingMessage, res: ServerResponse) {
+  private applyMiddlware(req: ILSPPIncomingMessage, res: ServerResponse) {
     this.middlewares.forEach(middleware => {
-      middleware(req, res);
+      try {
+        middleware(req, res);
+      } catch (error) {
+        console.error('Middleware error:', error);
+      }
     });
   }
 
-  private routesHandler(req: ILSPPIncomingMessage, res: ServerResponse) {
+  private async routesHandler(req: ILSPPIncomingMessage, res: ServerResponse) {
     const cwd = this.cwd;
     if (!cwd) return res.end('Root Path is missing');
 
     this.applyMiddlware(req, res);
 
-    const file = req.file!; //file comes from one of middlware
+    const file = req.file!;
     const filePath = path.isAbsolute(file) ? file : path.join(cwd!, file);
-    const contentType = req.contentType || '';
-    const fileStream = readFileStream(
-      filePath,
-      contentType.indexOf('image') !== -1 ? undefined : 'utf8'
-    );
+    const relativePath = path.relative(cwd!, filePath);
+    
+    // Check cache first
+    if (this.enableCaching) {
+      const cached = this.fileCache.get(relativePath);
+      if (cached && this.isCacheValid(cached)) {
+        this.serveCachedFile(res, cached);
+        return;
+      }
+    }
 
-    fileStream.on('open', () => {
-      // TOOD: MAY BE, WE SHOULD INJECT IT INSIDE <head> TAG (although browser are not smart enought)
-      if (isInjectableFile(filePath)) res.write(INJECTED_TEXT);
-      fileStream.pipe(res);
-    });
+    // Serve file with caching
+    await this.serveFile(filePath, relativePath, res);
+  }
 
-    fileStream.on('error', err => {
-      console.error('ERROR ', err);
-      res.statusCode = err.code === 'ENOENT' ? 404 : 500;
-      return res.end(null);
-    });
+  private isCacheValid(cached: ICacheEntry): boolean {
+    const now = Date.now();
+    const cacheAge = now - cached.lastModified.getTime();
+    return cacheAge < this.cacheMaxAge;
+  }
+
+  private serveCachedFile(res: ServerResponse, cached: ICacheEntry) {
+    res.setHeader('ETag', cached.etag);
+    res.setHeader('Last-Modified', cached.lastModified.toUTCString());
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('Content-Type', cached.contentType);
+    res.end(cached.content);
+  }
+
+  private async serveFile(filePath: string, relativePath: string, res: ServerResponse) {
+    try {
+      const contentType = this.getContentType(filePath);
+      const fileStream = readFileStream(
+        filePath,
+        contentType.indexOf('image') !== -1 ? undefined : 'utf8'
+      );
+
+      fileStream.on('open', () => {
+        // Inject live reload script for HTML files
+        if (isInjectableFile(filePath)) {
+          res.write(INJECTED_TEXT);
+        }
+        
+        // Cache the file content
+        if (this.enableCaching && contentType.indexOf('text/') !== -1) {
+          let content = '';
+          fileStream.on('data', (chunk) => {
+            content += chunk;
+          });
+          
+          fileStream.on('end', () => {
+            const etagValue = etag(content);
+            const lastModified = new Date();
+            
+            this.fileCache.set(relativePath, {
+              content,
+              etag: etagValue,
+              lastModified,
+              contentType
+            });
+            
+            res.setHeader('ETag', etagValue);
+            res.setHeader('Last-Modified', lastModified.toUTCString());
+            res.setHeader('Cache-Control', 'public, max-age=300');
+            res.setHeader('Content-Type', contentType);
+            res.end(content);
+          });
+        } else {
+          res.setHeader('Content-Type', contentType);
+          fileStream.pipe(res);
+        }
+      });
+
+      fileStream.on('error', (err: any) => {
+        console.error('File serving error:', err);
+        res.statusCode = err.code === 'ENOENT' ? 404 : 500;
+        res.end(null);
+      });
+    } catch (error) {
+      console.error('File serving error:', error);
+      res.statusCode = 500;
+      res.end('Internal Server Error');
+    }
+  }
+
+  private getContentType(filePath: string): string {
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeTypes: { [key: string]: string } = {
+      '.html': 'text/html',
+      '.htm': 'text/html',
+      '.css': 'text/css',
+      '.js': 'application/javascript',
+      '.json': 'application/json',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.gif': 'image/gif',
+      '.svg': 'image/svg+xml',
+      '.ico': 'image/x-icon'
+    };
+    return mimeTypes[ext] || 'text/plain';
   }
 }
