@@ -31,6 +31,16 @@ This system automates your entire digital presence as a Biotechnology & Bioinfor
 - **Features**: No-code automation, custom/HTTP nodes, scheduled posting
 - **See**: [AI-AGENT-README.md](AI-AGENT-README.md) for setup guide
 
+## 📚 Documentation & Guides
+
+### Core Setup Guides
+- **[Quick Start Guide](AI-AGENT-README.md)** - Get started with n8n automation
+- **[Setup Guide](docs/setup.md)** - Detailed n8n configuration
+- **[Database Connection Guide](docs/database-connection.md)** - Connect your portfolio projects to SQL databases
+
+- Use prompts from the [AI Prompts Library](prompts/ai-prompts-library.md)
+- Follow database connectivity best practices in the [Database Connection Guide](docs/database-connection.md)
+
 ## 📁 Project Structure
 ```
 portfolio-automation-system/
@@ -48,7 +58,8 @@ portfolio-automation-system/
 ├── sheets/                 # Sample data sheets
 │   └── topics.sample.csv  # Example Google Sheets format
 ├── docs/                   # Documentation
-│   └── setup.md           # n8n setup guide
+│   ├── setup.md           # n8n setup guide
+│   └── database-connection.md  # Database connectivity guide
 ├── .env.example           # Environment variables template
 └── AI-AGENT-README.md     # Quick start for n8n automation
 ```
@@ -105,6 +116,7 @@ portfolio-automation-system/
 - Python 3.8+
 - Git
 - API keys for various services
+- Database connectivity (PostgreSQL, MySQL, etc.) - see [Database Connection Guide](docs/database-connection.md)
 
 ## 📈 Success Metrics
 
