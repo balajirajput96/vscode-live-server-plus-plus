@@ -39,6 +39,16 @@
 - Industry-specific content
 - Multi-platform compatibility
 
+### 6. 🔄 AI Agent Automation Pack
+- **N8N Workflows**: Complete weekly social posting automation
+- **HTTP-only variant**: Uses standard nodes for broader compatibility
+- **Google Sheets Integration**: Pull topics and track posted content
+- **Multi-platform posting**: LinkedIn, Facebook via Buffer API
+- **AI-generated images**: Predis.ai integration for professional visuals
+- **Ready-to-import**: JSON workflows with setup documentation
+
+📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
+
 ---
 
 ## 🚀 Quick Start Guide

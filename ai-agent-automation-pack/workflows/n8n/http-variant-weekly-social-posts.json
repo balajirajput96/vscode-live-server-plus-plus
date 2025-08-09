@@ -1,0 +1,188 @@
+{
+  "name": "Weekly Social Posts (HTTP-only Variant)",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyWeek",
+        "weekday": "1",
+        "hour": 9,
+        "minute": 0
+      },
+      "id": "n1",
+      "name": "Weekly Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [200, 280]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "sheetId": "={{$env.GOOGLE_SHEETS_ID}}",
+        "range": "Sheet1!A2:C2",
+        "options": { "valueRenderMode": "FORMATTED_VALUE" }
+      },
+      "id": "n2",
+      "name": "Get Topic (Google Sheets)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [420, 280],
+      "credentials": {
+        "googleSheetsOAuth2Api": "Google Sheets OAuth2"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const row = items[0]?.json || {};\n// Support both headered and A/B/C indexing\nconst project = row.Project || row.A || '';\nconst link = row.Link || row.B || '';\nconst context = row.Context || row.C || '';\nreturn [{ json: { project, link, context } }];"
+      },
+      "id": "n3",
+      "name": "Normalize Row",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [640, 280]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "chat",
+        "model": "gpt-4o-mini",
+        "messages": [
+          {
+            "text": "Act as a biotech social media strategist. Write a LinkedIn and Facebook post for my new project.\nProject: {{$json.project}}\nContext: {{$json.context}}\nGoal: attract biotech/data science recruiters.\nInclude: friendly intro, key result, skills used, and link to portfolio {{$json.link}}. Add hashtags: #Bioinformatics #DataAnalysis #Pharma #Python",
+            "type": "plainText"
+          }
+        ],
+        "temperature": 0.7,
+        "maxTokens": 500
+      },
+      "id": "n4",
+      "name": "OpenAI: Generate Post",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 4,
+      "position": [880, 280],
+      "credentials": {
+        "openAiApi": "OpenAI API"
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.predis.ai/v1/generate",
+        "authentication": "predefinedCredentialType",
+        "jsonParameters": true,
+        "options": { "timeout": 60000 },
+        "sendBody": true,
+        "bodyParametersJson": "={\n  \"prompt\": \"Generate a high-quality social image for a biotechnology/bioinformatics data project titled: \" + $json.project,\n  \"size\": \"1200x628\",\n  \"style\": \"modern, professional, blue-white-grey\",\n  \"format\": \"url\"\n}",
+        "responseFormat": "json"
+      },
+      "id": "n5",
+      "name": "Predis (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 280],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "Predis API Key (Bearer)",
+          "name": "Predis API (Bearer)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const text = $json.choices?.[0]?.message?.content || $json.text || '';\nreturn [{ json: { text } }];"
+      },
+      "id": "n4a",
+      "name": "Extract Post Text",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [880, 420]
+    },
+    {
+      "parameters": {
+        "functionCode": "const imageUrl = $json.imageUrl || $json.data?.image_url || $json.url || '';\nreturn [{ json: { imageUrl } }];"
+      },
+      "id": "n5a",
+      "name": "Extract Image URL",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bufferapp.com/1/updates/create.json",
+        "authentication": "none",
+        "jsonParameters": true,
+        "sendQuery": true,
+        "queryParameters": [
+          {
+            "name": "access_token",
+            "value": "={{$env.BUFFER_ACCESS_TOKEN}}"
+          }
+        ],
+        "sendBody": true,
+        "bodyParametersJson": "={\n  \"profile_ids\": [\n    \"{{$env.BUFFER_PROFILE_ID_LINKEDIN}}\",\n    \"{{$env.BUFFER_PROFILE_ID_FACEBOOK}}\"\n  ],\n  \"text\": $json.text,\n  \"media\": { \"photo\": $json.imageUrl },\n  \"now\": false\n}",
+        "responseFormat": "json"
+      },
+      "id": "n6",
+      "name": "Buffer (HTTP) Schedule",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1360, 280]
+    }
+  ],
+  "connections": {
+    "Weekly Trigger": {
+      "main": [
+        [
+          { "node": "Get Topic (Google Sheets)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Get Topic (Google Sheets)": {
+      "main": [
+        [
+          { "node": "Normalize Row", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Normalize Row": {
+      "main": [
+        [
+          { "node": "OpenAI: Generate Post", "type": "main", "index": 0 },
+          { "node": "Predis (HTTP)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "OpenAI: Generate Post": {
+      "main": [
+        [
+          { "node": "Extract Post Text", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Predis (HTTP)": {
+      "main": [
+        [
+          { "node": "Extract Image URL", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Extract Post Text": {
+      "main": [
+        [
+          { "node": "Buffer (HTTP) Schedule", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Extract Image URL": {
+      "main": [
+        [
+          { "node": "Buffer (HTTP) Schedule", "type": "main", "index": 1 }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsNote": "Set credentials in n8n: OpenAI API, Google Sheets OAuth2, Predis API (as Bearer in HTTP Request), and set required env vars."
+  }
+}
