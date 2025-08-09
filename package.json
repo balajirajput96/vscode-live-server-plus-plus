@@ -34,13 +34,21 @@
     "*"
   ],
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run build",
+    "build": "npm run build:ts && npm run build:assets",
+    "build:ts": "tsc -p ./",
+    "build:assets": "webpack --config webpack.config.js",
+    "build:watch": "npm run build:ts:watch & npm run build:assets:watch",
+    "build:ts:watch": "tsc -watch -p ./",
+    "build:assets:watch": "webpack --config webpack.config.js --watch",
     "copy-assets": "cpx \"./src/core/assets/**/*\" \"./out/core/assets\"",
     "copy-assets:watch": "npm run copy-assets -- --w",
-    "compile": "tsc -p ./ && npm run copy-assets",
-    "watch": "npm run copy-assets  && tsc -watch -p ./",
+    "compile": "npm run build",
+    "watch": "npm run build:watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run build && node ./node_modules/vscode/bin/test",
+    "clean": "rimraf out dist",
+    "analyze": "webpack --config webpack.config.js --profile --json > stats.json && webpack-bundle-analyzer stats.json"
   },
   "main": "./out/extension/index.js",
   "contributes": {
@@ -109,15 +117,27 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/plugin-transform-runtime": "^7.22.0",
+    "@babel/plugin-proposal-class-properties": "^7.18.0",
     "@types/mime-types": "^2.1.0",
     "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
     "@types/open": "^6.1.0",
     "@types/ws": "^6.0.1",
+    "babel-loader": "^9.1.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "core-js": "^3.30.0",
     "cpx": "^1.5.0",
+    "rimraf": "^5.0.0",
+    "terser-webpack-plugin": "^5.3.0",
     "tslint": "^5.12.1",
     "typescript": "^3.3.1",
-    "vscode": "^1.1.28"
+    "vscode": "^1.1.28",
+    "webpack": "^5.88.0",
+    "webpack-bundle-analyzer": "^4.8.0",
+    "webpack-cli": "^5.1.0"
   },
   "dependencies": {
     "mime-types": "^2.1.22",

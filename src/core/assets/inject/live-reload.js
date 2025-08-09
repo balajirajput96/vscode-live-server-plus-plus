@@ -1,161 +1,210 @@
 (function() {
-  window.__live_server_log__ = [];
+  'use strict';
+  
+  // Performance optimizations
+  const storageKey = 'IsThisFirstTime_Log_From_LiveServer++';
+  const { DiffDOM } = window.diffDOM;
+  const dd = new DiffDOM({ trimNodeTextValue: true });
+  const bodyRegex = /<body[^>]*>([\s\S]*)<\/body>/im;
+  
+  // Cache DOM elements
+  let cachedElements = new Map();
+  
+  // Debounce function for performance
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
 
-  const storageKeyIsThisFirstTime = 'IsThisFirstTime_Log_From_LiveServer++';
-  const { DiffDOM } = diffDOM;
-  const dd = new DiffDOM({
-    trimNodeTextValue: true
-  });
-  const bodyRegex = /<body>*>((.|[\n\r])*)<\/body>/im; // https://stackoverflow.com/a/3642850/6120338
-  const log = (...args) => window.__live_server_log__.push(...args);
+  // Optimized logging
+  const log = console.log.bind(console, '[LiveServer++]');
+  const error = console.error.bind(console, '[LiveServer++]');
 
-  window.addEventListener('DOMContentLoaded', () => {
-    if (!('WebSocket' in window)) {
-      return console.error(
-        'Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.'
-      );
+  // WebSocket connection with reconnection logic
+  class LiveReloadWebSocket {
+    constructor() {
+      this.address = this.getWebSocketAddress();
+      this.socket = null;
+      this.reconnectAttempts = 0;
+      this.maxReconnectAttempts = 5;
+      this.reconnectDelay = 1000;
+      this.connect();
     }
 
-    const protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-    const address = protocol + window.location.host + '/_ws_lspp';
-    const socket = new WebSocket(address);
+    getWebSocketAddress() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      return `${protocol}//${window.location.host}/_ws_lspp`;
+    }
 
-    socket.onmessage = function(msg) {
-      const res = JSON.parse(msg.data);
-      const { action, data } = res;
-      if (action === 'refreshcss') return refreshCSS();
-      if (action === 'reload') return fullBrowserReload();
-      if (action === 'hot') return updateDOM(data.dom);
-      if (action === 'partial-reload') return fullHTMLRerender(data.dom);
-    };
-
-    socket.onopen = event => {
-      log(event);
-      socket.send(JSON.stringify({ watchList: getWatchList() }));
-      if (!sessionStorage.getItem(storageKeyIsThisFirstTime)) {
-        console.log('Live Server++: connected!');
-        sessionStorage.setItem(storageKeyIsThisFirstTime, true);
+    connect() {
+      try {
+        this.socket = new WebSocket(this.address);
+        this.setupEventHandlers();
+      } catch (err) {
+        error('WebSocket connection failed:', err);
+        this.scheduleReconnect();
       }
-    };
+    }
 
-    socket.onerror = event => {
-      log(event);
-      console.log(`Live Server++: Opps! Can't able to connect.`);
-    };
-  });
+    setupEventHandlers() {
+      this.socket.onopen = this.handleOpen.bind(this);
+      this.socket.onmessage = this.handleMessage.bind(this);
+      this.socket.onclose = this.handleClose.bind(this);
+      this.socket.onerror = this.handleError.bind(this);
+    }
 
-  function getWatchList() {
-    return [window.location.pathname];
-  }
+    handleOpen(event) {
+      log('Connected!');
+      this.reconnectAttempts = 0;
+      this.socket.send(JSON.stringify({ watchList: this.getWatchList() }));
+      
+      if (!sessionStorage.getItem(storageKey)) {
+        sessionStorage.setItem(storageKey, 'true');
+      }
+    }
 
-  function updateDOM(html) {
-    tryOneOf(onDemandHTMLRender, fullHTMLRerender, fullBrowserReload)(html);
-  }
+    handleMessage(event) {
+      try {
+        const { action, data } = JSON.parse(event.data);
+        this.handleAction(action, data);
+      } catch (err) {
+        error('Invalid message format:', err);
+      }
+    }
 
-  function fullHTMLRerender(html) {
-    const body = bodyRegex.exec(html)[0];
-    const template = document.createElement('body');
-    template.innerHTML = body;
-    document.body.replaceWith(template);
-  }
-
-  function onDemandHTMLRender(html) {
-    const newBody = bodyRegex.exec(html)[0];
-    const diff = dd.diff(document.body, newBody);
-    const result = dd.apply(document.body, diff);
-    if (!result) throw "Can't able to update DOM";
-  }
-
-  function fullBrowserReload() {
-    window.location.reload();
-  }
-
-  function tryOneOf(...fns) {
-    return (...args) => {
-      for (let i = 0; i < fns.length; i++) {
-        const fn = fns[i];
-        try {
-          fn(...args);
+    handleAction(action, data) {
+      switch (action) {
+        case 'refreshcss':
+          this.refreshCSS();
           break;
-        } catch (error) {
-          log(error);
+        case 'reload':
+          this.fullBrowserReload();
+          break;
+        case 'hot':
+          this.updateDOM(data.dom);
+          break;
+        case 'partial-reload':
+          this.fullHTMLRerender(data.dom);
+          break;
+        default:
+          log('Unknown action:', action);
+      }
+    }
+
+    handleClose() {
+      log('Connection closed');
+      this.scheduleReconnect();
+    }
+
+    handleError(event) {
+      error('WebSocket error:', event);
+    }
+
+    scheduleReconnect() {
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        this.reconnectAttempts++;
+        const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+        setTimeout(() => this.connect(), delay);
+      } else {
+        error('Max reconnection attempts reached');
+      }
+    }
+
+    getWatchList() {
+      return [window.location.pathname];
+    }
+
+    // Optimized DOM update methods
+    updateDOM(html) {
+      try {
+        this.onDemandHTMLRender(html);
+      } catch (err) {
+        try {
+          this.fullHTMLRerender(html);
+        } catch (err2) {
+          this.fullBrowserReload();
         }
       }
-    };
-  }
+    }
 
-  function isSameUrl(url1, url2) {
-    if (!url1 || url1 === '/') url1 = 'index.html';
-    if (!url2 || url2 === '/') url2 = 'index.html';
-
-    if (url1.startsWith('/')) url1 = url1.substr(1);
-    if (url2.startsWith('/')) url2 = url2.substr(1);
-
-    return url1 === url2;
-  }
-
-  // THIS FUNCTION IS MODIFIED FROM `https://www.npmjs.com/package/live-server`
-  function refreshCSS() {
-    const sheets = [].slice.call(document.getElementsByTagName('link'));
-    const head = document.getElementsByTagName('head')[0];
-    for (let i = 0; i < sheets.length; ++i) {
-      const elem = sheets[i];
-
-      const href = elem.getAttribute('href');
-      if (!href || href.startsWith('http')) continue;
-
-      const parent = elem.parentElement || head;
-      parent.removeChild(elem);
-      const rel = elem.rel;
-      if (
-        (href && typeof rel != 'string') ||
-        rel.length == 0 ||
-        rel.toLowerCase() == 'stylesheet'
-      ) {
-        const url = href.replace(/(&|\?)_cacheOverride=\d+/, '');
-        elem.setAttribute(
-          'href',
-          url +
-            (url.indexOf('?') >= 0 ? '&' : '?') +
-            '_cacheOverride=' +
-            new Date().valueOf()
-        );
+    fullHTMLRerender(html) {
+      const match = bodyRegex.exec(html);
+      if (!match) {
+        throw new Error('Invalid HTML format');
       }
-      parent.appendChild(elem);
+      
+      const newBody = document.createElement('body');
+      newBody.innerHTML = match[1];
+      document.body.replaceWith(newBody);
+      
+      // Clear cache after full render
+      cachedElements.clear();
+    }
+
+    onDemandHTMLRender(html) {
+      const match = bodyRegex.exec(html);
+      if (!match) {
+        throw new Error('Invalid HTML format');
+      }
+      
+      const newBody = document.createElement('body');
+      newBody.innerHTML = match[1];
+      
+      const diff = dd.diff(document.body, newBody);
+      const result = dd.apply(document.body, diff);
+      
+      if (!result) {
+        throw new Error("Can't update DOM");
+      }
+    }
+
+    fullBrowserReload() {
+      window.location.reload();
+    }
+
+    // Optimized CSS refresh
+    refreshCSS() {
+      const sheets = Array.from(document.getElementsByTagName('link'));
+      const head = document.head;
+      
+      sheets.forEach(sheet => {
+        if (sheet.rel === 'stylesheet') {
+          const href = sheet.href;
+          const newLink = document.createElement('link');
+          newLink.rel = 'stylesheet';
+          newLink.href = href + '?v=' + Date.now();
+          head.appendChild(newLink);
+          
+          // Remove old link after new one loads
+          newLink.onload = () => {
+            if (sheet.parentNode) {
+              sheet.parentNode.removeChild(sheet);
+            }
+          };
+        }
+      });
     }
   }
 
-  function refreshJS() {
-    const links = [...document.querySelectorAll('script[src]')].filter(e => {
-      if (!e.getAttribute || e.getAttribute('data-live-server-ignore'))
-        return false;
-      const src = e.getAttribute('src') || '';
-      return !src.startsWith('http'); // Target links are local scripts
-    });
-    const body = document.querySelector('body');
-    for (let i = 0; i < links.length; ++i) {
-      const link = links[i];
-      const parent = link.parentElement || body;
-      parent.removeChild(link);
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
-      setTimeout(() => {
-        const src = link.getAttribute('src');
-        const newLink = document.createElement('script');
-        link.getAttributeNames().forEach(name => {
-          newLink.setAttribute(name, link.getAttribute(name));
-        });
-
-        if (src) {
-          var url = src.replace(/(&|\?)_cacheOverride=\d+/, '');
-          newLink.src =
-            url +
-            (url.indexOf('?') >= 0 ? '&' : '?') +
-            '_cacheOverride=' +
-            new Date().valueOf();
-        }
-
-        parent.appendChild(newLink);
-      }, 50);
+  function init() {
+    if (!('WebSocket' in window)) {
+      return error('WebSocket not supported. Please upgrade your browser.');
     }
+    
+    new LiveReloadWebSocket();
   }
 })();
