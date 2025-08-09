@@ -1,42 +1,56 @@
 'use strict';
 
-import { workspace } from 'vscode';
-
-export type IBrowserList = 'default' | 'chrome' | 'firefox' | 'microsoft-edge' | null;
-export type ReloadingStrategy = 'hot' | 'partial-reload' | 'reload';
+import * as vscode from 'vscode';
 
 export const extensionConfig = {
   port: {
-    get: () => getSettings<number>('port'),
-    set: (portNo: number) => setSettings('port', portNo)
-  },
-  browser: {
-    get: () => getSettings<IBrowserList>('browser'),
-    set: (value: IBrowserList) => setSettings('browser', value)
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('port', 5555)
   },
   root: {
-    get: () => getSettings<string>('root') || '/',
-    set: (value: string) => setSettings('root', value)
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('root', './')
   },
   timeout: {
-    get: () => getSettings<number>('timeout'),
-    set: (value: number) => setSettings('timeout', value)
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('timeout', 300)
   },
   indexFile: {
-    get: () => getSettings<string>('indexFile'),
-    set: (value: string) => setSettings('indexFile', value)
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('indexFile', 'index.html')
+  },
+  browser: {
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('browser', 'default')
   },
   reloadingStrategy: {
-    get: () => getSettings<ReloadingStrategy>('reloadingStrategy'),
-    set: (value: ReloadingStrategy) => setSettings('reloadingStrategy', value)
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('reloadingStrategy', 'hot')
+  },
+  // Performance optimization: New configuration options
+  enableCompression: {
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('enableCompression', true)
+  },
+  enableCaching: {
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('enableCaching', true)
+  },
+  maxConnections: {
+    get: () => vscode.workspace.getConfiguration('liveServer++').get('maxConnections', 100)
   }
 };
 
-function getSettings<T = any>(settingsName: string) {
-  return workspace.getConfiguration('liveServer++').get(settingsName) as T;
-}
-function setSettings<T = any>(settingsName: string, settingsValue: T, isGlobal = false) {
-  return workspace
-    .getConfiguration('liveServer++')
-    .update(settingsName, settingsValue, isGlobal);
-}
+// Performance optimization: Configuration change listener
+export const onConfigurationChange = (callback: () => void) => {
+  return vscode.workspace.onDidChangeConfiguration((event) => {
+    if (event.affectsConfiguration('liveServer++')) {
+      callback();
+    }
+  });
+};
+
+// Performance optimization: Get all performance-related settings
+export const getPerformanceSettings = () => ({
+  port: extensionConfig.port.get(),
+  root: extensionConfig.root.get(),
+  timeout: extensionConfig.timeout.get(),
+  indexFile: extensionConfig.indexFile.get(),
+  browser: extensionConfig.browser.get(),
+  reloadingStrategy: extensionConfig.reloadingStrategy.get(),
+  enableCompression: extensionConfig.enableCompression.get(),
+  enableCaching: extensionConfig.enableCaching.get(),
+  maxConnections: extensionConfig.maxConnections.get()
+});
