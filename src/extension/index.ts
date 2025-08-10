@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { LiveServerPlusPlus } from '../core/LiveServerPlusPlus';
 import { NotificationService } from './services/NotificationService';
+import { GitHubApiService } from './services/GitHubApiService';
+import { MessagingService } from './services/MessagingService';
 import { fileSelector, setMIME } from './middlewares';
 import { ILiveServerPlusPlusConfig } from '../core/types';
 import { extensionConfig } from './utils/extensionConfig';
@@ -12,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   const liveServerPlusPlus = new LiveServerPlusPlus(getLSPPConfig());
 
   liveServerPlusPlus.useMiddleware(fileSelector, setMIME);
-  liveServerPlusPlus.useService(NotificationService, BrowserService, StatusbarService);
+  liveServerPlusPlus.useService(NotificationService, BrowserService, StatusbarService, GitHubApiService, MessagingService);
 
   const openServer = vscode.commands.registerCommand(getCmdWithPrefix('open'), () => {
     liveServerPlusPlus.reloadConfig(getLSPPConfig());

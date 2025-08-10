@@ -30,6 +30,14 @@ export const workspaceUtils = {
       return path.join(workspace.uri.fsPath, extensionConfig.root.get());
     }
     return null;
+  },
+
+  getWorkspaceName() {
+    const workspace = this.activeWorkspace;
+    if (workspace) {
+      return path.basename(workspace.uri.fsPath);
+    }
+    return null;
   }
 };
 
