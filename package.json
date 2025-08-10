@@ -1,7 +1,7 @@
 {
   "name": "vscode-live-server-plus-plus",
-  "displayName": "Live Server++",
-  "description": "Static Server for your HTML CSS Project. It's Truly Live",
+  "displayName": "Live Server++ with AI Career Dashboard",
+  "description": "Static Server for your HTML CSS Project with AI-Powered Career Automation Dashboard. It's Truly Live",
   "version": "0.0.1",
   "publisher": "ritwickdey",
   "engines": {
