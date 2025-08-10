@@ -1,6 +1,10 @@
-out
-node_modules
+node_modules/
+out/
 .vscode-test/
+dist/
+*.log
+.DS_Store
+Thumbs.db
 *.vsix
 
 # Environment and sensitive files
