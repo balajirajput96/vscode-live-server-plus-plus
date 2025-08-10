@@ -56,6 +56,30 @@
       {
         "command": "extension.live-server++.close",
         "title": "Live Server++ : Close Server"
+      },
+      {
+        "command": "extension.live-server++.github.sync",
+        "title": "Live Server++ : Sync with GitHub"
+      },
+      {
+        "command": "extension.live-server++.github.createGist",
+        "title": "Live Server++ : Create Gist from Active File"
+      },
+      {
+        "command": "extension.live-server++.api.sendMessage",
+        "title": "Live Server++ : Send API Message"
+      },
+      {
+        "command": "extension.live-server++.messaging.showHistory",
+        "title": "Live Server++ : Show Message History"
+      },
+      {
+        "command": "extension.live-server++.messaging.broadcast",
+        "title": "Live Server++ : Broadcast Message"
+      },
+      {
+        "command": "extension.live-server++.messaging.clear",
+        "title": "Live Server++ : Clear Messages"
       }
     ],
     "configuration": {
@@ -108,6 +132,21 @@
             "reload"
           ],
           "description": "Reloading Strategy.\n'hot' = Inplace DOM update[Experimental] \n 'partial-reload' = Reload DOM without refreshing page\n 'reload'= Full page reload"
+        },
+        "liveServer++.github.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable GitHub API integration for enhanced features"
+        },
+        "liveServer++.github.token": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub Personal Access Token (keep this secure)"
+        },
+        "liveServer++.api.messageEndpoint": {
+          "type": "string",
+          "default": "",
+          "description": "API endpoint for real-time messaging features"
         }
       }
     }
