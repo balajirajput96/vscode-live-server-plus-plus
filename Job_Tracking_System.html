@@ -37,6 +37,27 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
+        .nav-bar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-bar a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
         .stats-overview {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -414,6 +435,12 @@
         <div class="header">
             <h1>💼 Job Tracking & Application System</h1>
             <p>आपका Complete Biotech Career Management Dashboard</p>
+        </div>
+
+        <div class="nav-bar">
+            <a href="index.html">🏠 Main Dashboard</a>
+            <a href="Job_Tracking_System.html">💼 Job Tracker</a>
+            <a href="AI_Career_Automation_Guide.md" target="_blank">📖 User Guide</a>
         </div>
 
         <!-- Stats Overview -->
