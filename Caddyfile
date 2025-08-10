@@ -1,0 +1,19 @@
+{
+	email {$ACME_EMAIL}
+	# Optional: increase timeouts for long-running webhooks
+	# servers :443 {
+	#   read_timeout 120s
+	#   write_timeout 120s
+	# }
+}
+
+# Replace {$DOMAIN} in .env (e.g., n8n.example.com)
+{$DOMAIN} {
+	encode zstd gzip
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+	reverse_proxy n8n:5678
+}

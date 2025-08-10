@@ -2,3 +2,15 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Docker volumes data
+postgres_data/
+redis_data/
+n8n_data/
+caddy_data/
+caddy_config/
