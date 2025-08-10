@@ -1,0 +1,109 @@
+{
+  "name": "LinkedIn Post Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "linkedin-post",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-linkedin",
+      "name": "LinkedIn Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "linkedin-post"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "project_name",
+              "name": "project_name",
+              "value": "={{ $json.project_name || 'Bioinformatics Project' }}",
+              "type": "string"
+            },
+            {
+              "id": "skills",
+              "name": "skills",
+              "value": "={{ $json.skills || 'Python, Data Analysis, Bioinformatics' }}",
+              "type": "string"
+            },
+            {
+              "id": "description",
+              "name": "description",
+              "value": "={{ $json.description || 'Working on exciting data analysis project' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-variables",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/usr/bin/env python3\nimport json\nimport sys\n\n# Get input data\ninput_data = json.loads(sys.argv[1])\nproject_name = input_data.get('project_name', 'Bioinformatics Project')\nskills = input_data.get('skills', 'Python, Data Analysis')\ndescription = input_data.get('description', 'Working on data analysis')\n\n# Generate LinkedIn post\npost_content = f\"\"\"\n🧬 Excited to share my latest project: {project_name}!\n\n{description}\n\n🔬 Key technologies used:\n{skills}\n\n💡 This project demonstrates the power of data science in biotechnology. Looking forward to applying these skills in pharmaceutical and clinical research companies.\n\n#Bioinformatics #DataScience #Biotechnology #Python #CareerGrowth #PharmaJobs\n\nWhat are your thoughts on the intersection of data science and biotechnology? 👇\n\"\"\"\n\nresult = {\n    'post_content': post_content.strip(),\n    'hashtags': ['Bioinformatics', 'DataScience', 'Biotechnology', 'Python', 'CareerGrowth', 'PharmaJobs'],\n    'word_count': len(post_content.split()),\n    'status': 'generated'\n}\n\nprint(json.dumps(result))"
+      },
+      "id": "generate-post",
+      "name": "Generate LinkedIn Post",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  \"status\": \"success\",\n  \"message\": \"LinkedIn post generated successfully\",\n  \"data\": {\n    \"post_content\": $json.post_content,\n    \"hashtags\": $json.hashtags,\n    \"word_count\": $json.word_count,\n    \"generated_at\": new Date().toISOString()\n  }\n}) }}"
+      },
+      "id": "response-linkedin",
+      "name": "Response",
+      "type": "n8n-nodes-base.respond",
+      "typeVersion": 1,
+      "position": [840, 300]
+    }
+  ],
+  "connections": {
+    "LinkedIn Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Generate LinkedIn Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1",
+  "id": "linkedin-automation"
+}

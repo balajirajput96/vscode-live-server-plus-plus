@@ -1,0 +1,187 @@
+{
+  "name": "Portfolio Update Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio-update",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-portfolio",
+      "name": "Portfolio Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "portfolio-update"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "project_data",
+              "name": "project_data",
+              "value": "={{ $json.project || {} }}",
+              "type": "object"
+            },
+            {
+              "id": "action",
+              "name": "action",
+              "value": "={{ $json.action || 'add_project' }}",
+              "type": "string"
+            },
+            {
+              "id": "github_repo",
+              "name": "github_repo",
+              "value": "={{ $json.github_repo || '' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-portfolio-data",
+      "name": "Set Portfolio Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.action }}",
+              "operation": "equal",
+              "value2": "add_project"
+            }
+          ]
+        }
+      },
+      "id": "check-action",
+      "name": "Check Action",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/usr/bin/env python3\nimport json\nimport sys\nfrom datetime import datetime\n\n# Get input data\ninput_data = json.loads(sys.argv[1])\nproject_data = input_data.get('project_data', {})\ngithub_repo = input_data.get('github_repo', '')\n\n# Generate README.md content\nproject_name = project_data.get('name', 'Bioinformatics Project')\ndescription = project_data.get('description', 'Data analysis project in biotechnology')\ntools = project_data.get('tools', ['Python', 'Pandas', 'Matplotlib'])\ndataset = project_data.get('dataset', 'Public dataset from NCBI')\nresults = project_data.get('results', 'Identified key biomarkers')\n\nreadme_content = f\"\"\"\n# {project_name}\n\n## Overview\n{description}\n\n## Dataset\n- **Source**: {dataset}\n- **Type**: Genomic/Clinical data\n- **Size**: Processed dataset with multiple samples\n\n## Tools and Technologies\n{''.join([f'- {tool}' for tool in tools])}\n\n## Key Results\n{results}\n\n## Installation and Usage\n\n### Prerequisites\n```bash\npip install pandas numpy matplotlib seaborn scikit-learn\n```\n\n### Running the Analysis\n```bash\npython main.py\n```\n\n## Project Structure\n```\n{project_name.lower().replace(' ', '-')}/\n├── data/\n│   ├── raw/\n│   └── processed/\n├── notebooks/\n│   └── analysis.ipynb\n├── src/\n│   ├── data_processing.py\n│   ├── analysis.py\n│   └── visualization.py\n├── results/\n│   ├── figures/\n│   └── reports/\n├── requirements.txt\n└── README.md\n```\n\n## Results\n\n### Key Findings\n- {results}\n- Statistical significance achieved (p < 0.05)\n- Visualizations generated for publication\n\n### Visualizations\n![Analysis Results](results/figures/main_analysis.png)\n\n## Future Work\n- Extended analysis with larger datasets\n- Machine learning model development\n- Clinical validation studies\n\n## Contact\nFor questions about this project, please open an issue or contact [your-email@example.com].\n\n## Citation\nIf you use this work, please cite:\n```\n{project_name} ({datetime.now().year}). Bioinformatics Analysis Repository. \nAvailable at: {github_repo}\n```\n\n## License\nThis project is licensed under the MIT License - see the LICENSE file for details.\n\"\"\"\n\n# Generate portfolio entry\nportfolio_entry = {\n    'id': project_name.lower().replace(' ', '-'),\n    'name': project_name,\n    'description': description,\n    'tools': tools,\n    'github_url': github_repo,\n    'readme_content': readme_content,\n    'created_at': datetime.now().isoformat(),\n    'category': 'bioinformatics',\n    'status': 'completed'\n}\n\nresult = {\n    'action': 'project_added',\n    'project': portfolio_entry,\n    'readme_generated': True,\n    'word_count': len(readme_content.split()),\n    'status': 'success'\n}\n\nprint(json.dumps(result))\n\"\"\""
+      },
+      "id": "add-project",
+      "name": "Add Project",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [840, 200]
+    },
+    {
+      "parameters": {
+        "command": "#!/usr/bin/env python3\nimport json\nimport sys\nfrom datetime import datetime\n\n# Get input data\ninput_data = json.loads(sys.argv[1])\nproject_data = input_data.get('project_data', {})\n\n# Update existing project\nproject_id = project_data.get('id', '')\nupdated_fields = project_data.get('updates', {})\n\nresult = {\n    'action': 'project_updated',\n    'project_id': project_id,\n    'updated_fields': updated_fields,\n    'updated_at': datetime.now().isoformat(),\n    'status': 'success'\n}\n\nprint(json.dumps(result))"
+      },
+      "id": "update-project",
+      "name": "Update Project",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [840, 400]
+    },
+    {
+      "parameters": {
+        "command": "#!/usr/bin/env python3\nimport json\nimport sys\nfrom datetime import datetime\n\n# Get the project data\ninput_data = json.loads(sys.argv[1])\nproject = input_data.get('project', {})\n\n# Generate social media post for the project\nproject_name = project.get('name', 'New Project')\ntools = ', '.join(project.get('tools', []))\ngithub_url = project.get('github_url', '')\n\nsocial_post = f\"\"\"\n🚀 Excited to share my latest project: {project_name}!\n\n🔬 This bioinformatics project showcases:\n✅ Data analysis and visualization\n✅ Statistical modeling\n✅ Reproducible research practices\n\n⚡ Built with: {tools}\n\n📊 The results provide valuable insights for pharmaceutical research and drug discovery.\n\n🔗 Check out the full analysis: {github_url}\n\n#Bioinformatics #DataScience #Biotechnology #Research #OpenScience #PharmaJobs\n\nWhat's your experience with bioinformatics projects? Share your thoughts! 👇\n\"\"\"\n\n# Generate website update\nwebsite_content = f\"\"\"\n<div class=\"project-card\">\n  <h3>{project_name}</h3>\n  <p class=\"project-description\">{project.get('description', '')}</p>\n  <div class=\"project-tools\">\n    {' '.join([f'<span class=\"tool-tag\">{tool}</span>' for tool in project.get('tools', [])])}\n  </div>\n  <div class=\"project-links\">\n    <a href=\"{github_url}\" target=\"_blank\" class=\"btn btn-primary\">View on GitHub</a>\n    <a href=\"#\" class=\"btn btn-secondary\">Live Demo</a>\n  </div>\n  <div class=\"project-meta\">\n    <small>Added on {datetime.now().strftime('%B %d, %Y')}</small>\n  </div>\n</div>\n\"\"\"\n\nresult = {\n    'social_media_post': social_post.strip(),\n    'website_content': website_content.strip(),\n    'project_promoted': True,\n    'generated_at': datetime.now().isoformat(),\n    'status': 'success'\n}\n\nprint(json.dumps(result))"
+      },
+      "id": "promote-project",
+      "name": "Promote Project",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1040, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  \"status\": \"success\",\n  \"message\": \"Portfolio updated successfully\",\n  \"data\": {\n    \"action\": $json.action,\n    \"project\": $json.project,\n    \"social_media_post\": $json.social_media_post,\n    \"website_content\": $json.website_content,\n    \"updated_at\": new Date().toISOString()\n  }\n}) }}"
+      },
+      "id": "response-portfolio",
+      "name": "Response",
+      "type": "n8n-nodes-base.respond",
+      "typeVersion": 1,
+      "position": [1240, 300]
+    }
+  ],
+  "connections": {
+    "Portfolio Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Portfolio Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Portfolio Data": {
+      "main": [
+        [
+          {
+            "node": "Check Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Action": {
+      "main": [
+        [
+          {
+            "node": "Add Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Project": {
+      "main": [
+        [
+          {
+            "node": "Promote Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project": {
+      "main": [
+        [
+          {
+            "node": "Promote Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Promote Project": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1",
+  "id": "portfolio-automation"
+}

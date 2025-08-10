@@ -1,0 +1,177 @@
+{
+  "name": "Job Search Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "job-search",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-job-search",
+      "name": "Job Search Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "job-search"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "keywords",
+              "name": "keywords",
+              "value": "={{ $json.keywords || 'bioinformatics,data analysis,biotechnology' }}",
+              "type": "string"
+            },
+            {
+              "id": "companies",
+              "name": "companies",
+              "value": "={{ $json.companies || 'Sun Pharma,Zydus Cadila,Dr. Reddy\\'s,Lupin,Cipla,Biocon' }}",
+              "type": "string"
+            },
+            {
+              "id": "location",
+              "name": "location",
+              "value": "={{ $json.location || 'India' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-search-params",
+      "name": "Set Search Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/usr/bin/env python3\nimport json\nimport sys\nimport requests\nfrom datetime import datetime\n\n# Get input data\ninput_data = json.loads(sys.argv[1])\nkeywords = input_data.get('keywords', '').split(',')\ncompanies = input_data.get('companies', '').split(',')\nlocation = input_data.get('location', 'India')\n\n# Mock job search (replace with actual API calls)\njobs = []\n\nfor company in companies[:3]:  # Limit to 3 companies for demo\n    for keyword in keywords[:2]:  # Limit to 2 keywords per company\n        job = {\n            'company': company.strip(),\n            'title': f'{keyword.strip().title()} Specialist',\n            'location': location,\n            'posted_date': datetime.now().strftime('%Y-%m-%d'),\n            'description': f'Seeking experienced {keyword.strip()} professional for {company.strip()}',\n            'application_url': f'https://{company.strip().lower().replace(\" \", \"\").replace(\"\\'\", \"\")}.com/careers',\n            'match_score': 85,\n            'requirements': ['Python', 'Data Analysis', 'Biotechnology Background']\n        }\n        jobs.append(job)\n\nresult = {\n    'total_jobs': len(jobs),\n    'jobs': jobs,\n    'search_timestamp': datetime.now().isoformat(),\n    'search_criteria': {\n        'keywords': keywords,\n        'companies': companies,\n        'location': location\n    },\n    'status': 'completed'\n}\n\nprint(json.dumps(result))"
+      },
+      "id": "search-jobs",
+      "name": "Search Jobs",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_jobs }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "check-results",
+      "name": "Check Results",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [840, 300]
+    },
+    {
+      "parameters": {
+        "command": "#!/usr/bin/env python3\nimport json\nimport sys\n\n# Get job data\ninput_data = json.loads(sys.argv[1])\njobs = input_data.get('jobs', [])\n\n# Generate application message template\ntemplate = \"\"\"\nSubject: Application for {title} Position at {company}\n\nDear Hiring Manager,\n\nI am writing to express my strong interest in the {title} position at {company}. With my background in Biotechnology and expertise in Python, data analysis, and bioinformatics, I am excited about the opportunity to contribute to your team.\n\nKey qualifications:\n• Diploma in Biotechnology with hands-on experience in bioinformatics\n• Proficient in Python, SQL, and data analysis tools\n• Experience with gene expression analysis and clinical data\n• Strong problem-solving skills and attention to detail\n\nI have attached my resume and portfolio for your review. I would welcome the opportunity to discuss how my skills can contribute to {company}'s research and development goals.\n\nThank you for your consideration.\n\nBest regards,\n[Your Name]\n[Your Contact Information]\n[Portfolio URL]\n\"\"\"\n\n# Generate messages for each job\nmessages = []\nfor job in jobs:\n    message = template.format(\n        title=job['title'],\n        company=job['company']\n    )\n    messages.append({\n        'company': job['company'],\n        'title': job['title'],\n        'message': message,\n        'application_url': job['application_url']\n    })\n\nresult = {\n    'generated_messages': len(messages),\n    'messages': messages,\n    'status': 'completed'\n}\n\nprint(json.dumps(result))"
+      },
+      "id": "generate-applications",
+      "name": "Generate Application Messages",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1040, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  \"status\": \"success\",\n  \"message\": \"Job search completed successfully\",\n  \"data\": {\n    \"total_jobs\": $json.total_jobs,\n    \"jobs_found\": $json.jobs,\n    \"application_messages\": $json.messages,\n    \"searched_at\": new Date().toISOString()\n  }\n}) }}"
+      },
+      "id": "response-success",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respond",
+      "typeVersion": 1,
+      "position": [1240, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  \"status\": \"no_results\",\n  \"message\": \"No jobs found matching the criteria\",\n  \"data\": {\n    \"search_criteria\": $json.search_criteria,\n    \"searched_at\": new Date().toISOString()\n  }\n}) }}"
+      },
+      "id": "response-no-results",
+      "name": "No Results Response",
+      "type": "n8n-nodes-base.respond",
+      "typeVersion": 1,
+      "position": [1040, 400]
+    }
+  ],
+  "connections": {
+    "Job Search Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Search Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Search Parameters": {
+      "main": [
+        [
+          {
+            "node": "Search Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Jobs": {
+      "main": [
+        [
+          {
+            "node": "Check Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Results": {
+      "main": [
+        [
+          {
+            "node": "Generate Application Messages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Results Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Application Messages": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1",
+  "id": "job-search-automation"
+}
