@@ -437,6 +437,39 @@
                 <div class="output-area" id="job-output">Job tracking information will appear here...</div>
             </div>
 
+            <!-- Quick Portfolio Generator Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">Quick Portfolio Generator</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="portfolio-name">Your Name:</label>
+                    <input type="text" id="portfolio-name" placeholder="e.g., Rajesh Kumar">
+                </div>
+                
+                <div class="form-group">
+                    <label for="portfolio-title">Professional Title:</label>
+                    <input type="text" id="portfolio-title" placeholder="e.g., Bioinformatics Analyst">
+                </div>
+                
+                <div class="form-group">
+                    <label for="portfolio-skills">Key Skills (comma-separated):</label>
+                    <input type="text" id="portfolio-skills" placeholder="Python, R, Bioinformatics, Data Analysis">
+                </div>
+                
+                <div class="form-group">
+                    <label for="portfolio-email">Contact Email:</label>
+                    <input type="email" id="portfolio-email" placeholder="your.email@example.com">
+                </div>
+                
+                <button class="btn" onclick="generatePortfolioFiles()">Generate Portfolio Files</button>
+                <button class="btn btn-secondary" onclick="generateReadmeTemplate()">Generate README Template</button>
+                
+                <div class="output-area" id="portfolio-files-output">Generated files will appear here for download...</div>
+            </div>
+
             <!-- AI Prompt Library Card -->
             <div class="card">
                 <div class="card-header">
@@ -448,6 +481,7 @@
                     <button class="tab active" onclick="switchTab('website-prompts', 'website')">Website</button>
                     <button class="tab" onclick="switchTab('github-prompts', 'github')">GitHub</button>
                     <button class="tab" onclick="switchTab('content-prompts', 'content')">Content</button>
+                    <button class="tab" onclick="switchTab('automation-prompts', 'automation')">Automation</button>
                 </div>
                 
                 <div id="website" class="tab-content active">
@@ -476,6 +510,18 @@
                         <button class="copy-btn" onclick="copyToClipboard('doc-prompt')">Copy</button>
                         <div id="doc-prompt">Generate professional documentation for this bioinformatics code. Include function descriptions, parameter explanations, usage examples, and output descriptions. Make it suitable for a portfolio that will be reviewed by hiring managers in pharmaceutical companies.</div>
                     </div>
+                    
+                    <div class="prompt-card">
+                        <div class="prompt-title">Repository Setup Guide</div>
+                        <button class="copy-btn" onclick="copyToClipboard('repo-setup-prompt')">Copy</button>
+                        <div id="repo-setup-prompt">Create a step-by-step guide for setting up a professional GitHub repository for a bioinformatics project. Include: 1) Repository naming conventions for biotech projects, 2) Essential files to include (README.md, requirements.txt, .gitignore), 3) Professional commit message guidelines, 4) Branch naming strategies, 5) How to showcase results with visualizations, 6) Portfolio optimization tips for recruiters.</div>
+                    </div>
+                    
+                    <div class="prompt-card">
+                        <div class="prompt-title">GitHub Profile Optimizer</div>
+                        <button class="copy-btn" onclick="copyToClipboard('github-profile-prompt')">Copy</button>
+                        <div id="github-profile-prompt">Optimize my GitHub profile for pharmaceutical industry job applications. Create: 1) Professional bio highlighting biotech + data skills, 2) Pinned repositories selection strategy, 3) Profile README.md with career goals, 4) Repository descriptions that attract biotech recruiters, 5) Contribution guidelines for open-source projects, 6) Skills showcasing through project organization.</div>
+                    </div>
                 </div>
                 
                 <div id="content" class="tab-content">
@@ -489,6 +535,32 @@
                         <div class="prompt-title">LinkedIn Article Prompt</div>
                         <button class="copy-btn" onclick="copyToClipboard('linkedin-article-prompt')">Copy</button>
                         <div id="linkedin-article-prompt">Create a LinkedIn article about [TOPIC] that positions me as a knowledgeable biotechnology professional. Include industry insights, practical applications, and a call-to-action for networking. Target audience: pharmaceutical industry professionals and recruiters in India.</div>
+                    </div>
+                </div>
+                
+                <div id="automation" class="tab-content">
+                    <div class="prompt-card">
+                        <div class="prompt-title">Portfolio Website Generator</div>
+                        <button class="copy-btn" onclick="copyToClipboard('portfolio-website-prompt')">Copy</button>
+                        <div id="portfolio-website-prompt">Generate a complete portfolio website using AI tools. Create: 1) HTML structure for biotech professional, 2) CSS styling with modern design, 3) JavaScript for interactive features, 4) Project showcase sections with data visualizations, 5) Contact form integration, 6) SEO optimization for biotech keywords, 7) Mobile-responsive design. Target: Pharmaceutical industry recruiters and hiring managers.</div>
+                    </div>
+                    
+                    <div class="prompt-card">
+                        <div class="prompt-title">LinkedIn Automation Strategy</div>
+                        <button class="copy-btn" onclick="copyToClipboard('linkedin-automation-prompt')">Copy</button>
+                        <div id="linkedin-automation-prompt">Create a 30-day LinkedIn automation strategy for biotech professionals. Include: 1) Daily posting schedule with content themes, 2) Industry hashtags research, 3) Engagement automation guidelines, 4) Connection request templates for different personas, 5) Comment strategies for pharmaceutical industry posts, 6) Analytics tracking methods, 7) Compliance with LinkedIn terms of service.</div>
+                    </div>
+                    
+                    <div class="prompt-card">
+                        <div class="prompt-title">Job Application Automation</div>
+                        <button class="copy-btn" onclick="copyToClipboard('job-automation-prompt')">Copy</button>
+                        <div id="job-automation-prompt">Design an automated job application system for pharmaceutical roles. Create: 1) Resume variants for different job types (Research, Analysis, Clinical), 2) Cover letter templates with placeholders, 3) Application tracking spreadsheet, 4) Follow-up email sequences, 5) Interview preparation checklists, 6) Salary negotiation scripts, 7) Portfolio presentation templates for different companies.</div>
+                    </div>
+                    
+                    <div class="prompt-card">
+                        <div class="prompt-title">AI-Powered Networking</div>
+                        <button class="copy-btn" onclick="copyToClipboard('networking-automation-prompt')">Copy</button>
+                        <div id="networking-automation-prompt">Develop an AI-powered networking strategy for biotech careers. Include: 1) Industry influencer identification methods, 2) Personalized outreach message templates, 3) Virtual event networking scripts, 4) Alumni network activation strategies, 5) Mentorship request frameworks, 6) Professional relationship maintenance systems, 7) ROI tracking for networking activities.</div>
                     </div>
                 </div>
             </div>
@@ -1058,6 +1130,300 @@ Best regards,
             
             const output = document.getElementById('analytics-output');
             output.textContent = `📊 ANALYTICS UPDATED!\n\nCareer Progress Summary:\n\n✅ Portfolio Projects: ${analyticsData.projects}\n📱 Social Media Posts: ${analyticsData.posts}\n👀 Profile Views: ${analyticsData.views}\n🤝 New Connections: ${analyticsData.connections}\n\n🎯 WEEKLY GOALS:\n- Complete 1 new project\n- Post 2-3 times on LinkedIn\n- Apply to 5 relevant positions\n- Connect with 10 industry professionals\n- Update portfolio with latest work\n\n💡 RECOMMENDATIONS:\n- Focus on pharmaceutical companies in your area\n- Engage with biotech content on LinkedIn\n- Share your project insights regularly\n- Network with alumni and industry professionals`;
+        }
+
+        // Quick Portfolio Generator Functions
+        function generatePortfolioFiles() {
+            const name = document.getElementById('portfolio-name').value;
+            const title = document.getElementById('portfolio-title').value;
+            const skills = document.getElementById('portfolio-skills').value;
+            const email = document.getElementById('portfolio-email').value;
+            
+            if (!name || !title || !skills || !email) {
+                alert('कृपया सभी फील्ड भरें / Please fill all fields');
+                return;
+            }
+            
+            const indexHtml = generateIndexHtml(name, title, skills, email);
+            const readme = generateReadme(name, title, skills, email);
+            const cssFile = generateCSS();
+            
+            const output = document.getElementById('portfolio-files-output');
+            output.innerHTML = `
+                <h4>✅ Portfolio Files Generated Successfully!</h4>
+                <p>Copy the content below to create your portfolio files:</p>
+                
+                <div style="margin: 10px 0;">
+                    <button class="copy-btn" onclick="downloadFile('index.html', \`${indexHtml.replace(/`/g, '\\`')}\`)">Download index.html</button>
+                    <button class="copy-btn" onclick="downloadFile('README.md', \`${readme.replace(/`/g, '\\`')}\`)">Download README.md</button>
+                    <button class="copy-btn" onclick="downloadFile('style.css', \`${cssFile.replace(/`/g, '\\`')}\`)">Download style.css</button>
+                </div>
+                
+                <h5>📁 index.html</h5>
+                <textarea readonly style="width:100%; height:150px; font-family:monospace; font-size:12px;">${indexHtml}</textarea>
+                
+                <h5>📄 README.md</h5>
+                <textarea readonly style="width:100%; height:100px; font-family:monospace; font-size:12px;">${readme}</textarea>
+                
+                <h5>🎨 style.css</h5>
+                <textarea readonly style="width:100%; height:100px; font-family:monospace; font-size:12px;">${cssFile}</textarea>
+                
+                <p><strong>Next Steps:</strong></p>
+                <ul>
+                    <li>Create a new GitHub repository</li>
+                    <li>Upload these files to your repository</li>
+                    <li>Enable GitHub Pages in repository settings</li>
+                    <li>Share your portfolio URL with recruiters!</li>
+                </ul>
+            `;
+        }
+        
+        function generateIndexHtml(name, title, skills, email) {
+            const skillsArray = skills.split(',').map(s => s.trim());
+            const skillsHtml = skillsArray.map(skill => `<span class="skill-tag">${skill}</span>`).join(' ');
+            
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name} - ${title}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>${name}</h1>
+        <p class="title">${title}</p>
+        <p class="contact">📧 ${email}</p>
+    </header>
+    
+    <main>
+        <section class="about">
+            <h2>About Me</h2>
+            <p>Passionate ${title.toLowerCase()} with expertise in biotechnology and data analysis. 
+            Experienced in applying computational methods to solve biological problems and 
+            drive innovation in pharmaceutical research.</p>
+        </section>
+        
+        <section class="skills">
+            <h2>Skills</h2>
+            <div class="skills-container">
+                ${skillsHtml}
+            </div>
+        </section>
+        
+        <section class="projects">
+            <h2>Projects</h2>
+            <div class="project-card">
+                <h3>Project Title</h3>
+                <p>Project description goes here. Describe your methodology, tools used, and key findings.</p>
+                <a href="#" class="project-link">View Project →</a>
+            </div>
+        </section>
+        
+        <section class="contact">
+            <h2>Contact</h2>
+            <p>Let's connect! I'm always interested in discussing opportunities in biotechnology and pharmaceutical research.</p>
+            <p>📧 Email: <a href="mailto:${email}">${email}</a></p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2024 ${name}. Built with 💙 for biotech innovation.</p>
+    </footer>
+</body>
+</html>`;
+        }
+        
+        function generateReadme(name, title, skills, email) {
+            return `# ${name} - ${title}
+
+## 🧬 About Me
+
+Welcome to my portfolio! I'm a ${title.toLowerCase()} passionate about applying computational methods to solve biological problems and drive innovation in pharmaceutical research.
+
+## 🛠️ Skills
+
+${skills.split(',').map(skill => `- ${skill.trim()}`).join('\\n')}
+
+## 🔬 Projects
+
+### Project 1: [Project Name]
+- **Description**: Brief description of your project
+- **Tools Used**: Python, Pandas, Matplotlib
+- **Key Finding**: Your main result or insight
+- **Repository**: [Link to GitHub repo]
+
+### Project 2: [Project Name]
+- **Description**: Brief description of your project
+- **Tools Used**: R, Bioconductor, ggplot2
+- **Key Finding**: Your main result or insight
+- **Repository**: [Link to GitHub repo]
+
+## 📊 GitHub Stats
+
+![Your GitHub stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=radical)
+
+## 🎯 Career Goals
+
+Currently seeking opportunities in pharmaceutical companies where I can apply my skills in:
+- Bioinformatics and computational biology
+- Data analysis and visualization
+- Drug discovery and development
+- Clinical research data analysis
+
+## 📞 Contact
+
+- 📧 Email: ${email}
+- 💼 LinkedIn: [Your LinkedIn Profile]
+- 🐙 GitHub: [Your GitHub Profile]
+
+---
+
+*"Transforming biological data into pharmaceutical innovations"*`;
+        }
+        
+        function generateCSS() {
+            return `* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+header {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.title {
+    font-size: 1.2rem;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.contact {
+    color: #7f8c8d;
+    margin-top: 0.5rem;
+}
+
+main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+section {
+    background: rgba(255, 255, 255, 0.95);
+    margin: 2rem 0;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.project-card {
+    border-left: 4px solid #667eea;
+    padding-left: 1rem;
+    margin: 1rem 0;
+}
+
+.project-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.project-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.project-link:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    main {
+        padding: 0 0.5rem;
+    }
+    
+    section {
+        padding: 1rem;
+    }
+}`;
+        }
+        
+        function generateReadmeTemplate() {
+            const name = document.getElementById('portfolio-name').value || '[Your Name]';
+            const title = document.getElementById('portfolio-title').value || '[Your Title]';
+            const email = document.getElementById('portfolio-email').value || '[your.email@example.com]';
+            
+            const readme = generateReadme(name, title, 'Python, R, Bioinformatics, Data Analysis', email);
+            
+            const output = document.getElementById('portfolio-files-output');
+            output.innerHTML = `
+                <h4>📄 README.md Template Generated</h4>
+                <button class="copy-btn" onclick="copyToClipboard('readme-template')">Copy README</button>
+                <button class="copy-btn" onclick="downloadFile('README.md', \`${readme.replace(/`/g, '\\`')}\`)">Download README</button>
+                <textarea id="readme-template" readonly style="width:100%; height:300px; font-family:monospace; font-size:12px;">${readme}</textarea>
+            `;
+        }
+        
+        function downloadFile(filename, content) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
 
         // Utility Functions
