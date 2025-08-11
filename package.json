@@ -40,7 +40,11 @@
     "compile": "tsc -p ./ && npm run copy-assets",
     "watch": "npm run copy-assets  && tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "lint": "tslint src/**/*.ts",
+    "automation:jobs": "node automation/job-aggregator.js",
+    "automation:learning": "node automation/learning-tracker.js",
+    "automation:github": "node automation/github-activity-tracker.js"
   },
   "main": "./out/extension/index.js",
   "contributes": {
@@ -122,6 +126,10 @@
   "dependencies": {
     "mime-types": "^2.1.22",
     "open": "^6.1.0",
-    "ws": "^6.2.1"
+    "ws": "^6.2.1",
+    "@octokit/rest": "^20.0.2",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
+    "googleapis": "^128.0.0"
   }
 }

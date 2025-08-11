@@ -2,3 +2,24 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment and sensitive files
+.env
+.env.local
+.env.production
+
+# Automation logs and temp files
+automation/logs/*
+automation/temp/*
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/settings.json
+.idea/
+
+# Backup files
+package-lock.json.backup

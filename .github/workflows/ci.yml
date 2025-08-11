@@ -1,0 +1,160 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Daily job aggregation at 9 AM UTC (2:30 PM IST)
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      job_aggregation:
+        description: 'Run job aggregation'
+        required: false
+        default: false
+        type: boolean
+      azure_ml_job:
+        description: 'Trigger Azure ML job'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  AZURE_ML_WORKSPACE: ${{ secrets.AZURE_ML_WORKSPACE }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm run compile
+        timeout-minutes: 10
+        
+      - name: Run linting
+        run: npm run lint || true
+        
+      - name: Run tests
+        run: npm test
+        timeout-minutes: 5
+        
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build extension
+        run: npm run vscode:prepublish
+        
+      - name: Package extension
+        run: |
+          npm install -g vsce
+          vsce package
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-extension
+          path: '*.vsix'
+          retention-days: 30
+
+  job-aggregation:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * *' || github.event.inputs.job_aggregation == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run job aggregation
+        run: node automation/job-aggregator.js
+        env:
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+          WHATSAPP_TARGET_NUMBER: ${{ secrets.WHATSAPP_TARGET_NUMBER }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          GOOGLE_SHEETS_JOB_TRACKING_ID: ${{ secrets.GOOGLE_SHEETS_JOB_TRACKING_ID }}
+        timeout-minutes: 15
+        
+  azure-ml-job:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.azure_ml_job == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Azure CLI Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Setup Azure ML CLI
+        run: |
+          az extension add -n ml -y
+          az ml workspace show -g ${{ env.AZURE_RESOURCE_GROUP }} -n ${{ env.AZURE_ML_WORKSPACE }}
+          
+      - name: Submit Hello World Command Job
+        run: |
+          az ml job create -f automation/azure-ml/hello-world-job.yml
+        timeout-minutes: 30
+        
+  learning-plan-check:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * *'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check learning plan progress
+        run: node automation/learning-tracker.js
+        env:
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+          WHATSAPP_TARGET_NUMBER: ${{ secrets.WHATSAPP_TARGET_NUMBER }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          GOOGLE_SHEETS_LEARNING_ID: ${{ secrets.GOOGLE_SHEETS_LEARNING_ID }}
+        timeout-minutes: 10
