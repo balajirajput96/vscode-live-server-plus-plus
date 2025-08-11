@@ -1,0 +1,165 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+# Pipeline information
+display_name: Biotech Career Automation Pipeline
+description: MLOps pipeline for biotech career automation and analytics
+
+# Default values
+defaults:
+  compute: azureml:cpu-cluster
+
+# Jobs in the pipeline
+jobs:
+  
+  # Job 1: Data preparation
+  data_prep:
+    type: command
+    environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+    command: |
+      echo "Starting data preparation..."
+      python -c "
+      import pandas as pd
+      import numpy as np
+      from datetime import datetime, timedelta
+      
+      # Simulate job market data
+      companies = ['Sun Pharma', 'Biocon', 'Dr Reddys', 'Zydus', 'Lupin']
+      job_types = ['Bioinformatics Analyst', 'QC Analyst', 'Research Associate', 'Data Scientist']
+      locations = ['Bangalore', 'Mumbai', 'Hyderabad', 'Pune', 'Chennai']
+      
+      # Generate sample data
+      data = []
+      for i in range(100):
+          data.append({
+              'job_id': f'job_{i:03d}',
+              'title': np.random.choice(job_types),
+              'company': np.random.choice(companies),
+              'location': np.random.choice(locations),
+              'salary': np.random.randint(400000, 1200000),
+              'posted_date': (datetime.now() - timedelta(days=np.random.randint(0, 30))).strftime('%Y-%m-%d'),
+              'match_score': np.random.randint(60, 95)
+          })
+      
+      df = pd.DataFrame(data)
+      df.to_csv('job_data.csv', index=False)
+      print(f'Generated {len(df)} job records')
+      print(df.head())
+      "
+    outputs:
+      job_data:
+        type: uri_file
+        path: ./job_data.csv
+
+  # Job 2: Analysis and insights
+  analysis:
+    type: command
+    environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+    inputs:
+      job_data: ${{parent.jobs.data_prep.outputs.job_data}}
+    command: |
+      echo "Starting job market analysis..."
+      python -c "
+      import pandas as pd
+      import matplotlib.pyplot as plt
+      import seaborn as sns
+      
+      # Load data
+      df = pd.read_csv('job_data.csv')
+      
+      # Analysis
+      print('Job Market Analysis Report')
+      print('=' * 40)
+      print(f'Total jobs analyzed: {len(df)}')
+      print(f'Average salary: ₹{df[\"salary\"].mean():,.0f}')
+      print(f'Salary range: ₹{df[\"salary\"].min():,.0f} - ₹{df[\"salary\"].max():,.0f}')
+      
+      print('\nTop Companies by Job Count:')
+      print(df['company'].value_counts().head())
+      
+      print('\nJob Types Distribution:')
+      print(df['title'].value_counts())
+      
+      print('\nTop Locations:')
+      print(df['location'].value_counts().head())
+      
+      print('\nHigh Match Score Jobs (>85):')
+      high_match = df[df['match_score'] > 85]
+      print(f'Found {len(high_match)} high-match jobs')
+      
+      # Save analysis results
+      analysis_results = {
+          'total_jobs': len(df),
+          'avg_salary': df['salary'].mean(),
+          'high_match_jobs': len(high_match),
+          'top_company': df['company'].value_counts().index[0],
+          'analysis_date': pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+      }
+      
+      pd.Series(analysis_results).to_csv('analysis_results.csv')
+      print('Analysis completed successfully!')
+      "
+    outputs:
+      analysis_results:
+        type: uri_file
+        path: ./analysis_results.csv
+
+  # Job 3: Model training (simple recommendation model)
+  model_training:
+    type: command
+    environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+    inputs:
+      job_data: ${{parent.jobs.data_prep.outputs.job_data}}
+    command: |
+      echo "Training job recommendation model..."
+      python -c "
+      import pandas as pd
+      import numpy as np
+      from sklearn.feature_extraction.text import TfidfVectorizer
+      from sklearn.metrics.pairwise import cosine_similarity
+      import pickle
+      
+      # Load data
+      df = pd.read_csv('job_data.csv')
+      
+      # Create simple content-based recommendation model
+      # Combine title and company for text features
+      df['content'] = df['title'] + ' ' + df['company'] + ' ' + df['location']
+      
+      # Vectorize text content
+      vectorizer = TfidfVectorizer(max_features=100, stop_words='english')
+      content_matrix = vectorizer.fit_transform(df['content'])
+      
+      # Calculate similarity matrix
+      similarity_matrix = cosine_similarity(content_matrix)
+      
+      print(f'Trained model on {len(df)} jobs')
+      print(f'Feature matrix shape: {content_matrix.shape}')
+      print(f'Similarity matrix shape: {similarity_matrix.shape}')
+      
+      # Save model components
+      model_data = {
+          'vectorizer': vectorizer,
+          'similarity_matrix': similarity_matrix,
+          'job_data': df,
+          'training_date': pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+      }
+      
+      with open('recommendation_model.pkl', 'wb') as f:
+          pickle.dump(model_data, f)
+      
+      print('Model training completed successfully!')
+      "
+    outputs:
+      model:
+        type: uri_file
+        path: ./recommendation_model.pkl
+
+# Experiment configuration
+experiment_name: biotech-automation-pipeline
+
+# Tags
+tags:
+  project: biotech-career-automation
+  pipeline_type: training
+  automated: true

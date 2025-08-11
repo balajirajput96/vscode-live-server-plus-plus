@@ -1,0 +1,39 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+
+# Basic job information
+display_name: Hello World Bioinformatics Job
+description: Simple hello world command job to validate Azure ML workspace and compute
+
+# Environment configuration
+environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+
+# Compute configuration
+compute: azureml:cpu-cluster
+
+# Command to run
+command: |
+  echo "Hello from Azure ML!"
+  echo "Current date: $(date)"
+  echo "Python version: $(python --version)"
+  echo "Available packages:"
+  pip list | grep -E "(numpy|pandas|scikit-learn|matplotlib)"
+  echo "System info:"
+  uname -a
+  echo "Disk space:"
+  df -h
+  echo "Memory info:"
+  free -h
+  echo "Environment variables:"
+  env | grep -E "(AZUREML|CUDA)" | sort
+  echo "Job completed successfully!"
+
+# Experiment configuration
+experiment_name: biotech-automation-validation
+
+# Tags for organization
+tags:
+  project: biotech-career-automation
+  environment: development
+  type: validation
+  automated: true
