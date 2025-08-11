@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔧 VSCode Extension Issues
+    url: https://github.com/balajirajput96/vscode-live-server-plus-plus/issues
+    about: For issues related to the Live Server++ VSCode extension functionality.
+  - name: 🤖 AI Career System Feedback
+    url: https://github.com/balajirajput96/vscode-live-server-plus-plus/discussions
+    about: For feedback, questions, and discussions about the AI-powered career automation system.
+  - name: 💡 Feature Requests
+    url: https://github.com/balajirajput96/vscode-live-server-plus-plus/issues/new?assignees=&labels=enhancement&template=feature_request.md
+    about: Suggest new features for both the VSCode extension and career automation system.
+  - name: 📚 Documentation
+    url: https://github.com/balajirajput96/vscode-live-server-plus-plus/blob/master/README.md
+    about: Read the complete documentation and guides for the dual-purpose system.
