@@ -273,6 +273,34 @@
                 </div>
                 
                 <div class="prompts-grid">
+                    <!-- Master Prompt - Featured -->
+                    <div class="prompt-card master-prompt">
+                        <h4><i class="fas fa-crown"></i> मास्टर प्रॉम्प्ट (Balaji Nonprofit + Automation)</h4>
+                        <div class="prompt-content">
+                            <p>Universal master prompt for all AI tools (Pro/Enterprise) - nonprofit program optimization, automation setup, and actionable outputs</p>
+                            <div class="master-prompt-inputs" id="masterPromptInputs" style="display: none;">
+                                <div class="input-group">
+                                    <label>Latest Question/Task:</label>
+                                    <textarea id="currentQuestion" placeholder="Write your current question here" rows="2"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Screenshots/Links:</label>
+                                    <input type="text" id="screenshots" placeholder="Add any links/images or 'NONE'">
+                                </div>
+                                <div class="input-group">
+                                    <label>Priority Platforms:</label>
+                                    <input type="text" id="platforms" placeholder="e.g., Microsoft + n8n + OpenAI">
+                                </div>
+                                <div class="input-group">
+                                    <label>Constraints:</label>
+                                    <input type="text" id="constraints" placeholder="Add constraints or 'NONE'">
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-secondary" onclick="toggleMasterPromptInputs()">Customize</button>
+                            <button class="btn btn-sm btn-primary" onclick="copyMasterPrompt()">Copy Master Prompt</button>
+                        </div>
+                    </div>
+                    
                     <div class="prompt-card">
                         <h4><i class="fas fa-globe"></i> वेबसाइट बिल्डर</h4>
                         <div class="prompt-content">
@@ -302,6 +330,33 @@
                         <div class="prompt-content">
                             <p>Act as a professional resume writer. Write a compelling summary...</p>
                             <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                        </div>
+                    </div>
+                    
+                    <!-- n8n Workflow Templates -->
+                    <div class="prompt-card">
+                        <h4><i class="fas fa-cogs"></i> n8n Donor Workflow</h4>
+                        <div class="prompt-content">
+                            <p>Ready-to-import n8n workflow JSON: Donor form → AI reply → Drive save → Teams alert</p>
+                            <button class="btn btn-sm btn-primary" onclick="copyN8nWorkflow()">Copy Workflow JSON</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Templates -->
+                    <div class="prompt-card">
+                        <h4><i class="fas fa-envelope"></i> Nonprofit Email Templates</h4>
+                        <div class="prompt-content">
+                            <p>3 professional email templates for nonprofit benefits, research credits, and grants applications</p>
+                            <button class="btn btn-sm btn-primary" onclick="copyEmailTemplates()">Copy Email Templates</button>
+                        </div>
+                    </div>
+                    
+                    <!-- API Snippets -->
+                    <div class="prompt-card">
+                        <h4><i class="fas fa-code"></i> API/CLI Snippets</h4>
+                        <div class="prompt-content">
+                            <p>OpenAI, Gemini, Hugging Face authentication and basic usage with security best practices</p>
+                            <button class="btn btn-sm btn-primary" onclick="copyAPISnippets()">Copy API Code</button>
                         </div>
                     </div>
                 </div>

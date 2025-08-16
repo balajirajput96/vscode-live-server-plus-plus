@@ -581,3 +581,79 @@ body {
     width: 100px;
     height: 100px;
 }
+
+/* Master Prompt Styling */
+.master-prompt {
+    border: 2px solid #ffd700;
+    background: linear-gradient(135deg, #fff9e6 0%, #ffeaa7 100%);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+    position: relative;
+}
+
+.master-prompt::before {
+    content: "⭐ FEATURED";
+    position: absolute;
+    top: -8px;
+    right: 15px;
+    background: #ffd700;
+    color: #333;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.master-prompt h4 {
+    color: #b8860b;
+    font-weight: 700;
+}
+
+.master-prompt-inputs {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 12px;
+}
+
+.input-group input,
+.input-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    margin-right: 8px;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}

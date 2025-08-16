@@ -528,4 +528,457 @@ function initializeHelp() {
 }
 
 // Initialize help on load
+
+// Master Prompt Functions
+function toggleMasterPromptInputs() {
+    const inputsDiv = document.getElementById('masterPromptInputs');
+    const button = event.target;
+    
+    if (inputsDiv.style.display === 'none') {
+        inputsDiv.style.display = 'block';
+        button.textContent = 'Hide Inputs';
+    } else {
+        inputsDiv.style.display = 'none';
+        button.textContent = 'Customize';
+    }
+}
+
+function copyMasterPrompt() {
+    const currentQuestion = document.getElementById('currentQuestion').value || '{{WRITE MY CURRENT QUESTION HERE}}';
+    const screenshots = document.getElementById('screenshots').value || '{{ADD ANY LINKS/IMAGES OR "NONE"}}';
+    const platforms = document.getElementById('platforms').value || '{{e.g., Microsoft + n8n + OpenAI}}';
+    const constraints = document.getElementById('constraints').value || '{{ADD OR "NONE"}}';
+    
+    const masterPromptTemplate = `MASTER PROMPT — Balaji Nonprofit + Automation (Use as-is)
+
+Role
+- Act as my senior solutions architect and nonprofit program strategist.
+- Optimize for: fastest valid path, legal/ToS‑compliant methods, and copy‑pasteable outputs.
+- Style: short, decisive, step‑by‑step. No fluff.
+
+Context
+- I am Balaji, running nonprofit/educational initiatives at Parul University, Vadodara (GST: 24AADAP4952C2ZS).
+- Goals:
+  1) Get maximum free/discount access to AI, cloud, developer tools via nonprofit/education programs, grants, credits.
+  2) Set up zero‑error automations: n8n Cloud, Microsoft Power Automate, Google Workspace, GitHub, OpenAI/Gemini/Hugging Face.
+  3) Provide ready‑to‑paste emails, JSON workflows, API/CLI snippets, and checklists.
+- Constraints:
+  - No document forgery, no region spoofing, no ToS violations. Offer risk notes + safe alternatives.
+  - Keep security best practices (2FA, least privilege, secret handling) with each code/snippet.
+- My environment:
+  - n8n Cloud active (latest screenshot shows instance and license).
+  - Microsoft/Google/GitHub accounts; nonprofit posture.
+  - Mobile‑first usage; I prefer prompts and assets I can paste without editing.
+
+Outputs (strict)
+1) 2–3 line Summary: what to do first, with rationale.
+2) Programs/Offers list (bulleted): name, what's free/discounted, eligibility, verification steps, and the exact place to apply (no links if not allowed, just the program name and "where to find" path).
+3) Action Plan (step‑by‑step): for Microsoft, Google, GitHub, OpenAI, Hugging Face, AWS. Include exact button/menu paths and docs required.
+4) Risk Notes: any tactic that may trigger ToS risk; add safe alternatives (e.g., official nonprofit verification or sales negotiation).
+5) Ready Emails: 3 short email templates (nonprofit benefits, research credits, grants).
+6) n8n Pack: 1–2 importable workflow JSONs
+   - Donor form/webhook → validate → AI personal reply → Drive/SharePoint save → email/Teams alert.
+   - Error‑safe, with placeholders clearly marked: {{WEBHOOK_URL}}, {{OPENAI_API_KEY}}, {{DEST_FOLDER}}, {{RECIPIENT_EMAIL}}.
+7) API/CLI Snippets: OpenAI, Gemini, Hugging Face (auth + minimal task). Include env var names and security notes.
+8) Contingency: open‑source/self‑host alternatives + quick setup notes.
+9) One‑Page Checklist: ultra‑concise, all steps in order (Immediate / This Week / Optional).
+10) If my input includes screenshots/links, analyze them and integrate into steps (e.g., D‑U‑N‑S flow for Google Play, npm username rules, Webhook creation in n8n). If data is missing (e.g., D‑U‑N‑S), state it clearly and give exact retrieval path.
+
+Formatting
+- Use clear headings and flat bullet points.
+- Provide copy‑paste blocks for JSON, shell, or email.
+- Mark all placeholders with ALL‑CAPS in double braces, e.g., {{ORG_NAME}}.
+
+Inputs (paste/append here)
+- Latest question/task: ${currentQuestion}
+- Key screenshots/links: ${screenshots}
+- My chosen platforms to prioritize today: ${platforms}
+- Any constraints (budget/region/security): ${constraints}
+
+Rules
+- If something cannot be verified or is not public, say "Unknown—do this to obtain: …".
+- If there are two ways (fast vs. compliant), propose both, label clearly.
+- Do not invent data (IDs, dates, prices). Give the path to fetch them.
+- For mobile, prefer minimal taps and "Import from JSON" routes.
+
+Deliver now in this exact order with headings 1–10. Keep it compact but complete. End with: "Reply 'GO' and paste {{WEBHOOK_URL}} to receive finalized n8n JSON pre‑filled for your org."`;
+
+    navigator.clipboard.writeText(masterPromptTemplate).then(() => {
+        const button = document.querySelector('button[onclick="copyMasterPrompt()"]');
+        const originalText = button.textContent;
+        button.textContent = 'Copied Master Prompt!';
+        button.style.background = '#48bb78';
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = '';
+        }, 3000);
+        
+        showMessage('मास्टर प्रॉम्प्ट कॉपी किया गया! इसे किसी भी AI Pro/Enterprise टूल में पेस्ट करें।', 'success');
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        showMessage('कॉपी करने में त्रुटि हुई। कृपया मैन्युअल रूप से टेक्स्ट सेलेक्ट करें।', 'error');
+    });
+}
+
+// n8n Workflow Template
+function copyN8nWorkflow() {
+    const n8nWorkflow = `{
+  "name": "Balaji Nonprofit Donor Management",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "donor-form",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-donor-form",
+      "name": "Webhook - Donor Form",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "messageInputs": [
+            {
+              "role": "system",
+              "message": "You are a professional nonprofit coordinator for Parul University. Generate a personalized thank you response for donors."
+            },
+            {
+              "role": "user", 
+              "message": "Donor Name: {{$json.name}}\\nDonation Amount: {{$json.amount}}\\nMessage: {{$json.message}}"
+            }
+          ]
+        }
+      },
+      "id": "openai-response",
+      "name": "OpenAI - Generate Response",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "{{OPENAI_API_KEY_ID}}",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "{{GOOGLE_SHEET_ID}}",
+        "sheetName": "Donors",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{$node['Webhook - Donor Form'].json.name}}",
+            "Email": "={{$node['Webhook - Donor Form'].json.email}}",
+            "Amount": "={{$node['Webhook - Donor Form'].json.amount}}",
+            "Date": "={{$now()}}",
+            "AI_Response": "={{$json.choices[0].message.content}}"
+          }
+        }
+      },
+      "id": "google-sheets-save",
+      "name": "Google Sheets - Save Data", 
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": "{{TEAMS_CHANNEL_ID}}",
+        "message": "🎉 New Donation Received!\\n**Donor:** {{$node['Webhook - Donor Form'].json.name}}\\n**Amount:** ₹{{$node['Webhook - Donor Form'].json.amount}}\\n**AI Response Sent:** ✅"
+      },
+      "id": "teams-notification",
+      "name": "Microsoft Teams - Alert",
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook - Donor Form": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Generate Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Generate Response": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets - Save Data",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - Save Data": {
+      "main": [
+        [
+          {
+            "node": "Microsoft Teams - Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Asia/Kolkata"
+  }
+}
+
+// Setup Instructions:
+// 1. Replace {{OPENAI_API_KEY_ID}} with your OpenAI credential ID
+// 2. Replace {{GOOGLE_SHEET_ID}} with your Google Sheet ID
+// 3. Replace {{TEAMS_CHANNEL_ID}} with your Teams channel ID
+// 4. Test webhook URL: https://your-n8n-instance.app/webhook/donor-form`;
+
+    navigator.clipboard.writeText(n8nWorkflow).then(() => {
+        showMessage('n8n Workflow JSON कॉपी किया गया! n8n में import करें।', 'success');
+    });
+}
+
+// Email Templates
+function copyEmailTemplates() {
+    const emailTemplates = `EMAIL TEMPLATE 1: Nonprofit Benefits Request
+Subject: Nonprofit Verification Request - Parul University (GST: 24AADAP4952C2ZS)
+
+Dear [Company] Support Team,
+
+I am writing to request nonprofit/educational verification for Parul University, a recognized educational institution in Vadodara, Gujarat, India.
+
+Organization Details:
+- Name: Parul University
+- GST Number: 24AADAP4952C2ZS
+- Type: Educational Institution
+- Purpose: Biotechnology and Bioinformatics Research
+
+We are specifically interested in your nonprofit program for:
+- [Specific service/product]
+- Educational/research use case
+
+Required Documentation:
+- GST Certificate (attached)
+- University Registration Certificate (available upon request)
+- Educational Use Case Description
+
+Please guide us through your nonprofit verification process and available benefits.
+
+Best regards,
+Balaji Rajput
+Research Coordinator
+Parul University
+
+---
+
+EMAIL TEMPLATE 2: Research Credits Application
+Subject: Research Credits Application - Bioinformatics Project
+
+Hello [Platform] Team,
+
+We are conducting bioinformatics research at Parul University and would like to apply for research credits under your academic program.
+
+Project Overview:
+- Title: [Your Research Title]
+- Duration: [Project Duration]
+- Team Size: [Number of researchers]
+- Expected Usage: [Compute/API requirements]
+
+Educational Institution Verification:
+- Institution: Parul University
+- GST: 24AADAP4952C2ZS
+- Research Domain: Biotechnology/Bioinformatics
+
+We commit to:
+- Acknowledging your support in publications
+- Sharing non-sensitive research outcomes
+- Following platform usage guidelines
+
+Please advise on the application process and required documentation.
+
+Thank you,
+Balaji Rajput
+[Your Position]
+Parul University
+
+---
+
+EMAIL TEMPLATE 3: Grant Application Inquiry
+Subject: Open Source/Education Grant Inquiry - Nonprofit Initiative
+
+Dear [Foundation/Company] Grants Team,
+
+Parul University is developing an open-source career automation system for biotechnology students and would like to inquire about available grants.
+
+Project Impact:
+- Target: 500+ biotech students
+- Open Source: MIT License
+- Geographic: India (developing market)
+- Social Impact: Career guidance for underserved communities
+
+Organization Credentials:
+- Legal Status: Registered Educational Institution
+- GST: 24AADAP4952C2ZS
+- Track Record: [Mention any previous projects]
+
+Grant Requirements:
+- Funding Amount: [Specific amount]
+- Use Case: [Infrastructure/Tools/Development]
+- Timeline: [Project duration]
+
+We are committed to transparency and regular progress reporting.
+
+Could you please share:
+1. Eligibility criteria
+2. Application process
+3. Required documentation
+4. Timeline for decisions
+
+Looking forward to your response.
+
+Best regards,
+Balaji Rajput
+Project Lead
+Parul University`;
+
+    navigator.clipboard.writeText(emailTemplates).then(() => {
+        showMessage('Email Templates कॉपी किए गए! अपनी जरूरत के अनुसार customize करें।', 'success');
+    });
+}
+
+// API/CLI Snippets
+function copyAPISnippets() {
+    const apiSnippets = `# API/CLI SNIPPETS - Security Best Practices Included
+
+## OpenAI API Setup
+# Environment Variables (add to .env file)
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_ORG_ID=your_organization_id_here
+
+# Python Example
+import os
+import openai
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Initialize OpenAI client
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Secure API call
+def generate_content(prompt, max_tokens=150):
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=0.7
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+---
+
+## Google Gemini API Setup
+# Environment Variables
+GOOGLE_API_KEY=your_gemini_api_key_here
+
+# Python Example
+import google.generativeai as genai
+import os
+
+# Configure API
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+# Initialize model
+model = genai.GenerativeModel('gemini-pro')
+
+def gemini_generate(prompt):
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Gemini API Error: {e}")
+        return None
+
+---
+
+## Hugging Face API Setup  
+# Environment Variables
+HF_TOKEN=your_huggingface_token_here
+
+# Python Example
+from transformers import pipeline
+import os
+
+# Set token
+hf_token = os.getenv("HF_TOKEN")
+
+# Initialize pipeline with authentication
+def hf_generate(text, task="text-generation"):
+    try:
+        generator = pipeline(
+            task, 
+            model="gpt2",
+            use_auth_token=hf_token
+        )
+        result = generator(text, max_length=100)
+        return result[0]['generated_text']
+    except Exception as e:
+        print(f"HuggingFace Error: {e}")
+        return None
+
+---
+
+## Security Best Practices:
+
+1. **Environment Variables**: Never hardcode API keys
+2. **Rate Limiting**: Implement request delays
+3. **Error Handling**: Always use try-catch blocks
+4. **Token Rotation**: Regularly rotate API keys
+5. **Access Control**: Use least privilege principle
+6. **Logging**: Log requests but not sensitive data
+
+## CLI Tools:
+
+# OpenAI CLI
+curl -X POST \\
+  https://api.openai.com/v1/completions \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "text-davinci-003",
+    "prompt": "Your prompt here",
+    "max_tokens": 50
+  }'
+
+# GitHub CLI for automation
+gh repo create my-project --public
+gh workflow run automation.yml
+
+# n8n CLI
+npm install -g n8n
+n8n start --tunnel`;
+
+    navigator.clipboard.writeText(apiSnippets).then(() => {
+        showMessage('API/CLI Snippets कॉपी किए गए! Security best practices के साथ।', 'success');
+    });
+}
 document.addEventListener('DOMContentLoaded', initializeHelp);

@@ -50,11 +50,13 @@
 - **Industry Focus**: फार्मा और clinical research companies
 - **Real-time Updates**: Latest job opportunities
 
-### 🎯 AI Prompts Library
+### 🤖 AI Prompts Library
 - **Ready-to-Use Prompts**: सभी AI tools के लिए
 - **One-Click Copy**: Instant prompt copying
 - **Categorized**: Website, GitHub, LinkedIn, Resume prompts
 - **Customizable**: आपकी जरूरत के अनुसार edit करें
+- **⭐ Master Prompt**: Universal prompt for all AI Pro/Enterprise tools
+- **Automation Templates**: n8n workflows, email templates, API snippets
 
 ### 📊 Analytics Dashboard
 - **Progress Tracking**: प्रोजेक्ट्स, posts, applications
