@@ -1,0 +1,61 @@
+# Production-ish setup with Caddy reverse proxy + automatic HTTPS.
+# n8n is not exposed directly; only Caddy exposes 80/443.
+services:
+  n8n:
+    image: "n8nio/n8n:${N8N_IMAGE_TAG}"
+    container_name: "n8n"
+    restart: unless-stopped
+    networks: ["web"]
+    environment:
+      - NODE_ENV=production
+      - TZ=${TZ}
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+
+      # Security & auth
+      - N8N_BASIC_AUTH=${N8N_BASIC_AUTH}
+      - N8N_BASIC_AUTH_USERNAME=${N8N_BASIC_AUTH_USERNAME}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+
+      # URL construction (important behind proxy)
+      - N8N_PROTOCOL=https
+      - N8N_HOST=${DOMAIN}
+      - N8N_PORT=5678
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_TRUST_PROXY=true
+      - N8N_SECURE_COOKIE=true
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    networks: ["web"]
+    depends_on:
+      - n8n
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # Used inside Caddyfile via {env.*}
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  n8n_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web:
+    driver: bridge
