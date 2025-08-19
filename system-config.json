@@ -1,0 +1,25 @@
+{
+  "system": {
+    "name": "AI Career Automation System",
+    "version": "1.0.0",
+    "initialized": "2025-08-19T17:25:20+00:00",
+    "last_update": "2025-08-19T17:25:20+00:00"
+  },
+  "modules": {
+    "career_automation": {
+      "enabled": true,
+      "path": "career-automation-system",
+      "status": "active"
+    },
+    "portfolio_automation": {
+      "enabled": true,
+      "path": "portfolio-automation-system", 
+      "status": "active"
+    }
+  },
+  "settings": {
+    "auto_backup": true,
+    "log_level": "info",
+    "browser_auto_open": true
+  }
+}
