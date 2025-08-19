@@ -1,0 +1,23 @@
+name: System Health Check
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run Health Check
+        run: |
+          chmod +x comprehensive_health_check.sh
+          ./comprehensive_health_check.sh
+          
+      - name: Upload Health Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: health-report
+          path: logs/health-*.log
