@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 AI Career Automation System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚀 AI-Powered Career Automation System</h1>
+            <p>आपका Complete Biotech & Bioinformatics Career Success System</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Portfolio Builder Section -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>🔬 Portfolio Builder</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Name:</label>
+                    <input type="text" id="projectName" placeholder="e.g., DNA Sequence Analysis">
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Type:</label>
+                    <select id="projectType">
+                        <option value="data-analysis">Data Analysis</option>
+                        <option value="bioinformatics">Bioinformatics</option>
+                        <option value="drug-discovery">Drug Discovery</option>
+                        <option value="genomics">Genomics</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tools Used:</label>
+                    <input type="text" id="toolsUsed" placeholder="e.g., Python, Pandas, Matplotlib">
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Description:</label>
+                    <textarea id="projectDescription" rows="3" placeholder="Brief description of your project"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dataset Source:</label>
+                    <input type="text" id="datasetSource" placeholder="e.g., NCBI, Kaggle, Company Data">
+                </div>
+                
+                <div class="form-group">
+                    <label>Key Findings:</label>
+                    <textarea id="keyFindings" rows="3" placeholder="Main insights or results from your analysis"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Platform:</label>
+                    <select id="targetPlatform">
+                        <option value="github">GitHub</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="portfolio">Portfolio Site</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generatePortfolioContent()">
+                    <i class="fas fa-magic"></i> Generate AI Content
+                </button>
+                
+                <div id="portfolioOutput" class="output-area"></div>
+                
+                <button class="btn btn-secondary" onclick="saveProject()" style="margin-top: 10px;">
+                    <i class="fas fa-save"></i> Save Project
+                </button>
+            </div>
+
+            <!-- Social Media Generator -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-share-alt"></i>
+                    <h3>📱 Social Media Generator</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Post Type:</label>
+                    <select id="postType">
+                        <option value="achievement">Achievement Post</option>
+                        <option value="learning">Learning Update</option>
+                        <option value="project">Project Showcase</option>
+                        <option value="industry">Industry Insight</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Key Message:</label>
+                    <textarea id="postMessage" rows="3" placeholder="Main message you want to share"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Platform:</label>
+                    <select id="socialPlatform">
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="facebook">Facebook</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generateSocialPost()">
+                    <i class="fas fa-bullhorn"></i> Generate Post
+                </button>
+                
+                <div id="socialOutput" class="output-area"></div>
+                
+                <button class="btn btn-secondary" onclick="schedulePost()" style="margin-top: 10px;">
+                    <i class="fas fa-clock"></i> Schedule Post
+                </button>
+            </div>
+
+            <!-- Resume Optimizer -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>📄 Resume Optimizer</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Content Type:</label>
+                    <select id="resumeType">
+                        <option value="headline">LinkedIn Headline</option>
+                        <option value="summary">Professional Summary</option>
+                        <option value="skills">Skills Section</option>
+                        <option value="experience">Experience Description</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Current Content:</label>
+                    <textarea id="currentContent" rows="4" placeholder="Paste your current content here"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Job Type:</label>
+                    <input type="text" id="targetJob" placeholder="e.g., Bioinformatics Analyst">
+                </div>
+                
+                <button class="btn btn-primary" onclick="optimizeContent()">
+                    <i class="fas fa-rocket"></i> Optimize Content
+                </button>
+                
+                <div id="resumeOutput" class="output-area"></div>
+            </div>
+
+            <!-- Job Tracker -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-search"></i>
+                    <h3>💼 Job Tracker</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Search Jobs:</label>
+                    <input type="text" id="jobSearch" placeholder="e.g., Bioinformatics, Data Analyst">
+                </div>
+                
+                <button class="btn btn-primary" onclick="searchJobs()">
+                    <i class="fas fa-search"></i> Search Jobs
+                </button>
+                
+                <div class="job-list" id="jobList">
+                    <!-- Jobs will be populated here -->
+                </div>
+            </div>
+
+            <!-- AI Prompts Library -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-brain"></i>
+                    <h3>🤖 AI Prompts Library</h3>
+                </div>
+                
+                <div class="prompts-grid">
+                    <div class="prompt-item">
+                        <h4>GitHub README</h4>
+                        <p>Professional project documentation</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="github">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item">
+                        <h4>LinkedIn Post</h4>
+                        <p>Engaging professional content</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="linkedin">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item">
+                        <h4>Cover Letter</h4>
+                        <p>Personalized job applications</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="cover">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item">
+                        <h4>Interview Preparation</h4>
+                        <p>Common biotech interview questions</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="interview">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>📊 Analytics Dashboard</h3>
+                </div>
+                
+                <h4 style="color: #667eea; margin-bottom: 15px;">Career Progress</h4>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Portfolio Completion</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    <small>75% Complete</small>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>LinkedIn Optimization</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                    <small>60% Complete</small>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Job Applications</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%"></div>
+                    </div>
+                    <small>8 Applications Sent</small>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>5</h3>
+                        <p>Projects Created</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>12</h3>
+                        <p>Posts Generated</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>3</h3>
+                        <p>Interviews Scheduled</p>
+                    </div>
+                </div>
+                
+                <div class="weekly-schedule">
+                    <h4>This Week's Plan</h4>
+                    <div class="schedule-item">
+                        <strong>Monday:</strong> Portfolio content generation और LinkedIn posts
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Tuesday:</strong> Job search और application tracking
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Wednesday:</strong> GitHub projects और documentation
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Thursday:</strong> Social media content और networking
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Friday:</strong> Resume optimization और interview prep
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Saturday:</strong> Learning resources और skill development
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Sunday:</strong> Weekly progress review और planning
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
