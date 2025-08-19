@@ -2,3 +2,29 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment and secrets
+.env
+
+# Logs
+logs/*.log
+
+# Backups
+backups/
+n8n_backup/
+
+# Docker volumes
+docker-volumes/
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Reports
+reports/
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
