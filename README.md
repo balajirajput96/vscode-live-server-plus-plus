@@ -69,6 +69,18 @@ For detailed setup instructions, see [n8n-README.md](./n8n-README.md)
 - Streaming and standard API responses
 - Smart query templates and presets
 
+### 2.1 🔐 **NEW: VPN Cloud Software Integration**
+- ExpressVPN और NordVPN recommendations
+- Automated VPN connection management
+- Docker container VPN integration
+- Secure automation workflows
+
+### 2.2 ⚙️ **NEW: n8n Self-Hosted Automation**
+- Complete Docker-based n8n setup
+- PostgreSQL database integration
+- HTTPS with Caddy reverse proxy
+- Automated backup and health monitoring
+
 ### 3. 📱 Social Media Automation
 - LinkedIn professional posts
 - Facebook personal updates
@@ -97,7 +109,24 @@ For detailed setup instructions, see [n8n-README.md](./n8n-README.md)
 
 ## 🚀 Quick Start Guide
 
-### Step 1: Open Your Dashboard
+### Option 1: Self-Hosted Automation (Recommended)
+```bash
+# Complete automated setup with n8n and VPN
+git clone https://github.com/your-username/vscode-live-server-plus-plus.git
+cd vscode-live-server-plus-plus
+
+# Setup environment
+cp .env.template .env
+# Edit .env with your settings
+
+# Start entire system
+./super_start.sh
+
+# Check system health
+./comprehensive_health_check.sh
+```
+
+### Option 2: Basic Dashboard Usage
 ```bash
 # Open the main dashboard in your browser
 open index.html
@@ -110,6 +139,23 @@ Register for these free/premium AI tools:
 - **Wix AI** (Free/Premium $16/month) 
 - **Predis.ai** (Free/Pro $32/month)
 - **Buffer** (Free/Pro $6/month)
+
+### Step 2.1: Set Up VPN (Optional but Recommended)
+Choose one of our recommended VPN services:
+- **ExpressVPN** (Best for automation) - $6.67/month
+- **NordVPN** (Best for teams) - $3.71/month
+
+See `VPN_SOFTWARE_GUIDE.md` for detailed setup instructions.
+
+### Step 2.2: Set Up Self-Hosted n8n (Replaces Cloud Dependencies)
+```bash
+# Complete n8n setup with Docker
+./super_start.sh
+
+# Access your n8n instance
+# Local: http://localhost:5678
+# Production: https://your-domain.com
+```
 
 ### Step 3: Use Ready-Made Prompts
 1. Copy prompts from the AI Prompt Library
