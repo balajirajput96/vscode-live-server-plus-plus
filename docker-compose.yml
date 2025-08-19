@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  n8n-master:
+    image: n8nio/n8n:latest
+    container_name: n8n-master
+    restart: unless-stopped
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
+      - N8N_TRUST_PROXY=${N8N_TRUST_PROXY}
+      - DB_TYPE=${DB_TYPE}
+      - DB_SQLITE_DATABASE=${DB_SQLITE_DATABASE}
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./backups:/backups
+    command: n8n start
+
+volumes:
+  n8n_data:
+    external: false
