@@ -1,0 +1,86 @@
+name: Daily Health Check
+description: Comprehensive system health monitoring workflow
+
+on:
+  schedule:
+    # Run daily at 2:00 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+    inputs:
+      run_extended_checks:
+        description: 'Run extended health checks'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        if [ -f package.json ]; then
+          npm ci
+        fi
+        
+    - name: Create environment file
+      run: |
+        echo "GOOGLE_PRIMARY_EMAIL=${{ secrets.GOOGLE_PRIMARY_EMAIL }}" >> .env
+        echo "MS_PRIMARY_EMAIL=${{ secrets.MS_PRIMARY_EMAIL }}" >> .env
+        echo "TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}" >> .env
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+        echo "YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
+        
+    - name: Run comprehensive health check
+      run: |
+        chmod +x ./scripts/comprehensive_health_check.sh
+        ./scripts/comprehensive_health_check.sh
+        
+    - name: Run extended checks (if requested)
+      if: ${{ github.event.inputs.run_extended_checks == 'true' }}
+      run: |
+        echo "Running extended health checks..."
+        # Add extended health check commands here
+        
+    - name: Upload health check logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: health-check-logs-${{ github.run_number }}
+        path: |
+          logs/
+          *.log
+        retention-days: 7
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "Health check failed! Check the logs for details."
+        # Add notification logic here (email, Slack, etc.)
+        
+    - name: Generate health report
+      run: |
+        echo "## Health Check Report - $(date)" > health-report.md
+        echo "- Status: ${{ job.status }}" >> health-report.md
+        echo "- Timestamp: $(date -u)" >> health-report.md
+        echo "- Workflow: ${{ github.workflow }}" >> health-report.md
+        echo "- Run ID: ${{ github.run_id }}" >> health-report.md
+        
+    - name: Commit health report
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add health-report.md
+        git commit -m "Health check report - $(date)" || exit 0
+        git push
