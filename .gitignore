@@ -2,3 +2,31 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment and secrets
+.env
+.env.local
+.env.production
+
+# Docker volumes and data
+backup/
+logs/
+workflows/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# IDE files
+.idea/
+.vscode/settings.json
+
+# Encryption keys and certificates
+*.key
+*.pem
+*.crt
