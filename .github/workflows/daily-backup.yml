@@ -1,0 +1,91 @@
+name: Daily System Backup
+description: Automated backup workflow for n8n and system data
+
+on:
+  schedule:
+    # Run daily at 3:00 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+    inputs:
+      backup_type:
+        description: 'Type of backup to perform'
+        required: false
+        default: 'incremental'
+        type: choice
+        options:
+        - 'full'
+        - 'incremental'
+        - 'config-only'
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Create environment file
+      run: |
+        echo "GOOGLE_PRIMARY_EMAIL=${{ secrets.GOOGLE_PRIMARY_EMAIL }}" >> .env
+        echo "MS_PRIMARY_EMAIL=${{ secrets.MS_PRIMARY_EMAIL }}" >> .env
+        echo "TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}" >> .env
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+        echo "YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
+        
+    - name: Create backup directory
+      run: |
+        mkdir -p backups/$(date +%Y-%m-%d)
+        
+    - name: Run n8n backup script
+      run: |
+        chmod +x ./scripts/n8n_backup.sh
+        ./scripts/n8n_backup.sh ${{ github.event.inputs.backup_type || 'incremental' }}
+        
+    - name: Compress backup files
+      run: |
+        tar -czf backups/backup-$(date +%Y-%m-%d-%H%M%S).tar.gz backups/$(date +%Y-%m-%d)/
+        
+    - name: Upload backup artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: system-backup-${{ github.run_number }}
+        path: |
+          backups/*.tar.gz
+          backups/$(date +%Y-%m-%d)/
+        retention-days: 30
+        
+    - name: Cleanup old backups
+      run: |
+        # Keep only last 30 days of backups
+        find backups/ -name "backup-*.tar.gz" -mtime +30 -delete || true
+        
+    - name: Generate backup report
+      run: |
+        echo "## Backup Report - $(date)" > backup-report.md
+        echo "- Backup Type: ${{ github.event.inputs.backup_type || 'incremental' }}" >> backup-report.md
+        echo "- Timestamp: $(date -u)" >> backup-report.md
+        echo "- Status: Success" >> backup-report.md
+        echo "- Files backed up:" >> backup-report.md
+        ls -la backups/$(date +%Y-%m-%d)/ >> backup-report.md || echo "No files found" >> backup-report.md
+        
+    - name: Commit backup report
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add backup-report.md
+        git commit -m "Backup report - $(date)" || exit 0
+        git push
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "Backup failed! Check the logs for details."
+        # Add notification logic here
