@@ -424,6 +424,58 @@ body {
     min-height: 120px;
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.city-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.city-suggestion {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.2s ease;
+}
+
+.city-suggestion:hover {
+    background-color: #f8fafc;
+}
+
+.city-suggestion:last-child {
+    border-bottom: none;
+}
+
+.city-suggestion.highlighted {
+    background-color: #e0f2fe;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
 /* Footer */
 .footer {
     background: #1e293b;
