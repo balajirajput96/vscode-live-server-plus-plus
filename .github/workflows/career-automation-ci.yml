@@ -1,0 +1,160 @@
+name: Career Automation System CI/CD
+
+on:
+  push:
+    branches: [ "master", "main" ]
+    paths:
+      - 'career-automation-system/**'
+      - 'portfolio-automation-system/**'
+      - 'n8n-workflows/**'
+  pull_request:
+    branches: [ "master", "main" ]
+    paths:
+      - 'career-automation-system/**'
+      - 'portfolio-automation-system/**'
+      - 'n8n-workflows/**'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  test-automation-system:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        if [ -f package.json ]; then
+          npm install
+        fi
+
+    - name: Test automation scripts
+      run: |
+        echo "Testing portfolio automation system..."
+        if [ -f portfolio-automation-system/automation/social-media-automation.js ]; then
+          node -c portfolio-automation-system/automation/social-media-automation.js
+          echo "✅ Social media automation script is valid"
+        fi
+        
+        if [ -f portfolio-automation-system/automation/github-documentation-generator.py ]; then
+          python3 -m py_compile portfolio-automation-system/automation/github-documentation-generator.py
+          echo "✅ GitHub documentation generator is valid"
+        fi
+
+    - name: Validate n8n workflows
+      run: |
+        echo "Validating n8n workflow JSON files..."
+        for file in n8n-workflows/*.json; do
+          if [ -f "$file" ]; then
+            echo "Validating $file..."
+            python3 -c "import json; json.load(open('$file'))"
+            echo "✅ $file is valid JSON"
+          fi
+        done
+
+    - name: Test webhook endpoints
+      run: |
+        echo "Testing webhook connectivity..."
+        if [ ! -z "${{ secrets.N8N_WEBHOOK_URL }}" ]; then
+          curl -f "${{ secrets.N8N_WEBHOOK_URL }}" || echo "⚠️ Webhook URL not accessible"
+        else
+          echo "⚠️ N8N_WEBHOOK_URL secret not configured"
+        fi
+
+  deploy-to-azure:
+    needs: test-automation-system
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    environment: production
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        npm install
+        npm run compile --if-present
+
+    - name: Deploy to Azure Functions
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME || 'career-automation-app' }}
+        package: '.'
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+  notify-webhook:
+    needs: [test-automation-system, deploy-to-azure]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Notify n8n webhook
+      if: success()
+      run: |
+        if [ ! -z "${{ secrets.N8N_WEBHOOK_URL }}" ]; then
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "deployment_success",
+              "repository": "${{ github.repository }}",
+              "commit": "${{ github.sha }}",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+              "workflow": "Career Automation System CI/CD"
+            }'
+          echo "✅ Webhook notification sent successfully"
+        else
+          echo "⚠️ N8N_WEBHOOK_URL not configured"
+        fi
+
+    - name: Notify failure
+      if: failure()
+      run: |
+        if [ ! -z "${{ secrets.N8N_WEBHOOK_URL }}" ]; then
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "deployment_failure",
+              "repository": "${{ github.repository }}",
+              "commit": "${{ github.sha }}",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+              "workflow": "Career Automation System CI/CD"
+            }'
+        fi
+
+  update-portfolio:
+    needs: deploy-to-azure
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    
+    steps:
+    - name: Trigger portfolio automation
+      run: |
+        if [ ! -z "${{ secrets.N8N_WEBHOOK_URL }}" ]; then
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "portfolio_update",
+              "project_name": "Automated System Update",
+              "description": "Career automation system deployed successfully",
+              "tools": "GitHub Actions, n8n, Azure Functions",
+              "findings": "Continuous integration and deployment pipeline working",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+          echo "✅ Portfolio update triggered"
+        fi
