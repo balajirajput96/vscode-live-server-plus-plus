@@ -38,6 +38,9 @@
             <button class="nav-tab" data-tab="analytics">
                 <i class="fas fa-chart-line"></i> Analytics
             </button>
+            <button class="nav-tab" data-tab="voice">
+                <i class="fas fa-microphone"></i> Voice AI
+            </button>
         </nav>
 
         <!-- Main Content -->
@@ -364,6 +367,118 @@
                             <div class="progress-fill" style="width: 90%"></div>
                         </div>
                         <span>9/10</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Voice AI Section -->
+            <section id="voice" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-microphone"></i> Voice AI Agent</h2>
+                    <p>आवाज़ से करियर को आगे बढ़ाएं - बोलिए और काम हो जाए!</p>
+                </div>
+
+                <div class="voice-ai-container">
+                    <!-- Voice Controls -->
+                    <div class="voice-controls-section">
+                        <div class="voice-controls">
+                            <button id="voiceMicButton" class="voice-mic-button" title="Voice Commands शुरू करें">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <div class="voice-status" id="voiceStatus">
+                                Voice AI Agent तैयार है। माइक बटन दबाकर बोलना शुरू करें।
+                            </div>
+                        </div>
+
+                        <!-- Current Transcription -->
+                        <div class="voice-transcription">
+                            <h4><i class="fas fa-comment"></i> वर्तमान बातचीत</h4>
+                            <div id="voiceCurrentTranscription" class="transcription-text">
+                                यहाँ आपकी बात दिखेगी...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Section -->
+                    <div class="voice-config-section">
+                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        <div class="config-grid">
+                            <div class="config-group">
+                                <label for="voiceOpenaiKey">OpenAI API Key:</label>
+                                <input type="password" id="voiceOpenaiKey" placeholder="sk-..." class="form-input">
+                            </div>
+                            <div class="config-group">
+                                <label for="voiceLanguage">Language:</label>
+                                <select id="voiceLanguage" class="form-select">
+                                    <option value="hi-IN">Hindi (हिंदी)</option>
+                                    <option value="en-US">English (US)</option>
+                                    <option value="en-IN">English (India)</option>
+                                </select>
+                            </div>
+                            <div class="config-group">
+                                <label for="voiceN8nWebhook">n8n Webhook URL:</label>
+                                <input type="url" id="voiceN8nWebhook" placeholder="https://your-n8n.com/webhook/voice" class="form-input">
+                            </div>
+                            <div class="config-group">
+                                <button id="testN8nBtn" class="btn btn-secondary">
+                                    <i class="fas fa-link"></i> Test n8n Connection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Commands Examples -->
+                    <div class="voice-examples-section">
+                        <h3><i class="fas fa-list"></i> Example Voice Commands</h3>
+                        <div class="examples-grid">
+                            <div class="example-card">
+                                <h4><i class="fas fa-linkedin"></i> LinkedIn Posts</h4>
+                                <ul>
+                                    <li>"मेरे लिए Python project के बारे में LinkedIn post बनाओ"</li>
+                                    <li>"Bioinformatics career growth के बारे में professional post बनाओ"</li>
+                                </ul>
+                            </div>
+                            <div class="example-card">
+                                <h4><i class="fas fa-briefcase"></i> Job Applications</h4>
+                                <ul>
+                                    <li>"Sun Pharma में Data Analyst position के लिए applied status add करो"</li>
+                                    <li>"Biocon में interview scheduled status update करो"</li>
+                                </ul>
+                            </div>
+                            <div class="example-card">
+                                <h4><i class="fas fa-file-alt"></i> Resume Optimization</h4>
+                                <ul>
+                                    <li>"मेरे resume को Data Scientist role के लिए optimize करो"</li>
+                                    <li>"Pharma industry के लिए resume improve करो"</li>
+                                </ul>
+                            </div>
+                            <div class="example-card">
+                                <h4><i class="fas fa-robot"></i> Automation</h4>
+                                <ul>
+                                    <li>"Weekly content generation workflow start करो"</li>
+                                    <li>"Job application tracking workflow trigger करो"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversation History -->
+                    <div class="voice-history-section">
+                        <h3><i class="fas fa-history"></i> Conversation History</h3>
+                        <div id="voiceConversationHistory" class="conversation-history">
+                            <!-- Conversation will appear here -->
+                        </div>
+                        <button id="clearVoiceHistoryBtn" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i> Clear History
+                        </button>
+                    </div>
+
+                    <!-- System Logs -->
+                    <div class="voice-logs-section">
+                        <h3><i class="fas fa-terminal"></i> System Logs</h3>
+                        <div id="voiceSystemLogs" class="system-logs">
+                            Voice AI Agent initialized successfully...
+                        </div>
                     </div>
                 </div>
             </section>

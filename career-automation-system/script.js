@@ -529,3 +529,478 @@ function initializeHelp() {
 
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
+// Voice AI Agent Integration
+let voiceAgent = null;
+let isVoiceListening = false;
+
+// Voice AI Agent Class (Simplified version for integration)
+class VoiceAIAgent {
+    constructor(config = {}) {
+        this.config = {
+            language: config.language || 'hi-IN',
+            openaiApiKey: config.openaiApiKey || null,
+            n8nWebhookUrl: config.n8nWebhookUrl || null,
+            ...config
+        };
+
+        this.isListening = false;
+        this.conversationHistory = [];
+        this.recognition = null;
+        this.synthesis = null;
+        
+        this.initializeServices();
+    }
+
+    initializeServices() {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            this.recognition = new SpeechRecognition();
+            
+            this.recognition.continuous = true;
+            this.recognition.interimResults = true;
+            this.recognition.lang = this.config.language;
+            
+            this.setupRecognitionHandlers();
+        }
+
+        if ('speechSynthesis' in window) {
+            this.synthesis = window.speechSynthesis;
+        }
+    }
+
+    setupRecognitionHandlers() {
+        this.recognition.onstart = () => {
+            this.isListening = true;
+            this.onListeningStart();
+        };
+
+        this.recognition.onend = () => {
+            this.isListening = false;
+            this.onListeningEnd();
+        };
+
+        this.recognition.onresult = (event) => {
+            let finalTranscript = '';
+            let interimTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            if (finalTranscript) {
+                this.processVoiceCommand(finalTranscript);
+            }
+
+            this.onTranscription(finalTranscript, interimTranscript);
+        };
+
+        this.recognition.onerror = (event) => {
+            this.onError(event.error);
+        };
+    }
+
+    startListening() {
+        if (this.recognition && !this.isListening) {
+            try {
+                this.recognition.start();
+            } catch (error) {
+                console.error('Error starting speech recognition:', error);
+            }
+        }
+    }
+
+    stopListening() {
+        if (this.recognition && this.isListening) {
+            this.recognition.stop();
+        }
+    }
+
+    async processVoiceCommand(transcript) {
+        try {
+            this.conversationHistory.push({
+                role: 'user',
+                content: transcript,
+                timestamp: new Date().toISOString()
+            });
+
+            // Process the command locally (simplified version)
+            const response = await this.processCommandLocally(transcript);
+            
+            this.speak(response);
+            this.conversationHistory.push({
+                role: 'assistant',
+                content: response,
+                timestamp: new Date().toISOString()
+            });
+            
+        } catch (error) {
+            console.error('Error processing voice command:', error);
+            this.speak('माफ़ करें, आपके कमांड को प्रोसेस करने में कोई समस्या हुई है।');
+        }
+    }
+
+    async processCommandLocally(transcript) {
+        const lowerText = transcript.toLowerCase();
+        
+        // LinkedIn post generation
+        if (lowerText.includes('linkedin') && lowerText.includes('post')) {
+            const topic = this.extractTopic(lowerText);
+            return this.generateLinkedInPost(topic);
+        }
+        
+        // Job application tracking
+        if (lowerText.includes('job') || lowerText.includes('application') || lowerText.includes('applied')) {
+            return this.trackJobApplication(lowerText);
+        }
+        
+        // Resume optimization
+        if (lowerText.includes('resume') || lowerText.includes('optimize')) {
+            return this.optimizeResume(lowerText);
+        }
+        
+        // n8n workflow
+        if (lowerText.includes('workflow') || lowerText.includes('n8n')) {
+            return await this.sendToN8n(lowerText);
+        }
+        
+        // Default response
+        return 'मैं समझ गया। मैं निम्नलिखित कार्य कर सकता हूं: LinkedIn posts बना सकता हूं, job applications track कर सकता हूं, resume optimize कर सकता हूं, और n8n workflows trigger कर सकता हूं।';
+    }
+
+    extractTopic(text) {
+        // Simple topic extraction
+        const words = text.split(' ');
+        const projectKeywords = ['python', 'data', 'analysis', 'bioinformatics', 'biotechnology', 'project'];
+        const foundKeywords = words.filter(word => projectKeywords.includes(word.toLowerCase()));
+        return foundKeywords.length > 0 ? foundKeywords.join(' ') : 'Professional Development';
+    }
+
+    generateLinkedInPost(topic) {
+        const post = `🚀 ${topic} के बारे में नई जानकारी
+
+🔬 बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में काम करते हुए, मैंने यह महत्वपूर्ण सीख प्राप्त की है।
+
+#Bioinformatics #DataAnalysis #Biotechnology #Python #CareerGrowth`;
+
+        // Save to existing system
+        const posts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+        posts.push({
+            platform: 'linkedin',
+            content: post,
+            createdAt: new Date().toISOString(),
+            generatedBy: 'voice'
+        });
+        localStorage.setItem('socialPosts', JSON.stringify(posts));
+        socialPosts = posts; // Update global variable
+
+        return `LinkedIn पोस्ट सफलतापूर्वक बनाया गया। Topic: ${topic}`;
+    }
+
+    trackJobApplication(text) {
+        // Extract company and position from text
+        const companies = ['sun pharma', 'biocon', 'dr reddy', 'lupin', 'cipla', 'glenmark'];
+        const foundCompany = companies.find(company => text.toLowerCase().includes(company)) || 'Unknown Company';
+        
+        const applications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+        applications.push({
+            company: foundCompany,
+            position: 'Data Analyst',
+            status: 'applied',
+            appliedDate: new Date().toISOString(),
+            addedBy: 'voice'
+        });
+        localStorage.setItem('jobApplications', JSON.stringify(applications));
+
+        return `${foundCompany} में job application successfully track किया गया।`;
+    }
+
+    optimizeResume(text) {
+        return 'Resume optimization के लिए विस्तृत content की जरूरत है। कृपया Resume Optimizer tab में जाकर complete details provide करें।';
+    }
+
+    async sendToN8n(text) {
+        if (!this.config.n8nWebhookUrl) {
+            return 'n8n webhook URL configure नहीं है। कृपया configuration में URL add करें।';
+        }
+
+        try {
+            const response = await fetch(this.config.n8nWebhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    workflow: 'voice_command',
+                    data: { command: text },
+                    timestamp: new Date().toISOString(),
+                    source: 'voice-agent'
+                })
+            });
+
+            if (response.ok) {
+                return 'n8n workflow को सफलतापूर्वक trigger किया गया।';
+            } else {
+                return 'n8n workflow में कोई समस्या हुई।';
+            }
+        } catch (error) {
+            return 'n8n connection में समस्या हुई।';
+        }
+    }
+
+    speak(text) {
+        if (this.synthesis) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = this.config.language;
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            
+            const voices = this.synthesis.getVoices();
+            const hindiVoice = voices.find(voice => voice.lang.includes('hi'));
+            if (hindiVoice) {
+                utterance.voice = hindiVoice;
+            }
+            
+            this.synthesis.speak(utterance);
+        }
+    }
+
+    onListeningStart() {
+        updateVoiceStatus('🎤 सुन रहा हूँ... बोलिए!', 'listening');
+        const micBtn = document.getElementById('voiceMicButton');
+        if (micBtn) micBtn.classList.add('listening');
+        addVoiceLog('Started listening for voice commands');
+    }
+
+    onListeningEnd() {
+        updateVoiceStatus('Voice AI Agent तैयार है', 'ready');
+        const micBtn = document.getElementById('voiceMicButton');
+        if (micBtn) micBtn.classList.remove('listening');
+        addVoiceLog('Stopped listening');
+    }
+
+    onTranscription(final, interim) {
+        const transcriptionDiv = document.getElementById('voiceCurrentTranscription');
+        if (transcriptionDiv) {
+            if (final) {
+                transcriptionDiv.innerHTML = `<strong>आपने कहा:</strong> ${final}`;
+                addToVoiceConversationHistory('user', final);
+                addVoiceLog(`Transcription: ${final}`);
+            } else if (interim) {
+                transcriptionDiv.innerHTML = `<em>सुन रहा हूँ:</em> ${interim}`;
+            }
+        }
+    }
+
+    onError(error) {
+        updateVoiceStatus(`❌ Error: ${error}`, 'error');
+        addVoiceLog(`Error: ${error}`);
+    }
+
+    updateConfig(newConfig) {
+        this.config = { ...this.config, ...newConfig };
+    }
+
+    clearHistory() {
+        this.conversationHistory = [];
+    }
+}
+
+// Voice AI Helper Functions
+function initializeVoiceAI() {
+    const config = loadVoiceConfiguration();
+    voiceAgent = new VoiceAIAgent(config);
+    
+    // Setup event listeners
+    setupVoiceEventListeners();
+    
+    addVoiceLog('Voice AI Agent initialized successfully');
+    addVoiceLog('Ready for voice commands...');
+}
+
+function setupVoiceEventListeners() {
+    const micButton = document.getElementById('voiceMicButton');
+    
+    if (micButton) {
+        micButton.addEventListener('click', () => {
+            if (isVoiceListening) {
+                voiceAgent.stopListening();
+                isVoiceListening = false;
+            } else {
+                voiceAgent.startListening();
+                isVoiceListening = true;
+            }
+        });
+    }
+
+    // Configuration change handlers
+    const configInputs = ['voiceOpenaiKey', 'voiceLanguage', 'voiceN8nWebhook'];
+    configInputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', updateVoiceConfiguration);
+        }
+    });
+
+    // Test n8n connection
+    const testBtn = document.getElementById('testN8nBtn');
+    if (testBtn) {
+        testBtn.addEventListener('click', testN8nConnection);
+    }
+
+    // Clear history button
+    const clearBtn = document.getElementById('clearVoiceHistoryBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearVoiceHistory);
+    }
+}
+
+function updateVoiceConfiguration() {
+    if (voiceAgent) {
+        const newConfig = {
+            language: document.getElementById('voiceLanguage')?.value || 'hi-IN',
+            openaiApiKey: document.getElementById('voiceOpenaiKey')?.value || null,
+            n8nWebhookUrl: document.getElementById('voiceN8nWebhook')?.value || null
+        };
+        
+        voiceAgent.updateConfig(newConfig);
+        saveVoiceConfiguration();
+        addVoiceLog('Configuration updated');
+    }
+}
+
+function updateVoiceStatus(message, type = 'info') {
+    const statusDiv = document.getElementById('voiceStatus');
+    if (statusDiv) {
+        statusDiv.textContent = message;
+        statusDiv.className = `voice-status ${type}`;
+    }
+}
+
+function addToVoiceConversationHistory(role, content) {
+    const historyDiv = document.getElementById('voiceConversationHistory');
+    if (historyDiv) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `conversation-message ${role}`;
+        
+        const time = new Date().toLocaleString('hi-IN');
+        messageDiv.innerHTML = `
+            <div class="message-time">${time}</div>
+            <div>${content}</div>
+        `;
+        
+        historyDiv.appendChild(messageDiv);
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+    }
+}
+
+function addVoiceLog(message) {
+    const logsDiv = document.getElementById('voiceSystemLogs');
+    if (logsDiv) {
+        const time = new Date().toLocaleTimeString();
+        logsDiv.textContent += `[${time}] ${message}\n`;
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+    }
+}
+
+function clearVoiceHistory() {
+    if (voiceAgent) {
+        voiceAgent.clearHistory();
+        const historyDiv = document.getElementById('voiceConversationHistory');
+        if (historyDiv) {
+            historyDiv.innerHTML = '';
+        }
+        addVoiceLog('Conversation history cleared');
+    }
+}
+
+function testN8nConnection() {
+    const webhookUrl = document.getElementById('voiceN8nWebhook')?.value;
+    if (!webhookUrl) {
+        alert('कृपया n8n webhook URL enter करें');
+        return;
+    }
+
+    fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            test: true,
+            message: 'Voice AI Agent connection test',
+            timestamp: new Date().toISOString()
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('✅ n8n connection successful!');
+            addVoiceLog('n8n connection test successful');
+        } else {
+            alert('❌ n8n connection failed');
+            addVoiceLog('n8n connection test failed');
+        }
+    })
+    .catch(error => {
+        alert('❌ n8n connection error: ' + error.message);
+        addVoiceLog('n8n connection error: ' + error.message);
+    });
+}
+
+function saveVoiceConfiguration() {
+    const config = {
+        openaiKey: document.getElementById('voiceOpenaiKey')?.value || '',
+        language: document.getElementById('voiceLanguage')?.value || 'hi-IN',
+        n8nWebhook: document.getElementById('voiceN8nWebhook')?.value || ''
+    };
+    localStorage.setItem('voiceAIConfig', JSON.stringify(config));
+}
+
+function loadVoiceConfiguration() {
+    const savedConfig = localStorage.getItem('voiceAIConfig');
+    if (savedConfig) {
+        const config = JSON.parse(savedConfig);
+        
+        // Set form values when elements are available
+        setTimeout(() => {
+            if (document.getElementById('voiceOpenaiKey')) {
+                document.getElementById('voiceOpenaiKey').value = config.openaiKey || '';
+            }
+            if (document.getElementById('voiceLanguage')) {
+                document.getElementById('voiceLanguage').value = config.language || 'hi-IN';
+            }
+            if (document.getElementById('voiceN8nWebhook')) {
+                document.getElementById('voiceN8nWebhook').value = config.n8nWebhook || '';
+            }
+        }, 100);
+        
+        return {
+            openaiApiKey: config.openaiKey,
+            language: config.language || 'hi-IN',
+            n8nWebhookUrl: config.n8nWebhook
+        };
+    }
+    
+    return {
+        language: 'hi-IN'
+    };
+}
+
+// Override switchTab to handle voice AI initialization
+const originalSwitchTab = window.switchTab;
+if (originalSwitchTab) {
+    window.switchTab = function(tabName) {
+        originalSwitchTab(tabName);
+        
+        // Initialize voice AI when voice tab is opened
+        if (tabName === 'voice' && !voiceAgent) {
+            setTimeout(() => {
+                initializeVoiceAI();
+            }, 100);
+        }
+    };
+}
