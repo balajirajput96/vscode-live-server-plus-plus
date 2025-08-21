@@ -39,6 +39,12 @@
 - Industry-specific content
 - Multi-platform compatibility
 
+### 6. 🔌 Sonar API Integration
+- Advanced AI capabilities with Sonar API
+- Real-time content generation
+- Streaming and batch processing
+- Multi-language support (Hindi/English)
+
 ---
 
 ## 🚀 Quick Start Guide
@@ -78,6 +84,8 @@ Register for these free/premium AI tools:
 ├── 📄 Job_Tracking_System.html      # Job Application Tracker
 ├── 📄 AI_Career_Automation_Guide.md # Complete Guide
 ├── 📄 Social_Media_Templates.md     # Content Templates
+├── 📄 SONAR_API_QUICK_START.md      # Sonar API Guide (Hindi)
+├── 📄 SONAR_API_QUICK_START_EN.md   # Sonar API Guide (English)
 └── 📄 README.md                     # This File
 ```
 
@@ -129,6 +137,14 @@ Register for these free/premium AI tools:
 - Twitter quick posts
 - Project showcase formats
 - Industry commentary templates
+
+### 5. Sonar API Integration (`SONAR_API_QUICK_START.md` / `SONAR_API_QUICK_START_EN.md`)
+**Contents:**
+- Complete API integration guide
+- Code examples in Python, TypeScript, and cURL
+- Streaming and non-streaming implementations
+- Integration with career automation features
+- Multilingual support (Hindi & English)
 
 ---
 
