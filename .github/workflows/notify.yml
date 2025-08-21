@@ -1,0 +1,33 @@
+name: Notify n8n on push
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to n8n
+        run: |
+          curl -X POST "$N8N_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"Repo updated","email":"2203456300001@paruluniversity.ac.in","type":"github_update","branch":"${{ github.ref_name }}","commit":"${{ github.sha }}"}'
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+        continue-on-error: true
+
+      - name: Health Check n8n
+        run: |
+          if [ -n "$N8N_WEBHOOK_URL" ]; then
+            curl -X POST "$N8N_WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d '{"type":"health","query":"ping","email":"2203456300001@paruluniversity.ac.in"}' \
+              --max-time 10
+          else
+            echo "N8N_WEBHOOK_URL not configured"
+          fi
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+        continue-on-error: true
