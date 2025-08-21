@@ -39,6 +39,13 @@
 - Industry-specific content
 - Multi-platform compatibility
 
+### 6. 🔍 Sonar API Integration
+- Complete Perplexity API documentation (Hindi)
+- Step-by-step implementation guide
+- Code examples in multiple languages
+- Real-time AI search and responses
+- [सोनार एपीआई त्वरित प्रारंभ गाइड](./Sonar_API_Quick_Start.md)
+
 ---
 
 ## 🚀 Quick Start Guide
@@ -52,6 +59,7 @@ open index.html
 ### Step 2: Set Up AI Tools
 Register for these free/premium AI tools:
 - **ChatGPT** (Free/Plus $20/month)
+- **Perplexity (Sonar API)** (Free/Pro $20/month)
 - **Wix AI** (Free/Premium $16/month) 
 - **Predis.ai** (Free/Pro $32/month)
 - **Buffer** (Free/Pro $6/month)
@@ -78,6 +86,7 @@ Register for these free/premium AI tools:
 ├── 📄 Job_Tracking_System.html      # Job Application Tracker
 ├── 📄 AI_Career_Automation_Guide.md # Complete Guide
 ├── 📄 Social_Media_Templates.md     # Content Templates
+├── 📄 Sonar_API_Quick_Start.md      # Sonar API Documentation (Hindi)
 └── 📄 README.md                     # This File
 ```
 
