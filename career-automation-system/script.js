@@ -529,3 +529,171 @@ function initializeHelp() {
 
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
+
+// Premium Subscription Functions
+let selectedPlan = null;
+
+function selectPlan(planType) {
+    selectedPlan = planType;
+    document.getElementById('paymentForm').style.display = 'block';
+    
+    // Update form title based on selected plan
+    const formTitle = document.querySelector('#paymentForm h3');
+    const planNames = {
+        basic: 'Basic Premium - ₹999/माह',
+        pro: 'Pro Premium - ₹1999/माह'
+    };
+    formTitle.textContent = `भुगतान विवरण - ${planNames[planType]}`;
+    
+    // Scroll to payment form
+    document.getElementById('paymentForm').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+    });
+    
+    showMessage(`${planNames[planType]} चुना गया। कृपया भुगतान विवरण भरें।`, 'success');
+}
+
+function cancelPayment() {
+    document.getElementById('paymentForm').style.display = 'none';
+    selectedPlan = null;
+    
+    // Clear form data
+    document.getElementById('cardholderName').value = '';
+    document.getElementById('cardNumber').value = '';
+    document.getElementById('expiryDate').value = '';
+    document.getElementById('cvv').value = '';
+    document.getElementById('billingAddress').value = '';
+    
+    showMessage('भुगतान रद्द किया गया।', 'info');
+}
+
+function processPayment() {
+    if (!selectedPlan) {
+        showMessage('कृपया पहले एक प्लान चुनें।', 'error');
+        return;
+    }
+    
+    // Get form values
+    const cardholderName = document.getElementById('cardholderName').value.trim();
+    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+    const expiryDate = document.getElementById('expiryDate').value.trim();
+    const cvv = document.getElementById('cvv').value.trim();
+    const isTestMode = document.getElementById('testMode').checked;
+    
+    // Validate required fields
+    if (!cardholderName || !cardNumber || !expiryDate || !cvv) {
+        showMessage('कृपया सभी आवश्यक फील्ड भरें।', 'error');
+        return;
+    }
+    
+    // Validate test mode requirements
+    if (isTestMode) {
+        const validTestNames = ['test user', 'example name', 'john doe', 'jane doe'];
+        const validTestCards = ['4111111111111111', '5555555555554444', '378282246310005'];
+        
+        if (!validTestNames.includes(cardholderName.toLowerCase())) {
+            showMessage('टेस्ट मोड में कृपया वैध टेस्ट नाम का उपयोग करें: Test User, John Doe, Jane Doe, या Example Name', 'error');
+            return;
+        }
+        
+        if (!validTestCards.includes(cardNumber)) {
+            showMessage('टेस्ट मोड में कृपया केवल आधिकारिक टेस्ट कार्ड नंबर का उपयोग करें।', 'error');
+            return;
+        }
+    }
+    
+    // Validate card number format
+    if (!/^\d{13,19}$/.test(cardNumber)) {
+        showMessage('कृपया वैध कार्ड नंबर दर्ज करें।', 'error');
+        return;
+    }
+    
+    // Validate expiry date format
+    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+        showMessage('कृपया वैध समाप्ति तिथि दर्ज करें (MM/YY)।', 'error');
+        return;
+    }
+    
+    // Validate CVV
+    if (!/^\d{3,4}$/.test(cvv)) {
+        showMessage('कृपया वैध CVV दर्ज करें।', 'error');
+        return;
+    }
+    
+    // Simulate payment processing
+    const submitBtn = document.querySelector('.payment-actions .btn-primary');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> प्रोसेसिंग...';
+    submitBtn.disabled = true;
+    
+    setTimeout(() => {
+        if (isTestMode) {
+            showMessage('✅ टेस्ट भुगतान सफल! यह एक नकली लेनदेन था।', 'success');
+        } else {
+            showMessage('⚠️ लाइव मोड में वास्तविक भुगतान प्रोसेसिंग लागू नहीं की गई है।', 'error');
+        }
+        
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
+        if (isTestMode) {
+            // Clear form after successful test payment
+            setTimeout(() => {
+                cancelPayment();
+            }, 2000);
+        }
+    }, 2000);
+}
+
+// Card number formatting
+document.addEventListener('DOMContentLoaded', function() {
+    const cardNumberInput = document.getElementById('cardNumber');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value;
+        });
+    }
+    
+    const expiryInput = document.getElementById('expiryDate');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+    
+    const cvvInput = document.getElementById('cvv');
+    if (cvvInput) {
+        cvvInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    }
+});
+
+// Test mode toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const testModeToggle = document.getElementById('testMode');
+    const testDataSection = document.getElementById('testDataSection');
+    const livePaymentWarning = document.getElementById('livePaymentWarning');
+    
+    if (testModeToggle) {
+        testModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                testDataSection.style.display = 'block';
+                livePaymentWarning.style.display = 'none';
+                showMessage('टेस्ट मोड सक्रिय - केवल नकली डेटा का उपयोग करें', 'info');
+            } else {
+                testDataSection.style.display = 'none';
+                livePaymentWarning.style.display = 'block';
+                showMessage('⚠️ लाइव मोड सक्रिय - सावधान रहें!', 'warning');
+            }
+        });
+    }
+});
