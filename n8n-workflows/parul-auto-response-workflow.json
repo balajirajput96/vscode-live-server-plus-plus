@@ -1,0 +1,71 @@
+{
+  "name": "Parul_Auto_Response_v1",
+  "nodes": [
+    {
+      "parameters": { 
+        "path": "balaji-automation", 
+        "responseMode": "onReceived", 
+        "httpMethod": "POST" 
+      },
+      "name": "Webhook", 
+      "type": "n8n-nodes-base.webhook", 
+      "typeVersion": 1, 
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType", 
+        "credential": "openaiApi",
+        "model": "gpt-4o-mini",
+        "prompt": "Reply in Hindi+English. User query: {{$json[\"query\"]}}. Be concise, helpful, university tone.",
+        "maxTokens": 180
+      },
+      "name": "AI",
+      "type": "n8n-nodes-base.openai", 
+      "typeVersion": 1, 
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "REPLACE_FROM_EMAIL",
+        "toEmail": "={{$json[\"email\"] || \"2203456300001@paruluniversity.ac.in\"}}",
+        "subject": "Parul University — Response",
+        "text": "={{$node[\"AI\"].json[\"choices\"][\"message\"][\"content\"]}}"
+      },
+      "name": "Gmail Send", 
+      "type": "n8n-nodes-base.gmail", 
+      "typeVersion": 1, 
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "resource": "file", 
+        "operation": "upload",
+        "fileName": "resp_{{Date.now()}}.txt",
+        "fileContent": "={{$node[\"AI\"].json[\"choices\"][\"message\"][\"content\"]}}",
+        "parentFolderId": "REPLACE_DRIVE_FOLDER_ID"
+      },
+      "name": "Drive Save", 
+      "type": "n8n-nodes-base.googleDrive", 
+      "typeVersion": 1, 
+      "position": [650, 400]
+    }
+  ],
+  "connections": {
+    "Webhook": { 
+      "main": [
+        [
+          { "node": "AI", "type": "main", "index": 0 }
+        ]
+      ] 
+    },
+    "AI": { 
+      "main": [
+        [
+          { "node": "Drive Save", "type": "main", "index": 0 }, 
+          { "node": "Gmail Send", "type": "main", "index": 0 }
+        ]
+      ] 
+    }
+  }
+}
