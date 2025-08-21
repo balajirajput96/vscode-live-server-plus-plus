@@ -49,14 +49,25 @@ if (contactForm) {
         
         // Get form data
         const formData = new FormData(this);
-        const name = this.querySelector('input[type="text"]').value;
+        const name = this.querySelector('input[placeholder="Your Name"]').value;
         const email = this.querySelector('input[type="email"]').value;
+        const company = this.querySelector('input[placeholder="Company/Organization"]').value;
+        const address = this.querySelector('input[placeholder="Street Address"]').value;
+        const city = this.querySelector('input[placeholder="City"]').value;
+        const state = this.querySelector('select').value;
+        const zipCode = this.querySelector('input[placeholder="ZIP Code"]').value;
         const subject = this.querySelector('input[placeholder="Subject"]').value;
         const message = this.querySelector('textarea').value;
         
         // Basic validation
         if (!name || !email || !message) {
-            alert('Please fill in all required fields.');
+            alert('Please fill in all required fields (Name, Email, and Message).');
+            return;
+        }
+        
+        // Validate state if US address fields are filled
+        if ((city || address || zipCode) && !state) {
+            alert('Please select a state if providing US address information.');
             return;
         }
         
@@ -76,7 +87,19 @@ if (contactForm) {
         
         // Simulate API call
         setTimeout(() => {
-            alert('Thank you for your message! I will get back to you soon.');
+            let successMessage = 'Thank you for your message! I will get back to you soon.';
+            
+            // Show complete address if provided
+            if (city && state) {
+                const stateCode = state;
+                const stateName = this.querySelector(`option[value="${state}"]`).textContent.split('(')[0].trim();
+                successMessage += `\n\nYour address: ${city}, ${stateName} (${stateCode})`;
+                
+                if (address) successMessage = successMessage.replace('Your address:', `Your address: ${address}, `);
+                if (zipCode) successMessage += ` ${zipCode}`;
+            }
+            
+            alert(successMessage);
             this.reset();
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
