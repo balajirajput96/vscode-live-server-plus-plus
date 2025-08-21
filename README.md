@@ -3,57 +3,11 @@
 
 ---
 
-## ⚡ DEPLOY NOW - One Command Setup
-
-### 🚀 One-Click Cloud Deployment
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
-
-```bash
-# Automated cloud deployment
-./deploy-to-cloud.sh
-
-# OR traditional Docker deployment
-./deploy-complete.sh
-```
-
-**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md)
-
-### Complete Deployment System Included
-- ✅ **One-click cloud deployment** to Railway, Render, Vercel, Netlify
-- ✅ **Automated Docker deployment** with interactive setup
-- ✅ **Automated verification** of all components
-- ✅ **Comprehensive documentation** for every scenario
-- ✅ **Status tracking** and progress monitoring
-- ✅ **GitHub Pages auto-deployment** for web components
-- ✅ **n8n automation platform** with Docker
-- ✅ **Pre-flight checklist** to ensure smooth setup
-- ✅ **Multiple deployment modes** (local/production/custom/cloud)
-
-### Quick Links
-📖 [START-HERE.md](./START-HERE.md) - Begin deployment
-☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide
-🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
-📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress
-✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks
-🗺️ [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md) - Visual guide
-
----
-
 ## 📋 Overview
 
 यह एक comprehensive AI-powered career automation system है जो biotech और bioinformatics professionals के लिए specially designed किया गया है। यह system आपको job search से लेकर interview preparation तक, हर step में AI की power का use करके successful career बनाने में help करता है।
 
 ## 🎯 Key Features
-
-### 🎉 NEW: ML Deployment Platform ⭐
-- **Complete ML model deployment solution**
-- FastAPI backend with auto-generated API docs
-- Interactive web dashboard for model management
-- Single & batch prediction endpoints
-- Real-time monitoring and analytics
-- Multi-platform deployment (Railway, Render, Heroku, Docker)
-- **[📘 View Complete Guide →](./ml-deployment-platform/README.md)**
 
 ### 1. 🔬 AI-Powered Portfolio Builder
 - Project documentation generator
@@ -73,44 +27,17 @@
 - Skill-based content
 - Company-targeted messaging
 
-### 4. 🤖 Microsoft Copilot Integration ⭐ **NEW**
-- M365 Copilot project templates
-- Teams collaboration automation
-- Lab workflow optimization
-- Clinical data dashboard examples
-- Copilot API integration guides
-- Ready-to-use LinkedIn showcases
-- Resume enhancement templates
-
-### 5. 💼 Job Application Tracker
+### 4. 💼 Job Application Tracker
 - Pharma companies database
 - Application status tracking
 - Interview scheduling
 - Success analytics
 
-### 6. 🤖 AI Prompt Library
+### 5. 🤖 AI Prompt Library
 - Ready-to-use prompts for all tools
 - Copy-paste templates
 - Industry-specific content
 - Multi-platform compatibility
-- **Microsoft Copilot specialized prompts** ⭐ **NEW**
-
-### 6. 🔍 Sonar API Integration
-- Complete Perplexity API documentation (Hindi)
-- Step-by-step implementation guide
-- Code examples in multiple languages
-- Real-time AI search and responses
-- [सोनार एपीआई त्वरित प्रारंभ गाइड](./Sonar_API_Quick_Start.md)
-
-### 6. 🔄 AI Agent Automation Pack
-- **N8N Workflows**: Complete weekly social posting automation
-- **HTTP-only variant**: Uses standard nodes for broader compatibility
-- **Google Sheets Integration**: Pull topics and track posted content
-- **Multi-platform posting**: LinkedIn, Facebook via Buffer API
-- **AI-generated images**: Predis.ai integration for professional visuals
-- **Ready-to-import**: JSON workflows with setup documentation
-
-📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
 
 ---
 
@@ -125,25 +52,21 @@ open index.html
 ### Step 2: Set Up AI Tools
 Register for these free/premium AI tools:
 - **ChatGPT** (Free/Plus $20/month)
-- **Ollama** (100% Free - Local LLMs) ⭐ **NEW** - [Setup Guide](./OLLAMA-DOCKER-SETUP.md)
-- **Perplexity (Sonar API)** (Free/Pro $20/month)
 - **Wix AI** (Free/Premium $16/month) 
 - **Predis.ai** (Free/Pro $32/month)
 - **Buffer** (Free/Pro $6/month)
 
-### Step 3: Use Ready-Made Prompts & Templates
+### Step 3: Use Ready-Made Prompts
 1. Copy prompts from the AI Prompt Library
-2. **NEW**: Access Microsoft Copilot integration templates
-3. Paste into your chosen AI tool
-4. Customize with your specific details
-5. Generate professional content
-6. **NEW**: Use Copilot project generators for instant LinkedIn posts and resume bullets
+2. Paste into your chosen AI tool
+3. Customize with your specific details
+4. Generate professional content
 
-### Step 4: Showcase Microsoft Copilot Expertise ⭐ **NEW**
-- **Monday**: Create Copilot integration project showcase
-- **Wednesday**: Generate LinkedIn posts highlighting M365 expertise  
-- **Friday**: Update resume with Copilot achievements
-- **Sunday**: Plan next Copilot implementation project
+### Step 4: Automate Your Workflow
+- **Monday**: LinkedIn content creation
+- **Wednesday**: GitHub documentation
+- **Friday**: Job applications
+- **Sunday**: Progress review
 
 ---
 
@@ -155,7 +78,6 @@ Register for these free/premium AI tools:
 ├── 📄 Job_Tracking_System.html      # Job Application Tracker
 ├── 📄 AI_Career_Automation_Guide.md # Complete Guide
 ├── 📄 Social_Media_Templates.md     # Content Templates
-├── 📄 Sonar_API_Quick_Start.md      # Sonar API Documentation (Hindi)
 └── 📄 README.md                     # This File
 ```
 
@@ -177,24 +99,6 @@ Register for these free/premium AI tools:
 3. Click "Generate AI Content"
 4. Copy the generated content
 5. Use in your applications
-
-### 📋 **NEW: Complete Personal Automation Guide**
-**🎓 [GitHub Student Pack से Complete Personal Automation Setup](Complete_Personal_Automation_Guide.md)**
-
-**जो इस guide में मिलेगा:**
-- **$200,000+ worth tools** बिल्कुल मुफ्त
-- **n8n, Google Apps Script, Make.com** complete setup
-- **YouTube automation** workflows
-- **Personal assistant** AI agents
-- **Step-by-step instructions** with verified links
-- **Social media automation** templates
-- **GitHub Student Pack** benefits aur access methods
-
-**🚀 क्यों जरूरी है?**
-- Time save करें: 2-3 hours daily
-- Automate करें: 50+ daily tasks
-- Professional automation: YouTube से social media तक
-- Free tools का maximum use
 
 ### 2. Job Tracking System (`Job_Tracking_System.html`)
 **Features:**
@@ -225,27 +129,6 @@ Register for these free/premium AI tools:
 - Twitter quick posts
 - Project showcase formats
 - Industry commentary templates
-- **Microsoft Copilot integration showcases** ⭐ **NEW**
-- **M365 transformation stories** ⭐ **NEW**
-
-### 5. Microsoft Copilot Templates (`Microsoft_Copilot_Templates.md`) ⭐ **NEW**
-**Contents:**
-- Lab automation project examples
-- Clinical data dashboard templates
-- Copilot API integration guides
-- LinkedIn showcase templates
-- Resume enhancement examples
-- Technical documentation samples
-- Implementation best practices
-
-### 6. Copilot-Specific AI Prompts (`ai-prompts/copilot-specific-prompts.md`) ⭐ **NEW**
-**Contents:**
-- LinkedIn content creation prompts
-- Resume enhancement prompts
-- Technical documentation prompts
-- Interview preparation prompts
-- Portfolio building prompts
-- Microsoft ecosystem integration guides
 
 ---
 
@@ -514,40 +397,25 @@ This system is designed for personal career development use. Feel free to:
 
 ---
 
----
-
-## 🤖 Microsoft Copilot Integration Highlights ⭐ **NEW FEATURE**
-
-### What Makes This Special
-This system now includes comprehensive **Microsoft Copilot integration templates** specifically designed for biotechnology professionals, making it the first career automation platform to focus on showcasing M365 Copilot expertise in scientific careers.
-
-### Ready-to-Use Copilot Showcases
-- **Lab Automation Project**: 70% efficiency improvement templates
-- **Clinical Data Dashboard**: Power BI Copilot integration examples  
-- **Bioinformatics Pipeline**: Custom Copilot API implementations
-- **Teams Collaboration**: Research workflow automation examples
-
-### Instant Content Generation
-Click "Generate Template" and instantly get:
-✅ **LinkedIn Posts**: Professional Copilot project showcases
-✅ **Resume Bullets**: Quantified achievements and technical skills
-✅ **Technical Documentation**: Complete implementation guides
-✅ **Interview Prep**: Copilot-specific behavioral questions
-
-### Industry Impact
-Pharmaceutical companies are rapidly adopting Microsoft 365 Copilot. Professionals who can demonstrate hands-on Copilot integration experience in biotech contexts will be in **extremely high demand**.
-
-### Getting Started with Copilot Features
-1. Open the main dashboard (`career-automation-system/index.html`)
-2. Click the **"Copilot Integration"** tab
-3. Choose from 3 professional project templates
-4. Click **"Generate Template"** for instant LinkedIn posts and resume content
-5. Use the **"Copy Prompt"** feature for AI-powered content creation
-
----
-
 **🚀 Ready to transform your biotech career with AI? Start with `index.html` and follow the automation guide!**
 
-*Last Updated: January 2024 - Now with Microsoft Copilot Integration!*
-*Version: 2.0 - Copilot Enhanced Edition*
-*Compatibility: All modern browsers + Microsoft 365 ecosystem*
+---
+
+*Last Updated: January 2024*
+*Version: 1.0*
+*Compatibility: All modern browsers*
+
+
+## 🤖 Automated Updates
+**Last automated update:** 2025-08-21T18:41:04.773Z  
+**System status:** ✅ Active  
+**Next scheduled run:** 2025-08-22T09:00:00.000Z
+
+### Recent Automation Activities
+- ✅ Portfolio content refreshed
+- ✅ Social media templates updated
+- ✅ Job tracking optimized
+- ✅ AI prompts enhanced
+
+---
+*Powered by AI Career Automation System*
