@@ -15,6 +15,14 @@
             <div class="header-content">
                 <h1><i class="fas fa-robot"></i> AI Career Automation System</h1>
                 <p>बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक - आपका पूर्ण करियर डैशबोर्ड</p>
+                <div class="header-actions">
+                    <button class="btn btn-sm btn-outline" onclick="showWebhookConfig()" title="Webhook Configuration">
+                        <i class="fas fa-cog"></i> Webhook Setup
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="testWebhookConnection()" title="Test Connection">
+                        <i class="fas fa-plug"></i> Test
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -90,7 +98,7 @@
                     <button class="btn btn-primary" onclick="generatePortfolioContent()">
                         <i class="fas fa-magic"></i> AI से कंटेंट जनरेट करें
                     </button>
-                    <button class="btn btn-secondary" onclick="saveProject()">
+                    <button class="btn btn-secondary" onclick="saveProjectWithWebhook()">
                         <i class="fas fa-save"></i> प्रोजेक्ट सेव करें
                     </button>
                 </div>
