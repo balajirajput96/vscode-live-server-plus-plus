@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎤 Voice AI Career Automation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .voice-controls {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            margin: 20px;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .mic-button.listening {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+            }
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+        }
+
+        .transcription {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 100px;
+        }
+
+        .transcription h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .config-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .config-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .config-group h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .conversation-history {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .message.user {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message.assistant {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .logs {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Voice AI Career Automation</h1>
+            <p>आवाज से करियर को आगे बढ़ाएं - बोलिए और काम हो जाए!</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Voice Controls -->
+            <div class="voice-controls">
+                <button id="micButton" class="mic-button" title="Voice Commands शुरू करें">
+                    🎤
+                </button>
+                <div id="status" class="status">
+                    Voice AI Agent तैयार है। माइक बटन दबाकर बोलना शुरू करें।
+                </div>
+            </div>
+
+            <!-- Current Transcription -->
+            <div class="transcription">
+                <h3>🗣️ वर्तमान बातचीत</h3>
+                <div id="currentTranscription">यहाँ आपकी बात दिखेगी...</div>
+            </div>
+
+            <!-- Configuration Panel -->
+            <div class="config-panel">
+                <div class="config-group">
+                    <h3>🔧 AI Configuration</h3>
+                    <div class="form-group">
+                        <label for="openaiKey">OpenAI API Key:</label>
+                        <input type="password" id="openaiKey" placeholder="sk-...">
+                    </div>
+                    <div class="form-group">
+                        <label for="language">Language:</label>
+                        <select id="language">
+                            <option value="hi-IN">Hindi (हिंदी)</option>
+                            <option value="en-US">English (US)</option>
+                            <option value="en-IN">English (India)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="llmProvider">LLM Provider:</label>
+                        <select id="llmProvider">
+                            <option value="openai">OpenAI GPT-4</option>
+                            <option value="gemini">Google Gemini</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h3>🔗 n8n Integration</h3>
+                    <div class="form-group">
+                        <label for="n8nWebhook">n8n Webhook URL:</label>
+                        <input type="url" id="n8nWebhook" placeholder="https://your-n8n.com/webhook/voice">
+                    </div>
+                    <button class="btn btn-primary" onclick="testN8nConnection()">
+                        Connection Test करें
+                    </button>
+                </div>
+            </div>
+
+            <!-- Features Overview -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3>LinkedIn Posts</h3>
+                    <p>"मेरे लिए Python project के बारे में LinkedIn post बनाओ"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Resume Optimization</h3>
+                    <p>"मेरे resume को Bioinformatics role के लिए optimize करो"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Job Tracking</h3>
+                    <p>"Sun Pharma में Data Analyst position के लिए applied status add करो"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>n8n Automation</h3>
+                    <p>"Weekly content generation workflow start करो"</p>
+                </div>
+            </div>
+
+            <!-- Conversation History -->
+            <div class="config-group">
+                <h3>💬 Conversation History</h3>
+                <div id="conversationHistory" class="conversation-history">
+                    <!-- Conversation will appear here -->
+                </div>
+                <button class="btn btn-secondary" onclick="clearHistory()">
+                    History Clear करें
+                </button>
+            </div>
+
+            <!-- Example Commands -->
+            <div class="config-group">
+                <h3>📝 Example Voice Commands</h3>
+                <div class="logs">
+                    <strong>LinkedIn Posts:</strong><br>
+                    • "मेरे लिए एक LinkedIn post बनाओ Python project के बारे में"<br>
+                    • "Bioinformatics में career growth के बारे में professional post बनाओ"<br><br>
+                    
+                    <strong>Job Applications:</strong><br>
+                    • "Biocon में Senior Analyst position के लिए applied status add करो"<br>
+                    • "Dr. Reddy's में interview scheduled status update करो"<br><br>
+                    
+                    <strong>Resume Optimization:</strong><br>
+                    • "मेरे resume को Data Scientist role के लिए optimize करो"<br>
+                    • "Pharma industry के लिए resume improve करो"<br><br>
+                    
+                    <strong>n8n Workflows:</strong><br>
+                    • "Content generation workflow trigger करो"<br>
+                    • "Job application tracking workflow start करो"
+                </div>
+            </div>
+
+            <!-- System Logs -->
+            <div class="config-group">
+                <h3>📋 System Logs</h3>
+                <div id="systemLogs" class="logs">
+                    Voice AI Agent initialized successfully...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Voice AI Agent -->
+    <script src="VoiceAIAgent.js"></script>
+    
+    <script>
+        let voiceAgent = null;
+        let isListening = false;
+
+        // Initialize Voice AI Agent on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeVoiceAgent();
+            loadConfiguration();
+            setupEventListeners();
+            
+            addLog('Voice AI Career Automation System initialized');
+            addLog('Ready for voice commands...');
+        });
+
+        function initializeVoiceAgent() {
+            const config = {
+                language: document.getElementById('language').value,
+                llmProvider: document.getElementById('llmProvider').value,
+                openaiApiKey: document.getElementById('openaiKey').value,
+                n8nWebhookUrl: document.getElementById('n8nWebhook').value
+            };
+
+            voiceAgent = new VoiceAIAgent(config);
+
+            // Override event handlers
+            voiceAgent.onListeningStart = () => {
+                updateStatus('🎤 सुन रहा हूँ... बोलिए!', 'listening');
+                document.getElementById('micButton').classList.add('listening');
+                addLog('Started listening for voice commands');
+            };
+
+            voiceAgent.onListeningEnd = () => {
+                updateStatus('Voice AI Agent तैयार है', 'ready');
+                document.getElementById('micButton').classList.remove('listening');
+                addLog('Stopped listening');
+            };
+
+            voiceAgent.onTranscription = (final, interim) => {
+                const transcriptionDiv = document.getElementById('currentTranscription');
+                if (final) {
+                    transcriptionDiv.innerHTML = `<strong>आपने कहा:</strong> ${final}`;
+                    addToConversationHistory('user', final);
+                    addLog(`Transcription: ${final}`);
+                } else if (interim) {
+                    transcriptionDiv.innerHTML = `<em>सुन रहा हूँ:</em> ${interim}`;
+                }
+            };
+
+            voiceAgent.onError = (error) => {
+                updateStatus(`❌ Error: ${error}`, 'error');
+                addLog(`Error: ${error}`);
+            };
+        }
+
+        function setupEventListeners() {
+            const micButton = document.getElementById('micButton');
+            
+            micButton.addEventListener('click', () => {
+                if (isListening) {
+                    voiceAgent.stopListening();
+                    isListening = false;
+                } else {
+                    voiceAgent.startListening();
+                    isListening = true;
+                }
+            });
+
+            // Configuration change handlers
+            document.getElementById('openaiKey').addEventListener('change', updateConfiguration);
+            document.getElementById('language').addEventListener('change', updateConfiguration);
+            document.getElementById('llmProvider').addEventListener('change', updateConfiguration);
+            document.getElementById('n8nWebhook').addEventListener('change', updateConfiguration);
+        }
+
+        function updateConfiguration() {
+            if (voiceAgent) {
+                const newConfig = {
+                    language: document.getElementById('language').value,
+                    llmProvider: document.getElementById('llmProvider').value,
+                    openaiApiKey: document.getElementById('openaiKey').value,
+                    n8nWebhookUrl: document.getElementById('n8nWebhook').value
+                };
+                
+                voiceAgent.updateConfig(newConfig);
+                saveConfiguration();
+                addLog('Configuration updated');
+            }
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        function addToConversationHistory(role, content) {
+            const historyDiv = document.getElementById('conversationHistory');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const time = new Date().toLocaleString('hi-IN');
+            messageDiv.innerHTML = `
+                <div class="message-time">${time}</div>
+                <div>${content}</div>
+            `;
+            
+            historyDiv.appendChild(messageDiv);
+            historyDiv.scrollTop = historyDiv.scrollHeight;
+        }
+
+        function addLog(message) {
+            const logsDiv = document.getElementById('systemLogs');
+            const time = new Date().toLocaleTimeString();
+            logsDiv.innerHTML += `[${time}] ${message}\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function clearHistory() {
+            if (voiceAgent) {
+                voiceAgent.clearHistory();
+                document.getElementById('conversationHistory').innerHTML = '';
+                addLog('Conversation history cleared');
+            }
+        }
+
+        function testN8nConnection() {
+            const webhookUrl = document.getElementById('n8nWebhook').value;
+            if (!webhookUrl) {
+                alert('कृपया n8n webhook URL enter करें');
+                return;
+            }
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    test: true,
+                    message: 'Voice AI Agent connection test',
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('✅ n8n connection successful!');
+                    addLog('n8n connection test successful');
+                } else {
+                    alert('❌ n8n connection failed');
+                    addLog('n8n connection test failed');
+                }
+            })
+            .catch(error => {
+                alert('❌ n8n connection error: ' + error.message);
+                addLog('n8n connection error: ' + error.message);
+            });
+        }
+
+        function saveConfiguration() {
+            const config = {
+                openaiKey: document.getElementById('openaiKey').value,
+                language: document.getElementById('language').value,
+                llmProvider: document.getElementById('llmProvider').value,
+                n8nWebhook: document.getElementById('n8nWebhook').value
+            };
+            localStorage.setItem('voiceAIConfig', JSON.stringify(config));
+        }
+
+        function loadConfiguration() {
+            const savedConfig = localStorage.getItem('voiceAIConfig');
+            if (savedConfig) {
+                const config = JSON.parse(savedConfig);
+                document.getElementById('openaiKey').value = config.openaiKey || '';
+                document.getElementById('language').value = config.language || 'hi-IN';
+                document.getElementById('llmProvider').value = config.llmProvider || 'openai';
+                document.getElementById('n8nWebhook').value = config.n8nWebhook || '';
+            }
+        }
+
+        // Test function for demonstration
+        function testVoiceCommand(command) {
+            if (voiceAgent) {
+                voiceAgent.processVoiceCommand(command);
+                addToConversationHistory('user', command);
+            }
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Space bar to toggle listening
+            if (event.code === 'Space' && event.target.tagName !== 'INPUT') {
+                event.preventDefault();
+                document.getElementById('micButton').click();
+            }
+        });
+    </script>
+</body>
+</html>
