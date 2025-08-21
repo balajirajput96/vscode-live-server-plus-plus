@@ -1,0 +1,51 @@
+name: Notify n8n on Push
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  notify-n8n:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Get commit info
+        id: commit
+        run: |
+          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+          
+      - name: Send notification to n8n
+        run: |
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "query": "Repository updated: ${{ steps.commit.outputs.message }}",
+              "email": "2203456300001@paruluniversity.ac.in",
+              "type": "repo_update",
+              "commit_sha": "${{ steps.commit.outputs.sha }}",
+              "author": "${{ steps.commit.outputs.author }}",
+              "repository": "${{ github.repository }}",
+              "branch": "${{ github.ref_name }}"
+            }'
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+          
+      - name: Health check webhook
+        if: always()
+        run: |
+          echo "Testing webhook connectivity..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{"type":"health","query":"ping","email":"2203456300001@paruluniversity.ac.in"}')
+          if [ "$response" == "200" ]; then
+            echo "✅ Webhook is healthy"
+          else
+            echo "❌ Webhook returned HTTP $response"
+            exit 1
+          fi
