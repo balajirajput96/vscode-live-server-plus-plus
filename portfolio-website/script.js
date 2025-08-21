@@ -43,27 +43,217 @@ window.addEventListener('scroll', () => {
 
 // Contact form handling
 const contactForm = document.querySelector('.contact-form');
+
+// US State Codes Mapping
+const US_STATES = {
+    'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA',
+    'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE', 'Florida': 'FL', 'Georgia': 'GA',
+    'Hawaii': 'HI', 'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA',
+    'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD',
+    'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO',
+    'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ',
+    'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH',
+    'Oklahoma': 'OK', 'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
+    'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT',
+    'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY'
+};
+
+// Popular US Cities to State Mapping
+const CITY_TO_STATE = {
+    // California
+    'Mountain View': 'CA', 'Los Angeles': 'CA', 'San Francisco': 'CA', 'San Diego': 'CA', 'Sacramento': 'CA',
+    'Oakland': 'CA', 'Fresno': 'CA', 'Long Beach': 'CA', 'Santa Ana': 'CA', 'Anaheim': 'CA',
+    'Bakersfield': 'CA', 'Riverside': 'CA', 'Stockton': 'CA', 'Irvine': 'CA', 'Fremont': 'CA',
+    
+    // Washington
+    'Seattle': 'WA', 'Spokane': 'WA', 'Tacoma': 'WA', 'Vancouver': 'WA', 'Bellevue': 'WA',
+    'Kent': 'WA', 'Everett': 'WA', 'Renton': 'WA', 'Yakima': 'WA', 'Federal Way': 'WA',
+    
+    // New York
+    'New York': 'NY', 'Buffalo': 'NY', 'Rochester': 'NY', 'Yonkers': 'NY', 'Syracuse': 'NY',
+    'Albany': 'NY', 'New Rochelle': 'NY', 'Mount Vernon': 'NY', 'Schenectady': 'NY', 'Utica': 'NY',
+    'NYC': 'NY', 'Manhattan': 'NY', 'Brooklyn': 'NY', 'Queens': 'NY', 'Bronx': 'NY',
+    
+    // Texas
+    'Austin': 'TX', 'Houston': 'TX', 'Dallas': 'TX', 'San Antonio': 'TX', 'Fort Worth': 'TX',
+    'El Paso': 'TX', 'Arlington': 'TX', 'Corpus Christi': 'TX', 'Plano': 'TX', 'Laredo': 'TX',
+    
+    // Florida
+    'Miami': 'FL', 'Tampa': 'FL', 'Orlando': 'FL', 'Jacksonville': 'FL', 'St. Petersburg': 'FL',
+    'Hialeah': 'FL', 'Tallahassee': 'FL', 'Fort Lauderdale': 'FL', 'Port St. Lucie': 'FL', 'Pembroke Pines': 'FL',
+    
+    // Illinois
+    'Chicago': 'IL', 'Aurora': 'IL', 'Rockford': 'IL', 'Joliet': 'IL', 'Naperville': 'IL',
+    'Springfield': 'IL', 'Peoria': 'IL', 'Elgin': 'IL', 'Waukegan': 'IL', 'Cicero': 'IL',
+    
+    // Massachusetts
+    'Boston': 'MA', 'Worcester': 'MA', 'Springfield': 'MA', 'Lowell': 'MA', 'Cambridge': 'MA',
+    'New Bedford': 'MA', 'Brockton': 'MA', 'Quincy': 'MA', 'Lynn': 'MA', 'Fall River': 'MA',
+    
+    // New Jersey
+    'Newark': 'NJ', 'Jersey City': 'NJ', 'Paterson': 'NJ', 'Elizabeth': 'NJ', 'Edison': 'NJ',
+    'Woodbridge': 'NJ', 'Lakewood': 'NJ', 'Toms River': 'NJ', 'Hamilton': 'NJ', 'Trenton': 'NJ',
+    
+    // Georgia
+    'Atlanta': 'GA', 'Augusta': 'GA', 'Columbus': 'GA', 'Savannah': 'GA', 'Athens': 'GA',
+    'Sandy Springs': 'GA', 'Roswell': 'GA', 'Macon': 'GA', 'Johns Creek': 'GA', 'Albany': 'GA',
+    
+    // Pennsylvania
+    'Philadelphia': 'PA', 'Pittsburgh': 'PA', 'Allentown': 'PA', 'Erie': 'PA', 'Reading': 'PA',
+    'Scranton': 'PA', 'Bethlehem': 'PA', 'Lancaster': 'PA', 'Harrisburg': 'PA', 'Altoona': 'PA',
+    
+    // Colorado
+    'Denver': 'CO', 'Colorado Springs': 'CO', 'Aurora': 'CO', 'Fort Collins': 'CO', 'Lakewood': 'CO',
+    'Thornton': 'CO', 'Arvada': 'CO', 'Westminster': 'CO', 'Pueblo': 'CO', 'Centennial': 'CO',
+    
+    // Arizona
+    'Phoenix': 'AZ', 'Tucson': 'AZ', 'Mesa': 'AZ', 'Chandler': 'AZ', 'Glendale': 'AZ',
+    'Scottsdale': 'AZ', 'Gilbert': 'AZ', 'Tempe': 'AZ', 'Peoria': 'AZ', 'Surprise': 'AZ'
+};
+
+// Initialize address functionality
+function initializeAddressFunctionality() {
+    const cityInput = document.getElementById('cityInput');
+    const stateInput = document.getElementById('stateInput');
+    const citySuggestions = document.getElementById('citySuggestions');
+    let selectedIndex = -1;
+    
+    if (!cityInput || !stateInput || !citySuggestions) return;
+    
+    // City input event handlers
+    cityInput.addEventListener('input', function() {
+        const value = this.value.trim();
+        if (value.length < 2) {
+            citySuggestions.style.display = 'none';
+            return;
+        }
+        
+        // Find matching cities
+        const matches = Object.keys(CITY_TO_STATE).filter(city => 
+            city.toLowerCase().includes(value.toLowerCase())
+        ).slice(0, 8); // Limit to 8 suggestions
+        
+        if (matches.length > 0) {
+            showCitySuggestions(matches, citySuggestions);
+        } else {
+            citySuggestions.style.display = 'none';
+        }
+        
+        // Auto-populate state if exact match found
+        const exactMatch = Object.keys(CITY_TO_STATE).find(city => 
+            city.toLowerCase() === value.toLowerCase()
+        );
+        if (exactMatch) {
+            stateInput.value = CITY_TO_STATE[exactMatch];
+        }
+    });
+    
+    // Handle keyboard navigation in suggestions
+    cityInput.addEventListener('keydown', function(e) {
+        const suggestions = citySuggestions.querySelectorAll('.city-suggestion');
+        if (suggestions.length === 0) return;
+        
+        switch(e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, suggestions.length - 1);
+                updateHighlight(suggestions);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateHighlight(suggestions);
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (selectedIndex >= 0) {
+                    selectCity(suggestions[selectedIndex].textContent.split(',')[0]);
+                }
+                break;
+            case 'Escape':
+                citySuggestions.style.display = 'none';
+                selectedIndex = -1;
+                break;
+        }
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!cityInput.contains(e.target) && !citySuggestions.contains(e.target)) {
+            citySuggestions.style.display = 'none';
+            selectedIndex = -1;
+        }
+    });
+    
+    function showCitySuggestions(cities, container) {
+        container.innerHTML = '';
+        selectedIndex = -1;
+        
+        cities.forEach(city => {
+            const suggestion = document.createElement('div');
+            suggestion.className = 'city-suggestion';
+            suggestion.textContent = `${city}, ${CITY_TO_STATE[city]}`;
+            suggestion.addEventListener('click', () => selectCity(city));
+            container.appendChild(suggestion);
+        });
+        
+        container.style.display = 'block';
+    }
+    
+    function updateHighlight(suggestions) {
+        suggestions.forEach((suggestion, index) => {
+            suggestion.classList.toggle('highlighted', index === selectedIndex);
+        });
+    }
+    
+    function selectCity(city) {
+        cityInput.value = city;
+        stateInput.value = CITY_TO_STATE[city];
+        citySuggestions.style.display = 'none';
+        selectedIndex = -1;
+    }
+}
+
 if (contactForm) {
+    // Initialize address functionality
+    initializeAddressFunctionality();
+    
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         // Get form data
         const formData = new FormData(this);
-        const name = this.querySelector('input[type="text"]').value;
-        const email = this.querySelector('input[type="email"]').value;
-        const subject = this.querySelector('input[placeholder="Subject"]').value;
-        const message = this.querySelector('textarea').value;
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const subject = formData.get('subject');
+        const street = formData.get('street');
+        const city = formData.get('city');
+        const state = formData.get('state');
+        const zip = formData.get('zip');
+        const message = formData.get('message');
         
         // Basic validation
         if (!name || !email || !message) {
-            alert('Please fill in all required fields.');
+            alert('कृपया सभी आवश्यक फील्ड भरें। (Please fill in all required fields.)');
             return;
         }
         
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address.');
+            alert('कृपया एक मान्य ईमेल पता दर्ज करें। (Please enter a valid email address.)');
+            return;
+        }
+        
+        // ZIP code validation (if provided)
+        if (zip && !/^[0-9]{5}(-[0-9]{4})?$/.test(zip)) {
+            alert('कृपया एक मान्य ZIP कोड दर्ज करें। (Please enter a valid ZIP code.)');
+            return;
+        }
+        
+        // State code validation (if provided)
+        if (state && !/^[A-Z]{2}$/.test(state)) {
+            alert('कृपया एक मान्य 2-अक्षर का राज्य कोड दर्ज करें। (Please enter a valid 2-letter state code.)');
             return;
         }
         
@@ -71,12 +261,19 @@ if (contactForm) {
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         
-        submitBtn.textContent = 'Sending...';
+        submitBtn.textContent = 'भेजा जा रहा है... (Sending...)';
         submitBtn.disabled = true;
+        
+        // Show address details in confirmation if provided
+        let addressText = '';
+        if (street || city || state || zip) {
+            const addressParts = [street, `${city}, ${state}`, zip].filter(part => part);
+            addressText = `\nपता (Address): ${addressParts.join(' ')}`;
+        }
         
         // Simulate API call
         setTimeout(() => {
-            alert('Thank you for your message! I will get back to you soon.');
+            alert(`आपके संदेश के लिए धन्यवाद! मैं जल्द ही आपसे संपर्क करूंगा।\n(Thank you for your message! I will get back to you soon.)${addressText}`);
             this.reset();
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
