@@ -739,7 +739,7 @@ function getWebhookUrl() {
     // Try to get webhook URL from various sources
     return localStorage.getItem('webhookUrl') || 
            window.WEBHOOK_URL || 
-           process?.env?.N8N_WEBHOOK_URL ||
+           (typeof process !== 'undefined' && process?.env?.N8N_WEBHOOK_URL) ||
            null;
 }
 
