@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Entrepreneurship AI Automation System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-rocket"></i> Entrepreneurship AI Automation System</h1>
+                <p>YouTube + GitHub Pro + Microsoft + Gemini Pro - Complete Automation Platform</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="youtube">
+                <i class="fab fa-youtube"></i> YouTube Automation
+            </button>
+            <button class="nav-tab" data-tab="content">
+                <i class="fas fa-magic"></i> AI Content Engine
+            </button>
+            <button class="nav-tab" data-tab="security">
+                <i class="fas fa-shield-alt"></i> Security Monitor
+            </button>
+            <button class="nav-tab" data-tab="workflows">
+                <i class="fas fa-cogs"></i> Automation Workflows
+            </button>
+            <button class="nav-tab" data-tab="analytics">
+                <i class="fas fa-chart-line"></i> Analytics Dashboard
+            </button>
+            <button class="nav-tab" data-tab="tools">
+                <i class="fas fa-tools"></i> Tool Integration
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- YouTube Automation Section -->
+            <section id="youtube" class="tab-content active">
+                <div class="section-header">
+                    <h2><i class="fab fa-youtube"></i> YouTube Automation Pipeline</h2>
+                    <p>Research → Script → Thumbnail → Upload → Comments → Analytics</p>
+                </div>
+                
+                <div class="automation-pipeline">
+                    <div class="pipeline-step">
+                        <div class="step-header">
+                            <i class="fas fa-search"></i>
+                            <h3>1. Research & Topic Generation</h3>
+                        </div>
+                        <div class="step-content">
+                            <div class="form-group">
+                                <label for="niche">Target Niche</label>
+                                <select id="niche">
+                                    <option value="entrepreneurship">Entrepreneurship</option>
+                                    <option value="business">Business Strategy</option>
+                                    <option value="startup">Startup Advice</option>
+                                    <option value="finance">Finance & Investment</option>
+                                    <option value="marketing">Digital Marketing</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="keywords">Target Keywords</label>
+                                <input type="text" id="keywords" placeholder="startup, business ideas, entrepreneurship">
+                            </div>
+                            <button class="btn btn-primary" onclick="generateTopics()">
+                                <i class="fas fa-magic"></i> Generate Topic Ideas
+                            </button>
+                            <div id="topicResults" class="results-section"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step">
+                        <div class="step-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>2. Script Generation</h3>
+                        </div>
+                        <div class="step-content">
+                            <div class="form-group">
+                                <label for="videoTopic">Selected Topic</label>
+                                <input type="text" id="videoTopic" placeholder="Video topic from research">
+                            </div>
+                            <div class="form-group">
+                                <label for="videoLength">Video Length</label>
+                                <select id="videoLength">
+                                    <option value="short">Short (30-60 seconds)</option>
+                                    <option value="medium">Medium (8-10 minutes)</option>
+                                    <option value="long">Long (15-20 minutes)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="scriptStyle">Script Style</label>
+                                <select id="scriptStyle">
+                                    <option value="educational">Educational</option>
+                                    <option value="conversational">Conversational</option>
+                                    <option value="storytelling">Storytelling</option>
+                                    <option value="tips">Tips & Tricks</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateScript()">
+                                <i class="fas fa-magic"></i> Generate Script
+                            </button>
+                            <div id="scriptResults" class="results-section"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step">
+                        <div class="step-header">
+                            <i class="fas fa-image"></i>
+                            <h3>3. Thumbnail & Title Generation</h3>
+                        </div>
+                        <div class="step-content">
+                            <div class="form-group">
+                                <label for="thumbnailStyle">Thumbnail Style</label>
+                                <select id="thumbnailStyle">
+                                    <option value="professional">Professional</option>
+                                    <option value="eye-catching">Eye-catching</option>
+                                    <option value="minimalist">Minimalist</option>
+                                    <option value="bold">Bold & Dramatic</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateThumbnail()">
+                                <i class="fas fa-magic"></i> Generate Thumbnail & Titles
+                            </button>
+                            <div id="thumbnailResults" class="results-section"></div>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step">
+                        <div class="step-header">
+                            <i class="fas fa-upload"></i>
+                            <h3>4. Upload Automation</h3>
+                        </div>
+                        <div class="step-content">
+                            <div class="form-group">
+                                <label for="uploadSchedule">Upload Schedule</label>
+                                <select id="uploadSchedule">
+                                    <option value="immediate">Immediate</option>
+                                    <option value="schedule">Schedule for Later</option>
+                                    <option value="draft">Save as Draft</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="scheduleTime" style="display: none;">
+                                <label for="publishTime">Publish Time</label>
+                                <input type="datetime-local" id="publishTime">
+                            </div>
+                            <button class="btn btn-primary" onclick="prepareUpload()">
+                                <i class="fas fa-upload"></i> Prepare Upload
+                            </button>
+                            <div id="uploadResults" class="results-section"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Content Engine Section -->
+            <section id="content" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-magic"></i> AI Content Engine</h2>
+                    <p>Gemini Pro + Microsoft Copilot + Custom AI Agents</p>
+                </div>
+                
+                <div class="ai-tools-grid">
+                    <div class="ai-tool-card">
+                        <h3><i class="fas fa-gem"></i> Gemini Pro Agent</h3>
+                        <div class="form-group">
+                            <label for="geminiPrompt">Prompt Template</label>
+                            <textarea id="geminiPrompt" rows="4" placeholder="Enter your Gemini Pro prompt here..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="executeGeminiPrompt()">
+                            <i class="fas fa-play"></i> Execute Prompt
+                        </button>
+                        <div id="geminiResults" class="results-section"></div>
+                    </div>
+
+                    <div class="ai-tool-card">
+                        <h3><i class="fab fa-microsoft"></i> Microsoft Copilot Agent</h3>
+                        <div class="form-group">
+                            <label for="copilotTask">Task Type</label>
+                            <select id="copilotTask">
+                                <option value="code">Code Generation</option>
+                                <option value="content">Content Writing</option>
+                                <option value="analysis">Data Analysis</option>
+                                <option value="documentation">Documentation</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="executeCopilotTask()">
+                            <i class="fas fa-play"></i> Execute Task
+                        </button>
+                        <div id="copilotResults" class="results-section"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Monitor Section -->
+            <section id="security" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-alt"></i> Security & Verification Monitor</h2>
+                    <p>100% Detection of Malicious Content & Code</p>
+                </div>
+                
+                <div class="security-dashboard">
+                    <div class="security-metric">
+                        <h3>Repository Security</h3>
+                        <div class="metric-value" id="repoSecurity">Secure</div>
+                        <button class="btn btn-secondary" onclick="scanRepositories()">
+                            <i class="fas fa-search"></i> Scan All Repos
+                        </button>
+                    </div>
+
+                    <div class="security-metric">
+                        <h3>Code Quality</h3>
+                        <div class="metric-value" id="codeQuality">Good</div>
+                        <button class="btn btn-secondary" onclick="analyzeCodeQuality()">
+                            <i class="fas fa-code"></i> Analyze Code
+                        </button>
+                    </div>
+
+                    <div class="security-metric">
+                        <h3>API Security</h3>
+                        <div class="metric-value" id="apiSecurity">Protected</div>
+                        <button class="btn btn-secondary" onclick="checkAPIKeys()">
+                            <i class="fas fa-key"></i> Check API Keys
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Automation Workflows Section -->
+            <section id="workflows" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-cogs"></i> Automation Workflows</h2>
+                    <p>n8n + Make.com + GitHub Actions Integration</p>
+                </div>
+                
+                <div class="workflow-grid">
+                    <div class="workflow-card">
+                        <h3>Daily Content Pipeline</h3>
+                        <p>Trending → Script → Thumbnail → Upload → Analytics</p>
+                        <div class="workflow-status">Status: <span class="status-active">Active</span></div>
+                        <button class="btn btn-primary" onclick="triggerDailyPipeline()">
+                            <i class="fas fa-play"></i> Trigger Now
+                        </button>
+                    </div>
+
+                    <div class="workflow-card">
+                        <h3>Comment Management</h3>
+                        <p>Sentiment → Reply Draft → Approve → Post</p>
+                        <div class="workflow-status">Status: <span class="status-active">Active</span></div>
+                        <button class="btn btn-primary" onclick="triggerCommentManagement()">
+                            <i class="fas fa-play"></i> Trigger Now
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Dashboard Section -->
+            <section id="analytics" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
+                    <p>Real-time Performance Metrics</p>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>YouTube Metrics</h3>
+                        <div class="metric">
+                            <span class="metric-label">Views (Last 28 days)</span>
+                            <span class="metric-value" id="youtubeViews">Loading...</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Subscribers</span>
+                            <span class="metric-value" id="youtubeSubscribers">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Automation Health</h3>
+                        <div class="metric">
+                            <span class="metric-label">Workflows Active</span>
+                            <span class="metric-value" id="activeWorkflows">4/4</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Success Rate</span>
+                            <span class="metric-value" id="successRate">98.5%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tool Integration Section -->
+            <section id="tools" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-tools"></i> Tool Integration Hub</h2>
+                    <p>Connect and Configure All Your AI Tools</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3><i class="fab fa-youtube"></i> YouTube Data API</h3>
+                        <div class="form-group">
+                            <label for="youtubeApiKey">API Key</label>
+                            <input type="password" id="youtubeApiKey" placeholder="Enter YouTube API Key">
+                        </div>
+                        <button class="btn btn-primary" onclick="connectYouTube()">
+                            <i class="fas fa-link"></i> Connect
+                        </button>
+                        <div class="connection-status" id="youtubeStatus">Not Connected</div>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3><i class="fas fa-gem"></i> Gemini Pro API</h3>
+                        <div class="form-group">
+                            <label for="geminiApiKey">API Key</label>
+                            <input type="password" id="geminiApiKey" placeholder="Enter Gemini API Key">
+                        </div>
+                        <button class="btn btn-primary" onclick="connectGemini()">
+                            <i class="fas fa-link"></i> Connect
+                        </button>
+                        <div class="connection-status" id="geminiStatus">Not Connected</div>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3><i class="fab fa-github"></i> GitHub API</h3>
+                        <div class="form-group">
+                            <label for="githubToken">Personal Access Token</label>
+                            <input type="password" id="githubToken" placeholder="Enter GitHub Token">
+                        </div>
+                        <button class="btn btn-primary" onclick="connectGitHub()">
+                            <i class="fas fa-link"></i> Connect
+                        </button>
+                        <div class="connection-status" id="githubStatus">Not Connected</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
