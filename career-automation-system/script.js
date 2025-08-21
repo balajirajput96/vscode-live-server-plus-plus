@@ -529,3 +529,708 @@ function initializeHelp() {
 
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
+
+// Template Data Storage
+const pharmaTemplates = {
+    resumes: {
+        qc_qa: {
+            title: "QC/QA Apprentice Resume - Balaji Dilip Singh",
+            content: `# Balaji Dilip Singh
+Vadodara, Gujarat • +91-<PHONE> • <EMAIL> • LinkedIn: <URL> • GitHub: <URL> • NAPS/NATS ID: <ID if any>
+
+**TARGET ROLE: QC/QA Apprentice | QC/QA Trainee (OSD/API/Diagnostics)**
+
+## SUMMARY
+- Diploma in Biotechnology (Parul University) fresher with internship exposure in bioinformatics/data handling and strong interest in GMP-driven operations.
+- Comfortable with cGMP/GDP/ALCOA+, documentation (BMR/BPR/logbooks), sample handling/labeling, and shift operations.
+- "Bio + Data" edge: beginner Python/Linux/SQL; building mini-projects (FASTA/BLAST, QC data dashboard) on GitHub.
+
+## EDUCATION
+- Diploma in Biotechnology — Parul University, Vadodara | <Year> — <CGPA/%>
+
+## INTERNSHIP
+- Bioinformatics Intern — <Org/Lab>, <City> | <MM YYYY> (1 month)
+  - Worked on sequence data workflows: FASTA parsing, BLAST (NCBI) basics; maintained run logs and observation notes.
+  - Documented steps in SOP-like format; basic QC of outputs and CSV export for review.
+
+## CORE SKILLS
+- Quality & Compliance: cGMP, GDP, ALCOA+, data integrity; deviation/CAPA/change control (basics).
+- Documentation: BMR/BPR familiarity, line clearance records, logbook discipline, sample labeling/traceability.
+- Lab: Solution prep/safety, weighing/calibration basics, pH measurement, UV-Vis, pipetting; GLP basics.
+- Tools: MS Excel (filters, pivot, VLOOKUP), Google Sheets; Python (Pandas – beginner), Linux CLI (grep/sed basics), Git/GitHub; SQL (basics).
+- Plus: Web design (HTML/CSS) and digital marketing exposure—useful for reporting/communication.
+
+## PROJECTS (GitHub)
+- FASTA/BLAST Mini-Notebook — Parse sequences, compute GC%, (optional) run BLAST; export CSV summary. Repo: <URL>
+- QC Data Mini-Dashboard — Mock QC dataset with OOS/OOT flags, Pareto/trendlines (Excel/Python). Repo: <URL>
+
+## CERTIFICATIONS (select)
+- "Bioinformatics I – Finding Hidden Messages in DNA" (in progress), Python basics, Linux CLI primer
+- <Any notable course: Google Digital Marketing / IBM Intro to SE / AWS AI services> (relevant highlights)
+
+## ADDITIONAL
+- Languages: English, Hindi, Gujarati
+- Availability: Immediate; shift-ready; Vadodara/Ahmedabad/Halol/Ankleshwar
+
+**ATS KEYWORDS**
+cGMP, GDP, ALCOA+, SOP, BMR/BPR, Line Clearance, Deviation, CAPA, Change Control, OOS/OOT, GLP, Data Integrity, QC, QA, Documentation, Calibration, Apprentice, Trainee`
+        },
+        production: {
+            title: "Production Trainee Resume - Balaji Dilip Singh",
+            content: `# Balaji Dilip Singh
+Vadodara, Gujarat • +91-<PHONE> • <EMAIL> • LinkedIn: <URL> • NAPS/NATS ID: <ID if any>
+
+**TARGET ROLE: Production Trainee | Manufacturing Apprentice (OSD/API)**
+
+## SUMMARY
+- Biotech diploma fresher focused on shop-floor discipline, EHS/5S, and SOP-compliant manufacturing.
+- Understanding of BMR/BPR entries, line clearance, IPC basics (OSD), and material status labeling.
+- Shift-ready; quick learner for RMG/FBD/compression/coating (OSD) or sterile basics if applicable.
+
+## EDUCATION
+- Diploma in Biotechnology — Parul University, Vadodara | <Year> — <CGPA/%>
+
+## CORE SKILLS
+- Production: BMR/BPR entries, line clearance, reconciliation, IPC basics (weight/hardness/friability).
+- EHS/5S: PPE usage, housekeeping, near-miss reporting attitude, audit readiness mindset.
+- Compliance: cGMP, documentation accuracy, logbook maintenance.
+- Tools: Excel (basic logs), barcode/ERP familiarity (theoretical), English/Hindi reporting.
+
+## PROJECTS/INITIATIVES
+- Mock OSD Batch Docs — Sample BMR pages, IPC logs, simple deviation note draft.
+- 5S Checklist — Daily/weekly audit sheet template for aisle/label/cleanliness compliance.
+
+## ADDITIONAL
+- Availability: Immediate; shift-ready; Vadodara/Halol/A'bad/Ankleshwar
+- Languages: English, Hindi, Gujarati
+
+**ATS KEYWORDS**
+Production, BMR/BPR, IPC, Granulation, Compression, Coating, Packing, Line Clearance, Reconciliation, cGMP, EHS, 5S, SOP, OSD, API, Trainee, Apprentice`
+        },
+        lab_tech: {
+            title: "Lab Technician Resume - Balaji Dilip Singh",
+            content: `# Balaji Dilip Singh
+Vadodara, Gujarat • +91-<PHONE> • <EMAIL> • LinkedIn: <URL> • GitHub: <URL>
+
+**TARGET ROLE: Lab Technician/Assistant (Diagnostics/SME Labs)**
+
+## SUMMARY
+- Wet-lab basics: sample handling/ID, pipetting, solution prep, centrifugation, UV-Vis, basic microscopy.
+- Documentation-focused: logs, labeling, TAT tracking, internal QC basics; biosafety awareness.
+- Beginner Python/Excel for simple cleaning and reporting.
+
+## EDUCATION
+- Diploma in Biotechnology — Parul University | <Year> — <CGPA/%>
+
+## LAB SKILLS
+- Sample Management: receipt, labeling, storage (temp/time), aliquoting.
+- Techniques: dilution series, spectrophotometry (UV-Vis), pipetting practice, basic microscopy.
+- Quality: control runs (concept), SOP/logs, biosafety.
+- Data/Tools: Excel (filters/pivot), Google Sheets, basic Python (CSV cleaning), GitHub (portfolio).
+
+## PROJECTS
+- Diagnostics Data Log Template (Excel) — TAT, re-run flags, control tracking
+- ELISA/PCR theory notes + mock run sheet (practice)
+
+## ADDITIONAL
+- Availability: Immediate; shifts OK
+- Languages: English, Hindi, Gujarati
+
+**ATS KEYWORDS**
+Lab Technician, Sample Handling, Pipetting, UV-Vis, ELISA, Hematology Analyzer, Biochemistry Analyzer, TAT, QC Logs, SOP, GLP, Biosafety, Documentation`
+        }
+    },
+    coverLetters: {
+        apprentice: {
+            title: "Apprenticeship Cover Letter",
+            content: `Balaji Dilip Singh
+Vadodara, Gujarat • +91-<PHONE> • <EMAIL> • LinkedIn: <URL>
+
+Date: <DD Month YYYY>
+
+Hiring Team,
+<Company Name>
+
+Subject: Application for Apprentice/Trainee – QC/QA/Production
+
+Dear Hiring Team,
+
+I am a Diploma in Biotechnology (Parul University) fresher seeking an Apprentice/Trainee opportunity in QC/QA/Production. I bring internship exposure in bioinformatics workflows along with strong documentation and SOP-driven practices.
+
+Highlights aligned to entry-level roles:
+- Quality/GMP: Familiar with cGMP, GDP, ALCOA+; basic understanding of deviation/CAPA/change control.
+- Documentation & Lab: BMR/BPR familiarity, logbook discipline, line clearance records; basics of pH/UV-Vis/pipetting.
+- Tools: Excel (pivot/VLOOKUP) and beginner Python/Linux/SQL for simple reporting/continuous improvement.
+
+I am registered/ready to register under NAPS/NATS and am available for immediate joining. Locations: Vadodara/Ahmedabad/Halol/Ankleshwar. I am shift-ready.
+
+Attached: my resume tailored for Apprentice/Trainee roles. I would be grateful for an interview opportunity.
+
+Sincerely,
+Balaji Dilip Singh
++91-<PHONE> | <EMAIL>`
+        },
+        trainee: {
+            title: "Trainee Position Cover Letter",
+            content: `Balaji Dilip Singh
+Vadodara, Gujarat • +91-<PHONE> • <EMAIL> • LinkedIn: <URL>
+
+Date: <DD Month YYYY>
+
+Dear Hiring Manager,
+
+I am writing to express my strong interest in the Trainee position at <Company Name>. As a recent Diploma graduate in Biotechnology from Parul University, I am eager to begin my career in the pharmaceutical industry.
+
+My academic background and practical exposure have prepared me for entry-level roles in:
+- Quality Control/Quality Assurance operations
+- Production and manufacturing processes
+- Laboratory operations and data management
+
+Key qualifications:
+✓ Strong foundation in biotechnology principles
+✓ Hands-on experience with basic laboratory techniques
+✓ Understanding of regulatory compliance (cGMP, GDP)
+✓ Proficiency in documentation and data integrity
+✓ Readiness for shift work and diverse assignments
+
+I am particularly drawn to <Company Name> because of your reputation for excellence in pharmaceutical manufacturing and commitment to developing fresh talent. I am confident that my enthusiasm, technical aptitude, and willingness to learn will make me a valuable addition to your team.
+
+I am available for immediate joining and would welcome the opportunity to discuss how I can contribute to your organization's continued success.
+
+Thank you for your consideration.
+
+Best regards,
+Balaji Dilip Singh`
+        }
+    },
+    linkedin: {
+        headline: {
+            title: "LinkedIn Professional Headline",
+            content: `Biotech Diploma (Parul Univ) | NAPS-ready | QC/QA/Production Trainee | Python/SQL (beginner) | Vadodara/Ahmedabad
+
+Alternative Headlines:
+• Fresh Biotech Graduate | Apprentice-ready for Gujarat Pharma Belt | cGMP/Documentation Focus
+• Biotechnology Diploma | Quality Control Enthusiast | Python/Data Skills | Immediate Joining Available
+• Entry-level Pharmaceutical Professional | QC/QA/Production | Bioinformatics Background | Vadodara/Ahmedabad`
+        },
+        about: {
+            title: "LinkedIn About Section",
+            content: `Biotech diploma fresher with internship exposure in bioinformatics and strong interest in GMP/SOP-driven operations. Comfortable with documentation (BMR/BPR/logbooks), basic lab workflows (pH/UV-Vis/pipetting), and Excel-based reporting. Building "Bio + Data" edge via Python/SQL mini-projects (FASTA/BLAST, QC dashboard) on GitHub. Shift-ready; immediate joining in Gujarat pharma belt.
+
+🎯 **Currently Seeking:** Apprentice/Trainee positions in QC/QA/Production
+📍 **Location:** Open to Vadodara/Ahmedabad/Halol/Ankleshwar
+🔬 **Interests:** Quality Control, Data Integrity, Bioinformatics, Pharmaceutical Manufacturing
+
+🛠️ **Technical Skills:**
+• Laboratory: pH measurement, UV-Vis spectrophotometry, pipetting, solution preparation
+• Quality: cGMP, GDP, ALCOA+ principles, documentation practices
+• Data: Excel (Pivot tables, VLOOKUP), Python basics, SQL fundamentals
+• Tools: GitHub portfolio development, basic Linux command line
+
+💡 **What I Bring:**
+✓ Fresh perspective with solid theoretical foundation
+✓ Hands-on experience in data handling and analysis
+✓ Strong documentation and compliance mindset
+✓ Eagerness to learn and adapt in shift environments
+✓ Multilingual communication (English, Hindi, Gujarati)
+
+🤝 **Let's Connect:** Always open to discussing opportunities in pharmaceutical and biotechnology sectors. Feel free to reach out for networking, mentorship, or potential collaborations.`
+        },
+        skills: {
+            title: "LinkedIn Skills & Keywords",
+            content: `**Top Skills to Pin (Top 10):**
+1. cGMP (Current Good Manufacturing Practice)
+2. GDP (Good Documentation Practice)
+3. ALCOA+ (Data Integrity Principles)
+4. Documentation (BMR/BPR)
+5. Quality Control (QC)
+6. Quality Assurance (QA)
+7. Excel (Pivot Tables/VLOOKUP)
+8. Python (Beginner)
+9. SQL (Beginner)
+10. Linux CLI
+
+**Additional Skills to Add:**
+• Pipetting/UV-Vis
+• Data Integrity
+• Laboratory Safety
+• Good Laboratory Practice (GLP)
+• Batch Manufacturing Record (BMR)
+• Batch Processing Record (BPR)
+• Line Clearance
+• Deviation Management
+• CAPA (Corrective and Preventive Action)
+• Change Control
+• OOS/OOT (Out of Specification/Trend)
+• 5S Methodology
+• EHS (Environment, Health, Safety)
+• Bioinformatics
+• FASTA/BLAST
+• GitHub
+• Data Analysis
+• CSV Handling
+• Pharmaceutical Manufacturing
+• Apprenticeship Programs
+• NAPS/NATS Ready
+
+**Industry Keywords for Searchability:**
+Pharmaceutical, Biotechnology, Gujarat Pharma Belt, Sun Pharma, Zydus, Alembic, Fresher, Entry Level, Trainee, Apprentice, Immediate Joining, Shift Ready`
+        }
+    },
+    outreach: {
+        hr_pharma: {
+            title: "HR Outreach - Pharma Companies",
+            content: `**Subject:** Apprentice/Trainee – Fresher (Vadodara/Ahmedabad)
+
+Hi [Name],
+
+I'm Balaji (Biotech Diploma, Parul Univ), NAPS-ready. Comfortable with cGMP/GDP basics, documentation (BMR/BPR/logs) and shifts. Applied for [Role]. Sharing resume. Are there upcoming batches or a walk-in I can attend?
+
+Best regards,
+Balaji Dilip Singh
++91-[PHONE] | [EMAIL]
+
+---
+
+**Alternative Version (Longer):**
+
+Subject: Entry-level support for QC/QA (Apprentice/Trainee)
+
+Hi [Name],
+
+Hope you're doing well. I'm Balaji Dilip Singh, a recent Biotechnology Diploma graduate from Parul University, reaching out regarding entry-level opportunities at [Company Name].
+
+I can support documentation and simple reporting (Excel/Python – OOS trends). Immediate joining in Gujarat belt. May I share my resume for consideration?
+
+I'm particularly interested in:
+• QC/QA Apprentice positions
+• Production Trainee roles
+• Laboratory Assistant opportunities
+
+I'm NAPS-ready, shift-flexible, and available for immediate joining across Vadodara/Ahmedabad/Halol/Ankleshwar.
+
+Would be grateful for any guidance or upcoming opportunity information.
+
+Thanks for your time!
+
+Best regards,
+Balaji Dilip Singh
+[Contact Information]`
+        },
+        diagnostics: {
+            title: "Diagnostics Lab Outreach",
+            content: `**Subject:** Lab Technician – Fresher | Immediate joining
+
+Hi [Name],
+
+I'm Balaji, Biotech Diploma graduate with hands-on basics (pipetting, solution prep, UV-Vis) + documentation discipline. Can I visit for a short assessment this week? Resume attached.
+
+Key strengths:
+• Sample handling and labeling
+• Basic lab techniques
+• Documentation accuracy
+• TAT awareness
+• Immediate availability
+
+Available for shifts and eager to learn lab-specific protocols.
+
+Thanks!
+Balaji Dilip Singh
++91-[PHONE]
+
+---
+
+**Follow-up Message:**
+
+Hi [Name],
+
+Following up on my application for Lab Technician position. I understand the importance of accuracy and speed in diagnostic operations.
+
+Quick question: Do you have any upcoming training programs or assessment opportunities for fresh graduates?
+
+I'm ready to start immediately and committed to maintaining your lab's quality standards.
+
+Best regards,
+Balaji`
+        },
+        alumni: {
+            title: "Alumni Referral Messages",
+            content: `**Subject:** Referral guidance for Apprentice/Trainee
+
+Hi [Name],
+
+Hope you're doing great! I'm Balaji, a Biotech diploma fresher from Parul Univ targeting QC/QA/Production Apprentice roles. Any current openings to refer me to? I'll share JD + resume. Thanks!
+
+Best,
+Balaji
+
+---
+
+**Detailed Alumni Message:**
+
+Hi [Alumni Name],
+
+I hope this message finds you well. I'm Balaji Dilip Singh, a recent Biotechnology Diploma graduate from Parul University.
+
+I came across your profile and noticed you're working at [Company Name]. I'm currently seeking entry-level opportunities in the pharmaceutical industry, specifically:
+
+• QC/QA Apprentice positions
+• Production Trainee roles
+• Laboratory positions
+
+Given your experience at [Company], I was wondering if you could provide any insights about:
+1. Current hiring trends in your company
+2. Skills that are most valued for fresh graduates
+3. Any upcoming apprenticeship programs
+4. Best approach for applications
+
+I'd be incredibly grateful for any guidance or referral opportunities you might suggest. I'm ready for immediate joining and open to various locations in Gujarat.
+
+Would you be available for a brief call this week? I understand you're busy, so even a few minutes of advice would be invaluable.
+
+Thank you for your time and consideration!
+
+Best regards,
+Balaji Dilip Singh
+[Contact Information]
+[LinkedIn Profile]`
+        },
+        follow_up: {
+            title: "Follow-up Messages",
+            content: `**Subject:** Application follow-up – [Role, Job ID]
+
+Hi [Name],
+
+Applied on [date] for [Role]. I'm shift-ready, NAPS-ready, and open to Vadodara/Ahmedabad/Halol. Reattaching resume; kindly advise next steps.
+
+Thanks!
+Balaji Dilip Singh
++91-[PHONE]
+
+---
+
+**Second Follow-up (After 1 week):**
+
+Hi [Name],
+
+Following up on my application for [Role] submitted on [Date]. I remain very interested in the position and would appreciate any update on the selection process.
+
+Since my application, I've also completed:
+• [Any new certification/course]
+• [Additional relevant activity]
+
+I'm still available for immediate joining and eager to contribute to your team.
+
+Please let me know if you need any additional information.
+
+Best regards,
+Balaji
+
+---
+
+**Third Follow-up (After 2 weeks):**
+
+Hi [Name],
+
+I hope you're doing well. I wanted to follow up once more on my application for [Role] position.
+
+I understand recruitment processes can take time, and I wanted to reiterate my strong interest in joining [Company Name]. 
+
+In the meantime, I've been:
+• Enhancing my skills in [relevant area]
+• Networking with industry professionals
+• Preparing for pharmaceutical industry challenges
+
+If the position has been filled, I'd be grateful if you could keep my profile for any future openings. I'm genuinely excited about the prospect of contributing to your organization.
+
+Thank you for your patience and consideration.
+
+Best regards,
+Balaji Dilip Singh`
+        }
+    },
+    actionPlan: {
+        week1: {
+            title: "Week 1: Foundation + High-Volume Targeting",
+            content: `**WEEK 1 CHECKLIST:**
+
+**Day 1-2: Setup & Documentation**
+□ NAPS/NATS registration + documents upload
+□ Finalize resume variants (QC/QA Apprentice, Production Trainee, Lab Tech)
+□ Update LinkedIn (headline/about/skills), add Featured section
+□ Create GitHub account and basic portfolio structure
+
+**Day 3-4: Application Blitz**
+□ Target: 15-20 applications (Gujarat + "Apprentice/Trainee/QC/Production/Lab Tech")
+□ Focus companies: Sun Pharma, Zydus, Alembic, Torrent, Cadila
+□ Document applications in tracker spreadsheet
+
+**Day 5-6: Networking & Outreach**
+□ 10 LinkedIn DMs (HR/Alumni/Team Leads)
+□ 3 referral requests through college network
+□ Connect with Parul University alumni in pharma
+
+**Day 7: Skill Development Start**
+□ Python basics: variables, loops, basic file I/O (60-90 min)
+□ Linux commands: ls, cd, grep, basic navigation
+□ Review cGMP, GDP, ALCOA+ basics
+
+**Success Metrics Week 1:**
+• 15-20 applications submitted
+• 5-10 LinkedIn connections made
+• NAPS registration completed
+• Resume templates finalized
+• GitHub profile created
+
+**Red Flags to Watch:**
+• Less than 10% response rate by Day 7
+• Difficulty in finding job postings
+• Technical issues with applications
+
+**Adjustments if Needed:**
+• Expand search radius to Ankleshwar/Halol
+• Add more role types (Production, Packaging)
+• Increase networking efforts`
+        },
+        week2: {
+            title: "Week 2: Walk-ins + SME/Diagnostics Mix",
+            content: `**WEEK 2 CHECKLIST:**
+
+**Day 8-9: Physical Presence**
+□ Attend 1 walk-in or schedule on-site HR meet
+□ Prepare walk-in pack: resumes, certificates, ID proofs
+□ Target: Alembic Pharmaceuticals (Vadodara), local labs
+
+**Day 10-11: SME Focus**
+□ Shortlist SME/Diagnostics labs (Vadodara/Ahmedabad)
+□ Call/email for appointment slots
+□ Research: Supratech, Neuberg, local diagnostic centers
+
+**Day 12-13: Application Continuation**
+□ 15-20 more applications
+□ 10 follow-ups from Week 1 (email/call/DM)
+□ Focus on diagnostics and SME pharmaceutical companies
+
+**Day 14: Skill Development**
+□ Python Day 4-7: files, CSV handling
+□ BioPython installation and basic usage
+□ BLAST basics and NCBI introduction
+□ GitHub: FASTA parsing notebook draft
+
+**Success Metrics Week 2:**
+• 1 walk-in/HR meeting attended
+• 30+ total applications (cumulative)
+• 3-5 follow-up responses received
+• GitHub project started
+• 2-3 SME lab contacts made
+
+**Networking Goals:**
+• 5 new LinkedIn connections per day
+• 1 meaningful conversation with industry professional
+• Alumni coffee chat or phone call
+
+**Contingency Plans:**
+• If no walk-in opportunities: Schedule phone interviews
+• If low response rate: Expand to Ahmedabad/Halol
+• If technical difficulties: Seek help from college placement cell`
+        },
+        week3: {
+            title: "Week 3: Conversion Push + Portfolio Signal",
+            content: `**WEEK 3 CHECKLIST:**
+
+**Day 15-16: NAPS Follow-up**
+□ NAPS-linked apprenticeship leads follow-up (phone + email)
+□ Contact companies with active NAPS programs
+□ Check status of government apprenticeship portals
+
+**Day 17-18: Geographic Expansion**
+□ 15-20 applications; expand to Ankleshwar/Halol/Ahmedabad cluster
+□ Target contract manufacturing organizations
+□ Research API manufacturers in Gujarat
+
+**Day 19-20: Portfolio Development**
+□ Complete FASTA/BLAST demo + comprehensive README
+□ LinkedIn post about project (with screenshots)
+□ Add project link to all job applications
+
+**Day 21: Interview Preparation**
+□ Mock interview: 15 key questions
+  - cGMP/GDP/ALCOA+
+  - BMR/BPR understanding
+  - OOS/OOT scenarios
+  - IPC basics
+□ Practice answers with family/friends
+
+**Success Metrics Week 3:**
+• 45+ total applications
+• 1 completed GitHub project
+• 1 LinkedIn post with engagement
+• 1-2 interview calls/screenings
+• Strong follow-up response rate
+
+**Portfolio Content:**
+• Professional README files
+• Code comments and documentation
+• LinkedIn posts showcasing work
+• Updated resume with project links
+
+**Interview Preparation Topics:**
+• Company research (especially applied companies)
+• Industry trends and regulations
+• Personal motivation and career goals
+• Technical skills demonstration`
+        },
+        week4: {
+            title: "Week 4: Metrics Review + Strategic Adjustment",
+            content: `**WEEK 4 CHECKLIST:**
+
+**Day 22-23: Performance Review**
+□ Analyze: applications sent, responses received, interviews scheduled
+□ Calculate response rates and conversion metrics
+□ Identify best-performing channels and companies
+
+**Day 24-25: Strategic Adjustment**
+□ If callbacks low: add Packaging/Production roles
+□ If no interviews: intensive referral push
+□ If geographic limitations: consider remote/hybrid options
+
+**Day 26-27: Final Application Push**
+□ Submit 15-20 more applications (total 60+)
+□ Target 2 HR calls per day
+□ Focus on previously responsive companies
+
+**Day 28: Advanced Skills**
+□ SQL basics: SELECT, WHERE, GROUP BY
+□ Pandas introduction for data manipulation
+□ Create simple QC dashboard mockup
+
+**Day 29-30: Industry Preparation**
+□ Study: 5S/EHS methodologies
+□ Deviation/CAPA process understanding
+□ Site/process awareness for interviews
+□ Company-specific research for shortlisted interviews
+
+**Success Metrics Week 4:**
+• 60+ total applications submitted
+• 3-5 active interview processes
+• 2-3 second-round interviews
+• 1+ job offer (target)
+• Strong GitHub portfolio
+
+**Final Review Questions:**
+1. Which application channels worked best?
+2. What skills gaps were identified?
+3. Which companies showed most interest?
+4. What feedback was received from interviews?
+5. How can the approach be refined?
+
+**Next Steps Planning:**
+• Month 2 strategy if no offers
+• Skill development continuation
+• Network expansion plans
+• Alternative role considerations
+
+**Success Celebration:**
+• Document lessons learned
+• Thank mentors and supporters
+• Plan career development next steps`
+        }
+    }
+};
+
+// Template Functions
+function loadResumeTemplate(type) {
+    const template = pharmaTemplates.resumes[type];
+    displayTemplate(template.title, template.content);
+}
+
+function loadCoverLetter(type) {
+    const template = pharmaTemplates.coverLetters[type];
+    displayTemplate(template.title, template.content);
+}
+
+function loadLinkedInContent(type) {
+    const template = pharmaTemplates.linkedin[type];
+    displayTemplate(template.title, template.content);
+}
+
+function loadOutreachTemplate(type) {
+    const template = pharmaTemplates.outreach[type];
+    displayTemplate(template.title, template.content);
+}
+
+function loadActionPlan(week) {
+    const template = pharmaTemplates.actionPlan[week];
+    displayTemplate(template.title, template.content);
+}
+
+function displayTemplate(title, content) {
+    document.getElementById('templateTitle').textContent = title;
+    document.getElementById('templateContent').textContent = content;
+    document.getElementById('templateDisplay').style.display = 'block';
+    
+    // Scroll to template display
+    document.getElementById('templateDisplay').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+function copyTemplateContent() {
+    const content = document.getElementById('templateContent').textContent;
+    navigator.clipboard.writeText(content).then(() => {
+        showMessage('Template content copied to clipboard!', 'success');
+    }).catch(() => {
+        showMessage('Failed to copy content. Please select and copy manually.', 'error');
+    });
+}
+
+function closeTemplate() {
+    document.getElementById('templateDisplay').style.display = 'none';
+}
+
+function downloadTracker() {
+    const csvContent = `Date,Company,Role,Location,Source,Contact Person/HR,Applied Via,Status,Next Action,Follow-up Date,Notes
+2025-01-21,Sun Pharma,QC/QA Apprentice,Halol,Naukri,,naukri.com,Applied,Call reception + DM HR,2025-01-25,NAPS-ready
+2025-01-21,Zydus Lifesciences,Production Trainee,Ahmedabad,LinkedIn,,linkedin.com,Applied,Email resume + ask walk-in slot,2025-01-26,
+2025-01-21,Alembic Pharmaceuticals,Lab Technician,Vadodara,Company site,,alembicpharmaceuticals.com,Applied,Walk-in inquiry by phone,2025-01-24,Local company`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'job-application-tracker.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showMessage('Application tracker CSV downloaded!', 'success');
+}
+
+function viewTrackerSample() {
+    const sampleData = `**Application Tracker Sample Data:**
+
+This spreadsheet helps you track:
+• Application dates and companies
+• Job roles and locations
+• Application sources (LinkedIn, Naukri, etc.)
+• Contact person details
+• Current status and next actions
+• Follow-up dates and notes
+
+**Usage Tips:**
+1. Update daily with new applications
+2. Set reminders for follow-up dates
+3. Track response rates by source
+4. Note feedback from interviews
+5. Maintain professional contact database
+
+**Status Categories:**
+• Applied - Recently submitted
+• Screening - HR review in progress
+• Interview - Interview scheduled/completed
+• Offer - Job offer received
+• Rejected - Application declined
+• On Hold - Process paused`;
+    
+    displayTemplate('Application Tracker Guide', sampleData);
+}
