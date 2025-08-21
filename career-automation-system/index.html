@@ -38,6 +38,9 @@
             <button class="nav-tab" data-tab="analytics">
                 <i class="fas fa-chart-line"></i> Analytics
             </button>
+            <button class="nav-tab" data-tab="premium">
+                <i class="fas fa-crown"></i> Premium Plan
+            </button>
         </nav>
 
         <!-- Main Content -->
@@ -364,6 +367,132 @@
                             <div class="progress-fill" style="width: 90%"></div>
                         </div>
                         <span>9/10</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Premium Subscription Section -->
+            <section id="premium" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-crown"></i> Premium Plan</h2>
+                    <p>उन्नत AI फीचर्स और असीमित उपयोग के लिए प्रीमियम प्लान चुनें</p>
+                </div>
+
+                <!-- Security Warning -->
+                <div class="security-warning">
+                    <h3><i class="fas fa-shield-alt"></i> सुरक्षा चेतावनी</h3>
+                    <p><strong>महत्वपूर्ण:</strong> मैं किसी भी वास्तविक कार्ड नंबर के साथ जुड़े "actual cardholder name" प्रदान नहीं कर सकता। यह संवेदनशील व्यक्तिगत/वित्तीय जानकारी है और साझा करना कानूनी व सुरक्षा नीतियों के विरुद्ध है।</p>
+                </div>
+
+                <!-- Test Mode Toggle -->
+                <div class="payment-mode-toggle">
+                    <label class="toggle-container">
+                        <input type="checkbox" id="testMode" checked>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">टेस्ट मोड (सुरक्षित)</span>
+                    </label>
+                    <p class="mode-description">टेस्ट मोड में केवल नकली डेटा का उपयोग करें</p>
+                </div>
+
+                <!-- Premium Plans -->
+                <div class="premium-plans">
+                    <div class="plan-card">
+                        <h4>Basic Premium</h4>
+                        <div class="price">₹999/माह</div>
+                        <ul>
+                            <li>असीमित AI प्रोजेक्ट जेनरेशन</li>
+                            <li>उन्नत सोशल मीडिया टेम्प्लेट्स</li>
+                            <li>प्राथमिकता समर्थन</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="selectPlan('basic')">चुनें</button>
+                    </div>
+                    
+                    <div class="plan-card featured">
+                        <h4>Pro Premium</h4>
+                        <div class="price">₹1999/माह</div>
+                        <ul>
+                            <li>सभी Basic फीचर्स</li>
+                            <li>AI रिज्यूमे ऑप्टिमाइज़र</li>
+                            <li>कंपनी-विशिष्ट कंटेंट</li>
+                            <li>24/7 समर्थन</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="selectPlan('pro')">चुनें</button>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <div id="paymentForm" class="payment-form" style="display: none;">
+                    <h3>भुगतान विवरण</h3>
+                    
+                    <!-- Test Data Examples -->
+                    <div class="test-data-section" id="testDataSection">
+                        <h4><i class="fas fa-info-circle"></i> टेस्ट डेटा उदाहरण</h4>
+                        <p><strong>टेस्टिंग के लिए इन नामों का उपयोग करें:</strong></p>
+                        <ul>
+                            <li>Test User</li>
+                            <li>Example Name</li>
+                            <li>John Doe</li>
+                            <li>Jane Doe</li>
+                        </ul>
+                        
+                        <p><strong>आधिकारिक टेस्ट कार्ड नंबर:</strong></p>
+                        <ul>
+                            <li>Visa: 4111 1111 1111 1111</li>
+                            <li>Mastercard: 5555 5555 5555 4444</li>
+                            <li>American Express: 3782 822463 10005</li>
+                        </ul>
+                        
+                        <div class="warning-box">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>ये नंबर केवल टेस्ट मोड में उपयोग करें—लाइव भुगतान में नहीं!</p>
+                        </div>
+                    </div>
+
+                    <!-- Live Payment Warning -->
+                    <div class="live-payment-warning" id="livePaymentWarning" style="display: none;">
+                        <h4><i class="fas fa-warning"></i> लाइव भुगतान मोड</h4>
+                        <p><strong>लाइव भुगतान/वेरिफिकेशन के लिए:</strong></p>
+                        <ul>
+                            <li>अपने बैंक/संस्था के वैध कार्ड का उपयोग करें</li>
+                            <li>"Name on card" हमेशा उसी कार्डधारक का सही नाम रखें</li>
+                            <li>अधिक सुरक्षा के लिए वर्चुअल/एक‑बार उपयोग वाला कार्ड बनाकर लिमिट सेट करें</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cardholderName">कार्डधारक का नाम *</label>
+                            <input type="text" id="cardholderName" placeholder="कार्ड पर लिखा गया नाम" required>
+                            <small class="help-text">टेस्ट मोड में: Test User, John Doe, आदि का उपयोग करें</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cardNumber">कार्ड नंबर *</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            <small class="help-text">टेस्ट मोड में केवल आधिकारिक टेस्ट नंबर उपयोग करें</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expiryDate">समाप्ति तिथि *</label>
+                            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cvv">CVV *</label>
+                            <input type="text" id="cvv" placeholder="123" maxlength="4" required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="billingAddress">बिलिंग पता</label>
+                            <textarea id="billingAddress" rows="3" placeholder="पूरा पता दर्ज करें"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-actions">
+                        <button class="btn btn-secondary" onclick="cancelPayment()">रद्द करें</button>
+                        <button class="btn btn-primary" onclick="processPayment()">
+                            <i class="fas fa-lock"></i> सुरक्षित भुगतान करें
+                        </button>
                     </div>
                 </div>
             </section>

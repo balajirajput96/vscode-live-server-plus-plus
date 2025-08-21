@@ -558,6 +558,18 @@ body {
     border: 1px solid #feb2b2;
 }
 
+.message.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.message.info {
+    background: #bee3f8;
+    color: #2c5282;
+    border: 1px solid #90cdf4;
+}
+
 /* Copy Button Animation */
 .btn-copy {
     position: relative;
@@ -580,4 +592,302 @@ body {
 .btn-copy:active::before {
     width: 100px;
     height: 100px;
+}
+
+/* Premium Section Styles */
+.security-warning {
+    background: #fff3cd;
+    border: 2px solid #ffeaa7;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #e17055;
+}
+
+.security-warning h3 {
+    color: #856404;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.security-warning p {
+    color: #856404;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.payment-mode-toggle {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background: #ddd;
+    border-radius: 30px;
+    transition: background 0.3s ease;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+input[type="checkbox"]:checked + .toggle-slider {
+    background: #4caf50;
+}
+
+input[type="checkbox"]:checked + .toggle-slider::before {
+    transform: translateX(30px);
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.mode-description {
+    color: #666;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.premium-plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.plan-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.plan-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+}
+
+.plan-card.featured {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.05);
+}
+
+.plan-card.featured::before {
+    content: '🌟 सबसे लोकप्रिय';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff6b6b;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.plan-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #2d3748;
+}
+
+.plan-card.featured h4 {
+    color: white;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.plan-card.featured .price {
+    color: #fff;
+}
+
+.plan-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.plan-card li {
+    padding: 8px 0;
+    color: #4a5568;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.plan-card li:last-child {
+    border-bottom: none;
+}
+
+.plan-card.featured li {
+    color: #e2e8f0;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.payment-form {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.payment-form h3 {
+    color: #2d3748;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.test-data-section {
+    background: #e6fffa;
+    border: 2px solid #4fd1c7;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.test-data-section h4 {
+    color: #234e52;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.test-data-section ul {
+    margin-bottom: 15px;
+}
+
+.test-data-section li {
+    color: #234e52;
+    margin-bottom: 5px;
+}
+
+.warning-box {
+    background: #fed7d7;
+    border: 1px solid #feb2b2;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.warning-box i {
+    color: #e53e3e;
+    font-size: 1.2rem;
+}
+
+.warning-box p {
+    color: #742a2a;
+    margin: 0;
+    font-weight: 600;
+}
+
+.live-payment-warning {
+    background: #fff5f5;
+    border: 2px solid #fc8181;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.live-payment-warning h4 {
+    color: #742a2a;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-payment-warning ul {
+    margin-bottom: 0;
+}
+
+.live-payment-warning li {
+    color: #742a2a;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"] {
+    position: relative;
+}
+
+.help-text {
+    display: block;
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.payment-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.payment-actions .btn {
+    flex: 1;
+    max-width: 200px;
+}
+
+/* Responsive Design for Premium Section */
+@media (max-width: 768px) {
+    .premium-plans {
+        grid-template-columns: 1fr;
+    }
+    
+    .plan-card.featured {
+        transform: none;
+    }
+    
+    .payment-actions {
+        flex-direction: column;
+    }
+    
+    .payment-actions .btn {
+        max-width: none;
+    }
 }
