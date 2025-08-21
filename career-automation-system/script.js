@@ -247,7 +247,29 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
 }
 
 function schedulePost() {
-    showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
+    const content = document.querySelector('#socialContent .post-text')?.textContent;
+    if (!content) {
+        showMessage('पहले पोस्ट generate करें!', 'error');
+        return;
+    }
+
+    // Try to send to webhook if available
+    if (typeof sendToWebhook === 'function') {
+        const postData = {
+            type: 'social_media_post',
+            platform: document.getElementById('platform').value,
+            content: content,
+            timestamp: new Date().toISOString()
+        };
+        
+        sendToWebhook(postData).then(() => {
+            showMessage('पोस्ट webhook में भेज दिया गया!', 'success');
+        }).catch(() => {
+            showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'info');
+        });
+    } else {
+        showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
+    }
 }
 
 // Resume Optimizer Functions
@@ -529,3 +551,120 @@ function initializeHelp() {
 
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
+
+// Webhook Integration Functions
+async function sendToWebhook(data) {
+    const webhookUrl = getWebhookUrl();
+    if (!webhookUrl) {
+        throw new Error('Webhook URL not configured');
+    }
+
+    try {
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ...data,
+                source: 'career-automation-ui',
+                timestamp: new Date().toISOString()
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Webhook error:', error);
+        throw error;
+    }
+}
+
+function getWebhookUrl() {
+    // Try to get webhook URL from various sources
+    return localStorage.getItem('webhookUrl') || 
+           window.WEBHOOK_URL || 
+           process?.env?.N8N_WEBHOOK_URL ||
+           null;
+}
+
+function setWebhookUrl(url) {
+    localStorage.setItem('webhookUrl', url);
+    showMessage('Webhook URL सेट किया गया!', 'success');
+}
+
+// Enhanced save project function with webhook integration
+async function saveProjectWithWebhook() {
+    const projectName = document.getElementById('projectName').value;
+    const description = document.getElementById('projectDescription').value;
+    const tools = document.getElementById('toolsUsed').value;
+    const findings = document.getElementById('keyFindings').value;
+
+    if (!projectName || !description) {
+        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
+        return;
+    }
+
+    const projectData = {
+        name: projectName,
+        description: description,
+        tools: tools.split(',').map(t => t.trim()),
+        findings: findings,
+        timestamp: new Date().toISOString()
+    };
+
+    // Save locally
+    projects.push(projectData);
+    localStorage.setItem('projects', JSON.stringify(projects));
+
+    // Try to send to webhook
+    try {
+        await sendToWebhook({
+            type: 'portfolio_update',
+            project_name: projectData.name,
+            description: projectData.description,
+            tools: projectData.tools.join(', '),
+            findings: projectData.findings
+        });
+        showMessage('प्रोजेक्ट सेव किया गया और webhook में भेजा गया!', 'success');
+    } catch (error) {
+        showMessage('प्रोजेक्ट सेव किया गया (webhook unavailable)', 'warning');
+        console.error('Webhook failed:', error);
+    }
+
+    updateAnalytics();
+}
+
+// Webhook configuration UI
+function showWebhookConfig() {
+    const currentUrl = getWebhookUrl() || '';
+    const newUrl = prompt('n8n Webhook URL enter करें:', currentUrl);
+    
+    if (newUrl && newUrl.trim()) {
+        setWebhookUrl(newUrl.trim());
+        testWebhookConnection();
+    }
+}
+
+async function testWebhookConnection() {
+    try {
+        await sendToWebhook({
+            type: 'test',
+            message: 'Webhook connectivity test from UI'
+        });
+        showMessage('✅ Webhook connection successful!', 'success');
+    } catch (error) {
+        showMessage('❌ Webhook connection failed', 'error');
+    }
+}
+
+// Auto-connect webhook on page load if URL is available
+document.addEventListener('DOMContentLoaded', function() {
+    const webhookUrl = getWebhookUrl();
+    if (webhookUrl) {
+        console.log('Webhook URL configured:', webhookUrl.substring(0, 30) + '...');
+    }
+});
