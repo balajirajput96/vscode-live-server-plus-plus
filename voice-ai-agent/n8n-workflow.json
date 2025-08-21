@@ -1,0 +1,624 @@
+{
+  "meta": {
+    "instanceId": "voice-ai-agent-workflow"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "voice-agent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-voice-input",
+      "name": "Voice Input Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "voice-ai-agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"workflow\"]}}",
+              "operation": "equal",
+              "value2": "linkedin_post"
+            }
+          ]
+        }
+      },
+      "id": "if-linkedin-post",
+      "name": "LinkedIn Post?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"workflow\"]}}",
+              "operation": "equal",
+              "value2": "job_tracking"
+            }
+          ]
+        }
+      },
+      "id": "if-job-tracking",
+      "name": "Job Tracking?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"workflow\"]}}",
+              "operation": "equal",
+              "value2": "resume_optimization"
+            }
+          ]
+        }
+      },
+      "id": "if-resume-optimization",
+      "name": "Resume Optimization?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "messageType": "multipleMessages",
+          "multipleMessages": {
+            "messages": [
+              {
+                "role": "system",
+                "message": "You are a professional LinkedIn content creator specializing in biotechnology and bioinformatics. Create engaging LinkedIn posts in Hindi/English."
+              },
+              {
+                "role": "user",
+                "message": "Create a LinkedIn post about: {{$json[\"data\"][\"topic\"]}}\nTone: {{$json[\"data\"][\"tone\"] || \"professional\"}}\nHashtags: {{$json[\"data\"][\"hashtags\"] || \"#Bioinformatics #DataAnalysis #Biotechnology\"}}"
+              }
+            ]
+          }
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 500
+        }
+      },
+      "id": "openai-linkedin-post",
+      "name": "Generate LinkedIn Post",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        680,
+        200
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "your-google-sheet-id",
+          "mode": "list",
+          "cachedResultName": "Job Applications Tracker"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columnNames": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company": "={{$json[\"data\"][\"company\"]}}",
+            "Position": "={{$json[\"data\"][\"position\"]}}",
+            "Status": "={{$json[\"data\"][\"status\"]}}",
+            "Applied Date": "={{$now.format('YYYY-MM-DD')}}",
+            "Notes": "={{$json[\"data\"][\"notes\"]}}",
+            "Source": "Voice AI Agent"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Applied Date",
+              "displayName": "Applied Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "google-sheets-job-tracking",
+      "name": "Add to Job Tracker",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        680,
+        400
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "messageType": "multipleMessages",
+          "multipleMessages": {
+            "messages": [
+              {
+                "role": "system",
+                "message": "You are a professional resume optimizer specializing in biotechnology and bioinformatics careers. Optimize resumes for ATS and specific job roles."
+              },
+              {
+                "role": "user",
+                "message": "Optimize this resume content for {{$json[\"data\"][\"targetRole\"]}} role at {{$json[\"data\"][\"company\"]}}:\n\n{{$json[\"data\"][\"content\"]}}\n\nProvide specific suggestions and improved content."
+              }
+            ]
+          }
+        },
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 1000
+        }
+      },
+      "id": "openai-resume-optimization",
+      "name": "Optimize Resume",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        680,
+        600
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "LinkedIn Post Generated - {{$json[\"data\"][\"topic\"]}}",
+        "emailType": "html",
+        "message": "<h2>🚀 New LinkedIn Post Generated</h2>\n<p><strong>Topic:</strong> {{$json[\"data\"][\"topic\"]}}</p>\n<p><strong>Generated Content:</strong></p>\n<div style=\"background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;\">\n{{$node[\"Generate LinkedIn Post\"].json[\"message\"][\"content\"]}}\n</div>\n<p><strong>Generated by:</strong> Voice AI Agent</p>\n<p><strong>Time:</strong> {{$now.format('YYYY-MM-DD HH:mm:ss')}}</p>",
+        "options": {}
+      },
+      "id": "email-linkedin-notification",
+      "name": "Email LinkedIn Post",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        900,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "Job Application Added - {{$json[\"data\"][\"company\"]}}",
+        "emailType": "html",
+        "message": "<h2>📊 New Job Application Tracked</h2>\n<p><strong>Company:</strong> {{$json[\"data\"][\"company\"]}}</p>\n<p><strong>Position:</strong> {{$json[\"data\"][\"position\"]}}</p>\n<p><strong>Status:</strong> {{$json[\"data\"][\"status\"]}}</p>\n<p><strong>Notes:</strong> {{$json[\"data\"][\"notes\"]}}</p>\n<p><strong>Added by:</strong> Voice AI Agent</p>\n<p><strong>Time:</strong> {{$now.format('YYYY-MM-DD HH:mm:ss')}}</p>",
+        "options": {}
+      },
+      "id": "email-job-notification",
+      "name": "Email Job Update",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        900,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "Resume Optimized - {{$json[\"data\"][\"targetRole\"]}}",
+        "emailType": "html",
+        "message": "<h2>📄 Resume Optimization Complete</h2>\n<p><strong>Target Role:</strong> {{$json[\"data\"][\"targetRole\"]}}</p>\n<p><strong>Company:</strong> {{$json[\"data\"][\"company\"]}}</p>\n<p><strong>Optimized Content:</strong></p>\n<div style=\"background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;\">\n{{$node[\"Optimize Resume\"].json[\"message\"][\"content\"]}}\n</div>\n<p><strong>Generated by:</strong> Voice AI Agent</p>\n<p><strong>Time:</strong> {{$now.format('YYYY-MM-DD HH:mm:ss')}}</p>",
+        "options": {}
+      },
+      "id": "email-resume-notification",
+      "name": "Email Resume Optimization",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        900,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Voice command processed successfully\",\n  \"workflow\": \"{{$json[\\\"workflow\\\"]}}\",\n  \"timestamp\": \"{{$now.format('YYYY-MM-DD HH:mm:ss')}}\",\n  \"data\": {{$json[\"data\"]}}\n}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "log",
+        "message": "Voice AI Agent: {{$json[\"workflow\"]}} processed for user",
+        "level": "info",
+        "additionalFields": {
+          "metadata": {
+            "workflow": "={{$json[\"workflow\"]}}",
+            "timestamp": "={{$now.format('YYYY-MM-DD HH:mm:ss')}}",
+            "source": "voice-agent"
+          }
+        }
+      },
+      "id": "logger",
+      "name": "Log Activity",
+      "type": "n8n-nodes-base.logger",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"workflow\"]}}",
+              "operation": "equal",
+              "value2": "content_generation"
+            }
+          ]
+        }
+      },
+      "id": "if-content-generation",
+      "name": "Content Generation?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "messageType": "multipleMessages",
+          "multipleMessages": {
+            "messages": [
+              {
+                "role": "system",
+                "message": "You are a content creation expert for biotechnology professionals. Generate multiple content pieces including LinkedIn posts, blog ideas, and social media content."
+              },
+              {
+                "role": "user",
+                "message": "Generate weekly content for a biotechnology professional:\nTopic: {{$json[\"data\"][\"topic\"] || \"Bioinformatics career growth\"}}\nPlatforms: LinkedIn, Facebook, Twitter\nTone: Professional yet engaging\nInclude relevant hashtags and call-to-action"
+              }
+            ]
+          }
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 1500
+        }
+      },
+      "id": "openai-content-generation",
+      "name": "Generate Weekly Content",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        680,
+        800
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "Weekly Content Generated",
+        "emailType": "html",
+        "message": "<h2>📝 Weekly Content Package Ready</h2>\n<p><strong>Topic:</strong> {{$json[\"data\"][\"topic\"]}}</p>\n<p><strong>Generated Content:</strong></p>\n<div style=\"background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;\">\n{{$node[\"Generate Weekly Content\"].json[\"message\"][\"content\"]}}\n</div>\n<p><strong>Generated by:</strong> Voice AI Agent</p>\n<p><strong>Time:</strong> {{$now.format('YYYY-MM-DD HH:mm:ss')}}</p>",
+        "options": {}
+      },
+      "id": "email-content-notification",
+      "name": "Email Content Package",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        900,
+        800
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Voice Input Webhook": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Post?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Job Tracking?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Resume Optimization?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Content Generation?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Post?": {
+      "main": [
+        [
+          {
+            "node": "Generate LinkedIn Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job Tracking?": {
+      "main": [
+        [
+          {
+            "node": "Add to Job Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resume Optimization?": {
+      "main": [
+        [
+          {
+            "node": "Optimize Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Email LinkedIn Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Job Tracker": {
+      "main": [
+        [
+          {
+            "node": "Email Job Update",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimize Resume": {
+      "main": [
+        [
+          {
+            "node": "Email Resume Optimization",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Job Update": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Resume Optimization": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Generation?": {
+      "main": [
+        [
+          {
+            "node": "Generate Weekly Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Weekly Content": {
+      "main": [
+        [
+          {
+            "node": "Email Content Package",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Content Package": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["voice-ai", "automation", "career"],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T00:00:00.000Z",
+  "versionId": "1"
+}
