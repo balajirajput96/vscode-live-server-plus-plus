@@ -41,12 +41,46 @@
 
 ---
 
+## 🤖 NEW: Complete Automation Setup
+
+### 🎯 End-to-End Automation Available!
+This repository now includes **production-ready automation workflows**:
+
+- **n8n Integration**: Auto-response workflows with AI
+- **GitHub Actions**: Automated notifications and deployments  
+- **Health Monitoring**: Real-time system health checks
+- **Security Framework**: Complete security configuration
+- **Google Play Console**: Educational app publishing guide
+- **Browser Optimization**: DevTools performance enhancement
+
+### 🚀 Quick Automation Setup
+```bash
+# 1. Initialize status tracking
+./scripts/status-tracker.sh init
+
+# 2. Check current setup status
+./scripts/status-tracker.sh check
+
+# 3. Run health checks
+./scripts/status-tracker.sh health
+
+# 4. Follow the complete setup guide
+cat AUTOMATION_SETUP_GUIDE.md
+```
+
+📖 **Complete Setup Guide**: [AUTOMATION_SETUP_GUIDE.md](./AUTOMATION_SETUP_GUIDE.md)
+
+---
+
 ## 🚀 Quick Start Guide
 
-### Step 1: Open Your Dashboard
+### Step 1: Choose Your Path
 ```bash
-# Open the main dashboard in your browser
+# For Career Automation (Original)
 open index.html
+
+# For Production Automation (New)
+./scripts/status-tracker.sh check
 ```
 
 ### Step 2: Set Up AI Tools
