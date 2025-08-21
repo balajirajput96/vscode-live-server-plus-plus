@@ -1,0 +1,288 @@
+{
+  "name": "YouTube to Social Media Cross-Posting",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "youtube-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "4e5a1a98-c95e-4a28-937a-7f1c05a90b5a",
+      "name": "YouTube Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "youtube-new-video"
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "url": "=https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id={{$json.video_id}}&key={{$credentials.youtubeApi.apiKey}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youtubeOAuth2Api",
+        "options": {}
+      },
+      "id": "c8f6d5e2-4a3b-4c9d-8e7f-1a2b3c4d5e6f",
+      "name": "Get YouTube Video Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract video information\nconst videoData = $input.first().json.items[0];\nconst snippet = videoData.snippet;\nconst statistics = videoData.statistics;\n\n// Generate LinkedIn post content\nconst linkedinPost = `🚀 Just published a new video: ${snippet.title}\n\n${snippet.description.substring(0, 200)}...\n\nKey insights from this video:\n• Main topic covered in detail\n• Practical examples and use cases\n• Actionable takeaways for viewers\n\nWhat's your take on this topic? Let me know in the comments!\n\n#Content #YouTube #Education #Learning\n\nWatch here: https://youtube.com/watch?v=${videoData.id}`;\n\n// Generate Facebook post content\nconst facebookPost = `Just dropped a new video! 📹\n\n\"${snippet.title}\"\n\n${snippet.description.substring(0, 150)}...\n\nCheck it out and let me know what you think! 👇\n\nhttps://youtube.com/watch?v=${videoData.id}\n\n#NewVideo #Content #YouTube`;\n\n// Generate Twitter thread\nconst twitterThreads = [\n  `🧵 New video thread: \"${snippet.title}\" (1/3)`,\n  `${snippet.description.substring(0, 200)}... (2/3)`,\n  `Watch the full video here: https://youtube.com/watch?v=${videoData.id} (3/3) #YouTube #Content`\n];\n\nreturn {\n  videoId: videoData.id,\n  title: snippet.title,\n  description: snippet.description,\n  publishedAt: snippet.publishedAt,\n  channelTitle: snippet.channelTitle,\n  tags: snippet.tags || [],\n  viewCount: statistics.viewCount,\n  likeCount: statistics.likeCount,\n  linkedinPost: linkedinPost,\n  facebookPost: facebookPost,\n  twitterThreads: twitterThreads,\n  thumbnailUrl: snippet.thumbnails.high.url,\n  videoUrl: `https://youtube.com/watch?v=${videoData.id}`\n};"
+      },
+      "id": "7b8c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e",
+      "name": "Process Video Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "text": "={{$json.linkedinPost}}",
+        "additionalFields": {}
+      },
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Post to LinkedIn",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        900,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "message": "={{$json.facebookPost}}",
+        "additionalFields": {}
+      },
+      "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "name": "Post to Facebook",
+      "type": "n8n-nodes-base.facebook",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "tweet",
+        "operation": "create",
+        "text": "={{$json.twitterThreads[0]}}",
+        "additionalFields": {}
+      },
+      "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+      "name": "Post Twitter Thread 1",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        900,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "tweet",
+        "operation": "create",
+        "text": "={{$json.twitterThreads[1]}}",
+        "additionalFields": {
+          "inReplyToStatusId": "={{$node['Post Twitter Thread 1'].json.id_str}}"
+        }
+      },
+      "id": "d4e5f6a7-b8c9-0123-defa-456789012345",
+      "name": "Post Twitter Thread 2",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "tweet",
+        "operation": "create",
+        "text": "={{$json.twitterThreads[2]}}",
+        "additionalFields": {
+          "inReplyToStatusId": "={{$node['Post Twitter Thread 2'].json.id_str}}"
+        }
+      },
+      "id": "e5f6a7b8-c9d0-1234-efab-567890123456",
+      "name": "Post Twitter Thread 3",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "Social Media Posts",
+        "columnNames": "Date,Platform,Video Title,Post Content,Status",
+        "values": {
+          "Date": "={{new Date().toISOString()}}",
+          "Platform": "LinkedIn",
+          "Video Title": "={{$json.title}}",
+          "Post Content": "={{$json.linkedinPost.substring(0, 100)}}...",
+          "Status": "Posted"
+        },
+        "options": {}
+      },
+      "id": "f6a7b8c9-d0e1-2345-fabc-678901234567",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "to": "your-email@example.com",
+        "subject": "Video Posted Successfully",
+        "text": "=Your YouTube video \"{{$json.title}}\" has been automatically posted to all social media platforms.\n\nVideo URL: {{$json.videoUrl}}\nPublished: {{$json.publishedAt}}\n\nSocial Media Posts:\n✅ LinkedIn\n✅ Facebook\n✅ Twitter (Thread)\n\nAnalytics will be available in your dashboard."
+      },
+      "id": "a7b8c9d0-e1f2-3456-abcd-789012345678",
+      "name": "Send Notification Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "YouTube Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get YouTube Video Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get YouTube Video Details": {
+      "main": [
+        [
+          {
+            "node": "Process Video Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Video Data": {
+      "main": [
+        [
+          {
+            "node": "Post to LinkedIn",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post to Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Twitter Thread 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Twitter Thread 1": {
+      "main": [
+        [
+          {
+            "node": "Post Twitter Thread 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Twitter Thread 2": {
+      "main": [
+        [
+          {
+            "node": "Post Twitter Thread 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Send Notification Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "error-handler-workflow"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "social-media",
+      "name": "Social Media"
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube"
+    },
+    {
+      "id": "automation",
+      "name": "Automation"
+    }
+  ],
+  "meta": {
+    "instanceId": "your-n8n-instance-id"
+  },
+  "id": "youtube-crosspost-workflow",
+  "versionId": "1.0.0"
+}
