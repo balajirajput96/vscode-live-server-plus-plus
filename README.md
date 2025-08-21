@@ -43,10 +43,18 @@
 
 ## 🚀 Quick Start Guide
 
-### Step 1: Open Your Dashboard
+### Step 1: Choose Your Setup Path
+
+#### Option A: Manual Career Tools (Original)
 ```bash
 # Open the main dashboard in your browser
 open index.html
+```
+
+#### Option B: Unified API System (Automated)
+```bash
+# Quick setup with automated API integration
+./setup-unified-api.sh complete
 ```
 
 ### Step 2: Set Up AI Tools
@@ -56,17 +64,33 @@ Register for these free/premium AI tools:
 - **Predis.ai** (Free/Pro $32/month)
 - **Buffer** (Free/Pro $6/month)
 
-### Step 3: Use Ready-Made Prompts
-1. Copy prompts from the AI Prompt Library
-2. Paste into your chosen AI tool
-3. Customize with your specific details
-4. Generate professional content
+### Step 3: Unified API Integration (New!)
+🔗 **Radial API System** - Single endpoint for multiple services:
+
+```bash
+# Test the unified API
+curl -X POST "YOUR_N8N_URL/webhook/unified-api" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"ai","query":"Career guidance","email":"your@email.com"}'
+```
+
+**Supported Types:**
+- `ai` - OpenAI assistance with Hinglish support
+- `github` - Automated issue creation
+- `docs` - Google Drive document access
+- `log` - Analytics and data logging
 
 ### Step 4: Automate Your Workflow
 - **Monday**: LinkedIn content creation
 - **Wednesday**: GitHub documentation
 - **Friday**: Job applications
 - **Sunday**: Progress review
+
+### Step 5: Monitor & Scale
+- GitHub Actions for health checks
+- Real-time Telegram notifications
+- Google Sheets analytics
+- Automated error reporting
 
 ---
 
@@ -78,6 +102,15 @@ Register for these free/premium AI tools:
 ├── 📄 Job_Tracking_System.html      # Job Application Tracker
 ├── 📄 AI_Career_Automation_Guide.md # Complete Guide
 ├── 📄 Social_Media_Templates.md     # Content Templates
+├── 🚀 UNIFIED-API-SETUP.md          # New! API Integration Guide
+├── 🔧 setup-unified-api.sh          # New! Automated Setup Script
+├── 📊 test-unified-api.js           # New! API Testing Suite
+├── 📂 n8n-workflows/                # New! n8n Workflow Configurations
+│   └── unified-api-router.json      # Radial API Router Workflow
+├── 📂 .github/workflows/            # GitHub Actions
+│   └── unified-api-health-check.yml # Automated Health Checks
+├── 📂 src/api/                      # New! API Integration Code
+│   └── UnifiedAPIClient.ts          # TypeScript API Client
 └── 📄 README.md                     # This File
 ```
 
@@ -100,7 +133,22 @@ Register for these free/premium AI tools:
 4. Copy the generated content
 5. Use in your applications
 
-### 2. Job Tracking System (`Job_Tracking_System.html`)
+### 2. Unified API System (New!) 🚀
+**Features:**
+- Single endpoint for all services
+- AI-powered responses in Hinglish
+- Automated GitHub integrations
+- Real-time notifications via Telegram
+- Google Sheets analytics logging
+- Health monitoring & error reporting
+
+**How to Use:**
+1. Run setup script: `./setup-unified-api.sh complete`
+2. Configure credentials in n8n
+3. Test API: `node test-unified-api.js`
+4. Integrate with existing tools
+
+### 3. Job Tracking System (`Job_Tracking_System.html`)
 **Features:**
 - 10+ top pharma companies database
 - Application status tracking
@@ -114,7 +162,7 @@ Register for these free/premium AI tools:
 4. Prepare for interviews
 5. Analyze success patterns
 
-### 3. Automation Guide (`AI_Career_Automation_Guide.md`)
+### 4. Automation Guide (`AI_Career_Automation_Guide.md`)
 **Contents:**
 - Step-by-step setup instructions
 - AI tools comparison
@@ -122,7 +170,7 @@ Register for these free/premium AI tools:
 - Copy-paste prompts
 - Troubleshooting tips
 
-### 4. Social Media Templates (`Social_Media_Templates.md`)
+### 5. Social Media Templates (`Social_Media_Templates.md`)
 **Contents:**
 - 25+ LinkedIn post templates
 - Facebook personal updates

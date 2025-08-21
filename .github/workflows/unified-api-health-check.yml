@@ -1,0 +1,267 @@
+name: Unified API Health Check & Triggers
+
+on:
+  push:
+    branches: [ main, master ]
+  schedule:
+    # Daily health check at 3:00 AM IST (9:30 PM UTC)
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+    inputs:
+      api_type:
+        description: 'API request type to test'
+        required: true
+        default: 'log'
+        type: choice
+        options:
+        - ai
+        - github
+        - docs
+        - log
+      test_message:
+        description: 'Test message/query'
+        required: false
+        default: 'Automated health check from GitHub Actions'
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    name: API Health Check & Automation
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          npm install axios
+          
+      - name: Test Unified API - Health Check
+        id: health_check
+        run: |
+          cat > health_check.js << 'EOF'
+          const axios = require('axios');
+          
+          async function testUnifiedAPI() {
+            const apiUrl = process.env.N8N_UNIFIED_API_URL;
+            
+            if (!apiUrl) {
+              console.log('⚠️ N8N_UNIFIED_API_URL not configured. Skipping API test.');
+              return;
+            }
+            
+            const testData = {
+              type: process.env.API_TYPE || 'log',
+              query: process.env.TEST_MESSAGE || 'GitHub Actions automated health check',
+              email: '2203456300001@paruluniversity.ac.in',
+              source: 'github-actions',
+              repository: process.env.GITHUB_REPOSITORY,
+              commit: process.env.GITHUB_SHA,
+              ref: process.env.GITHUB_REF
+            };
+            
+            try {
+              console.log('🚀 Testing Unified API...');
+              console.log('API URL:', apiUrl);
+              console.log('Test Data:', JSON.stringify(testData, null, 2));
+              
+              const response = await axios.post(apiUrl, testData, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'User-Agent': 'GitHub-Actions-Health-Check'
+                },
+                timeout: 30000
+              });
+              
+              console.log('✅ API Response Status:', response.status);
+              console.log('✅ API Response Data:', JSON.stringify(response.data, null, 2));
+              
+              // Set output for next steps
+              console.log('::set-output name=status::success');
+              console.log('::set-output name=response::' + JSON.stringify(response.data));
+              
+            } catch (error) {
+              console.error('❌ API Test Failed:', error.message);
+              
+              if (error.response) {
+                console.error('Response Status:', error.response.status);
+                console.error('Response Data:', error.response.data);
+              }
+              
+              console.log('::set-output name=status::failed');
+              console.log('::set-output name=error::' + error.message);
+              
+              // Don't fail the workflow for API errors
+              process.exit(0);
+            }
+          }
+          
+          testUnifiedAPI();
+          EOF
+          
+          node health_check.js
+        env:
+          N8N_UNIFIED_API_URL: ${{ secrets.N8N_UNIFIED_API_URL }}
+          API_TYPE: ${{ github.event.inputs.api_type || 'log' }}
+          TEST_MESSAGE: ${{ github.event.inputs.test_message || 'Automated health check from GitHub Actions' }}
+          
+      - name: Test AI Endpoint (if API is available)
+        if: steps.health_check.outputs.status == 'success' && secrets.N8N_UNIFIED_API_URL != ''
+        run: |
+          cat > test_ai.js << 'EOF'
+          const axios = require('axios');
+          
+          async function testAIEndpoint() {
+            const testData = {
+              type: 'ai',
+              query: 'What are the latest trends in bioinformatics? Reply in Hinglish.',
+              email: '2203456300001@paruluniversity.ac.in',
+              context: 'Career automation system health check'
+            };
+            
+            try {
+              console.log('🤖 Testing AI endpoint...');
+              const response = await axios.post(process.env.N8N_UNIFIED_API_URL, testData, {
+                headers: { 'Content-Type': 'application/json' },
+                timeout: 60000
+              });
+              
+              console.log('✅ AI Test Successful:', response.data.message);
+            } catch (error) {
+              console.log('⚠️ AI Test Info:', error.message);
+            }
+          }
+          
+          testAIEndpoint();
+          EOF
+          
+          node test_ai.js
+        env:
+          N8N_UNIFIED_API_URL: ${{ secrets.N8N_UNIFIED_API_URL }}
+          
+      - name: Update Repository Status
+        if: always()
+        run: |
+          echo "🔄 Workflow completed at $(date)"
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "API Status: ${{ steps.health_check.outputs.status || 'not-tested' }}"
+          
+      - name: Create Issue on API Failure (Production only)
+        if: steps.health_check.outputs.status == 'failed' && github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🚨 Unified API Health Check Failed';
+            const body = `
+            ## API Health Check Failure Report
+            
+            **Timestamp:** ${new Date().toISOString()}
+            **Workflow:** ${context.workflow}
+            **Run ID:** ${context.runId}
+            **Commit:** ${context.sha}
+            
+            **Error Details:**
+            \`\`\`
+            ${{ steps.health_check.outputs.error || 'Unknown error' }}
+            \`\`\`
+            
+            **Test Configuration:**
+            - API Type: ${{ github.event.inputs.api_type || 'log' }}
+            - Test Message: ${{ github.event.inputs.test_message || 'Automated health check' }}
+            
+            **Next Steps:**
+            1. Check n8n workflow status
+            2. Verify API credentials
+            3. Test manually using curl
+            4. Check network connectivity
+            
+            **Auto-generated by GitHub Actions**
+            `;
+            
+            // Check if issue already exists
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'automation,api-failure'
+            });
+            
+            if (existingIssues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['automation', 'api-failure', 'bug']
+              });
+              console.log('Created new issue for API failure');
+            } else {
+              console.log('Issue already exists for API failure');
+            }
+
+  # Separate job for n8n workflow health monitoring
+  n8n-monitor:
+    runs-on: ubuntu-latest
+    name: n8n Workflow Monitor
+    if: secrets.N8N_UNIFIED_API_URL != ''
+    
+    steps:
+      - name: Monitor n8n Workflow Health
+        run: |
+          echo "🔍 Monitoring n8n workflow health..."
+          
+          # Extract base URL from webhook URL
+          N8N_BASE_URL=$(echo "${{ secrets.N8N_UNIFIED_API_URL }}" | sed 's|/webhook/.*||')
+          
+          echo "n8n Base URL: $N8N_BASE_URL"
+          echo "Full Webhook URL: ${{ secrets.N8N_UNIFIED_API_URL }}"
+          
+          # Test if n8n is accessible (if authentication allows)
+          curl -s -f --connect-timeout 10 "$N8N_BASE_URL" > /dev/null || {
+            echo "⚠️ n8n instance might not be accessible"
+          }
+          
+          echo "✅ n8n monitoring completed"
+
+  # Job to update system documentation
+  update-docs:
+    runs-on: ubuntu-latest
+    name: Update API Documentation
+    needs: [health-check]
+    if: github.ref == 'refs/heads/main' && needs.health-check.outputs.status == 'success'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Update API Status Badge
+        run: |
+          # Create or update status badge
+          mkdir -p .github/badges
+          
+          if [ "${{ needs.health-check.outputs.status }}" = "success" ]; then
+            echo "![API Status](https://img.shields.io/badge/Unified%20API-Online-brightgreen)" > .github/badges/api-status.md
+          else
+            echo "![API Status](https://img.shields.io/badge/Unified%20API-Offline-red)" > .github/badges/api-status.md
+          fi
+          
+          echo "Last Updated: $(date -u)" >> .github/badges/api-status.md
+        
+      - name: Commit documentation updates
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if git diff --quiet; then
+            echo "No documentation changes to commit"
+          else
+            git add .github/badges/
+            git commit -m "📊 Update API status badges [skip ci]" || echo "No changes to commit"
+            git push || echo "No changes to push"
+          fi
