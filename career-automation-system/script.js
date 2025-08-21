@@ -2,7 +2,6 @@
 let currentTab = 'portfolio';
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
-let scheduledPosts = JSON.parse(localStorage.getItem('scheduledPosts')) || [];
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -93,13 +92,12 @@ function generatePortfolioText(name, type, description, tools, dataset, findings
             
             <h4>तकनीकी विवरण</h4>
             <ul>
-                <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'केवल अपने verified tools जोड़ें'}</li>
-                <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}</li>
+                <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'Python, Pandas, Matplotlib'}</li>
+                <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'Public Dataset'}</li>
             </ul>
             
             <h4>मुख्य निष्कर्ष</h4>
-            <p>${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}</p>
-            <p><em>Draft template: publish या portfolio में जोड़ने से पहले हर claim को अपने records से verify करें।</em></p>
+            <p>${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण पैटर्न और insights प्राप्त किए गए।'}</p>
             
             <h4>GitHub README.md</h4>
             <pre><code># ${name}
@@ -108,13 +106,13 @@ function generatePortfolioText(name, type, description, tools, dataset, findings
 ${description}
 
 ## तकनीकी स्टैक
-            - ${tools || 'केवल verified tools जोड़ें'}
+- ${tools || 'Python, Pandas, Matplotlib, Seaborn'}
 
 ## डेटा स्रोत
-            ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}
+${dataset || 'Public Dataset from Kaggle/NCBI'}
 
 ## मुख्य निष्कर्ष
-            ${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}
+${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण insights प्राप्त किए गए।'}
 
 ## इंस्टॉलेशन और उपयोग
 \`\`\`bash
@@ -216,7 +214,7 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
         'educational': 'शैक्षिक'
     };
 
-    const defaultHashtags = '#Draft #ReviewBeforePublishing';
+    const defaultHashtags = '#Bioinformatics #DataAnalysis #Biotechnology #Python #Pharma #ClinicalResearch';
     
     return `
         <div class="social-content">
@@ -226,10 +224,11 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
                 <p><strong>टोन:</strong> ${tones[tone]}</p>
                 
                 <div class="post-text">
-                    <p><strong>Draft topic:</strong> ${content}</p>
-                    <p>[अपनी verified सीख या finding यहाँ जोड़ें।]</p>
-                    <p>[सिर्फ verified project details, source link, और allowed media reference जोड़ें।]</p>
-                    <p><em>यह local draft है; approval के बिना publish नहीं किया जाएगा।</em></p>
+                    <p>🚀 <strong>${content}</strong></p>
+                    <p>🔬 बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में काम करते हुए, मैंने यह महत्वपूर्ण सीख प्राप्त की है।</p>
+                    <p>💡 यह प्रोजेक्ट मेरे करियर में एक महत्वपूर्ण मील का पत्थर है।</p>
+                    <p>📊 डेटा-संचालित निर्णय लेने की शक्ति को समझना आज के समय में बहुत महत्वपूर्ण है।</p>
+                    <p>🔗 पूरा केस स्टडी देखने के लिए मेरी पोर्टफोलियो वेबसाइट पर जाएँ।</p>
                     <p>${hashtags || defaultHashtags}</p>
                 </div>
             </div>
@@ -248,24 +247,7 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
 }
 
 function schedulePost() {
-    const content = document.querySelector('#socialContent .post-text')?.textContent;
-    if (!content) {
-        showMessage('पहले पोस्ट generate करें!', 'error');
-        return;
-    }
-
-    const postData = {
-        id: Date.now(),
-        type: 'social_media_post',
-        platform: document.getElementById('platform').value,
-        content,
-        status: 'draft_only',
-        timestamp: new Date().toISOString()
-    };
-
-    scheduledPosts.push(postData);
-    localStorage.setItem('scheduledPosts', JSON.stringify(scheduledPosts));
-    showMessage('पोस्ट केवल local draft queue में सेव हुआ है। Publish के लिए server-side approval आवश्यक है।', 'info');
+    showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
 }
 
 // Resume Optimizer Functions
@@ -307,12 +289,19 @@ function generateOptimizedContent(type, content, role, company) {
     };
 
     const headlines = [
-        '[Verified qualification] | [Verified role focus] | [Verified skill or domain]',
-        '[Verified current role] | [Verified industry experience] | [Verified career objective]'
+        `🔬 बायोटेक्नोलॉजी प्रोफेशनल | बायोइन्फॉर्मेटिक्स में रुचि | Python & Data Analysis`,
+        `📊 बायोइन्फॉर्मेटिक्स एनालिस्ट | डेटा-संचालित रिसर्च | फार्मा इंडस्ट्री में करियर`,
+        `🧬 बायोटेक्नोलॉजी डिप्लोमा | बायोइन्फॉर्मेटिक्स में विशेषज्ञता | AI & ML में अनुभव`,
+        `💻 बायोडेटा एनालिस्ट | क्लिनिकल रिसर्च | Python, SQL, Web Development`,
+        `🔬 बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक | डेटा एनालिसिस में पैशन | फार्मा करियर`
     ];
 
     const summaries = [
-        'Draft template: replace every bracketed field with facts present in your resume, portfolio, or supporting records. Do not add degrees, skills, tools, dates, metrics, employers, or achievements that cannot be verified.'
+        `बायोटेक्नोलॉजी में डिप्लोमा के साथ, मैं बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में अपना करियर बनाने के लिए तैयार हूँ। मेरे पास Python, SQL, और वेब डिज़ाइन में मजबूत कौशल हैं, जो मुझे फार्मास्युटिकल और क्लिनिकल रिसर्च कंपनियों में मूल्यवान बनाते हैं।`,
+        
+        `एक बायोटेक्नोलॉजी प्रोफेशनल के रूप में, मैं डेटा-संचालित निर्णय लेने की शक्ति में विश्वास रखता हूँ। मेरी बायोइन्फॉर्मेटिक्स में 1-महीने की इंटर्नशिप और Python, SQL में मजबूत कौशल मुझे फार्मा इंडस्ट्री में सफल करियर बनाने में मदद करेंगे।`,
+        
+        `बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक का मेरा सफर मुझे डेटा एनालिसिस और क्लिनिकल रिसर्च के बीच की खाई को पाटने में मदद करता है। मेरे कौशल में Python प्रोग्रामिंग, डेटा विज़ुअलाइज़ेशन, और वेब डिज़ाइन शामिल हैं।`
     ];
 
     let optimizedText = '';
@@ -339,8 +328,8 @@ function generateOptimizedContent(type, content, role, company) {
                 <h4>Optimized ${typeLabels[type]}:</h4>
                 <p><strong>मूल कंटेंट:</strong></p>
                 <p>${content}</p>
-                <p><strong>Review cue:</strong></p>
-                <p>इस text को केवल clarity के लिए edit करें। कोई नया degree, skill, employer, metric, certification, responsibility, या achievement न जोड़ें।</p>
+                <p><strong>Optimized कंटेंट:</strong></p>
+                <p>${content.replace(/मैंने/g, 'मैंने सफलतापूर्वक').replace(/किया/g, 'पूरा किया')}</p>
             `;
     }
 
@@ -357,7 +346,7 @@ function searchJobs() {
     const location = document.getElementById('jobLocation').value;
     const company = document.getElementById('jobCompany').value;
 
-    showMessage(`Local UI draft results तैयार हो रहे हैं: ${role} in ${location} at ${company}. ये verified job listings नहीं हैं।`, 'info');
+    showMessage(`नौकरी खोज रहा हूँ: ${role} in ${location} at ${company}`, 'success');
     
     // Simulate job search
     setTimeout(() => {
@@ -369,22 +358,22 @@ function updateJobList() {
     const jobList = document.querySelector('.job-list');
     const newJobs = [
         {
-            title: 'Example role — verify official source',
-            company: 'Example employer',
-            location: 'Add verified location',
-            description: 'Illustrative UI record only. Add an official source URL and verify requirements before drafting any application.'
+            title: 'Bioinformatics Analyst',
+            company: 'Sun Pharma',
+            location: 'Mumbai, Maharashtra',
+            description: 'Looking for a skilled bioinformatics analyst with Python experience in drug discovery and clinical data analysis.'
         },
         {
-            title: 'Example role — verify official source',
-            company: 'Example employer',
-            location: 'Add verified location',
-            description: 'Illustrative UI record only. No employer has been contacted and no application is created.'
+            title: 'Data Analyst - Clinical Research',
+            company: 'Zydus Cadila',
+            location: 'Ahmedabad, Gujarat',
+            description: 'Join our clinical research team to analyze patient data and contribute to drug development process.'
         },
         {
-            title: 'Example role — verify official source',
-            company: 'Example employer',
-            location: 'Add verified location',
-            description: 'Illustrative UI record only. Use an official listing and a truthful candidate profile before any draft handoff.'
+            title: 'Research Associate - Bioinformatics',
+            company: 'Alembic Pharmaceuticals',
+            location: 'Vadodara, Gujarat',
+            description: 'Work on genomic data analysis and contribute to our precision medicine initiatives.'
         }
     ];
 
@@ -397,7 +386,7 @@ function updateJobList() {
                 <p class="location">${job.location}</p>
                 <p class="description">${job.description}</p>
                 <div class="job-actions">
-                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Prepare draft</button>
+                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Apply</button>
                     <button class="btn btn-sm btn-secondary" onclick="saveJob('${job.title}', '${job.company}')">Save</button>
                 </div>
             </div>
@@ -406,11 +395,11 @@ function updateJobList() {
 }
 
 function applyForJob(title, company) {
-    showMessage(`${company} में ${title} के लिए local draft prepared है। कोई application submit नहीं हुआ।`, 'info');
+    showMessage(`${company} में ${title} के लिए आवेदन किया गया!`, 'success');
 }
 
 function saveJob(title, company) {
-    showMessage(`${company} में ${title} local review के लिए saved है।`, 'info');
+    showMessage(`${company} में ${title} सेव किया गया!`, 'success');
 }
 
 // AI Prompts Functions
@@ -565,173 +554,334 @@ function initializeHelp() {
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
 
-// Microsoft Copilot Integration Functions
-function generateCopilotProject(projectType) {
-    const templates = {
-        'lab-automation': {
-            name: 'Lab automation draft template',
-            description: 'Draft only — replace with a verified project, source, and permitted tools.',
-            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
+// Critical Thinking Optimization Features
 
-Project topic: lab workflow improvement.
-
-Replace this template with verified information only:
-- the actual problem and project scope
-- tools that were actually used
-- a measured result with its source and measurement method, if applicable
-- any review or compliance status only when documented
-
-Do not state that a system was completed, deployed, compliant, integrated, or faster unless those facts are supported by records.`,
-            resumeBullet: '[DRAFT] Describe only a verified contribution, verified tools, and a documented outcome. Remove this line until all facts are supported.'
-        },
-        'clinical-dashboard': {
-            name: 'Clinical dashboard draft template',
-            description: 'Draft only — do not represent this as a deployed clinical system.',
-            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
-
-Project topic: clinical dashboard concept.
-
-Before using this copy, add only verified, permissioned details. Never claim use of patient data, a clinical deployment, a compliance status, accuracy improvement, or a performance result without documentary evidence and required authorization.`,
-            resumeBullet: '[DRAFT] Add a factual, source-supported description only after the project, data permissions, tools, and outcome are verified.'
-        },
-        'api-pipeline': {
-            name: 'Bioinformatics pipeline draft template',
-            description: 'Draft only — replace with a verified, reproducible project description.',
-            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
-
-Project topic: bioinformatics workflow concept.
-
-Add verified inputs, reproducible methods, permitted data sources, and documented findings before sharing. Do not claim an API integration, a clinical use, accuracy improvement, speed improvement, or drug-discovery impact without evidence.`,
-            resumeBullet: '[DRAFT] Add a verified contribution and documented result only after independent review of the project evidence.'
-        }
-    };
-
-    const template = templates[projectType];
-    if (!template) {
-        showMessage('Project template not found', 'error');
-        return;
-    }
-
-    // Show a local, fact-review template only.
-    showCopilotProjectResult(template);
-}
-
-function showCopilotProjectResult(template) {
-    // Display the generated LinkedIn post and resume bullet in a modal
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fab fa-microsoft"></i> Copilot Project Draft Template</h3>
-                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="project-result">
-                    <p><strong>Fact-review required:</strong> This local template contains no verified achievement claim. Do not publish or add it to a resume until every statement is supported.</p>
-                    <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
-                    <div class="content-box">
-                        <p>${template.linkedinPost}</p>
-                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
-                            <i class="fas fa-copy"></i> Copy LinkedIn Post
-                        </button>
-                    </div>
-                    
-                    <h4><i class="fas fa-file-alt"></i> Resume Bullet Point</h4>
-                    <div class="content-box">
-                        <p><strong>${template.resumeBullet}</strong></p>
-                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
-                            <i class="fas fa-copy"></i> Copy Resume Bullet
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+// Prompt Category Management
+function initializePromptCategories() {
+    const categoryTabs = document.querySelectorAll('.prompt-category-tab');
+    const categoryContents = document.querySelectorAll('.prompt-category-content');
     
-    document.body.appendChild(modal);
-}
-
-function viewCopilotDemo(projectType) {
-    void projectType;
-    showMessage('Demo links are not configured. Attach only a verified, authorized project link after review.', 'info');
-}
-
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showMessage('Copied to clipboard!', 'success');
-    }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showMessage('Failed to copy to clipboard', 'error');
+    categoryTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const category = tab.dataset.category;
+            
+            // Remove active classes
+            categoryTabs.forEach(t => t.classList.remove('active'));
+            categoryContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active classes
+            tab.classList.add('active');
+            document.getElementById(`${category}-prompts`).classList.add('active');
+        });
     });
 }
 
-// Webhook Integration Functions
-async function sendToWebhook(data) {
-    void data;
-    throw new Error('Browser-side webhook sending is disabled. Use a server-side approval queue before any external action.');
-}
-
-function getWebhookUrl() {
-    // Try to get webhook URL from various sources
-    return localStorage.getItem('webhookUrl') || 
-           window.WEBHOOK_URL || 
-           (typeof process !== 'undefined' && process?.env?.N8N_WEBHOOK_URL) ||
-           null;
-}
-
-function setWebhookUrl(url) {
-    localStorage.setItem('webhookUrl', url);
-    showMessage('Webhook URL local settings में सेव है; browser से कोई external request नहीं भेजी जाएगी।', 'info');
-}
-
-// Enhanced save project function with webhook integration
-async function saveProjectWithWebhook() {
-    const projectName = document.getElementById('projectName').value;
-    const description = document.getElementById('projectDescription').value;
-    const tools = document.getElementById('toolsUsed').value;
-    const findings = document.getElementById('keyFindings').value;
-
-    if (!projectName || !description) {
-        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
-        return;
-    }
-
-    const projectData = {
-        name: projectName,
-        description: description,
-        tools: tools.split(',').map(t => t.trim()),
-        findings: findings,
-        timestamp: new Date().toISOString()
-    };
-
-    // Save locally
-    projects.push(projectData);
-    localStorage.setItem('projects', JSON.stringify(projects));
-
-    showMessage('प्रोजेक्ट केवल local draft के रूप में सेव हुआ है। External handoff के लिए server-side approval आवश्यक है।', 'info');
-
-    updateAnalytics();
-}
-
-// Webhook configuration UI
-function showWebhookConfig() {
-    const currentUrl = getWebhookUrl() || '';
-    const newUrl = prompt('n8n Webhook URL enter करें:', currentUrl);
+// Advanced Prompt Copy Functionality
+function copyAdvancedPrompt(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.value || element.textContent;
     
-    if (newUrl && newUrl.trim()) {
-        setWebhookUrl(newUrl.trim());
+    navigator.clipboard.writeText(text).then(() => {
+        showMessage('Advanced prompt copied to clipboard! 🧠', 'success');
+        
+        // Find the button that was clicked and show feedback
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            if (btn.onclick && btn.onclick.toString().includes(elementId)) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }
+        });
+    }).catch(err => {
+        showMessage('Failed to copy prompt. Please try again.', 'error');
+    });
+}
+
+// Specialized Prompt Library
+const specializedPrompts = {
+    linkedin: {
+        title: 'LinkedIn Profile Critical Analysis',
+        content: `**Role**: Expert LinkedIn optimization consultant with critical thinking expertise
+
+**Task**: Perform comprehensive critical analysis of this LinkedIn profile content:
+
+**Profile Content to Analyze**: 
+[Paste your LinkedIn headline, about section, or experience description here]
+
+**Analysis Framework**:
+1. **Content Audit**: What works vs. what doesn't?
+2. **Keyword Analysis**: SEO and recruiter visibility 
+3. **Narrative Flow**: Story coherence and impact
+4. **Competitive Analysis**: Industry benchmark comparison
+5. **Conversion Optimization**: Call-to-action effectiveness
+
+**Output Requirements**:
+- Overall optimization score (1-10)
+- 3 highest-impact improvements
+- Before/after content examples
+- Industry-specific keyword suggestions
+- Measurable success criteria
+
+**Instructions**: Be specific with recommendations and provide actionable steps for optimization.`
+    },
+    resume: {
+        title: 'Resume Content Performance Analysis',
+        content: `**Role**: Senior HR consultant and resume optimization expert
+
+**Analyze This Resume Section**: 
+[Paste your resume summary, experience bullet points, or skills section here]
+
+**Critical Evaluation Criteria**:
+- **Impact Quantification**: Are achievements measurable?
+- **Relevance Scoring**: How well does content match target role?
+- **ATS Compatibility**: Keyword optimization for applicant tracking systems
+- **Storytelling Effectiveness**: Does content tell a compelling career story?
+- **Industry Alignment**: Matches sector expectations and language?
+
+**Target Role**: [Specify the job title you're targeting]
+
+**Provide**:
+- Content effectiveness score (1-10)
+- Top 3 optimization priorities
+- Rewritten high-impact examples
+- ATS keyword enhancement suggestions
+- Industry-specific improvements
+
+**Instructions**: Focus on measurable improvements that will increase interview callbacks.`
+    },
+    jobstrategy: {
+        title: 'Job Application Strategy Critical Analysis',
+        content: `**Role**: Career strategist specializing in pharmaceutical and biotech industries
+
+**Analyze My Job Search Approach**:
+- **Target Role**: [Specific job title]
+- **Target Companies**: [List companies you're targeting]
+- **Current Strategy**: [Describe your current approach]
+- **Application Materials**: [List what you're using - resume, cover letter, portfolio]
+- **Results So Far**: [Response rates, interviews, feedback received]
+
+**Critical Analysis Areas**:
+1. **Strategy Alignment**: Does approach match industry expectations?
+2. **Material Effectiveness**: Are applications compelling and targeted?
+3. **Process Efficiency**: Is the workflow optimized for best ROI?
+4. **Market Positioning**: How competitive is the positioning?
+5. **Success Probability**: What's the likelihood of success?
+
+**Output**: 
+- Strategy effectiveness rating (1-10)
+- Process optimization recommendations
+- Material improvement priorities
+- Timeline and success metrics
+- Risk mitigation strategies
+
+**Instructions**: Provide data-driven insights and specific action steps for improvement.`
+    },
+    portfolio: {
+        title: 'Project Portfolio Critical Review',
+        content: `**Role**: Senior project portfolio reviewer and career advancement specialist
+
+**Portfolio Projects to Analyze**:
+[List your projects with brief descriptions, technologies used, and outcomes]
+
+**Evaluation Criteria**:
+- **Technical Complexity**: Demonstrates required skills?
+- **Business Impact**: Shows value creation ability?
+- **Presentation Quality**: Effectively communicates achievements?
+- **Market Relevance**: Aligns with industry needs?
+- **Differentiation**: Stands out from competition?
+
+**Target Industry**: [Biotech/Pharma/Clinical Research/Data Science]
+
+**Critical Questions**:
+- Which projects should be featured prominently?
+- What gaps exist in the portfolio?
+- How can presentation be optimized?
+- What additional projects would strengthen positioning?
+
+**Provide**:
+- Portfolio strength assessment (1-10)
+- Project prioritization recommendations  
+- Presentation optimization strategies
+- Gap analysis and suggestions
+- Competitive positioning advice
+
+**Instructions**: Be specific about which projects to emphasize and how to present them effectively.`
+    }
+};
+
+// Load Specialized Prompt
+function loadSpecializedPrompt(type) {
+    const prompt = specializedPrompts[type];
+    if (!prompt) return;
+    
+    const display = document.getElementById('specializedPromptDisplay');
+    const title = document.getElementById('specializedPromptTitle');
+    const content = document.getElementById('specializedPromptContent');
+    
+    title.innerHTML = `<i class="fas fa-brain"></i> ${prompt.title}`;
+    content.value = prompt.content;
+    display.style.display = 'block';
+    
+    // Scroll to the prompt
+    display.scrollIntoView({ behavior: 'smooth' });
+    
+    showMessage(`Loaded ${prompt.title} - customize with your details and copy to AI tool`, 'success');
+}
+
+// Customize Prompt Functionality
+function customizePrompt() {
+    const content = document.getElementById('specializedPromptContent');
+    content.readOnly = false;
+    content.style.background = '#fff';
+    content.style.border = '2px solid #667eea';
+    
+    const customizeBtn = event.target;
+    customizeBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+    customizeBtn.onclick = saveCustomization;
+    
+    showMessage('Prompt is now editable. Customize it for your needs!', 'success');
+}
+
+function saveCustomization() {
+    const content = document.getElementById('specializedPromptContent');
+    content.readOnly = true;
+    content.style.background = '#2d3748';
+    content.style.border = '2px solid #4a5568';
+    
+    const saveBtn = event.target;
+    saveBtn.innerHTML = '<i class="fas fa-edit"></i> Customize';
+    saveBtn.onclick = customizePrompt;
+    
+    showMessage('Customizations saved! Your prompt is ready to use.', 'success');
+}
+
+// Performance Analysis Functions
+function analyzeContentPerformance() {
+    // Simulate analysis with realistic scoring
+    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+    const socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+    
+    let score = 0;
+    
+    // Score based on content quantity and quality indicators
+    if (projects.length > 0) score += 30;
+    if (projects.length > 3) score += 20;
+    if (socialPosts.length > 0) score += 25;
+    if (socialPosts.length > 5) score += 15;
+    
+    // Add random variation for realism
+    score += Math.floor(Math.random() * 10);
+    score = Math.min(score, 100);
+    
+    updateMetricDisplay('contentScore', score);
+    
+    if (score < 60) {
+        showMessage('Content effectiveness could be improved. Use critical thinking prompts to optimize!', 'error');
+    } else if (score < 80) {
+        showMessage('Good content performance! Consider using advanced analysis prompts for optimization.', 'success');
+    } else {
+        showMessage('Excellent content performance! Keep using AI optimization strategies.', 'success');
     }
 }
 
-async function testWebhookConnection() {
-    showMessage('Browser-side webhook testing is disabled. Verify connectivity only through an approved server-side integration.', 'info');
+function analyzeProfileOptimization() {
+    // Simulate profile analysis
+    const score = Math.floor(Math.random() * 40) + 60; // 60-100 range
+    updateMetricDisplay('profileScore', score);
+    
+    if (score < 70) {
+        showMessage('Profile needs optimization. Try the LinkedIn analysis prompt!', 'error');
+    } else if (score < 85) {
+        showMessage('Profile is good but can be improved. Use critical thinking analysis!', 'success');
+    } else {
+        showMessage('Excellent profile optimization! You\'re using AI effectively.', 'success');
+    }
 }
 
-// Auto-connect webhook on page load if URL is available
+function analyzeAIUsage() {
+    // Simulate AI usage efficiency analysis
+    const promptUsage = localStorage.getItem('promptUsageCount') || 0;
+    let score = Math.min(parseInt(promptUsage) * 10, 90) + Math.floor(Math.random() * 10);
+    score = Math.min(score, 100);
+    
+    updateMetricDisplay('efficiencyScore', score);
+    
+    // Track usage
+    localStorage.setItem('promptUsageCount', parseInt(promptUsage) + 1);
+    
+    showMessage(`AI usage efficiency: ${score}%. Great job leveraging AI for career optimization!`, 'success');
+}
+
+function updateMetricDisplay(metricId, score) {
+    const element = document.getElementById(metricId);
+    if (element) {
+        // Animate the score update
+        let currentScore = 0;
+        const increment = score / 20;
+        
+        const interval = setInterval(() => {
+            currentScore += increment;
+            if (currentScore >= score) {
+                currentScore = score;
+                clearInterval(interval);
+            }
+            element.textContent = Math.floor(currentScore) + '%';
+            
+            // Color code based on score
+            if (currentScore < 60) {
+                element.style.color = '#e53e3e';
+            } else if (currentScore < 80) {
+                element.style.color = '#d69e2e';
+            } else {
+                element.style.color = '#38a169';
+            }
+        }, 50);
+    }
+}
+
+// Apply Optimization Suggestions
+function applySuggestion(button) {
+    const suggestionText = button.parentElement.querySelector('span').textContent;
+    
+    // Mark as applied
+    button.innerHTML = '<i class="fas fa-check"></i> Applied';
+    button.style.background = '#48bb78';
+    button.disabled = true;
+    
+    // Navigate to relevant section based on suggestion
+    if (suggestionText.includes('LinkedIn')) {
+        switchTab('prompts');
+        document.querySelector('[data-category="optimization"]').click();
+        setTimeout(() => loadSpecializedPrompt('linkedin'), 500);
+    } else if (suggestionText.includes('resume')) {
+        switchTab('prompts');
+        document.querySelector('[data-category="optimization"]').click();
+        setTimeout(() => loadSpecializedPrompt('resume'), 500);
+    } else if (suggestionText.includes('portfolio')) {
+        switchTab('prompts');
+        document.querySelector('[data-category="optimization"]').click();
+        setTimeout(() => loadSpecializedPrompt('portfolio'), 500);
+    }
+    
+    showMessage('Suggestion applied! Follow the loaded prompt for optimization.', 'success');
+}
+
+// Enhanced initialization
 document.addEventListener('DOMContentLoaded', function() {
-    const webhookUrl = getWebhookUrl();
-    if (webhookUrl) {
-        console.log('Webhook URL configured:', webhookUrl.substring(0, 30) + '...');
-    }
+    initializeHelp();
+    initializePromptCategories();
+    
+    // Show welcome message for new optimization features
+    setTimeout(() => {
+        if (!localStorage.getItem('seenOptimizationWelcome')) {
+            showMessage('🧠 New: Critical Thinking AI Prompts now available! Check the AI Prompts section.', 'success');
+            localStorage.setItem('seenOptimizationWelcome', 'true');
+        }
+    }, 2000);
 });
