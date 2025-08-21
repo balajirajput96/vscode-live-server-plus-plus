@@ -38,6 +38,9 @@
             <button class="nav-tab" data-tab="analytics">
                 <i class="fas fa-chart-line"></i> Analytics
             </button>
+            <button class="nav-tab" data-tab="templates">
+                <i class="fas fa-file-medical"></i> Pharma Templates
+            </button>
         </nav>
 
         <!-- Main Content -->
@@ -365,6 +368,158 @@
                         </div>
                         <span>9/10</span>
                     </div>
+                </div>
+            </section>
+
+            <!-- Pharma Templates Section -->
+            <section id="templates" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-medical"></i> Pharmaceutical Industry Templates</h2>
+                    <p>Gujarat Pharma Belt के लिए विशेष टेम्प्लेट्स - Balaji Dilip Singh</p>
+                </div>
+                
+                <div class="templates-grid">
+                    <!-- Resume Templates -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h3><i class="fas fa-file-alt"></i> Resume Templates</h3>
+                        </div>
+                        <div class="template-options">
+                            <button class="template-btn" onclick="loadResumeTemplate('qc_qa')">
+                                <i class="fas fa-microscope"></i>
+                                QC/QA Apprentice
+                            </button>
+                            <button class="template-btn" onclick="loadResumeTemplate('production')">
+                                <i class="fas fa-cogs"></i>
+                                Production Trainee
+                            </button>
+                            <button class="template-btn" onclick="loadResumeTemplate('lab_tech')">
+                                <i class="fas fa-flask"></i>
+                                Lab Technician
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cover Letters -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h3><i class="fas fa-envelope"></i> Cover Letters</h3>
+                        </div>
+                        <div class="template-options">
+                            <button class="template-btn" onclick="loadCoverLetter('apprentice')">
+                                <i class="fas fa-graduation-cap"></i>
+                                Apprenticeship Cover Letter
+                            </button>
+                            <button class="template-btn" onclick="loadCoverLetter('trainee')">
+                                <i class="fas fa-user-graduate"></i>
+                                Trainee Position Letter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn Profile -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h3><i class="fab fa-linkedin"></i> LinkedIn Profile</h3>
+                        </div>
+                        <div class="template-options">
+                            <button class="template-btn" onclick="loadLinkedInContent('headline')">
+                                <i class="fas fa-heading"></i>
+                                Professional Headline
+                            </button>
+                            <button class="template-btn" onclick="loadLinkedInContent('about')">
+                                <i class="fas fa-info-circle"></i>
+                                About Section
+                            </button>
+                            <button class="template-btn" onclick="loadLinkedInContent('skills')">
+                                <i class="fas fa-star"></i>
+                                Skills & Keywords
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Outreach Templates -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h3><i class="fas fa-paper-plane"></i> Outreach Messages</h3>
+                        </div>
+                        <div class="template-options">
+                            <button class="template-btn" onclick="loadOutreachTemplate('hr_pharma')">
+                                <i class="fas fa-user-tie"></i>
+                                HR - Pharma Companies
+                            </button>
+                            <button class="template-btn" onclick="loadOutreachTemplate('diagnostics')">
+                                <i class="fas fa-diagnoses"></i>
+                                Diagnostics Labs
+                            </button>
+                            <button class="template-btn" onclick="loadOutreachTemplate('alumni')">
+                                <i class="fas fa-users"></i>
+                                Alumni Referrals
+                            </button>
+                            <button class="template-btn" onclick="loadOutreachTemplate('follow_up')">
+                                <i class="fas fa-redo"></i>
+                                Follow-up Messages
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Plan -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h3><i class="fas fa-calendar-check"></i> 30-Day Action Plan</h3>
+                        </div>
+                        <div class="template-options">
+                            <button class="template-btn" onclick="loadActionPlan('week1')">
+                                <i class="fas fa-play"></i>
+                                Week 1: Foundation
+                            </button>
+                            <button class="template-btn" onclick="loadActionPlan('week2')">
+                                <i class="fas fa-walking"></i>
+                                Week 2: Walk-ins
+                            </button>
+                            <button class="template-btn" onclick="loadActionPlan('week3')">
+                                <i class="fas fa-bullseye"></i>
+                                Week 3: Conversion
+                            </button>
+                            <button class="template-btn" onclick="loadActionPlan('week4')">
+                                <i class="fas fa-chart-line"></i>
+                                Week 4: Review
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Application Tracker -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h3><i class="fas fa-table"></i> Application Tracker</h3>
+                        </div>
+                        <div class="template-options">
+                            <button class="template-btn" onclick="downloadTracker()">
+                                <i class="fas fa-download"></i>
+                                Download CSV Template
+                            </button>
+                            <button class="template-btn" onclick="viewTrackerSample()">
+                                <i class="fas fa-eye"></i>
+                                View Sample Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Display Area -->
+                <div id="templateDisplay" class="template-display" style="display: none;">
+                    <div class="template-display-header">
+                        <h3 id="templateTitle">Template Content</h3>
+                        <div class="template-actions">
+                            <button class="btn btn-primary" onclick="copyTemplateContent()">
+                                <i class="fas fa-copy"></i> Copy Content
+                            </button>
+                            <button class="btn btn-secondary" onclick="closeTemplate()">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                    <div id="templateContent" class="template-content"></div>
                 </div>
             </section>
         </main>
