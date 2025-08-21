@@ -417,6 +417,30 @@ function copyPrompt(button) {
     });
 }
 
+// Bullet Points Generator Functions
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.textContent || element.innerText;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        // Find the button that triggered this copy
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> कॉपी हो गया!';
+        button.style.background = '#48bb78';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = '';
+        }, 2000);
+        
+        showMessage('Text copied to clipboard!', 'success');
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        showMessage('Copy failed. Please try again.', 'error');
+    });
+}
+
 // Analytics Functions
 function updateAnalytics() {
     const projectCount = projects.length;
