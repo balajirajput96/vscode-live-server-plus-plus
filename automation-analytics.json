@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-08-21T18:41:04.775Z",
+  "workflow_run": "38",
+  "repository": "balajirajput96/vscode-live-server-plus-plus",
+  "branch": "copilot/fix-8552f163-5d23-4903-8114-c245de918088",
+  "commit": "7053be441f77f1c0a19c0792a80b25302b5ca7c1",
+  "execution_time_ms": 20,
+  "automation_results": {
+    "portfolio": true,
+    "social": true,
+    "webhook": false,
+    "analytics": false
+  },
+  "system_status": {
+    "portfolio_generation": "✅ Success",
+    "social_media_templates": "✅ Updated",
+    "webhook_trigger": "⚠️ Skipped",
+    "overall_status": "Partial"
+  },
+  "next_actions": [
+    "Review generated content and customize as needed",
+    "Schedule social media posts using provided templates",
+    "Monitor n8n workflow execution for additional automation",
+    "Check automation-status.json for detailed results"
+  ],
+  "configuration_status": {
+    "openai_api_key": "⚠️ Missing",
+    "gemini_api_key": "⚠️ Missing",
+    "n8n_webhook_url": "⚠️ Missing",
+    "github_token": "⚠️ Missing"
+  }
+}
