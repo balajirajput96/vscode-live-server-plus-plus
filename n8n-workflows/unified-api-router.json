@@ -1,0 +1,524 @@
+{
+  "name": "Unified_API_Router_v1",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "unified-api",
+        "responseMode": "onReceived",
+        "httpMethod": "POST"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "id": "webhook-node"
+    },
+    {
+      "parameters": {
+        "options": {},
+        "functionCode": "// Route requests based on type parameter\nconst requestType = (items[0].json.type || '').toLowerCase();\nconst data = items[0].json;\n\n// Log the incoming request\nconsole.log('Unified API Request:', { type: requestType, data });\n\n// Add routing metadata\nreturn [{ \n  ...data,\n  routeType: requestType,\n  timestamp: new Date().toISOString(),\n  requestId: Math.random().toString(36).substr(2, 9)\n}];"
+      },
+      "name": "Request Router",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [440, 300],
+      "id": "router-node"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ai-condition",
+              "leftValue": "={{ $json.routeType }}",
+              "rightValue": "ai",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Route to AI",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [640, 200],
+      "id": "ai-route"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "github-condition",
+              "leftValue": "={{ $json.routeType }}",
+              "rightValue": "github",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Route to GitHub",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [640, 300],
+      "id": "github-route"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "docs-condition",
+              "leftValue": "={{ $json.routeType }}",
+              "rightValue": "docs",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Route to Docs",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [640, 400],
+      "id": "docs-route"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "log-condition",
+              "leftValue": "={{ $json.routeType }}",
+              "rightValue": "log",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Route to Logs",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [640, 500],
+      "id": "log-route"
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "chatModel": "gpt-4o-mini",
+        "options": {
+          "maxTokens": 300,
+          "temperature": 0.7
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a helpful AI assistant for biotechnology and bioinformatics professionals. Reply in Hinglish (Hindi+English mix) and keep responses concise and helpful.\n\nUser Query: {{ $json.query || $json.message || 'General help requested' }}\n\nContext: {{ $json.context || 'Career automation system' }}",
+              "role": "user"
+            }
+          ]
+        }
+      },
+      "name": "OpenAI Chat",
+      "type": "@n8n/n8n-nodes-langchain.chatOpenAi",
+      "typeVersion": 1,
+      "position": [840, 120],
+      "id": "openai-node"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "REPLACE_TELEGRAM_CHAT_ID",
+        "text": "🤖 AI Response from Unified API:\n\n*Query:* {{ $json.query || 'N/A' }}\n*Response:* {{ $node['OpenAI Chat'].json.text }}\n\n_Generated at {{ $json.timestamp }}_",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1040, 120],
+      "id": "telegram-ai"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "sendTo": "={{ $json.email || '2203456300001@paruluniversity.ac.in' }}",
+        "subject": "AI Response - Parul University Career System",
+        "emailType": "text",
+        "message": "Hi there!\n\nYour AI query has been processed:\n\nQuery: {{ $json.query }}\n\nResponse: {{ $node['OpenAI Chat'].json.text }}\n\nGenerated by: Unified Career Automation API\nTimestamp: {{ $json.timestamp }}\n\nBest regards,\nCareer Automation System"
+      },
+      "name": "Gmail Send AI Response",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [1040, 200],
+      "id": "gmail-ai"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.github.com/repos/REPLACE_GITHUB_OWNER/REPLACE_GITHUB_REPO/issues",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $json.github_token || $json.token || 'REPLACE_GITHUB_TOKEN' }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "{\n  \"title\": \"Unified API Event: {{ $json.title || 'Automated Issue Creation' }}\",\n  \"body\": \"## Event Details\\n\\n**Type:** {{ $json.routeType }}\\n**Timestamp:** {{ $json.timestamp }}\\n**Request ID:** {{ $json.requestId }}\\n\\n**Data:**\\n```json\\n{{ $json | json }}\\n```\\n\\n**Description:** {{ $json.description || 'Automated issue created via Unified API' }}\\n\\n---\\n*Generated by Career Automation System*\",\n  \"labels\": [\"automation\", \"api\", \"{{ $json.routeType }}\"]  \n}"
+      },
+      "name": "GitHub Issue Creator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [840, 300],
+      "id": "github-node"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": "REPLACE_GOOGLE_DRIVE_FILE_ID"
+      },
+      "name": "Google Drive Docs",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [840, 400],
+      "id": "drive-node"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": "REPLACE_GOOGLE_SHEETS_ID",
+        "sheetName": "API_Logs",
+        "keyRow": 1,
+        "dataMode": "autoMapInputData",
+        "options": {
+          "continue": true,
+          "useAppend": true
+        },
+        "values": {
+          "values": [
+            {
+              "Timestamp": "={{ $json.timestamp }}",
+              "Request_ID": "={{ $json.requestId }}",
+              "Type": "={{ $json.routeType }}",
+              "Email": "={{ $json.email || 'N/A' }}",
+              "Query": "={{ $json.query || $json.message || 'N/A' }}",
+              "Status": "Success",
+              "Source": "Unified API"
+            }
+          ]
+        }
+      },
+      "name": "Google Sheets Logger",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [840, 500],
+      "id": "sheets-node"
+    },
+    {
+      "parameters": {
+        "options": {},
+        "functionCode": "// Unified response formatter\nconst item = items[0].json;\nconst routeType = item.routeType;\nlet response = {\n  success: true,\n  type: routeType,\n  requestId: item.requestId,\n  timestamp: item.timestamp,\n  message: 'Request processed successfully'\n};\n\n// Add route-specific response data\nswitch(routeType) {\n  case 'ai':\n    if ($node['OpenAI Chat'] && $node['OpenAI Chat'].json) {\n      response.aiResponse = $node['OpenAI Chat'].json.text;\n      response.message = 'AI response generated and notifications sent';\n    }\n    break;\n    \n  case 'github':\n    if ($node['GitHub Issue Creator'] && $node['GitHub Issue Creator'].json) {\n      response.githubIssue = {\n        url: $node['GitHub Issue Creator'].json.html_url,\n        number: $node['GitHub Issue Creator'].json.number\n      };\n      response.message = 'GitHub issue created successfully';\n    }\n    break;\n    \n  case 'docs':\n    if ($node['Google Drive Docs'] && $node['Google Drive Docs'].json) {\n      response.document = {\n        name: $node['Google Drive Docs'].json.name,\n        mimeType: $node['Google Drive Docs'].json.mimeType\n      };\n      response.message = 'Document retrieved from Google Drive';\n    }\n    break;\n    \n  case 'log':\n    response.message = 'Data logged to Google Sheets successfully';\n    break;\n    \n  default:\n    response.message = 'Unknown request type processed';\n}\n\nreturn [response];"
+      },
+      "name": "Response Formatter",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [1240, 300],
+      "id": "response-node"
+    },
+    {
+      "parameters": {
+        "options": {},
+        "functionCode": "// Error handler for failed requests\nconst item = items[0].json;\nreturn [{\n  success: false,\n  error: true,\n  type: item.routeType || 'unknown',\n  requestId: item.requestId || 'unknown',\n  timestamp: new Date().toISOString(),\n  message: 'Request processing failed',\n  details: item.error || 'Unknown error occurred'\n}];"
+      },
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [640, 600],
+      "id": "error-node"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Request Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Router": {
+      "main": [
+        [
+          {
+            "node": "Route to AI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Route to GitHub",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Route to Docs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Route to Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to AI": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Chat",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to GitHub": {
+      "main": [
+        [
+          {
+            "node": "GitHub Issue Creator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to Docs": {
+      "main": [
+        [
+          {
+            "node": "Google Drive Docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to Logs": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat": {
+      "main": [
+        [
+          {
+            "node": "Telegram Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail Send AI Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets Logger",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub Issue Creator": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Docs": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Logger": {
+      "main": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Notification": {
+      "main": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Send AI Response": {
+      "main": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-20T00:00:00.000Z",
+      "updatedAt": "2024-01-20T00:00:00.000Z",
+      "id": "unified-api",
+      "name": "Unified API"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-20T00:00:00.000Z",
+  "versionId": "1"
+}
