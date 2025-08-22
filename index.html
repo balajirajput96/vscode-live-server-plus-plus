@@ -291,6 +291,59 @@
             font-weight: bold;
         }
 
+        .preset-btn {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .preset-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .api-status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .api-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .api-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .streaming-indicator {
+            display: none;
+            padding: 10px;
+            background: #e8f4fd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            color: #0066cc;
+            font-size: 14px;
+        }
+
+        .streaming-indicator.active {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -542,6 +595,66 @@
                 </div>
             </div>
 
+            <!-- AI Assistant with Perplexity API -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-brain"></i>
+                    <h3>🤖 AI Assistant (Perplexity API)</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Perplexity API Key:</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="password" id="apiKey" placeholder="Enter your Perplexity API key (pplx-...)" style="flex: 1;">
+                        <button type="button" onclick="saveApiKey()" style="background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Save</button>
+                    </div>
+                    <small style="color: #666; font-size: 12px;">Get your API key from <a href="https://perplexity.ai/account/api" target="_blank" style="color: #667eea;">Perplexity AI Portal</a></small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Career Query:</label>
+                    <textarea id="aiQuery" rows="3" placeholder="Ask about biotech careers, job market trends, or specific company insights..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Query Type:</label>
+                    <select id="queryType">
+                        <option value="career-advice">Career Advice</option>
+                        <option value="job-market">Job Market Analysis</option>
+                        <option value="company-research">Company Research</option>
+                        <option value="skill-development">Skill Development</option>
+                        <option value="interview-prep">Interview Preparation</option>
+                        <option value="custom">Custom Query</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="queryAI(false)">
+                    <i class="fas fa-search"></i> Get AI Response
+                </button>
+                
+                <button class="btn btn-secondary" onclick="queryAI(true)">
+                    <i class="fas fa-stream"></i> Stream Response
+                </button>
+                
+                <button class="btn" onclick="usePresetQuery()" style="background: #28a745;">
+                    <i class="fas fa-lightbulb"></i> Use Preset Query
+                </button>
+                
+                <div class="output-box" id="aiOutput" style="max-height: 400px; overflow-y: auto;">
+                    AI response will appear here...
+                </div>
+                
+                <div class="preset-queries" style="margin-top: 15px;">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">🎯 Quick Career Queries:</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button class="preset-btn" onclick="setPresetQuery('biotech-salary')">Biotech Salary Trends</button>
+                        <button class="preset-btn" onclick="setPresetQuery('pharma-companies')">Top Pharma Companies</button>
+                        <button class="preset-btn" onclick="setPresetQuery('bioinformatics-skills')">Required Skills</button>
+                        <button class="preset-btn" onclick="setPresetQuery('career-transition')">Career Transition Tips</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Analytics Dashboard -->
             <div class="card">
                 <div class="card-header">
@@ -755,6 +868,273 @@ Make it professional yet accessible to both technical and non-technical audience
 - Common mistakes to avoid
 - Industry-specific terminology to use`
         };
+
+        // Perplexity API Integration
+        const perplexityConfig = {
+            url: 'https://api.perplexity.ai/chat/completions',
+            model: 'sonar-pro'
+        };
+
+        const presetQueries = {
+            'biotech-salary': "What are the current salary trends for biotechnology and bioinformatics professionals in India? Include entry-level, mid-level, and senior positions at companies like Sun Pharma, Zydus, and Alembic Pharma.",
+            'pharma-companies': "List the top 15 pharmaceutical and biotechnology companies in India that are actively hiring for bioinformatics and data analysis roles. Include their locations and focus areas.",
+            'bioinformatics-skills': "What are the most in-demand technical skills for bioinformatics professionals in 2024? Include programming languages, tools, and domain knowledge required by pharmaceutical companies.",
+            'career-transition': "I have a diploma in biotechnology and want to transition into bioinformatics and data analysis. What's the best roadmap for career transition in the Indian pharmaceutical industry?"
+        };
+
+        function setPresetQuery(queryType) {
+            const query = presetQueries[queryType];
+            if (query) {
+                document.getElementById('aiQuery').value = query;
+                document.getElementById('queryType').value = getQueryType(queryType);
+            }
+        }
+
+        function usePresetQuery() {
+            const queryType = document.getElementById('queryType').value;
+            let query = "";
+            
+            switch(queryType) {
+                case 'career-advice':
+                    query = "I'm a biotechnology graduate with Python and data analysis skills. What career paths should I consider in the pharmaceutical industry, and which companies in India are best for bioinformatics roles?";
+                    break;
+                case 'job-market':
+                    query = "Analyze the current job market for bioinformatics and computational biology positions in India. Which cities and companies offer the best opportunities?";
+                    break;
+                case 'company-research':
+                    query = "Provide detailed information about Sun Pharma, Zydus Cadila, and Alembic Pharma's bioinformatics and data science departments. Include their research focus and hiring trends.";
+                    break;
+                case 'skill-development':
+                    query = "Create a 6-month learning plan for someone transitioning from biotechnology to bioinformatics. Include specific programming skills, tools, and certifications valued by pharmaceutical companies.";
+                    break;
+                case 'interview-prep':
+                    query = "What are the most common interview questions for bioinformatics and data analyst positions in pharmaceutical companies? Include both technical and behavioral questions.";
+                    break;
+                default:
+                    query = "What are the latest trends in biotechnology and bioinformatics careers in India's pharmaceutical industry?";
+            }
+            
+            document.getElementById('aiQuery').value = query;
+        }
+
+        function getQueryType(presetType) {
+            const mapping = {
+                'biotech-salary': 'job-market',
+                'pharma-companies': 'company-research',
+                'bioinformatics-skills': 'skill-development',
+                'career-transition': 'career-advice'
+            };
+            return mapping[presetType] || 'custom';
+        }
+
+        async function queryAI(streaming = false) {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const query = document.getElementById('aiQuery').value.trim();
+            const outputElement = document.getElementById('aiOutput');
+            
+            if (!apiKey) {
+                showApiStatus('Please enter your Perplexity API key', 'error');
+                return;
+            }
+            
+            if (!query) {
+                showApiStatus('Please enter a query', 'error');
+                return;
+            }
+            
+            if (!apiKey.startsWith('pplx-')) {
+                showApiStatus('API key should start with "pplx-"', 'error');
+                return;
+            }
+
+            // Clear previous output
+            outputElement.textContent = 'Making API request...';
+            hideApiStatus();
+            
+            const headers = {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            };
+
+            const payload = {
+                model: perplexityConfig.model,
+                messages: [
+                    {
+                        role: 'user',
+                        content: query
+                    }
+                ]
+            };
+
+            if (streaming) {
+                payload.stream = true;
+                await handleStreamingResponse(headers, payload, outputElement);
+            } else {
+                await handleNonStreamingResponse(headers, payload, outputElement);
+            }
+        }
+
+        async function handleNonStreamingResponse(headers, payload, outputElement) {
+            try {
+                showApiStatus('Sending request to Perplexity AI...', 'success');
+                
+                const response = await fetch(perplexityConfig.url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorData}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const content = data.choices[0].message.content;
+                    outputElement.innerHTML = formatAIResponse(content, data);
+                    showApiStatus('Response received successfully!', 'success');
+                } else {
+                    throw new Error('Invalid response format from API');
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                outputElement.textContent = `Error: ${error.message}`;
+                showApiStatus(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function handleStreamingResponse(headers, payload, outputElement) {
+            try {
+                showStreamingIndicator(true);
+                showApiStatus('Starting streaming response...', 'success');
+                
+                const response = await fetch(perplexityConfig.url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorData}`);
+                }
+
+                const reader = response.body?.getReader();
+                if (!reader) {
+                    throw new Error('Streaming not supported');
+                }
+
+                outputElement.innerHTML = '<div style="font-weight: bold; color: #667eea;">🔄 Streaming Response:</div><div id="streamContent"></div>';
+                const streamContent = outputElement.querySelector('#streamContent');
+                
+                let fullContent = '';
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = new TextDecoder().decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ') && !line.includes('[DONE]')) {
+                            try {
+                                const jsonData = JSON.parse(line.slice(6));
+                                if (jsonData.choices && jsonData.choices[0] && jsonData.choices[0].delta && jsonData.choices[0].delta.content) {
+                                    const deltaContent = jsonData.choices[0].delta.content;
+                                    fullContent += deltaContent;
+                                    streamContent.innerHTML = formatStreamingContent(fullContent);
+                                }
+                            } catch (e) {
+                                // Ignore parsing errors for non-JSON lines
+                            }
+                        }
+                    }
+                }
+                
+                showStreamingIndicator(false);
+                showApiStatus('Streaming completed successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Streaming Error:', error);
+                outputElement.textContent = `Streaming Error: ${error.message}`;
+                showApiStatus(`Streaming Error: ${error.message}`, 'error');
+                showStreamingIndicator(false);
+            }
+        }
+
+        function formatAIResponse(content, fullData) {
+            let formatted = `<div style="font-weight: bold; color: #667eea; margin-bottom: 15px;">🤖 AI Response:</div>`;
+            formatted += `<div style="line-height: 1.6; color: #333;">${content.replace(/\n/g, '<br>')}</div>`;
+            
+            if (fullData.usage) {
+                formatted += `<div style="margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 12px; color: #666;">`;
+                formatted += `<strong>Usage:</strong> ${fullData.usage.total_tokens} tokens (${fullData.usage.prompt_tokens} prompt + ${fullData.usage.completion_tokens} completion)`;
+                formatted += `</div>`;
+            }
+            
+            return formatted;
+        }
+
+        function formatStreamingContent(content) {
+            return `<div style="line-height: 1.6; color: #333;">${content.replace(/\n/g, '<br>')}</div>`;
+        }
+
+        function showApiStatus(message, type) {
+            const statusElements = document.querySelectorAll('.api-status');
+            statusElements.forEach(el => el.remove());
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `api-status ${type}`;
+            statusDiv.textContent = message;
+            
+            const aiCard = document.querySelector('#aiOutput').parentElement;
+            aiCard.insertBefore(statusDiv, document.querySelector('#aiOutput'));
+        }
+
+        function hideApiStatus() {
+            const statusElements = document.querySelectorAll('.api-status');
+            statusElements.forEach(el => el.remove());
+        }
+
+        function showStreamingIndicator(show) {
+            let indicator = document.querySelector('.streaming-indicator');
+            
+            if (show) {
+                if (!indicator) {
+                    indicator = document.createElement('div');
+                    indicator.className = 'streaming-indicator';
+                    indicator.innerHTML = '🔄 Streaming live response... <span style="font-size: 10px;">(Real-time AI generation)</span>';
+                    
+                    const aiCard = document.querySelector('#aiOutput').parentElement;
+                    aiCard.insertBefore(indicator, document.querySelector('#aiOutput'));
+                }
+                indicator.classList.add('active');
+            } else {
+                if (indicator) {
+                    indicator.classList.remove('active');
+                }
+            }
+        }
+
+        // Storage for API key (optional - for convenience)
+        function saveApiKey() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (apiKey && apiKey.startsWith('pplx-')) {
+                localStorage.setItem('perplexity_api_key', apiKey);
+                showApiStatus('API key saved locally', 'success');
+            }
+        }
+
+        function loadApiKey() {
+            const savedKey = localStorage.getItem('perplexity_api_key');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+            }
+        }
 
         function switchTab(tabName) {
             // Remove active class from all tabs and contents
@@ -1063,6 +1443,7 @@ Open to connecting with professionals in pharmaceutical research, clinical trial
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             console.log('AI-Powered Career Dashboard loaded successfully!');
+            loadApiKey(); // Load saved API key if available
         });
     </script>
 </body>
