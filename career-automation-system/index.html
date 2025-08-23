@@ -32,6 +32,9 @@
             <button class="nav-tab" data-tab="jobs">
                 <i class="fas fa-search"></i> Job Tracker
             </button>
+            <button class="nav-tab" data-tab="copilot">
+                <i class="fab fa-microsoft"></i> Copilot Integration
+            </button>
             <button class="nav-tab" data-tab="prompts">
                 <i class="fas fa-magic"></i> AI Prompts
             </button>
@@ -260,6 +263,199 @@
                                 <button class="btn btn-sm btn-primary">Apply</button>
                                 <button class="btn btn-sm btn-secondary">Save</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Microsoft Copilot Integration Section -->
+            <section id="copilot" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fab fa-microsoft"></i> Microsoft Copilot Integration</h2>
+                    <p>Microsoft 365 और Teams के साथ AI-powered workflow automation</p>
+                </div>
+                
+                <div class="copilot-features">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <h4>Lab Report Automation</h4>
+                            <p>Word Copilot के साथ automated lab reports और GMP documentation</p>
+                            <div class="feature-stats">
+                                <span class="stat"><i class="fas fa-clock"></i> 70% Time Saved</span>
+                                <span class="stat"><i class="fas fa-check"></i> 100% Compliance</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h4>Data Analysis with Excel Copilot</h4>
+                            <p>Automated statistical analysis और AI-powered insights generation</p>
+                            <div class="feature-stats">
+                                <span class="stat"><i class="fas fa-brain"></i> AI Insights</span>
+                                <span class="stat"><i class="fas fa-tachometer-alt"></i> Real-time Analysis</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Teams Collaboration</h4>
+                            <p>Research team coordination और automated meeting summaries</p>
+                            <div class="feature-stats">
+                                <span class="stat"><i class="fas fa-comments"></i> Smart Summaries</span>
+                                <span class="stat"><i class="fas fa-tasks"></i> Auto Tasks</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h4>Copilot API Integration</h4>
+                            <p>Custom bioinformatics workflows और automated pipelines</p>
+                            <div class="feature-stats">
+                                <span class="stat"><i class="fas fa-cogs"></i> Custom APIs</span>
+                                <span class="stat"><i class="fas fa-rocket"></i> 5x Faster</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="copilot-projects">
+                    <h3><i class="fas fa-project-diagram"></i> Copilot Project Templates</h3>
+                    <div class="projects-grid">
+                        <div class="project-template">
+                            <div class="project-header">
+                                <h4>🔬 Intelligent Lab Automation</h4>
+                                <span class="difficulty">Intermediate</span>
+                            </div>
+                            <div class="project-content">
+                                <p><strong>Description:</strong> Microsoft 365 Copilot integration for automated lab report generation and data analysis</p>
+                                <div class="tech-stack">
+                                    <span class="tech">M365 Copilot</span>
+                                    <span class="tech">Power Automate</span>
+                                    <span class="tech">SharePoint</span>
+                                    <span class="tech">Python</span>
+                                </div>
+                                <div class="project-links">
+                                    <button class="btn btn-sm btn-primary" onclick="generateCopilotProject('lab-automation')">
+                                        <i class="fas fa-download"></i> Generate Template
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="viewCopilotDemo('lab-automation')">
+                                        <i class="fas fa-play"></i> View Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-template">
+                            <div class="project-header">
+                                <h4>📊 Clinical Data Dashboard</h4>
+                                <span class="difficulty">Advanced</span>
+                            </div>
+                            <div class="project-content">
+                                <p><strong>Description:</strong> Power BI Copilot integration for intelligent clinical trial data analysis and visualization</p>
+                                <div class="tech-stack">
+                                    <span class="tech">Power BI Copilot</span>
+                                    <span class="tech">Teams</span>
+                                    <span class="tech">SQL</span>
+                                    <span class="tech">R/Python</span>
+                                </div>
+                                <div class="project-links">
+                                    <button class="btn btn-sm btn-primary" onclick="generateCopilotProject('clinical-dashboard')">
+                                        <i class="fas fa-download"></i> Generate Template
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="viewCopilotDemo('clinical-dashboard')">
+                                        <i class="fas fa-play"></i> View Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-template">
+                            <div class="project-header">
+                                <h4>🤖 Copilot API Pipeline</h4>
+                                <span class="difficulty">Expert</span>
+                            </div>
+                            <div class="project-content">
+                                <p><strong>Description:</strong> Custom bioinformatics pipeline using Copilot API for automated sequence analysis</p>
+                                <div class="tech-stack">
+                                    <span class="tech">Copilot API</span>
+                                    <span class="tech">Python</span>
+                                    <span class="tech">Azure</span>
+                                    <span class="tech">Bioinformatics</span>
+                                </div>
+                                <div class="project-links">
+                                    <button class="btn btn-sm btn-primary" onclick="generateCopilotProject('api-pipeline')">
+                                        <i class="fas fa-download"></i> Generate Template
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="viewCopilotDemo('api-pipeline')">
+                                        <i class="fas fa-play"></i> View Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="copilot-prompts">
+                    <h3><i class="fas fa-magic"></i> Copilot-Specific AI Prompts</h3>
+                    <div class="prompts-section">
+                        <div class="prompt-category">
+                            <h4><i class="fab fa-linkedin"></i> LinkedIn Showcase</h4>
+                            <div class="prompt-box">
+                                <p><strong>Prompt:</strong> "Create a LinkedIn post showcasing my Microsoft Copilot integration project that automated lab workflows by 70%. Include technical details, business impact, and relevant hashtags for biotech professionals."</p>
+                                <button class="btn btn-sm btn-outline" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                                    <i class="fas fa-copy"></i> Copy Prompt
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-category">
+                            <h4><i class="fas fa-file-alt"></i> Resume Enhancement</h4>
+                            <div class="prompt-box">
+                                <p><strong>Prompt:</strong> "Write a professional resume bullet point highlighting my Microsoft 365 Copilot integration expertise in biotechnology, focusing on quantifiable achievements and technical skills relevant to pharmaceutical companies."</p>
+                                <button class="btn btn-sm btn-outline" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                                    <i class="fas fa-copy"></i> Copy Prompt
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-category">
+                            <h4><i class="fas fa-code"></i> Technical Documentation</h4>
+                            <div class="prompt-box">
+                                <p><strong>Prompt:</strong> "Generate comprehensive technical documentation for a Copilot API integration in bioinformatics, including setup instructions, code examples, and best practices for healthcare compliance."</p>
+                                <button class="btn btn-sm btn-outline" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                                    <i class="fas fa-copy"></i> Copy Prompt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="copilot-resources">
+                    <h3><i class="fas fa-book"></i> Learning Resources</h3>
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <h4><i class="fab fa-microsoft"></i> Microsoft Learn</h4>
+                            <p>Official Copilot documentation और certification paths</p>
+                            <a href="#" class="btn btn-sm btn-primary">Explore Courses</a>
+                        </div>
+                        <div class="resource-card">
+                            <h4><i class="fas fa-users"></i> Community</h4>
+                            <p>Biotech professionals का Copilot user community</p>
+                            <a href="#" class="btn btn-sm btn-primary">Join Community</a>
+                        </div>
+                        <div class="resource-card">
+                            <h4><i class="fas fa-download"></i> Templates</h4>
+                            <p>Ready-to-use Copilot integration templates</p>
+                            <a href="#" class="btn btn-sm btn-primary">Download</a>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,1598 @@
+// Global variables
+let currentTab = 'portfolio';
+let projects = JSON.parse(localStorage.getItem('projects')) || [];
+let socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    initializeTabs();
+    loadStoredData();
+    updateAnalytics();
+});
+
+// Tab Navigation
+function initializeTabs() {
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    navTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetTab = tab.getAttribute('data-tab');
+            switchTab(targetTab);
+        });
+    });
+}
+
+function switchTab(tabName) {
+    // Remove active class from all tabs and contents
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+
+    // Add active class to selected tab and content
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+    
+    currentTab = tabName;
+}
+
+// Portfolio Builder Functions
+function generatePortfolioContent() {
+    const projectName = document.getElementById('projectName').value;
+    const projectType = document.getElementById('projectType').value;
+    const description = document.getElementById('projectDescription').value;
+    const tools = document.getElementById('toolsUsed').value;
+    const dataset = document.getElementById('datasetSource').value;
+    const findings = document.getElementById('keyFindings').value;
+
+    if (!projectName || !description) {
+        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
+        return;
+    }
+
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<div class="loading"></div> Generating...';
+    button.disabled = true;
+
+    // Simulate AI processing
+    setTimeout(() => {
+        const generatedContent = generatePortfolioText(projectName, projectType, description, tools, dataset, findings);
+        
+        document.getElementById('portfolioContent').innerHTML = generatedContent;
+        document.getElementById('portfolioOutput').style.display = 'block';
+        
+        // Reset button
+        button.innerHTML = originalText;
+        button.disabled = false;
+        
+        showMessage('कंटेंट सफलतापूर्वक जनरेट किया गया!', 'success');
+    }, 2000);
+}
+
+function generatePortfolioText(name, type, description, tools, dataset, findings) {
+    const typeLabels = {
+        'bioinformatics': 'बायोइन्फॉर्मेटिक्स',
+        'data-analysis': 'डेटा एनालिसिस',
+        'web-design': 'वेब डिज़ाइन',
+        'research': 'रिसर्च'
+    };
+
+    return `
+        <div class="portfolio-content">
+            <h3>${name}</h3>
+            <p><strong>प्रोजेक्ट प्रकार:</strong> ${typeLabels[type]}</p>
+            
+            <h4>प्रोजेक्ट अवलोकन</h4>
+            <p>${description}</p>
+            
+            <h4>तकनीकी विवरण</h4>
+            <ul>
+                <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'Python, Pandas, Matplotlib'}</li>
+                <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'Public Dataset'}</li>
+            </ul>
+            
+            <h4>मुख्य निष्कर्ष</h4>
+            <p>${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण पैटर्न और insights प्राप्त किए गए।'}</p>
+            
+            <h4>GitHub README.md</h4>
+            <pre><code># ${name}
+
+## प्रोजेक्ट विवरण
+${description}
+
+## तकनीकी स्टैक
+- ${tools || 'Python, Pandas, Matplotlib, Seaborn'}
+
+## डेटा स्रोत
+${dataset || 'Public Dataset from Kaggle/NCBI'}
+
+## मुख्य निष्कर्ष
+${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण insights प्राप्त किए गए।'}
+
+## इंस्टॉलेशन और उपयोग
+\`\`\`bash
+pip install -r requirements.txt
+python main.py
+\`\`\`
+
+## लाइसेंस
+MIT License</code></pre>
+        </div>
+    `;
+}
+
+function saveProject() {
+    const projectData = {
+        id: Date.now(),
+        name: document.getElementById('projectName').value,
+        type: document.getElementById('projectType').value,
+        description: document.getElementById('projectDescription').value,
+        tools: document.getElementById('toolsUsed').value,
+        dataset: document.getElementById('datasetSource').value,
+        findings: document.getElementById('keyFindings').value,
+        date: new Date().toLocaleDateString('hi-IN')
+    };
+
+    if (!projectData.name || !projectData.description) {
+        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
+        return;
+    }
+
+    projects.push(projectData);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    
+    // Clear form
+    clearPortfolioForm();
+    showMessage('प्रोजेक्ट सफलतापूर्वक सेव किया गया!', 'success');
+    updateAnalytics();
+}
+
+function clearPortfolioForm() {
+    document.getElementById('projectName').value = '';
+    document.getElementById('projectDescription').value = '';
+    document.getElementById('toolsUsed').value = '';
+    document.getElementById('datasetSource').value = '';
+    document.getElementById('keyFindings').value = '';
+    document.getElementById('portfolioOutput').style.display = 'none';
+}
+
+// Social Media Generator Functions
+function generateSocialPost() {
+    const platform = document.getElementById('platform').value;
+    const postType = document.getElementById('postType').value;
+    const content = document.getElementById('postContent').value;
+    const tone = document.getElementById('tone').value;
+    const hashtags = document.getElementById('hashtags').value;
+
+    if (!content) {
+        showMessage('कृपया पोस्ट का विषय भरें', 'error');
+        return;
+    }
+
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<div class="loading"></div> Generating...';
+    button.disabled = true;
+
+    setTimeout(() => {
+        const generatedPost = generateSocialContent(platform, postType, content, tone, hashtags);
+        
+        document.getElementById('socialContent').innerHTML = generatedPost;
+        document.getElementById('socialOutput').style.display = 'block';
+        
+        button.innerHTML = originalText;
+        button.disabled = false;
+        
+        showMessage('सोशल मीडिया पोस्ट जनरेट किया गया!', 'success');
+    }, 2000);
+}
+
+function generateSocialContent(platform, postType, content, tone, hashtags) {
+    const platformNames = {
+        'linkedin': 'LinkedIn',
+        'facebook': 'Facebook',
+        'twitter': 'Twitter'
+    };
+
+    const postTypes = {
+        'project': 'प्रोजेक्ट शेयर',
+        'achievement': 'उपलब्धि',
+        'learning': 'सीख',
+        'industry': 'इंडस्ट्री इनसाइट'
+    };
+
+    const tones = {
+        'professional': 'प्रोफेशनल',
+        'casual': 'कैजुअल',
+        'enthusiastic': 'उत्साही',
+        'educational': 'शैक्षिक'
+    };
+
+    const defaultHashtags = '#Bioinformatics #DataAnalysis #Biotechnology #Python #Pharma #ClinicalResearch';
+    
+    return `
+        <div class="social-content">
+            <h4>${platformNames[platform]} पोस्ट</h4>
+            <div class="post-preview">
+                <p><strong>पोस्ट प्रकार:</strong> ${postTypes[postType]}</p>
+                <p><strong>टोन:</strong> ${tones[tone]}</p>
+                
+                <div class="post-text">
+                    <p>🚀 <strong>${content}</strong></p>
+                    <p>🔬 बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में काम करते हुए, मैंने यह महत्वपूर्ण सीख प्राप्त की है।</p>
+                    <p>💡 यह प्रोजेक्ट मेरे करियर में एक महत्वपूर्ण मील का पत्थर है।</p>
+                    <p>📊 डेटा-संचालित निर्णय लेने की शक्ति को समझना आज के समय में बहुत महत्वपूर्ण है।</p>
+                    <p>🔗 पूरा केस स्टडी देखने के लिए मेरी पोर्टफोलियो वेबसाइट पर जाएँ।</p>
+                    <p>${hashtags || defaultHashtags}</p>
+                </div>
+            </div>
+            
+            <div class="post-tips">
+                <h5>पोस्टिंग टिप्स:</h5>
+                <ul>
+                    <li>सुबह 9-11 बजे या शाम 5-7 बजे पोस्ट करें</li>
+                    <li>इमेज या इन्फोग्राफिक जोड़ें</li>
+                    <li>कमेंट्स में जुड़ाव बनाएं</li>
+                    <li>सप्ताह में 2-3 पोस्ट करें</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function schedulePost() {
+    showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
+}
+
+// Resume Optimizer Functions
+function optimizeContent() {
+    const optimizeType = document.getElementById('optimizeType').value;
+    const currentContent = document.getElementById('currentContent').value;
+    const targetRole = document.getElementById('targetRole').value;
+    const targetCompany = document.getElementById('targetCompany').value;
+
+    if (!currentContent) {
+        showMessage('कृपया वर्तमान कंटेंट भरें', 'error');
+        return;
+    }
+
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<div class="loading"></div> Optimizing...';
+    button.disabled = true;
+
+    setTimeout(() => {
+        const optimizedContent = generateOptimizedContent(optimizeType, currentContent, targetRole, targetCompany);
+        
+        document.getElementById('resumeContent').innerHTML = optimizedContent;
+        document.getElementById('resumeOutput').style.display = 'block';
+        
+        button.innerHTML = originalText;
+        button.disabled = false;
+        
+        showMessage('कंटेंट सफलतापूर्वक optimize किया गया!', 'success');
+    }, 2000);
+}
+
+function generateOptimizedContent(type, content, role, company) {
+    const typeLabels = {
+        'headline': 'LinkedIn हेडलाइन',
+        'summary': 'About सेक्शन',
+        'experience': 'एक्सपीरियंस डिस्क्रिप्शन',
+        'skills': 'स्किल्स सेक्शन'
+    };
+
+    const headlines = [
+        `🔬 बायोटेक्नोलॉजी प्रोफेशनल | बायोइन्फॉर्मेटिक्स में रुचि | Python & Data Analysis`,
+        `📊 बायोइन्फॉर्मेटिक्स एनालिस्ट | डेटा-संचालित रिसर्च | फार्मा इंडस्ट्री में करियर`,
+        `🧬 बायोटेक्नोलॉजी डिप्लोमा | बायोइन्फॉर्मेटिक्स में विशेषज्ञता | AI & ML में अनुभव`,
+        `💻 बायोडेटा एनालिस्ट | क्लिनिकल रिसर्च | Python, SQL, Web Development`,
+        `🔬 बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक | डेटा एनालिसिस में पैशन | फार्मा करियर`
+    ];
+
+    const summaries = [
+        `बायोटेक्नोलॉजी में डिप्लोमा के साथ, मैं बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में अपना करियर बनाने के लिए तैयार हूँ। मेरे पास Python, SQL, और वेब डिज़ाइन में मजबूत कौशल हैं, जो मुझे फार्मास्युटिकल और क्लिनिकल रिसर्च कंपनियों में मूल्यवान बनाते हैं।`,
+        
+        `एक बायोटेक्नोलॉजी प्रोफेशनल के रूप में, मैं डेटा-संचालित निर्णय लेने की शक्ति में विश्वास रखता हूँ। मेरी बायोइन्फॉर्मेटिक्स में 1-महीने की इंटर्नशिप और Python, SQL में मजबूत कौशल मुझे फार्मा इंडस्ट्री में सफल करियर बनाने में मदद करेंगे।`,
+        
+        `बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक का मेरा सफर मुझे डेटा एनालिसिस और क्लिनिकल रिसर्च के बीच की खाई को पाटने में मदद करता है। मेरे कौशल में Python प्रोग्रामिंग, डेटा विज़ुअलाइज़ेशन, और वेब डिज़ाइन शामिल हैं।`
+    ];
+
+    let optimizedText = '';
+
+    switch(type) {
+        case 'headline':
+            optimizedText = `<h4>${typeLabels[type]} विकल्प:</h4><ul>`;
+            headlines.forEach(headline => {
+                optimizedText += `<li>${headline}</li>`;
+            });
+            optimizedText += '</ul>';
+            break;
+            
+        case 'summary':
+            optimizedText = `<h4>${typeLabels[type]} विकल्प:</h4><ul>`;
+            summaries.forEach(summary => {
+                optimizedText += `<li>${summary}</li>`;
+            });
+            optimizedText += '</ul>';
+            break;
+            
+        default:
+            optimizedText = `
+                <h4>Optimized ${typeLabels[type]}:</h4>
+                <p><strong>मूल कंटेंट:</strong></p>
+                <p>${content}</p>
+                <p><strong>Optimized कंटेंट:</strong></p>
+                <p>${content.replace(/मैंने/g, 'मैंने सफलतापूर्वक').replace(/किया/g, 'पूरा किया')}</p>
+            `;
+    }
+
+    return optimizedText;
+}
+
+function generateMultiple() {
+    showMessage('कई विकल्प जनरेट करने के लिए optimizeContent() फंक्शन का उपयोग करें', 'success');
+}
+
+// Job Tracker Functions
+function searchJobs() {
+    const role = document.getElementById('jobRole').value;
+    const location = document.getElementById('jobLocation').value;
+    const company = document.getElementById('jobCompany').value;
+
+    showMessage(`नौकरी खोज रहा हूँ: ${role} in ${location} at ${company}`, 'success');
+    
+    // Simulate job search
+    setTimeout(() => {
+        updateJobList();
+    }, 1000);
+}
+
+function updateJobList() {
+    const jobList = document.querySelector('.job-list');
+    const newJobs = [
+        {
+            title: 'Bioinformatics Analyst',
+            company: 'Sun Pharma',
+            location: 'Mumbai, Maharashtra',
+            description: 'Looking for a skilled bioinformatics analyst with Python experience in drug discovery and clinical data analysis.'
+        },
+        {
+            title: 'Data Analyst - Clinical Research',
+            company: 'Zydus Cadila',
+            location: 'Ahmedabad, Gujarat',
+            description: 'Join our clinical research team to analyze patient data and contribute to drug development process.'
+        },
+        {
+            title: 'Research Associate - Bioinformatics',
+            company: 'Alembic Pharmaceuticals',
+            location: 'Vadodara, Gujarat',
+            description: 'Work on genomic data analysis and contribute to our precision medicine initiatives.'
+        }
+    ];
+
+    jobList.innerHTML = '';
+    newJobs.forEach(job => {
+        jobList.innerHTML += `
+            <div class="job-item">
+                <h4>${job.title}</h4>
+                <p class="company">${job.company}</p>
+                <p class="location">${job.location}</p>
+                <p class="description">${job.description}</p>
+                <div class="job-actions">
+                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Apply</button>
+                    <button class="btn btn-sm btn-secondary" onclick="saveJob('${job.title}', '${job.company}')">Save</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function applyForJob(title, company) {
+    showMessage(`${company} में ${title} के लिए आवेदन किया गया!`, 'success');
+}
+
+function saveJob(title, company) {
+    showMessage(`${company} में ${title} सेव किया गया!`, 'success');
+}
+
+// AI Prompts Functions
+function copyPrompt(button) {
+    const promptText = button.parentElement.querySelector('p').textContent;
+    navigator.clipboard.writeText(promptText).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.style.background = '#48bb78';
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = '';
+        }, 2000);
+    });
+}
+
+// Analytics Functions
+function updateAnalytics() {
+    const projectCount = projects.length;
+    const socialCount = socialPosts.length;
+    
+    // Update metrics
+    document.querySelector('.analytics-card:nth-child(1) .metric').textContent = projectCount;
+    document.querySelector('.analytics-card:nth-child(2) .metric').textContent = socialCount;
+}
+
+// Utility Functions
+function showMessage(message, type) {
+    // Remove existing messages
+    const existingMessages = document.querySelectorAll('.message');
+    existingMessages.forEach(msg => msg.remove());
+
+    // Create new message
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = message;
+    
+    // Insert at top of main content
+    const mainContent = document.querySelector('.main-content');
+    mainContent.insertBefore(messageDiv, mainContent.firstChild);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 5000);
+}
+
+function loadStoredData() {
+    // Load projects and social posts from localStorage
+    projects = JSON.parse(localStorage.getItem('projects')) || [];
+    socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+            case '1':
+                e.preventDefault();
+                switchTab('portfolio');
+                break;
+            case '2':
+                e.preventDefault();
+                switchTab('social');
+                break;
+            case '3':
+                e.preventDefault();
+                switchTab('resume');
+                break;
+            case '4':
+                e.preventDefault();
+                switchTab('jobs');
+                break;
+            case '5':
+                e.preventDefault();
+                switchTab('prompts');
+                break;
+            case '6':
+                e.preventDefault();
+                switchTab('analytics');
+                break;
+        }
+    }
+});
+
+// Auto-save functionality
+setInterval(() => {
+    localStorage.setItem('projects', JSON.stringify(projects));
+    localStorage.setItem('socialPosts', JSON.stringify(socialPosts));
+}, 30000); // Save every 30 seconds
+
+// Export functionality
+function exportData() {
+    const data = {
+        projects: projects,
+        socialPosts: socialPosts,
+        exportDate: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'career-automation-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Initialize tooltips and help text
+function initializeHelp() {
+    const helpTexts = {
+        'projectName': 'अपने प्रोजेक्ट का स्पष्ट और आकर्षक नाम दें',
+        'projectDescription': 'प्रोजेक्ट के लक्ष्य, प्रक्रिया और परिणामों का विस्तृत विवरण',
+        'toolsUsed': 'उपयोग किए गए प्रोग्रामिंग भाषाएं, लाइब्रेरीज और टूल्स',
+        'datasetSource': 'डेटा का स्रोत (जैसे: Kaggle, NCBI, TCGA)',
+        'keyFindings': 'प्रोजेक्ट से प्राप्त मुख्य insights और निष्कर्ष'
+    };
+
+    Object.keys(helpTexts).forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.title = helpTexts[id];
+        }
+    });
+}
+
+// Initialize help on load
+document.addEventListener('DOMContentLoaded', initializeHelp);
+
+// Microsoft Copilot Integration Functions
+function generateCopilotProject(projectType) {
+    const templates = {
+        'lab-automation': {
+            name: 'Intelligent Lab Report Automation',
+            description: 'Microsoft 365 Copilot integration for automated lab workflows',
+            files: {
+                'README.md': generateLabAutomationReadme(),
+                'copilot_integration.py': generateLabAutomationCode(),
+                'requirements.txt': 'microsoft-copilot-sdk\npandas\nopenpyxl\nrequest',
+                'config.json': JSON.stringify({
+                    copilot_api_key: "your-api-key",
+                    sharepoint_site: "your-site-url",
+                    compliance_mode: "GMP"
+                }, null, 2)
+            },
+            linkedinPost: generateLinkedInPost('lab-automation'),
+            resumeBullet: generateResumeBullet('lab-automation')
+        },
+        'clinical-dashboard': {
+            name: 'Clinical Data Dashboard with Power BI Copilot',
+            description: 'AI-powered clinical trial data analysis and visualization',
+            files: {
+                'README.md': generateClinicalDashboardReadme(),
+                'data_pipeline.py': generateClinicalDashboardCode(),
+                'requirements.txt': 'powerbi-copilot\nsqlalchemy\npandas\nplotly',
+                'dashboard_config.json': JSON.stringify({
+                    powerbi_workspace: "your-workspace",
+                    data_source: "clinical-database",
+                    compliance: ["HIPAA", "FDA"]
+                }, null, 2)
+            },
+            linkedinPost: generateLinkedInPost('clinical-dashboard'),
+            resumeBullet: generateResumeBullet('clinical-dashboard')
+        },
+        'api-pipeline': {
+            name: 'Bioinformatics Pipeline with Copilot API',
+            description: 'Custom automated sequence analysis using Copilot API',
+            files: {
+                'README.md': generateApiPipelineReadme(),
+                'bio_pipeline.py': generateApiPipelineCode(),
+                'requirements.txt': 'microsoft-copilot-api\nbiopython\nnumpy\nscipy',
+                'pipeline_config.yaml': `# Copilot API Configuration
+api_endpoint: "https://api.copilot.microsoft.com"
+models:
+  sequence_analysis: "copilot-bio-v1"
+  pathway_analysis: "copilot-pathway-v1"
+compliance:
+  - FDA
+  - GMP`
+            },
+            linkedinPost: generateLinkedInPost('api-pipeline'),
+            resumeBullet: generateResumeBullet('api-pipeline')
+        }
+    };
+
+    const template = templates[projectType];
+    if (!template) {
+        showMessage('Project template not found', 'error');
+        return;
+    }
+
+    // Create and download ZIP file
+    createProjectZip(template, projectType);
+    
+    // Show success message with LinkedIn and Resume content
+    showCopilotProjectResult(template);
+}
+
+function generateLabAutomationReadme() {
+    return `# 🔬 Intelligent Lab Report Automation with Microsoft Copilot
+
+**Automated laboratory workflow system using Microsoft 365 Copilot integration**
+
+## 🎯 Project Overview
+
+This project demonstrates how Microsoft Copilot can revolutionize laboratory documentation and data analysis in biotechnology environments. The system automates report generation, ensures GMP compliance, and provides AI-powered insights.
+
+## ✨ Key Features
+
+- **Word Copilot Integration**: Automated lab report templates
+- **Excel Copilot Analytics**: Statistical analysis with AI insights  
+- **Teams Collaboration**: Automated meeting summaries and task tracking
+- **SharePoint Integration**: Centralized document management
+- **Compliance Automation**: Built-in GMP and regulatory checks
+
+## 🛠️ Technologies Used
+
+- Microsoft 365 Copilot
+- Power Automate
+- SharePoint Online
+- Python integration
+- Azure Functions
+
+## 📊 Impact Metrics
+
+- ⏱️ **70% reduction** in report generation time
+- ✅ **100% compliance** with GMP standards
+- 🚀 **3x faster** data analysis workflows
+- 👥 **Enhanced collaboration** across research teams
+
+## 🚀 Quick Start
+
+\`\`\`bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure Copilot API
+python setup_copilot.py
+
+# Run automation
+python copilot_integration.py
+\`\`\`
+
+## 📈 Business Value
+
+This automation framework demonstrates proficiency in:
+- Microsoft 365 ecosystem integration
+- AI-powered workflow optimization
+- Regulatory compliance automation
+- Cross-platform data management
+
+Perfect for pharmaceutical companies looking to accelerate research while maintaining quality standards.
+
+## 🏢 Industry Applications
+
+- Drug discovery pipelines
+- Clinical trial documentation
+- Quality control reporting
+- Regulatory submission preparation
+
+---
+
+*Developed as part of biotechnology career portfolio showcasing Microsoft Copilot expertise*`;
+}
+
+function generateClinicalDashboardReadme() {
+    return `# 📊 Clinical Data Dashboard with Power BI Copilot
+
+**AI-powered clinical trial data analysis and visualization platform**
+
+## 🎯 Project Overview
+
+This project demonstrates how Power BI Copilot can revolutionize clinical data analysis in pharmaceutical research. The system provides intelligent insights, automated statistical analysis, and HIPAA-compliant collaboration tools.
+
+## ✨ Key Features
+
+- **Power BI Copilot Integration**: Natural language queries for complex data analysis
+- **Automated Statistical Testing**: AI-powered significance testing and interpretation
+- **Real-time Collaboration**: Teams integration for secure research coordination
+- **Compliance Management**: Built-in HIPAA, FDA, and GMP compliance checks
+- **Predictive Analytics**: Machine learning models for clinical outcomes
+
+## 🛠️ Technologies Used
+
+- Power BI with Copilot
+- Microsoft Teams integration
+- SQL Server backend
+- Python for data preprocessing
+- Azure cloud infrastructure
+
+## 📊 Impact Metrics
+
+- ⚡ **60% faster** data analysis workflows
+- 🎯 **Improved accuracy** in statistical interpretation
+- 🔒 **Enhanced security** with automated compliance
+- 👥 **Better collaboration** across research teams
+- 📈 **Real-time insights** for clinical decision making
+
+## 🚀 Quick Start
+
+\`\`\`bash
+# Setup environment
+pip install -r requirements.txt
+
+# Configure Power BI connection
+python setup_powerbi.py
+
+# Launch dashboard
+python dashboard_app.py
+\`\`\`
+
+## 🏥 Clinical Applications
+
+- Patient recruitment optimization
+- Biomarker identification workflows
+- Drug efficacy analysis
+- Safety monitoring dashboards
+- Regulatory submission preparation
+
+Perfect for pharmaceutical companies seeking to accelerate clinical research while maintaining highest compliance standards.
+
+---
+
+*Developed to showcase Power BI Copilot expertise in clinical research environments*`;
+}
+
+function generateClinicalDashboardCode() {
+    return `"""
+Power BI Copilot Clinical Data Dashboard
+Automated clinical trial analysis with AI-powered insights
+"""
+
+import pandas as pd
+import sqlalchemy as sa
+from powerbi_copilot import Dashboard, DataSource
+from microsoft.teams import TeamsIntegration
+import logging
+from datetime import datetime
+
+class ClinicalDataDashboard:
+    def __init__(self, config_file='dashboard_config.json'):
+        """Initialize Power BI Copilot dashboard"""
+        with open(config_file, 'r') as f:
+            self.config = json.load(f)
+        
+        self.dashboard = Dashboard(
+            workspace=self.config['powerbi_workspace'],
+            compliance_mode=self.config['compliance']
+        )
+        
+        self.teams = TeamsIntegration(
+            tenant_id=self.config.get('tenant_id'),
+            compliance=self.config['compliance']
+        )
+        
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+    
+    def create_clinical_analysis(self, trial_data):
+        """
+        Generate comprehensive clinical trial analysis
+        
+        Args:
+            trial_data (DataFrame): Clinical trial dataset
+            
+        Returns:
+            dict: Analysis results with AI insights
+        """
+        try:
+            # Automated data quality assessment
+            quality_report = self.dashboard.assess_data_quality(
+                data=trial_data,
+                compliance_check=True
+            )
+            
+            # AI-powered statistical analysis
+            statistical_analysis = self.dashboard.analyze_with_copilot(
+                data=trial_data,
+                analysis_type='clinical_trial',
+                questions=[
+                    "What is the primary endpoint significance?",
+                    "Are there any safety signals?",
+                    "Which patient subgroups show best response?",
+                    "What are the key efficacy indicators?"
+                ]
+            )
+            
+            # Generate visualizations
+            visualizations = self.dashboard.create_automated_visuals(
+                data=trial_data,
+                analysis=statistical_analysis,
+                template='clinical_dashboard'
+            )
+            
+            # Compliance validation
+            compliance_check = self.validate_compliance(
+                analysis=statistical_analysis,
+                standards=['FDA', 'HIPAA', 'GMP']
+            )
+            
+            results = {
+                'quality_report': quality_report,
+                'statistical_analysis': statistical_analysis,
+                'visualizations': visualizations,
+                'compliance_status': compliance_check,
+                'generated_at': datetime.now().isoformat()
+            }
+            
+            # Share with research team via Teams
+            self.share_results_with_team(results)
+            
+            return results
+            
+        except Exception as e:
+            self.logger.error(f"Clinical analysis failed: {e}")
+            raise
+    
+    def generate_regulatory_report(self, analysis_results):
+        """
+        Generate regulatory-compliant reports
+        
+        Args:
+            analysis_results (dict): Analysis output from create_clinical_analysis
+            
+        Returns:
+            dict: Formatted regulatory documents
+        """
+        regulatory_prompt = f"""
+        Generate regulatory submission documents based on clinical analysis:
+        
+        Study Data: {analysis_results['statistical_analysis']}
+        Compliance Status: {analysis_results['compliance_status']}
+        
+        Required Documents:
+        1. Clinical Study Report Summary
+        2. Statistical Analysis Plan adherence
+        3. Safety Assessment Summary
+        4. Efficacy Evaluation Report
+        
+        Ensure all documents meet FDA and EMA guidelines.
+        """
+        
+        regulatory_docs = self.dashboard.generate_documents(
+            prompt=regulatory_prompt,
+            template='regulatory_submission',
+            compliance_validated=True
+        )
+        
+        return regulatory_docs
+    
+    def validate_compliance(self, analysis, standards):
+        """Validate analysis compliance with regulatory standards"""
+        compliance_checks = {}
+        
+        for standard in standards:
+            compliance_checks[standard] = self.dashboard.check_compliance(
+                analysis=analysis,
+                standard=standard
+            )
+        
+        return compliance_checks
+    
+    def share_results_with_team(self, results):
+        """Share analysis results via Microsoft Teams"""
+        summary = f"""
+        🏥 Clinical Analysis Complete
+        
+        📊 Analysis Summary:
+        - Primary endpoint: {results['statistical_analysis'].get('primary_endpoint', 'N/A')}
+        - Statistical significance: {results['statistical_analysis'].get('p_value', 'N/A')}
+        - Safety profile: {results['statistical_analysis'].get('safety_summary', 'Clean')}
+        
+        🔍 Key Findings:
+        {results['statistical_analysis'].get('key_insights', 'See detailed report')}
+        
+        ✅ Compliance Status: All checks passed
+        
+        📋 Full report available in Power BI dashboard
+        """
+        
+        self.teams.post_to_channel(
+            channel='clinical-research',
+            message=summary,
+            attachments=[results['visualizations']]
+        )
+
+# Example usage
+if __name__ == "__main__":
+    # Initialize dashboard
+    clinical_dashboard = ClinicalDataDashboard()
+    
+    # Load clinical trial data
+    trial_data = pd.read_csv('clinical_trial_data.csv')
+    
+    # Generate comprehensive analysis
+    analysis = clinical_dashboard.create_clinical_analysis(trial_data)
+    
+    # Create regulatory documents
+    regulatory_docs = clinical_dashboard.generate_regulatory_report(analysis)
+    
+    print("Clinical analysis completed successfully!")
+    print(f"Results available in Power BI workspace: {clinical_dashboard.config['powerbi_workspace']}")`;
+}
+
+function generateApiPipelineReadme() {
+    return `# 🧬 Bioinformatics Pipeline with Microsoft Copilot API
+
+**Custom automated sequence analysis using advanced AI capabilities**
+
+## 🎯 Project Overview
+
+This project showcases the integration of Microsoft Copilot API with bioinformatics workflows to create an intelligent, automated pipeline for genomic sequence analysis. The system accelerates drug discovery through AI-powered insights and automated processing.
+
+## ✨ Key Features
+
+- **Copilot API Integration**: Custom models for biological data processing
+- **Automated Workflows**: End-to-end sequence analysis pipeline
+- **Intelligent Insights**: AI-generated biological interpretations
+- **Scalable Architecture**: Cloud-native design for enterprise deployment
+- **Compliance Ready**: Built-in validation for regulatory requirements
+
+## 🛠️ Technologies Used
+
+- Microsoft Copilot API
+- Python with Biopython
+- Azure cloud infrastructure
+- Docker containerization
+- YAML configuration management
+
+## 📊 Performance Metrics
+
+- 🚀 **500% faster** sequence analysis
+- 🎯 **Enhanced accuracy** in variant calling
+- 🔍 **Automated literature** correlation
+- 📈 **Predictive biomarker** identification
+- ⚡ **Real-time processing** capabilities
+
+## 🚀 Quick Start
+
+\`\`\`bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure Copilot API
+export COPILOT_API_KEY="your-api-key"
+
+# Run pipeline
+python bio_pipeline.py --input sequences.fasta --analysis comprehensive
+\`\`\`
+
+## 🧬 Pipeline Workflow
+
+1. **Data Ingestion**: Automated FASTA/FASTQ processing
+2. **Quality Control**: AI-powered quality assessment
+3. **Sequence Analysis**: Copilot-enhanced variant calling
+4. **Pathway Analysis**: Intelligent biological interpretation
+5. **Report Generation**: Automated clinical summaries
+
+## 🏥 Drug Discovery Applications
+
+- Target identification and validation
+- Biomarker discovery pipelines
+- Personalized medicine development
+- Clinical trial patient stratification
+- Pharmacogenomics analysis
+
+Perfect for pharmaceutical companies implementing AI-driven drug discovery platforms.
+
+---
+
+*Demonstrates cutting-edge integration of AI with bioinformatics for pharmaceutical innovation*`;
+}
+
+function generateApiPipelineCode() {
+    return `"""
+Microsoft Copilot API Bioinformatics Pipeline
+Advanced genomic analysis with AI-powered insights
+"""
+
+import json
+import yaml
+from microsoft.copilot.api import CopilotAPI, BioinformaticsModel
+from Bio import SeqIO
+import pandas as pd
+import numpy as np
+from datetime import datetime
+import logging
+
+class BioinformaticsPipeline:
+    def __init__(self, config_file='pipeline_config.yaml'):
+        """Initialize Copilot API bioinformatics pipeline"""
+        with open(config_file, 'r') as f:
+            self.config = yaml.safe_load(f)
+        
+        self.copilot = CopilotAPI(
+            api_key=os.getenv('COPILOT_API_KEY'),
+            endpoint=self.config['api_endpoint']
+        )
+        
+        # Initialize specialized models
+        self.sequence_model = BioinformaticsModel(
+            model_name=self.config['models']['sequence_analysis'],
+            compliance=self.config['compliance']
+        )
+        
+        self.pathway_model = BioinformaticsModel(
+            model_name=self.config['models']['pathway_analysis'],
+            compliance=self.config['compliance']
+        )
+        
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+    
+    def analyze_sequence_batch(self, fasta_file, analysis_type='comprehensive'):
+        """
+        Automated batch sequence analysis with AI insights
+        
+        Args:
+            fasta_file (str): Path to FASTA file
+            analysis_type (str): Type of analysis to perform
+            
+        Returns:
+            dict: Comprehensive analysis results
+        """
+        try:
+            # Load and validate sequences
+            sequences = list(SeqIO.parse(fasta_file, "fasta"))
+            self.logger.info(f"Loaded {len(sequences)} sequences for analysis")
+            
+            # Quality assessment using Copilot
+            quality_assessment = self.copilot.assess_sequence_quality(
+                sequences=sequences,
+                model=self.sequence_model,
+                generate_recommendations=True
+            )
+            
+            # Automated variant calling
+            variant_analysis = self.copilot.call_variants(
+                sequences=sequences,
+                reference_genome='hg38',
+                model=self.sequence_model,
+                confidence_threshold=0.95
+            )
+            
+            # Pathway and functional analysis
+            pathway_analysis = self.copilot.analyze_pathways(
+                variants=variant_analysis['variants'],
+                model=self.pathway_model,
+                include_drug_targets=True
+            )
+            
+            # Clinical significance prediction
+            clinical_prediction = self.copilot.predict_clinical_significance(
+                variants=variant_analysis['variants'],
+                pathways=pathway_analysis['pathways'],
+                model=self.sequence_model
+            )
+            
+            # Generate comprehensive report
+            analysis_results = {
+                'metadata': {
+                    'analysis_id': f"analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                    'input_file': fasta_file,
+                    'sequence_count': len(sequences),
+                    'analysis_type': analysis_type,
+                    'timestamp': datetime.now().isoformat()
+                },
+                'quality_assessment': quality_assessment,
+                'variant_analysis': variant_analysis,
+                'pathway_analysis': pathway_analysis,
+                'clinical_predictions': clinical_prediction,
+                'ai_insights': self.generate_ai_insights(
+                    quality_assessment, variant_analysis, pathway_analysis
+                )
+            }
+            
+            # Validate compliance
+            compliance_status = self.validate_analysis_compliance(analysis_results)
+            analysis_results['compliance_validation'] = compliance_status
+            
+            return analysis_results
+            
+        except Exception as e:
+            self.logger.error(f"Sequence analysis failed: {e}")
+            raise
+    
+    def generate_ai_insights(self, quality, variants, pathways):
+        """Generate AI-powered biological insights"""
+        insight_prompt = f"""
+        Analyze this genomic data and provide clinical insights:
+        
+        Quality Metrics: {quality.get('summary', {})}
+        Variant Count: {len(variants.get('variants', []))}
+        Significant Pathways: {pathways.get('significant_pathways', [])}
+        
+        Provide insights on:
+        1. Clinical significance of findings
+        2. Potential drug targets identified
+        3. Biomarker opportunities
+        4. Recommendations for further analysis
+        5. Therapeutic implications
+        
+        Focus on pharmaceutical research applications.
+        """
+        
+        insights = self.copilot.generate_insights(
+            prompt=insight_prompt,
+            domain='pharmaceutical_research',
+            include_literature_references=True
+        )
+        
+        return insights
+    
+    def create_drug_discovery_report(self, analysis_results):
+        """
+        Generate drug discovery-focused report
+        
+        Args:
+            analysis_results (dict): Output from analyze_sequence_batch
+            
+        Returns:
+            dict: Drug discovery report with targets and recommendations
+        """
+        drug_targets = self.identify_drug_targets(
+            analysis_results['pathway_analysis'],
+            analysis_results['clinical_predictions']
+        )
+        
+        biomarkers = self.identify_biomarkers(
+            analysis_results['variant_analysis'],
+            analysis_results['clinical_predictions']
+        )
+        
+        therapeutic_recommendations = self.copilot.generate_therapeutic_recommendations(
+            targets=drug_targets,
+            biomarkers=biomarkers,
+            model=self.pathway_model
+        )
+        
+        report = {
+            'executive_summary': self.generate_executive_summary(analysis_results),
+            'drug_targets': drug_targets,
+            'biomarker_candidates': biomarkers,
+            'therapeutic_recommendations': therapeutic_recommendations,
+            'clinical_trial_design': self.suggest_trial_design(
+                targets=drug_targets,
+                biomarkers=biomarkers
+            ),
+            'regulatory_pathway': self.suggest_regulatory_approach(
+                analysis_results['compliance_validation']
+            )
+        }
+        
+        return report
+    
+    def identify_drug_targets(self, pathway_analysis, clinical_predictions):
+        """Identify potential drug targets from analysis"""
+        target_prompt = f"""
+        Identify potential drug targets from this genomic analysis:
+        
+        Pathway Data: {pathway_analysis}
+        Clinical Predictions: {clinical_predictions}
+        
+        Focus on:
+        1. Druggable proteins
+        2. Novel target opportunities
+        3. Known target validation
+        4. Pathway intervention points
+        
+        Prioritize by therapeutic potential and druggability.
+        """
+        
+        targets = self.copilot.identify_drug_targets(
+            prompt=target_prompt,
+            model=self.pathway_model,
+            include_druggability_score=True
+        )
+        
+        return targets
+    
+    def identify_biomarkers(self, variant_analysis, clinical_predictions):
+        """Identify biomarker opportunities"""
+        biomarker_candidates = []
+        
+        for variant in variant_analysis.get('variants', []):
+            if variant.get('clinical_significance') == 'pathogenic':
+                biomarker_score = self.copilot.score_biomarker_potential(
+                    variant=variant,
+                    clinical_context=clinical_predictions,
+                    model=self.sequence_model
+                )
+                
+                if biomarker_score > 0.7:
+                    biomarker_candidates.append({
+                        'variant': variant,
+                        'biomarker_score': biomarker_score,
+                        'applications': self.copilot.suggest_biomarker_applications(variant)
+                    })
+        
+        return biomarker_candidates
+    
+    def validate_analysis_compliance(self, analysis_results):
+        """Validate analysis meets regulatory compliance"""
+        compliance_checks = {}
+        
+        for standard in self.config['compliance']:
+            compliance_checks[standard] = self.copilot.validate_compliance(
+                analysis=analysis_results,
+                standard=standard,
+                include_recommendations=True
+            )
+        
+        return compliance_checks
+
+# Example usage
+if __name__ == "__main__":
+    # Initialize pipeline
+    pipeline = BioinformaticsPipeline()
+    
+    # Run comprehensive analysis
+    results = pipeline.analyze_sequence_batch(
+        fasta_file="sample_sequences.fasta",
+        analysis_type="drug_discovery"
+    )
+    
+    # Generate drug discovery report
+    drug_discovery_report = pipeline.create_drug_discovery_report(results)
+    
+    print("Pipeline analysis completed!")
+    print(f"Analysis ID: {results['metadata']['analysis_id']}")
+    print(f"Targets identified: {len(drug_discovery_report['drug_targets'])}")
+    print(f"Biomarkers found: {len(drug_discovery_report['biomarker_candidates'])}")`;
+}
+    return `"""
+Microsoft Copilot Lab Automation System
+Automated report generation and data analysis for biotech labs
+"""
+
+import json
+import pandas as pd
+from microsoft_copilot import CopilotAPI
+from datetime import datetime
+import logging
+
+class LabAutomationSystem:
+    def __init__(self, config_file='config.json'):
+        """Initialize Copilot integration"""
+        with open(config_file, 'r') as f:
+            self.config = json.load(f)
+        
+        self.copilot = CopilotAPI(
+            api_key=self.config['copilot_api_key'],
+            compliance_mode=self.config['compliance_mode']
+        )
+        
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+    
+    def generate_lab_report(self, experiment_data):
+        """
+        Generate automated lab report using Word Copilot
+        
+        Args:
+            experiment_data (dict): Experimental data and parameters
+            
+        Returns:
+            dict: Generated report with AI insights
+        """
+        try:
+            # Prepare data for Copilot analysis
+            analysis_prompt = f"""
+            Generate a comprehensive lab report for the following experiment:
+            
+            Experiment: {experiment_data.get('name', 'Unknown')}
+            Date: {experiment_data.get('date', datetime.now().date())}
+            Protocol: {experiment_data.get('protocol', 'Standard')}
+            
+            Raw Data Analysis:
+            {self._format_data_for_analysis(experiment_data['data'])}
+            
+            Please provide:
+            1. Executive summary
+            2. Statistical analysis
+            3. Key findings
+            4. Compliance notes
+            5. Recommendations
+            
+            Ensure GMP compliance and scientific accuracy.
+            """
+            
+            # Generate report using Copilot
+            report = self.copilot.generate_document(
+                prompt=analysis_prompt,
+                template='lab_report_template',
+                output_format='word'
+            )
+            
+            # Add metadata
+            report['metadata'] = {
+                'generated_by': 'Microsoft Copilot',
+                'timestamp': datetime.now().isoformat(),
+                'compliance_status': 'GMP_VALIDATED',
+                'version': '1.0'
+            }
+            
+            self.logger.info(f"Lab report generated successfully for {experiment_data['name']}")
+            return report
+            
+        except Exception as e:
+            self.logger.error(f"Error generating lab report: {e}")
+            raise
+    
+    def analyze_experimental_data(self, data_file):
+        """
+        Automated data analysis using Excel Copilot
+        
+        Args:
+            data_file (str): Path to experimental data file
+            
+        Returns:
+            dict: Analysis results with AI insights
+        """
+        # Load data
+        df = pd.read_excel(data_file)
+        
+        # Generate AI-powered analysis
+        analysis_request = {
+            'data': df.to_dict(),
+            'analysis_type': 'comprehensive',
+            'output_format': 'statistical_summary'
+        }
+        
+        results = self.copilot.analyze_data(analysis_request)
+        
+        # Add visualizations
+        results['visualizations'] = self._generate_charts(df, results)
+        
+        return results
+    
+    def _format_data_for_analysis(self, data):
+        """Format experimental data for Copilot analysis"""
+        if isinstance(data, pd.DataFrame):
+            return data.describe().to_string()
+        elif isinstance(data, dict):
+            return json.dumps(data, indent=2)
+        else:
+            return str(data)
+    
+    def _generate_charts(self, df, analysis_results):
+        """Generate visualizations based on analysis results"""
+        charts = []
+        
+        # This would integrate with Power BI Copilot
+        # for advanced visualization generation
+        chart_config = {
+            'type': 'automated',
+            'data_source': df.columns.tolist(),
+            'insights': analysis_results.get('key_insights', [])
+        }
+        
+        return chart_config
+
+# Example usage
+if __name__ == "__main__":
+    # Initialize system
+    lab_system = LabAutomationSystem()
+    
+    # Example experiment data
+    experiment = {
+        'name': 'Protein Expression Analysis',
+        'date': '2024-01-15',
+        'protocol': 'Western Blot Standard',
+        'data': {
+            'samples': ['Control', 'Treatment_A', 'Treatment_B'],
+            'measurements': [1.2, 2.8, 3.1],
+            'units': 'relative_expression'
+        }
+    }
+    
+    # Generate automated report
+    report = lab_system.generate_lab_report(experiment)
+    print("Lab report generated successfully!")
+    
+    # Analyze data
+    # analysis = lab_system.analyze_experimental_data('experimental_data.xlsx')
+    # print("Data analysis completed!")`;
+}
+
+function generateLinkedInPost(projectType) {
+    const posts = {
+        'lab-automation': `🤖 Excited to share my latest Microsoft Copilot integration project!
+
+Just completed an intelligent lab automation system that's transforming how we handle biotech research workflows:
+
+🔬 **Challenge:** Manual lab reports were taking 3+ hours and prone to errors
+🚀 **Solution:** Built Microsoft 365 Copilot integration for automated workflows
+
+**Key Achievements:**
+✅ 70% reduction in report generation time
+✅ 100% GMP compliance maintained
+✅ AI-powered statistical analysis
+✅ Automated Teams collaboration
+
+**Technology Stack:**
+• Microsoft 365 Copilot
+• Word/Excel Copilot integration
+• Power Automate workflows
+• SharePoint data management
+• Python API connections
+
+This project showcases how AI can amplify human expertise in biotechnology - not replace it, but make us more efficient and accurate.
+
+The combination of domain knowledge + Microsoft Copilot = unprecedented research acceleration! 🚀
+
+🔗 Full technical documentation: [GitHub Repository]
+📊 Live demo: [Portfolio Website]
+
+How is your organization leveraging Microsoft Copilot for research automation? I'd love to connect and share insights!
+
+#MicrosoftCopilot #BiotechAI #LabAutomation #M365 #Innovation #Research #AI #Productivity
+
+What automation challenges are you facing in your research workflows? 👇`,
+
+        'clinical-dashboard': `📊 Proud to showcase my Clinical Data Dashboard powered by Microsoft Copilot!
+
+Just deployed an AI-driven clinical trial analysis system that's revolutionizing how we handle patient data:
+
+🎯 **The Challenge:** Complex clinical data analysis was slowing down research timelines
+💡 **The Solution:** Power BI Copilot integration with intelligent automation
+
+**Game-Changing Features:**
+✅ Natural language queries for data insights
+✅ Automated statistical significance testing  
+✅ Real-time compliance monitoring
+✅ AI-generated clinical summaries
+✅ HIPAA-compliant secure collaboration
+
+**Technology Integration:**
+• Power BI Copilot for advanced analytics
+• Teams Copilot for research coordination
+• Azure AI services for data processing
+• SQL Server with automated queries
+• Regulatory compliance automation
+
+**Real Impact:**
+🚀 60% faster data analysis
+📈 Improved accuracy in clinical insights
+🔐 Enhanced data security and compliance
+👥 Better cross-functional team collaboration
+
+This project demonstrates the future of clinical research where AI amplifies human expertise while maintaining the highest standards of patient data protection.
+
+🔗 Technical deep-dive: [Documentation]
+📱 Interactive demo: [Dashboard Link]
+
+Ready to bring this expertise to pharmaceutical innovation! Open to opportunities in clinical data analysis and bioinformatics roles.
+
+#ClinicalResearch #PowerBI #MicrosoftCopilot #HealthcareAI #DataAnalysis #Pharma #Innovation
+
+How are you using AI to accelerate clinical research in your organization? Let's discuss! 💬`,
+
+        'api-pipeline': `🧬 Breaking barriers in bioinformatics with Microsoft Copilot API!
+
+Just built a custom genomics analysis pipeline that's pushing the boundaries of what's possible with AI-assisted research:
+
+🎯 **The Vision:** Accelerate drug discovery through intelligent automation
+⚡ **The Reality:** 5x faster sequence analysis with unprecedented accuracy
+
+**Pipeline Capabilities:**
+🤖 **Copilot API Integration:** Custom models for genomic analysis
+🔬 **Automated Workflows:** From raw data to clinical insights
+📊 **Smart Visualizations:** AI-generated research summaries
+🏥 **Clinical Applications:** Direct pathway to therapeutic targets
+
+**Technical Architecture:**
+• Microsoft Copilot API for biological data processing
+• Custom Python pipelines with Biopython
+• Azure cloud infrastructure
+• Automated compliance and validation
+• Real-time collaboration tools
+
+**Breakthrough Results:**
+⚡ 500% improvement in analysis speed
+🎯 Enhanced variant calling accuracy
+🔍 Automated literature correlation
+📈 Predictive biomarker identification
+
+This isn't just automation - it's intelligent augmentation of scientific discovery. The future where AI and human expertise create breakthrough medicines together.
+
+🚀 **What's Next?**
+Expanding to:
+- Drug-target interaction modeling
+- Clinical trial optimization
+- Personalized medicine algorithms
+- Regulatory submission automation
+
+🔗 Open-source components: [GitHub]
+📚 Technical documentation: [Research Paper]
+
+Seeking opportunities to apply this expertise in pharmaceutical R&D! Ready to contribute to the next generation of AI-powered drug discovery.
+
+#BioinformaticsAI #CopilotAPI #DrugDiscovery #GenomicsAutomation #PharmaInnovation #AIResearch #Biotechnology
+
+What's your experience with AI in drug discovery? I'd love to connect with fellow innovators! 🤝`
+    };
+
+    return posts[projectType] || 'LinkedIn post template not found.';
+}
+
+function generateResumeBullet(projectType) {
+    const bullets = {
+        'lab-automation': 'Developed Microsoft 365 Copilot integration reducing laboratory report generation time by 70% while maintaining 100% GMP compliance through automated Word templates, Excel analytics, and SharePoint workflows',
+        
+        'clinical-dashboard': 'Built intelligent clinical data dashboard using Power BI Copilot, achieving 60% faster analysis of patient data with automated statistical testing and HIPAA-compliant collaboration features',
+        
+        'api-pipeline': 'Engineered custom bioinformatics pipeline using Microsoft Copilot API, accelerating genomic sequence analysis by 500% through automated workflow integration and intelligent data processing algorithms'
+    };
+
+    return bullets[projectType] || 'Resume bullet point not found.';
+}
+
+function createProjectZip(template, projectType) {
+    // This would create a downloadable ZIP file with all project files
+    // For now, we'll show the content in a modal
+    const content = Object.entries(template.files)
+        .map(([filename, content]) => `=== ${filename} ===\n${content}\n\n`)
+        .join('');
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${projectType}-copilot-project.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function showCopilotProjectResult(template) {
+    // Display the generated LinkedIn post and resume bullet in a modal
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fab fa-microsoft"></i> Copilot Project Generated!</h3>
+                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="project-result">
+                    <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
+                    <div class="content-box">
+                        <p>${template.linkedinPost}</p>
+                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                            <i class="fas fa-copy"></i> Copy LinkedIn Post
+                        </button>
+                    </div>
+                    
+                    <h4><i class="fas fa-file-alt"></i> Resume Bullet Point</h4>
+                    <div class="content-box">
+                        <p><strong>${template.resumeBullet}</strong></p>
+                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                            <i class="fas fa-copy"></i> Copy Resume Bullet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function viewCopilotDemo(projectType) {
+    const demos = {
+        'lab-automation': 'https://example.com/lab-automation-demo',
+        'clinical-dashboard': 'https://example.com/clinical-dashboard-demo', 
+        'api-pipeline': 'https://example.com/api-pipeline-demo'
+    };
+    
+    const url = demos[projectType];
+    if (url) {
+        window.open(url, '_blank');
+    } else {
+        showMessage('Demo link not available', 'info');
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showMessage('Copied to clipboard!', 'success');
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        showMessage('Failed to copy to clipboard', 'error');
+    });
+}
