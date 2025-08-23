@@ -529,3 +529,155 @@ function initializeHelp() {
 
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
+
+// Microsoft Copilot Integration Functions
+function generateCopilotProject(projectType) {
+    const templates = {
+        'lab-automation': {
+            name: 'Intelligent Lab Report Automation',
+            description: 'Microsoft 365 Copilot integration for automated lab workflows',
+            linkedinPost: `🤖 Excited to share my latest Microsoft Copilot integration project!
+
+Just completed an intelligent lab automation system that's transforming how we handle biotech research workflows:
+
+🔬 **Challenge:** Manual lab reports were taking 3+ hours and prone to errors
+🚀 **Solution:** Built Microsoft 365 Copilot integration for automated workflows
+
+**Key Achievements:**
+✅ 70% reduction in report generation time
+✅ 100% GMP compliance maintained
+✅ AI-powered statistical analysis
+✅ Automated Teams collaboration
+
+**Technology Stack:**
+• Microsoft 365 Copilot
+• Word/Excel Copilot integration
+• Power Automate workflows
+• SharePoint data management
+• Python API connections
+
+🔗 Full technical documentation: [GitHub Repository]
+📊 Live demo: [Portfolio Website]
+
+How is your organization leveraging Microsoft Copilot for research automation?
+
+#MicrosoftCopilot #BiotechAI #LabAutomation #M365 #Innovation #Research`,
+            resumeBullet: 'Developed Microsoft 365 Copilot integration reducing laboratory report generation time by 70% while maintaining 100% GMP compliance through automated Word templates, Excel analytics, and SharePoint workflows'
+        },
+        'clinical-dashboard': {
+            name: 'Clinical Data Dashboard with Power BI Copilot',
+            description: 'AI-powered clinical trial data analysis and visualization',
+            linkedinPost: `📊 Proud to showcase my Clinical Data Dashboard powered by Microsoft Copilot!
+
+Just deployed an AI-driven clinical trial analysis system that's revolutionizing how we handle patient data:
+
+🎯 **The Challenge:** Complex clinical data analysis was slowing down research timelines
+💡 **The Solution:** Power BI Copilot integration with intelligent automation
+
+**Game-Changing Features:**
+✅ Natural language queries for data insights
+✅ Automated statistical significance testing  
+✅ Real-time compliance monitoring
+✅ AI-generated clinical summaries
+
+**Real Impact:**
+🚀 60% faster data analysis
+📈 Improved accuracy in clinical insights
+🔐 Enhanced data security and compliance
+
+#ClinicalResearch #PowerBI #MicrosoftCopilot #HealthcareAI #DataAnalysis`,
+            resumeBullet: 'Built intelligent clinical data dashboard using Power BI Copilot, achieving 60% faster analysis of patient data with automated statistical testing and HIPAA-compliant collaboration features'
+        },
+        'api-pipeline': {
+            name: 'Bioinformatics Pipeline with Copilot API',
+            description: 'Custom automated sequence analysis using Copilot API',
+            linkedinPost: `🧬 Breaking barriers in bioinformatics with Microsoft Copilot API!
+
+Just built a custom genomics analysis pipeline that's pushing the boundaries of what's possible with AI-assisted research:
+
+🎯 **The Vision:** Accelerate drug discovery through intelligent automation
+⚡ **The Reality:** 5x faster sequence analysis with unprecedented accuracy
+
+**Pipeline Capabilities:**
+🤖 **Copilot API Integration:** Custom models for genomic analysis
+🔬 **Automated Workflows:** From raw data to clinical insights
+📊 **Smart Visualizations:** AI-generated research summaries
+
+**Breakthrough Results:**
+⚡ 500% improvement in analysis speed
+🎯 Enhanced variant calling accuracy
+🔍 Automated literature correlation
+
+#BioinformaticsAI #CopilotAPI #DrugDiscovery #GenomicsAutomation`,
+            resumeBullet: 'Engineered custom bioinformatics pipeline using Microsoft Copilot API, accelerating genomic sequence analysis by 500% through automated workflow integration and intelligent data processing algorithms'
+        }
+    };
+
+    const template = templates[projectType];
+    if (!template) {
+        showMessage('Project template not found', 'error');
+        return;
+    }
+
+    // Show success message with LinkedIn and Resume content
+    showCopilotProjectResult(template);
+}
+
+function showCopilotProjectResult(template) {
+    // Display the generated LinkedIn post and resume bullet in a modal
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fab fa-microsoft"></i> Copilot Project Generated!</h3>
+                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="project-result">
+                    <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
+                    <div class="content-box">
+                        <p>${template.linkedinPost}</p>
+                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                            <i class="fas fa-copy"></i> Copy LinkedIn Post
+                        </button>
+                    </div>
+                    
+                    <h4><i class="fas fa-file-alt"></i> Resume Bullet Point</h4>
+                    <div class="content-box">
+                        <p><strong>${template.resumeBullet}</strong></p>
+                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
+                            <i class="fas fa-copy"></i> Copy Resume Bullet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function viewCopilotDemo(projectType) {
+    const demos = {
+        'lab-automation': 'https://example.com/lab-automation-demo',
+        'clinical-dashboard': 'https://example.com/clinical-dashboard-demo', 
+        'api-pipeline': 'https://example.com/api-pipeline-demo'
+    };
+    
+    const url = demos[projectType];
+    if (url) {
+        window.open(url, '_blank');
+    } else {
+        showMessage('Demo link not available', 'info');
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showMessage('Copied to clipboard!', 'success');
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        showMessage('Failed to copy to clipboard', 'error');
+    });
+}
