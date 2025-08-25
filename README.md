@@ -39,6 +39,14 @@
 - Industry-specific content
 - Multi-platform compatibility
 
+### 6. 🔧 n8n Workflow Automation (NEW!)
+- Production-ready Docker setup with VPN, AI, and queue mode
+- Complete workflow templates for career automation
+- Local AI integration (Ollama with Gemma/Phi3 models)
+- Error handling and monitoring
+- **Quick Setup**: `./scripts/quick_setup.sh`
+- **Documentation**: [n8n Integration Guide](./README-n8n-integration.md)
+
 ---
 
 ## 🚀 Quick Start Guide
@@ -50,7 +58,26 @@
 4. The AI Career Dashboard will open automatically in your browser
 5. Access all tools and features directly through the web interface
 
+### Option 3: n8n Workflow Automation (Production Setup)
+```bash
+# Complete automated n8n setup with AI and VPN
+./scripts/quick_setup.sh
+
+# Access points:
+# - n8n Dashboard: http://localhost:5678
+# - Career Dashboard: http://localhost:5555  
+# - Local AI: http://localhost:11434
+# - VPN Proxy: http://localhost:8888
+```
+**Features**: Docker-based setup with PostgreSQL, Redis, Ollama AI, VPN integration, queue mode for Pro-level performance, automated workflows, and error handling.
+
+**Documentation**: See [n8n Integration Guide](./README-n8n-integration.md) and [Complete Setup Guide](./n8n-complete-setup-guide.md)
+
 ### Option 2: Open Directly in Browser
+```bash
+# Open the main dashboard in your browser
+open index.html
+```
 ```bash
 # Open the main dashboard in your browser
 open index.html
@@ -58,8 +85,7 @@ open index.html
 
 ### Step 2: Set Up AI Tools
 Register for these free/premium AI tools:
-- **ChatGPT** (Free/Plus $20/month)
-- **Wix AI** (Free/Premium $16/month) 
+- **ChatGPT** (Free/Plus $20/month) 
 - **Predis.ai** (Free/Pro $32/month)
 - **Buffer** (Free/Pro $6/month)
 

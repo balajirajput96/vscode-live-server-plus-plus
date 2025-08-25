@@ -2,3 +2,15 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# n8n Integration
+.env
+backups/
+*.log
+
+# Docker
+.docker/
+
+# Temporary files
+*.tmp
+*.temp
