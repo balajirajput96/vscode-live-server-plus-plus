@@ -2,13 +2,74 @@
 let currentTab = 'portfolio';
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+let isOffline = !navigator.onLine;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
     loadStoredData();
     updateAnalytics();
+    initializeOfflineSupport();
+    setupNetworkDetection();
 });
+
+// Initialize offline support
+function initializeOfflineSupport() {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered successfully:', registration.scope);
+            })
+            .catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+    }
+    
+    // Show offline indicator if needed
+    updateOfflineStatus();
+}
+
+// Setup network detection
+function setupNetworkDetection() {
+    window.addEventListener('online', () => {
+        isOffline = false;
+        updateOfflineStatus();
+        syncPendingData();
+        showMessage('इंटरनेट कनेक्शन वापस आ गया! डेटा सिंक हो रहा है...', 'success');
+    });
+    
+    window.addEventListener('offline', () => {
+        isOffline = true;
+        updateOfflineStatus();
+        showMessage('ऑफलाइन मोड: डेटा लोकल में सेव हो रहा है', 'info');
+    });
+}
+
+// Update offline status indicator
+function updateOfflineStatus() {
+    const existingIndicator = document.querySelector('.offline-indicator');
+    if (existingIndicator) {
+        existingIndicator.remove();
+    }
+    
+    if (isOffline) {
+        const indicator = document.createElement('div');
+        indicator.className = 'offline-indicator';
+        indicator.innerHTML = '<i class="fas fa-wifi"></i> ऑफलाइन मोड - डेटा लोकल में सेव हो रहा है';
+        document.body.appendChild(indicator);
+    }
+}
+
+// Sync pending data when back online
+function syncPendingData() {
+    const pendingData = JSON.parse(localStorage.getItem('pendingSync') || '[]');
+    if (pendingData.length > 0) {
+        // In a real app, this would sync with server
+        console.log('Syncing pending data:', pendingData);
+        localStorage.removeItem('pendingSync');
+    }
+}
 
 // Tab Navigation
 function initializeTabs() {
@@ -135,7 +196,8 @@ function saveProject() {
         tools: document.getElementById('toolsUsed').value,
         dataset: document.getElementById('datasetSource').value,
         findings: document.getElementById('keyFindings').value,
-        date: new Date().toLocaleDateString('hi-IN')
+        date: new Date().toLocaleDateString('hi-IN'),
+        timestamp: new Date().toISOString()
     };
 
     if (!projectData.name || !projectData.description) {
@@ -143,13 +205,74 @@ function saveProject() {
         return;
     }
 
-    projects.push(projectData);
-    localStorage.setItem('projects', JSON.stringify(projects));
+    try {
+        projects.push(projectData);
+        
+        // Enhanced local storage with backup
+        saveDataWithBackup('projects', projects);
+        
+        // If offline, add to pending sync
+        if (isOffline) {
+            const pendingSync = JSON.parse(localStorage.getItem('pendingSync') || '[]');
+            pendingSync.push({
+                type: 'project',
+                data: projectData,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('pendingSync', JSON.stringify(pendingSync));
+        }
+        
+        // Clear form
+        clearPortfolioForm();
+        showMessage('प्रोजेक्ट सफलतापूर्वक सेव किया गया!', 'success');
+        updateAnalytics();
+        
+    } catch (error) {
+        console.error('Error saving project:', error);
+        showMessage('प्रोजेक्ट सेव करने में त्रुटि हुई। कृपया पुनः प्रयास करें।', 'error');
+    }
+}
+
+// Enhanced data saving with backup
+function saveDataWithBackup(key, data) {
+    try {
+        // Save main data
+        localStorage.setItem(key, JSON.stringify(data));
+        
+        // Create backup
+        localStorage.setItem(`${key}_backup`, JSON.stringify({
+            data: data,
+            timestamp: new Date().toISOString(),
+            version: '1.2'
+        }));
+        
+        // Clean old backups (keep only latest 3)
+        const backupKeys = Object.keys(localStorage).filter(k => k.startsWith(`${key}_backup_`));
+        if (backupKeys.length > 2) {
+            const sortedKeys = backupKeys.sort();
+            localStorage.removeItem(sortedKeys[0]);
+        }
+        
+    } catch (error) {
+        if (error.name === 'QuotaExceededError') {
+            showMessage('स्टोरेज भर गया है। कुछ पुराना डेटा साफ करें।', 'error');
+            // Try to recover by clearing old backups
+            clearOldBackups();
+        } else {
+            throw error;
+        }
+    }
+}
+
+// Clear old backups to free space
+function clearOldBackups() {
+    const keys = Object.keys(localStorage);
+    const backupKeys = keys.filter(k => k.includes('_backup_'));
     
-    // Clear form
-    clearPortfolioForm();
-    showMessage('प्रोजेक्ट सफलतापूर्वक सेव किया गया!', 'success');
-    updateAnalytics();
+    // Remove oldest backups
+    backupKeys.sort().slice(0, Math.floor(backupKeys.length / 2)).forEach(key => {
+        localStorage.removeItem(key);
+    });
 }
 
 function clearPortfolioForm() {
@@ -425,6 +548,30 @@ function updateAnalytics() {
     // Update metrics
     document.querySelector('.analytics-card:nth-child(1) .metric').textContent = projectCount;
     document.querySelector('.analytics-card:nth-child(2) .metric').textContent = socialCount;
+    
+    // Update storage info
+    updateStorageInfo();
+}
+
+// Update storage information
+function updateStorageInfo() {
+    try {
+        const storageInfo = document.getElementById('storageInfo');
+        if (storageInfo && 'storage' in navigator && 'estimate' in navigator.storage) {
+            navigator.storage.estimate().then(estimate => {
+                const used = (estimate.usage / 1024 / 1024).toFixed(2);
+                const quota = (estimate.quota / 1024 / 1024).toFixed(2);
+                storageInfo.textContent = `उपयोग: ${used} MB / ${quota} MB (${projects.length} प्रोजेक्ट्स, ${socialPosts.length} पोस्ट्स)`;
+            });
+        } else if (storageInfo) {
+            // Fallback for browsers without storage API
+            const dataSize = new Blob([JSON.stringify(projects) + JSON.stringify(socialPosts)]).size;
+            const sizeInKB = (dataSize / 1024).toFixed(2);
+            storageInfo.textContent = `अनुमानित डेटा: ${sizeInKB} KB (${projects.length} प्रोजेक्ट्स, ${socialPosts.length} पोस्ट्स)`;
+        }
+    } catch (error) {
+        console.log('Could not estimate storage:', error);
+    }
 }
 
 // Utility Functions
@@ -492,21 +639,111 @@ setInterval(() => {
     localStorage.setItem('socialPosts', JSON.stringify(socialPosts));
 }, 30000); // Save every 30 seconds
 
-// Export functionality
+// Enhanced export functionality
 function exportData() {
-    const data = {
-        projects: projects,
-        socialPosts: socialPosts,
-        exportDate: new Date().toISOString()
+    try {
+        const data = {
+            projects: projects,
+            socialPosts: socialPosts,
+            exportDate: new Date().toISOString(),
+            version: '1.2',
+            metadata: {
+                totalProjects: projects.length,
+                totalPosts: socialPosts.length,
+                lastModified: localStorage.getItem('lastModified') || new Date().toISOString()
+            }
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `career-automation-data-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        showMessage('डेटा सफलतापूर्वक एक्सपोर्ट किया गया!', 'success');
+        
+    } catch (error) {
+        console.error('Export error:', error);
+        showMessage('एक्सपोर्ट में त्रुटि हुई। कृपया पुनः प्रयास करें।', 'error');
+    }
+}
+
+// Import functionality
+function importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validate data structure
+                    if (importedData.projects && Array.isArray(importedData.projects)) {
+                        // Confirm before overwriting
+                        if (confirm('क्या आप वर्तमान डेटा को इम्पोर्ट किए गए डेटा से बदलना चाहते हैं?')) {
+                            // Backup current data
+                            const backupData = {
+                                projects: projects,
+                                socialPosts: socialPosts,
+                                timestamp: new Date().toISOString()
+                            };
+                            localStorage.setItem('pre_import_backup', JSON.stringify(backupData));
+                            
+                            // Import new data
+                            projects = importedData.projects || [];
+                            socialPosts = importedData.socialPosts || [];
+                            
+                            // Save imported data
+                            saveDataWithBackup('projects', projects);
+                            saveDataWithBackup('socialPosts', socialPosts);
+                            localStorage.setItem('lastModified', new Date().toISOString());
+                            
+                            // Update UI
+                            updateAnalytics();
+                            showMessage('डेटा सफलतापूर्वक इम्पोर्ट किया गया!', 'success');
+                        }
+                    } else {
+                        showMessage('अवैध फ़ाइल फॉर्मेट। कृपया वैध JSON फ़ाइल चुनें।', 'error');
+                    }
+                } catch (error) {
+                    console.error('Import error:', error);
+                    showMessage('फ़ाइल पढ़ने में त्रुटि। कृपया वैध JSON फ़ाइल चुनें।', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
     };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'career-automation-data.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    input.click();
+}
+
+// Restore from backup
+function restoreFromBackup() {
+    const backup = localStorage.getItem('pre_import_backup');
+    if (backup) {
+        try {
+            const backupData = JSON.parse(backup);
+            if (confirm('क्या आप पिछले बैकअप से डेटा रिस्टोर करना चाहते हैं?')) {
+                projects = backupData.projects || [];
+                socialPosts = backupData.socialPosts || [];
+                
+                saveDataWithBackup('projects', projects);
+                saveDataWithBackup('socialPosts', socialPosts);
+                
+                updateAnalytics();
+                showMessage('बैकअप से डेटा सफलतापूर्वक रिस्टोर किया गया!', 'success');
+            }
+        } catch (error) {
+            showMessage('बैकअप रिस्टोर करने में त्रुटि हुई।', 'error');
+        }
+    } else {
+        showMessage('कोई बैकअप उपलब्ध नहीं है।', 'info');
+    }
 }
 
 // Initialize tooltips and help text
