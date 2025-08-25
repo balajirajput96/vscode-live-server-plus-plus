@@ -1,0 +1,138 @@
+{
+  "name": "Error Handling Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const errorInfo = {\n  workflowId: $json.workflowId,\n  executionId: $json.executionId,\n  errorMessage: $json.error.message,\n  timestamp: new Date().toISOString(),\n  nodeName: $json.error.node?.name || 'Unknown',\n  stackTrace: $json.error.stack || 'Not available'\n};\n\nreturn { json: errorInfo };"
+      },
+      "name": "Format Error Info",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "send",
+        "to": "balaji.web.design1@gmail.com",
+        "subject": "🚨 n8n Workflow Error Alert",
+        "message": "ERROR DETECTED in n8n Workflow\n\nWorkflow ID: {{$json.workflowId}}\nExecution ID: {{$json.executionId}}\nFailed Node: {{$json.nodeName}}\nError Message: {{$json.errorMessage}}\nTime: {{$json.timestamp}}\n\nStack Trace:\n{{$json.stackTrace}}\n\nPlease check the n8n interface for detailed logs.\n\nAutomatic Recovery Actions:\n1. Check service health\n2. Restart failed components if needed\n3. Verify network connectivity\n4. Review logs for root cause\n\nDashboard: http://localhost:5678"
+      },
+      "name": "Error Email Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "docker-compose -f docker-compose.n8n.yml ps && echo '---' && docker-compose -f docker-compose.n8n.yml logs --tail=20 n8n"
+      },
+      "name": "Health Check",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        680,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.errorMessage}}",
+              "operation": "contains",
+              "value2": "connection"
+            }
+          ]
+        }
+      },
+      "name": "Check Error Type",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "docker-compose -f docker-compose.n8n.yml restart"
+      },
+      "name": "Auto Recovery",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Error Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Error Info": {
+      "main": [
+        [
+          {
+            "node": "Error Email Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Health Check",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Error Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Error Type": {
+      "main": [
+        [
+          {
+            "node": "Auto Recovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": 2,
+  "meta": {
+    "instanceId": "8f75859920be976c80a11c1dd4be8852c698c893b1073cb8716ee93cd8d6a3c9"
+  }
+}
