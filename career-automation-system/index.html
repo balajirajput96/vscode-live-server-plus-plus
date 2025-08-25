@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 AI Career Automation System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-robot"></i> AI Career Automation System</h1>
+        <p>अपनी करियर को AI के साथ automate करें</p>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-button active" onclick="switchTab('portfolio')">
+            <i class="fas fa-briefcase"></i> Portfolio Builder
+        </button>
+        <button class="tab-button" onclick="switchTab('social')">
+            <i class="fas fa-share-alt"></i> Social Media
+        </button>
+        <button class="tab-button" onclick="switchTab('resume')">
+            <i class="fas fa-file-alt"></i> Resume Builder
+        </button>
+        <button class="tab-button" onclick="switchTab('jobs')">
+            <i class="fas fa-search"></i> Job Tracker
+        </button>
+        <button class="tab-button" onclick="switchTab('prompts')">
+            <i class="fas fa-magic"></i> AI Prompts
+        </button>
+        <button class="tab-button" onclick="switchTab('analytics')">
+            <i class="fas fa-chart-bar"></i> Analytics
+        </button>
+    </nav>
+
+    <main>
+        <!-- Portfolio Builder Tab -->
+        <div id="portfolio" class="tab-content active">
+            <h2><i class="fas fa-briefcase"></i> Portfolio Builder</h2>
+            <div class="form-section">
+                <h3>नया प्रोजेक्ट जोड़ें</h3>
+                <form id="portfolioForm">
+                    <input type="text" id="projectName" placeholder="प्रोजेक्ट का नाम" required>
+                    <select id="projectType">
+                        <option value="">प्रोजेक्ट टाइप चुनें</option>
+                        <option value="data-analysis">Data Analysis</option>
+                        <option value="machine-learning">Machine Learning</option>
+                        <option value="web-development">Web Development</option>
+                        <option value="bioinformatics">Bioinformatics</option>
+                        <option value="research">Research Project</option>
+                    </select>
+                    <textarea id="projectDescription" placeholder="प्रोजेक्ट का विवरण" rows="4"></textarea>
+                    <input type="text" id="toolsUsed" placeholder="इस्तेमाल किए गए tools (comma separated)">
+                    <input type="text" id="datasetSource" placeholder="Dataset source">
+                    <textarea id="keyFindings" placeholder="मुख्य findings और results" rows="3"></textarea>
+                    <button type="button" onclick="saveProject()">
+                        <i class="fas fa-save"></i> प्रोजेक्ट सेव करें
+                    </button>
+                </form>
+            </div>
+            <div class="projects-list" id="projectsList">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Social Media Tab -->
+        <div id="social" class="tab-content">
+            <h2><i class="fas fa-share-alt"></i> Social Media Generator</h2>
+            <div class="form-section">
+                <h3>Social Media Post जनरेट करें</h3>
+                <form id="socialForm">
+                    <select id="platform">
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                    </select>
+                    <select id="postType">
+                        <option value="project-showcase">Project Showcase</option>
+                        <option value="career-tip">Career Tip</option>
+                        <option value="industry-insight">Industry Insight</option>
+                        <option value="achievement">Achievement</option>
+                    </select>
+                    <textarea id="postContent" placeholder="अपनी post का content लिखें या AI से generate करें" rows="5"></textarea>
+                    <button type="button" onclick="generateContent()">
+                        <i class="fas fa-magic"></i> AI से Content Generate करें
+                    </button>
+                    <button type="button" onclick="schedulePost()">
+                        <i class="fas fa-clock"></i> Post Schedule करें
+                    </button>
+                </form>
+            </div>
+            <div class="social-posts" id="socialPosts">
+                <!-- Generated posts will appear here -->
+            </div>
+        </div>
+
+        <!-- Resume Builder Tab -->
+        <div id="resume" class="tab-content">
+            <h2><i class="fas fa-file-alt"></i> Resume Builder</h2>
+            <div class="form-section">
+                <h3>Resume Sections</h3>
+                <div class="resume-sections">
+                    <button onclick="optimizeSection('summary')">Professional Summary Optimize करें</button>
+                    <button onclick="optimizeSection('skills')">Skills Section Update करें</button>
+                    <button onclick="optimizeSection('experience')">Experience Description Improve करें</button>
+                    <button onclick="generateMultiple()">Multiple Versions Generate करें</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Tracker Tab -->
+        <div id="jobs" class="tab-content">
+            <h2><i class="fas fa-search"></i> Job Search & Tracker</h2>
+            <div class="form-section">
+                <h3>नई Job Search करें</h3>
+                <form id="jobSearchForm">
+                    <input type="text" id="jobRole" placeholder="Job Role (e.g., Data Scientist)">
+                    <input type="text" id="jobLocation" placeholder="Location">
+                    <input type="text" id="jobCompany" placeholder="Company (optional)">
+                    <button type="button" onclick="searchJobs()">
+                        <i class="fas fa-search"></i> Jobs Search करें
+                    </button>
+                </form>
+            </div>
+            <div class="job-list" id="jobList">
+                <!-- Job listings will appear here -->
+            </div>
+        </div>
+
+        <!-- AI Prompts Tab -->
+        <div id="prompts" class="tab-content">
+            <h2><i class="fas fa-magic"></i> AI Prompts Library</h2>
+            <div class="prompts-grid">
+                <div class="prompt-card">
+                    <h3>LinkedIn Profile Optimization</h3>
+                    <p>Create a professional LinkedIn headline for a biotechnology professional with 2 years of experience in data analysis and bioinformatics. Include keywords: Python, SQL, Machine Learning, Research.</p>
+                    <button onclick="copyPrompt(this)">Copy Prompt</button>
+                </div>
+                <div class="prompt-card">
+                    <h3>Project Description Generator</h3>
+                    <p>Write a professional project description for a machine learning model that predicts protein structures using Python and scikit-learn. Include methodology, results, and impact.</p>
+                    <button onclick="copyPrompt(this)">Copy Prompt</button>
+                </div>
+                <div class="prompt-card">
+                    <h3>GitHub README Generator</h3>
+                    <p>Create a comprehensive README.md for a bioinformatics project that analyzes genomic data. Include installation instructions, usage examples, and technical requirements.</p>
+                    <button onclick="copyPrompt(this)">Copy Prompt</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <h2><i class="fas fa-chart-bar"></i> Analytics Dashboard</h2>
+            <div class="analytics-grid">
+                <div class="metric-card">
+                    <h3>Projects Created</h3>
+                    <div class="metric-value" id="projectCount">0</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Social Posts Generated</h3>
+                    <div class="metric-value" id="postCount">0</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Jobs Applied</h3>
+                    <div class="metric-value" id="jobCount">0</div>
+                </div>
+                <div class="metric-card">
+                    <h3>This Week Activity</h3>
+                    <div class="metric-value" id="weeklyActivity">5</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="messageContainer" class="message-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
