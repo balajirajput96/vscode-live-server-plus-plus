@@ -1,0 +1,334 @@
+{
+  "name": "LinkedIn Networking Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-connection",
+        "responseMode": "responseNode"
+      },
+      "name": "Webhook - New Connection",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "new-connection-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": "YOUR_NETWORKING_SHEET_ID",
+        "sheetName": "Networking Log",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "Date",
+              "value": "={{$json[\"body\"][\"date\"] || new Date().toISOString().split('T')[0]}}"
+            },
+            {
+              "column": "Contact Name",
+              "value": "={{$json[\"body\"][\"name\"]}}"
+            },
+            {
+              "column": "Company",
+              "value": "={{$json[\"body\"][\"company\"]}}"
+            },
+            {
+              "column": "Platform",
+              "value": "={{$json[\"body\"][\"platform\"] || 'LinkedIn'}}"
+            },
+            {
+              "column": "Type",
+              "value": "Connection"
+            },
+            {
+              "column": "Notes",
+              "value": "={{$json[\"body\"][\"notes\"]}}"
+            },
+            {
+              "column": "Follow-up Date",
+              "value": "={{new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}}"
+            }
+          ]
+        }
+      },
+      "name": "Log Connection",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * 3"
+            }
+          ]
+        }
+      },
+      "name": "Every Wednesday 10 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "YOUR_NETWORKING_SHEET_ID",
+        "sheetName": "Networking Log",
+        "range": "A:G"
+      },
+      "name": "Get Networking Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        460,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Follow-up Date\"]}}",
+              "operation": "equal",
+              "value2": "={{new Date().toISOString().split('T')[0]}}"
+            },
+            {
+              "value1": "={{$json[\"Type\"]}}",
+              "operation": "equal",
+              "value2": "Connection"
+            }
+          ]
+        }
+      },
+      "name": "Filter Due Follow-ups",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        680,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "completion",
+        "prompt": "Write a professional LinkedIn follow-up message for someone I connected with 2 weeks ago. Their name is {{$json[\"Contact Name\"]}} and they work at {{$json[\"Company\"]}}. The message should be:\n- Friendly and professional\n- Reference our connection\n- Offer value or ask for advice about bioinformatics career transition\n- Keep it under 150 words\n- Include a call to action\n\nNotes about them: {{$json[\"Notes\"]}}",
+        "maxTokens": 300,
+        "temperature": 0.7
+      },
+      "name": "Generate Follow-up Message",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        900,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "LinkedIn Follow-up: {{$json[\"Contact Name\"]}} at {{$json[\"Company\"]}}",
+        "html": "<h3>🤝 LinkedIn Follow-up Reminder</h3>\n<p><strong>Contact:</strong> {{$json[\"Contact Name\"]}}</p>\n<p><strong>Company:</strong> {{$json[\"Company\"]}}</p>\n<p><strong>Connected:</strong> {{$json[\"Date\"]}}</p>\n<p><strong>Notes:</strong> {{$json[\"Notes\"]}}</p>\n\n<h4>📝 Suggested Message:</h4>\n<div style=\"background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;\">\n{{$json[\"message\"]}}\n</div>\n\n<p><a href=\"https://linkedin.com\" style=\"background: #0077b5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;\">Open LinkedIn</a></p>"
+      },
+      "name": "Send Follow-up Reminder",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "message",
+              "value": "Connection logged successfully"
+            }
+          ]
+        }
+      },
+      "name": "Response - Connection Logged",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "name": "Every Monday 9 AM - Networking Goals",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "completion",
+        "prompt": "Generate 5 specific LinkedIn networking strategies for a biotechnology professional transitioning to bioinformatics. Include:\n1. Target audience to connect with\n2. Conversation starters\n3. Value propositions\n4. Follow-up strategies\n5. Content ideas to share\n\nMake it actionable and specific to biotech-to-bioinformatics career transition.",
+        "maxTokens": 600,
+        "temperature": 0.7
+      },
+      "name": "Generate Weekly Networking Strategy",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        460,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "📈 Weekly LinkedIn Networking Strategy",
+        "html": "<h2>🚀 Your Weekly LinkedIn Networking Plan</h2>\n<div style=\"background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0;\">\n<pre style=\"white-space: pre-wrap; font-family: Arial, sans-serif;\">{{$json[\"choices\"][0][\"text\"]}}</pre>\n</div>\n\n<h3>📊 This Week's Goals:</h3>\n<ul>\n  <li>🎯 Send 10 connection requests</li>\n  <li>💬 Engage with 15 posts</li>\n  <li>📝 Publish 2 pieces of content</li>\n  <li>🤝 Follow up with 3 recent connections</li>\n</ul>\n\n<p><strong>Remember:</strong> Quality over quantity. Focus on meaningful connections and genuine engagement.</p>\n\n<p><a href=\"https://linkedin.com\" style=\"background: #0077b5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;\">Open LinkedIn</a></p>"
+      },
+      "name": "Send Weekly Networking Plan",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        680,
+        700
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - New Connection": {
+      "main": [
+        [
+          {
+            "node": "Log Connection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Connection": {
+      "main": [
+        [
+          {
+            "node": "Response - Connection Logged",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Wednesday 10 AM": {
+      "main": [
+        [
+          {
+            "node": "Get Networking Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Networking Data": {
+      "main": [
+        [
+          {
+            "node": "Filter Due Follow-ups",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Due Follow-ups": {
+      "main": [
+        [
+          {
+            "node": "Generate Follow-up Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Follow-up Message": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response - Connection Logged": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Monday 9 AM - Networking Goals": {
+      "main": [
+        [
+          {
+            "node": "Generate Weekly Networking Strategy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Weekly Networking Strategy": {
+      "main": [
+        [
+          {
+            "node": "Send Weekly Networking Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
