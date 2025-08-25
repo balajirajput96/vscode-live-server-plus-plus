@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
+      - N8N_TRUST_PROXY=${N8N_TRUST_PROXY}
+      - DB_TYPE=${DB_TYPE}
+      - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
+      - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
+      - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
+      - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
+      - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - N8N_EMAIL_MODE=${N8N_EMAIL_MODE}
+      - N8N_SMTP_HOST=${N8N_SMTP_HOST}
+      - N8N_SMTP_PORT=${N8N_SMTP_PORT}
+      - N8N_SMTP_USER=${N8N_SMTP_USER}
+      - N8N_SMTP_PASS=${N8N_SMTP_PASS}
+      - N8N_SMTP_SENDER=${N8N_SMTP_SENDER}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL}
+      - N8N_LOG_OUTPUT=${N8N_LOG_OUTPUT}
+      - EXECUTIONS_TIMEOUT=${EXECUTIONS_TIMEOUT}
+      - EXECUTIONS_TIMEOUT_MAX=${EXECUTIONS_TIMEOUT_MAX}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows
+      - ./credentials:/home/node/.n8n/credentials
+      - ./models:/models
+      - ./backups:/backups
+    depends_on:
+      - postgres
+    networks:
+      - n8n_network
+
+  postgres:
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_POSTGRESDB_DATABASE}
+      - POSTGRES_USER=${DB_POSTGRESDB_USER}
+      - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n_network
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n_network
+
+  vpn-manager:
+    build: ./docker/vpn-manager
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - VPN_PROVIDERS=${VPN_PROVIDERS}
+      - VPN_COUNTRIES=${VPN_COUNTRIES}
+      - VPN_API_KEY=${VPN_API_KEY}
+    volumes:
+      - vpn_configs:/etc/openvpn
+    networks:
+      - n8n_network
+
+  ai-models:
+    build: ./docker/ai-models
+    restart: unless-stopped
+    environment:
+      - GEMMA_MODEL_PATH=${GEMMA_MODEL_PATH}
+      - SHAKTI_MODEL_PATH=${SHAKTI_MODEL_PATH}
+    volumes:
+      - ./models:/models
+      - ai_cache:/cache
+    networks:
+      - n8n_network
+
+volumes:
+  n8n_data:
+  postgres_data:
+  redis_data:
+  vpn_configs:
+  ai_cache:
+
+networks:
+  n8n_network:
+    driver: bridge

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI Career Automation System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-robot"></i> AI Career Automation System</h1>
+                <p>बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स - Complete Automation Solution</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="exportData()">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+                <button class="btn btn-secondary" onclick="showHelp()">
+                    <i class="fas fa-question-circle"></i> Help
+                </button>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="switchTab('portfolio')" data-tab="portfolio">
+                <i class="fas fa-folder-open"></i> Portfolio Builder
+            </button>
+            <button class="tab-btn" onclick="switchTab('social')" data-tab="social">
+                <i class="fas fa-share-alt"></i> Social Media
+            </button>
+            <button class="tab-btn" onclick="switchTab('resume')" data-tab="resume">
+                <i class="fas fa-file-alt"></i> Resume Optimizer
+            </button>
+            <button class="tab-btn" onclick="switchTab('jobs')" data-tab="jobs">
+                <i class="fas fa-briefcase"></i> Job Tracker
+            </button>
+            <button class="tab-btn" onclick="switchTab('prompts')" data-tab="prompts">
+                <i class="fas fa-brain"></i> AI Prompts
+            </button>
+            <button class="tab-btn" onclick="switchTab('analytics')" data-tab="analytics">
+                <i class="fas fa-chart-line"></i> Analytics
+            </button>
+        </nav>
+
+        <!-- Portfolio Builder Tab -->
+        <div id="portfolio" class="tab-content active">
+            <div class="section">
+                <h2><i class="fas fa-code"></i> Project Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="projectName">Project Name:</label>
+                        <input type="text" id="projectName" placeholder="उदाहरण: Gene Expression Analysis Tool">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectType">Project Type:</label>
+                        <select id="projectType">
+                            <option value="bioinformatics">Bioinformatics Analysis</option>
+                            <option value="machine-learning">Machine Learning</option>
+                            <option value="data-visualization">Data Visualization</option>
+                            <option value="web-application">Web Application</option>
+                            <option value="research">Research Project</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="projectDescription">Project Description:</label>
+                        <textarea id="projectDescription" rows="3" placeholder="अपने प्रोजेक्ट का detailed description लिखें..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="toolsUsed">Tools Used:</label>
+                        <input type="text" id="toolsUsed" placeholder="Python, R, SQL, Machine Learning">
+                    </div>
+                    <div class="form-group">
+                        <label for="datasetSource">Dataset Source:</label>
+                        <input type="text" id="datasetSource" placeholder="NCBI, Kaggle, Custom Dataset">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="keyFindings">Key Findings:</label>
+                        <textarea id="keyFindings" rows="2" placeholder="मुख्य results और insights..."></textarea>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="generatePortfolioContent()">
+                        <i class="fas fa-magic"></i> Generate AI Content
+                    </button>
+                    <button class="btn btn-secondary" onclick="saveProject()">
+                        <i class="fas fa-save"></i> Save Project
+                    </button>
+                </div>
+            </div>
+
+            <div id="portfolioOutput" class="output-section" style="display: none;">
+                <h3><i class="fas fa-file-code"></i> Generated Portfolio Content</h3>
+                <div id="portfolioContent" class="content-output"></div>
+                <div class="copy-actions">
+                    <button class="btn btn-success" onclick="copyToClipboard('portfolioContent')">
+                        <i class="fas fa-copy"></i> Copy Content
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Media Tab -->
+        <div id="social" class="tab-content">
+            <div class="section">
+                <h2><i class="fas fa-thumbs-up"></i> Social Media Post Generator</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="platform">Platform:</label>
+                        <select id="platform">
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="instagram">Instagram</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="postType">Post Type:</label>
+                        <select id="postType">
+                            <option value="project-share">Project Share</option>
+                            <option value="achievement">Achievement</option>
+                            <option value="learning">Learning Update</option>
+                            <option value="industry-insight">Industry Insight</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="postContent">Content Description:</label>
+                        <textarea id="postContent" rows="3" placeholder="आप क्या share करना चाहते हैं..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="postTone">Tone:</label>
+                        <select id="postTone">
+                            <option value="professional">Professional</option>
+                            <option value="excited">Excited</option>
+                            <option value="educational">Educational</option>
+                            <option value="inspirational">Inspirational</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="hashtags">Hashtags:</label>
+                        <input type="text" id="hashtags" placeholder="#Bioinformatics #DataScience #Python">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="generateSocialPost()">
+                        <i class="fas fa-magic"></i> Generate Post
+                    </button>
+                    <button class="btn btn-warning" onclick="generateMultiple()">
+                        <i class="fas fa-clone"></i> Generate 5 Posts
+                    </button>
+                    <button class="btn btn-success" onclick="schedulePost()">
+                        <i class="fas fa-clock"></i> Schedule Post
+                    </button>
+                </div>
+            </div>
+
+            <div id="socialOutput" class="output-section" style="display: none;">
+                <h3><i class="fas fa-share-alt"></i> Generated Social Media Posts</h3>
+                <div id="socialContent" class="content-output"></div>
+                <div class="copy-actions">
+                    <button class="btn btn-success" onclick="copyToClipboard('socialContent')">
+                        <i class="fas fa-copy"></i> Copy Posts
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resume Optimizer Tab -->
+        <div id="resume" class="tab-content">
+            <div class="section">
+                <h2><i class="fas fa-user-tie"></i> Resume & LinkedIn Optimizer</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="optimizeType">Optimize For:</label>
+                        <select id="optimizeType">
+                            <option value="resume">Resume</option>
+                            <option value="linkedin-headline">LinkedIn Headline</option>
+                            <option value="linkedin-summary">LinkedIn Summary</option>
+                            <option value="cover-letter">Cover Letter</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="targetRole">Target Role:</label>
+                        <input type="text" id="targetRole" placeholder="Bioinformatics Analyst, Data Scientist">
+                    </div>
+                    <div class="form-group">
+                        <label for="targetCompany">Target Company:</label>
+                        <input type="text" id="targetCompany" placeholder="Company name (optional)">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="currentContent">Current Content:</label>
+                        <textarea id="currentContent" rows="5" placeholder="अपना current resume/LinkedIn content paste करें..."></textarea>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="optimizeContent()">
+                        <i class="fas fa-rocket"></i> Optimize Content
+                    </button>
+                </div>
+            </div>
+
+            <div id="resumeOutput" class="output-section" style="display: none;">
+                <h3><i class="fas fa-star"></i> Optimized Content</h3>
+                <div id="resumeContent" class="content-output"></div>
+                <div class="copy-actions">
+                    <button class="btn btn-success" onclick="copyToClipboard('resumeContent')">
+                        <i class="fas fa-copy"></i> Copy Content
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Tracker Tab -->
+        <div id="jobs" class="tab-content">
+            <div class="section">
+                <h2><i class="fas fa-search"></i> Job Search & Tracking</h2>
+                <div class="search-container">
+                    <input type="text" id="jobSearch" placeholder="Job title, company, or keywords...">
+                    <button class="btn btn-primary" onclick="searchJobs()">
+                        <i class="fas fa-search"></i> Search Jobs
+                    </button>
+                </div>
+                <div id="jobResults" class="job-results"></div>
+            </div>
+        </div>
+
+        <!-- AI Prompts Tab -->
+        <div id="prompts" class="tab-content">
+            <div class="section">
+                <h2><i class="fas fa-brain"></i> AI Prompts Library</h2>
+                <div class="prompts-grid">
+                    <div class="prompt-card">
+                        <h3>GitHub README Generator</h3>
+                        <p>Professional README.md for bioinformatics projects</p>
+                        <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">
+                            <i class="fas fa-copy"></i> Copy Prompt
+                        </button>
+                        <div class="prompt-content" style="display: none;">
+                            Create a professional GitHub README.md for a bioinformatics project...
+                        </div>
+                    </div>
+                    <div class="prompt-card">
+                        <h3>LinkedIn Post Generator</h3>
+                        <p>Engaging LinkedIn posts for biotech professionals</p>
+                        <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">
+                            <i class="fas fa-copy"></i> Copy Prompt
+                        </button>
+                        <div class="prompt-content" style="display: none;">
+                            Write a professional LinkedIn post about a bioinformatics achievement...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="section">
+                <h2><i class="fas fa-chart-bar"></i> Analytics Dashboard</h2>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Projects Created</h3>
+                        <div class="analytics-number" id="projectCount">0</div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Social Posts Generated</h3>
+                        <div class="analytics-number" id="postCount">0</div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Job Applications</h3>
+                        <div class="analytics-number" id="jobCount">0</div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Success Rate</h3>
+                        <div class="analytics-number" id="successRate">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageContainer" class="message-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
