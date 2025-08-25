@@ -1,11 +1,12 @@
-# n8n Automation Setup (Docker)
+# n8n Automation Setup (Docker) + Perplexity AI Pro Integration
 
 ## 🚀 Quick Start
 
 ### 1) Prepare .env
 Copy `.env.example` to `.env` and set:
-- DOMAIN, EMAIL, WEBHOOK_URL (e.g., https://n8n.example.com/)
+- DOMAIN, EMAIL (now configured for balaji.web.design1@gmail.com), WEBHOOK_URL (e.g., https://n8n.example.com/)
 - N8N_ENCRYPTION_KEY (generate one: `openssl rand -base64 32`)
+- PERPLEXITY_API_KEY (get from your Perplexity AI Pro account)
 - For local dev without HTTPS: set `N8N_SECURE_COOKIE=false`, `WEBHOOK_URL=` blank or http URL.
 
 ### 2) Local/dev (no HTTPS)
