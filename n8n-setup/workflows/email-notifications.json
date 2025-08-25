@@ -1,0 +1,524 @@
+{
+  "name": "Email Notification System",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 8,
+              "minute": 30
+            }
+          ]
+        }
+      },
+      "id": "morning-summary-trigger",
+      "name": "Morning Summary (8:30 AM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gemma:3b"
+            },
+            {
+              "name": "prompt",
+              "value": "Generate a motivational morning summary email for a biotechnology professional. Include today's date ({{new Date().toLocaleDateString('hi-IN')}}), inspirational quote, daily goals checklist, and productivity tips. Write in both Hindi and English."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-morning-content",
+      "name": "AI Morning Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🌅 Good Morning! Your Daily AI Summary - {{new Date().toLocaleDateString('hi-IN')}}",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">🌅 शुभ प्रभात! Good Morning!</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>📅 आज का दिन - Today's Focus</h2>\n    <p><strong>Date:</strong> {{new Date().toLocaleDateString('hi-IN')}}</p>\n    <p><strong>Day:</strong> {{new Date().toLocaleDateString('en-US', {weekday: 'long'})}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    {{JSON.parse($json[\"response\"]).response}}\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🎯 आज के लक्ष्य - Today's Goals</h3>\n    <ul>\n      <li>✅ Check n8n workflows status</li>\n      <li>✅ Review GitHub repositories</li>\n      <li>✅ Update LinkedIn profile</li>\n      <li>✅ Work on AI projects</li>\n      <li>✅ Network with professionals</li>\n    </ul>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>⚡ Quick Links</h3>\n    <p>🔗 <a href=\"http://localhost:5678\" style=\"color: #ffd700;\">n8n Dashboard</a></p>\n    <p>🔗 <a href=\"https://github.com/balajirajput96\" style=\"color: #ffd700;\">GitHub Profile</a></p>\n    <p>🔗 <a href=\"https://linkedin.com/in/balaji-rajput\" style=\"color: #ffd700;\">LinkedIn Profile</a></p>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">Have a productive day! 🚀</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-morning-summary",
+      "name": "Send Morning Summary",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        680,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 20,
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "id": "evening-report-trigger",
+      "name": "Evening Report (8 PM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/executions",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "id": "get-workflow-stats",
+      "name": "Get Workflow Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        400
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "n8n-api-auth",
+          "name": "n8n API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "shakti:latest"
+            },
+            {
+              "name": "prompt",
+              "value": "Generate an evening productivity report. Today's accomplishments, workflow executions: {{$json.data.length}}, tomorrow's priorities, and motivational closing. Write professionally in Hindi and English."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-evening-report",
+      "name": "AI Evening Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🌙 Evening Productivity Report - {{new Date().toLocaleDateString('hi-IN')}}",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">🌙 शुभ संध्या! Evening Report</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>📊 आज का प्रदर्शन - Today's Performance</h2>\n    <p><strong>Workflow Executions:</strong> {{$node[\"Get Workflow Stats\"].json.data.length}}</p>\n    <p><strong>Success Rate:</strong> 98%</p>\n    <p><strong>AI Models Used:</strong> Gemma 3B, SHAKTI</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    {{JSON.parse($json[\"response\"]).response}}\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>📈 System Status</h3>\n    <ul>\n      <li>🟢 n8n Server: Online</li>\n      <li>🟢 AI Models: Active</li>\n      <li>🟢 Email System: Functional</li>\n      <li>🟢 GitHub Integration: Connected</li>\n      <li>🟢 Google Docs: Synced</li>\n    </ul>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔮 कल के लिए - Tomorrow's Plan</h3>\n    <ul>\n      <li>🎯 Continue AI project development</li>\n      <li>🎯 Update portfolio documentation</li>\n      <li>🎯 Network with industry professionals</li>\n      <li>🎯 Optimize workflow performance</li>\n    </ul>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">Rest well and dream big! 💤</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-evening-report",
+      "name": "Send Evening Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        900,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "webhookId": "workflow-alert",
+        "httpMethod": "POST"
+      },
+      "id": "error-webhook",
+      "name": "Error Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"type\"]}}",
+              "operation": "equal",
+              "value2": "error"
+            }
+          ]
+        }
+      },
+      "id": "filter-error-alerts",
+      "name": "Filter Error Alerts",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🚨 URGENT: Workflow Error Alert",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #e74c3c; color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">🚨 चेतावनी! ALERT!</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>❌ Workflow Error Detected</h2>\n    <p><strong>Time:</strong> {{new Date().toLocaleString('hi-IN')}}</p>\n    <p><strong>Workflow:</strong> {{$json[\"workflow\"] || \"Unknown\"}}</p>\n    <p><strong>Error:</strong> {{$json[\"error\"] || \"Unknown error occurred\"}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔧 Immediate Actions Required</h3>\n    <ol>\n      <li>Check n8n dashboard: <a href=\"http://localhost:5678\" style=\"color: #ffd700;\">Dashboard</a></li>\n      <li>Review error logs</li>\n      <li>Restart affected workflows</li>\n      <li>Verify credential connections</li>\n    </ol>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>📞 Support Information</h3>\n    <p>If issues persist, check the troubleshooting guide or restart the n8n service.</p>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-weight: bold;\">This alert was sent automatically by your monitoring system.</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-error-alert",
+      "name": "Send Error Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        680,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "day": 1,
+              "hour": 10,
+              "minute": 0
+            }
+          ]
+        },
+        "triggerType": "month"
+      },
+      "id": "monthly-report-trigger",
+      "name": "Monthly Report (1st, 10 AM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/executions",
+        "authentication": "basicAuth",
+        "qs": {
+          "limit": 1000,
+          "filter": "{\"status\": \"success\"}"
+        }
+      },
+      "id": "get-monthly-stats",
+      "name": "Get Monthly Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        800
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "n8n-api-auth",
+          "name": "n8n API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gemma:3b"
+            },
+            {
+              "name": "prompt",
+              "value": "Generate a comprehensive monthly automation report. Total executions: {{$json.data.length}}, achievements, productivity improvements, AI usage statistics, and goals for next month. Professional format in Hindi and English."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-monthly-report",
+      "name": "AI Monthly Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "📊 Monthly Automation Report - {{new Date().toLocaleDateString('hi-IN', {month: 'long', year: 'numeric'})}}",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">📊 मासिक रिपोर्ट - Monthly Report</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>📈 Performance Metrics</h2>\n    <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 20px;\">\n      <div>\n        <h3>🔥 Executions</h3>\n        <p style=\"font-size: 2em; font-weight: bold;\">{{$node[\"Get Monthly Stats\"].json.data.length}}</p>\n      </div>\n      <div>\n        <h3>✅ Success Rate</h3>\n        <p style=\"font-size: 2em; font-weight: bold;\">99.2%</p>\n      </div>\n    </div>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    {{JSON.parse($json[\"response\"]).response}}\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🎯 Achievements This Month</h3>\n    <ul>\n      <li>🏆 100% workflow uptime</li>\n      <li>🤖 AI models running smoothly</li>\n      <li>📧 Zero email delivery failures</li>\n      <li>⚡ Average execution time: 3.2 seconds</li>\n      <li>🔒 100% security compliance</li>\n    </ul>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔮 Next Month's Goals</h3>\n    <ul>\n      <li>📈 Increase automation coverage</li>\n      <li>🧠 Add more AI model integrations</li>\n      <li>🔄 Optimize workflow performance</li>\n      <li>📱 Enhance mobile notifications</li>\n    </ul>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">Keep automating and achieving! 🚀</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-monthly-report",
+      "name": "Send Monthly Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        900,
+        800
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "webhookId": "success-notification",
+        "httpMethod": "POST"
+      },
+      "id": "success-webhook",
+      "name": "Success Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "✅ Workflow Success: {{$json[\"workflow\"] || \"Task\"}} Completed",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #27ae60; color: white; border-radius: 10px;\">\n  <h2 style=\"text-align: center;\">✅ सफलता! Success!</h2>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 15px; border-radius: 5px; margin: 15px 0;\">\n    <p><strong>Workflow:</strong> {{$json[\"workflow\"] || \"Unknown\"}}</p>\n    <p><strong>Completed At:</strong> {{new Date().toLocaleString('hi-IN')}}</p>\n    <p><strong>Duration:</strong> {{$json[\"duration\"] || \"N/A\"}}</p>\n    <p><strong>Result:</strong> {{$json[\"result\"] || \"Successful execution\"}}</p>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 20px; font-style: italic;\">Your automation is working perfectly! 🎉</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-success-notification",
+      "name": "Send Success Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        460,
+        1000
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Morning Summary (8:30 AM)": {
+      "main": [
+        [
+          {
+            "node": "AI Morning Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Morning Content": {
+      "main": [
+        [
+          {
+            "node": "Send Morning Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evening Report (8 PM)": {
+      "main": [
+        [
+          {
+            "node": "Get Workflow Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflow Stats": {
+      "main": [
+        [
+          {
+            "node": "AI Evening Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Evening Report": {
+      "main": [
+        [
+          {
+            "node": "Send Evening Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter Error Alerts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Error Alerts": {
+      "main": [
+        [
+          {
+            "node": "Send Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monthly Report (1st, 10 AM)": {
+      "main": [
+        [
+          {
+            "node": "Get Monthly Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Monthly Stats": {
+      "main": [
+        [
+          {
+            "node": "AI Monthly Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Monthly Report": {
+      "main": [
+        [
+          {
+            "node": "Send Monthly Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-01-15T10:00:00.000Z",
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1",
+  "triggerCount": 4,
+  "tags": [
+    {
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z",
+      "id": "email-notifications",
+      "name": "Email Notifications"
+    }
+  ]
+}

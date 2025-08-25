@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-automation
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Basic Configuration
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+      
+      # Domain & Security
+      - N8N_HOST=${DOMAIN}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
+      - N8N_TRUST_PROXY=${N8N_TRUST_PROXY}
+      
+      # Performance Settings
+      - N8N_HIGH_PERFORMANCE=${N8N_HIGH_PERFORMANCE}
+      - N8N_CACHE_ENABLED=${N8N_CACHE_ENABLED}
+      - N8N_PARALLEL_EXECUTION=${N8N_PARALLEL_EXECUTION}
+      - N8N_EXECUTION_TIMEOUT=${N8N_EXECUTION_TIMEOUT}
+      - N8N_MAX_EXECUTION_TIMEOUT=${N8N_MAX_EXECUTION_TIMEOUT}
+      
+      # Database
+      - DB_TYPE=${DB_TYPE}
+      - DB_SQLITE_DATABASE=${DB_SQLITE_DATABASE}
+      
+      # Logging
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL}
+      - N8N_LOG_FILE_ENABLED=${N8N_LOG_FILE_ENABLED}
+      - N8N_LOG_FILE_LOCATION=${N8N_LOG_FILE_LOCATION}
+      
+      # Metrics
+      - N8N_METRICS=${N8N_METRICS}
+      - N8N_METRICS_PREFIX=${N8N_METRICS_PREFIX}
+      
+      # Features
+      - N8N_TEMPLATES_ENABLED=${N8N_TEMPLATES_ENABLED}
+      - N8N_ONBOARDING_FLOW_DISABLED=${N8N_ONBOARDING_FLOW_DISABLED}
+      - N8N_PERSONALIZATION_ENABLED=${N8N_PERSONALIZATION_ENABLED}
+      
+      # Timezone
+      - TZ=${TZ}
+      
+      # Custom Environment Variables for Integration
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL}
+      
+    volumes:
+      # Main n8n data directory
+      - n8n_data:/home/node/.n8n
+      
+      # Workflow templates
+      - ./workflows:/home/node/.n8n/workflows
+      
+      # Custom nodes and scripts
+      - ./scripts:/home/node/.n8n/scripts
+      
+      # AI models for local processing
+      - ./ai-models:/home/node/.n8n/ai-models
+      
+      # Configuration files
+      - ./configs:/home/node/.n8n/configs
+      
+      # Logs directory
+      - ./logs:/home/node/.n8n/logs
+      
+      # Backups directory
+      - ./backups:/home/node/.n8n/backups
+      
+    networks:
+      - n8n-network
+    
+    # Resource limits for optimal performance
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Local AI service with Ollama
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-ai
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./ai-models:/models
+    networks:
+      - n8n-network
+    # GPU support (uncomment if you have GPU)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Optional: Redis for caching and high performance
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-n8n_redis_password}
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n-network
+    command: redis-server --requirepass ${REDIS_PASSWORD:-n8n_redis_password}
+
+  # Optional: PostgreSQL for production database
+  postgres:
+    image: postgres:15-alpine
+    container_name: n8n-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
+      - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n_user}
+      - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:-secure_db_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n-network
+    ports:
+      - "5432:5432"
+
+volumes:
+  n8n_data:
+    driver: local
+  ollama_data:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  n8n-network:
+    driver: bridge

@@ -1,0 +1,529 @@
+{
+  "name": "VPN Switching & Geo-Access Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "webhookId": "vpn-switch-trigger",
+        "httpMethod": "POST"
+      },
+      "id": "vpn-webhook",
+      "name": "VPN Switch Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"country\"]}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "validate-country",
+      "name": "Validate Country",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Available VPN countries with their benefits\nconst vpnCountries = {\n  'USA': {\n    benefits: ['Netflix US', 'Amazon Prime US', 'Hulu', 'Tech deals', 'Academic resources'],\n    server: 'us-east-1.nordvpn.com',\n    flag: '🇺🇸'\n  },\n  'UK': {\n    benefits: ['BBC iPlayer', 'UK Netflix', 'BritBox', 'UK deals', 'British journals'],\n    server: 'uk-london.nordvpn.com',\n    flag: '🇬🇧'\n  },\n  'Canada': {\n    benefits: ['Canadian Netflix', 'CBC', 'Government resources', 'Educational content'],\n    server: 'ca-toronto.nordvpn.com',\n    flag: '🇨🇦'\n  },\n  'Germany': {\n    benefits: ['German Netflix', 'EU content', 'Research papers', 'Tech resources'],\n    server: 'de-berlin.nordvpn.com',\n    flag: '🇩🇪'\n  },\n  'Japan': {\n    benefits: ['Japanese content', 'Anime platforms', 'Tech innovations', 'Cultural resources'],\n    server: 'jp-tokyo.nordvpn.com',\n    flag: '🇯🇵'\n  },\n  'Singapore': {\n    benefits: ['Asian content', 'Banking', 'Regional offers', 'Business resources'],\n    server: 'sg-singapore.nordvpn.com',\n    flag: '🇸🇬'\n  },\n  'Australia': {\n    benefits: ['Australian Netflix', 'Educational resources', 'Government services'],\n    server: 'au-sydney.nordvpn.com',\n    flag: '🇦🇺'\n  },\n  'India': {\n    benefits: ['Indian content', 'Local offers', 'Educational platforms', 'Government services'],\n    server: 'in-mumbai.nordvpn.com',\n    flag: '🇮🇳'\n  }\n};\n\nconst requestedCountry = $input.first().json.country.toUpperCase();\nconst targetCountry = vpnCountries[requestedCountry];\n\nif (!targetCountry) {\n  return [{\n    json: {\n      error: `Country ${requestedCountry} not supported`,\n      availableCountries: Object.keys(vpnCountries),\n      success: false\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    country: requestedCountry,\n    server: targetCountry.server,\n    benefits: targetCountry.benefits,\n    flag: targetCountry.flag,\n    success: true\n  }\n}];"
+      },
+      "id": "select-vpn-server",
+      "name": "Select VPN Server",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "nordvpn connect {{$json[\"server\"]}}",
+        "options": {}
+      },
+      "id": "connect-vpn",
+      "name": "Connect VPN",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "url": "https://ipapi.co/json/",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "verify-ip-location",
+      "name": "Verify IP Location",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"country_code\"]}}",
+              "operation": "equal",\n              "value2": "={{$node[\"Select VPN Server\"].json[\"country\"].slice(0,2)}}"
+            }
+          ]
+        }
+      },
+      "id": "check-connection-success",
+      "name": "Check Connection Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gemma:3b"
+            },
+            {
+              "name": "prompt",
+              "value": "VPN successfully connected to {{$node[\"Select VPN Server\"].json[\"country\"]}} {{$node[\"Select VPN Server\"].json[\"flag\"]}}. Current IP: {{$json[\"ip\"]}}. Location: {{$json[\"city\"]}}, {{$json[\"country_name\"]}}. Generate a summary of available benefits and opportunities in this region for a biotechnology professional."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-regional-benefits",
+      "name": "AI Regional Benefits",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🌍 VPN Connected: {{$node[\"Select VPN Server\"].json[\"country\"]}} {{$node[\"Select VPN Server\"].json[\"flag\"]}}",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #16a085 0%, #f39c12 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">🌍 VPN Successfully Connected!</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>🔗 Connection Details</h2>\n    <p><strong>Country:</strong> {{$node[\"Select VPN Server\"].json[\"country\"]}} {{$node[\"Select VPN Server\"].json[\"flag\"]}}</p>\n    <p><strong>Server:</strong> {{$node[\"Select VPN Server\"].json[\"server\"]}}</p>\n    <p><strong>New IP:</strong> {{$json[\"ip\"]}}</p>\n    <p><strong>Location:</strong> {{$json[\"city\"]}}, {{$json[\"country_name\"]}}</p>\n    <p><strong>ISP:</strong> {{$json[\"org\"]}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🎯 Available Benefits</h3>\n    <ul>\n      {{#each $node[\"Select VPN Server\"].json[\"benefits\"]}}\n      <li>✅ {{this}}</li>\n      {{/each}}\n    </ul>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    {{JSON.parse($node[\"AI Regional Benefits\"].json[\"response\"]).response}}\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔧 VPN Controls</h3>\n    <p>To disconnect: <code>nordvpn disconnect</code></p>\n    <p>To switch countries, send a POST request to the VPN webhook with different country.</p>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">Enjoy secure browsing! 🔒</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-vpn-success-email",
+      "name": "Send VPN Success Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "❌ VPN Connection Failed",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #e74c3c; color: white;\">\n  <h1 style=\"text-align: center;\">❌ VPN Connection Failed</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 15px; border-radius: 5px; margin: 15px 0;\">\n    <p><strong>Attempted Country:</strong> {{$node[\"Select VPN Server\"].json[\"country\"]}}</p>\n    <p><strong>Server:</strong> {{$node[\"Select VPN Server\"].json[\"server\"]}}</p>\n    <p><strong>Current IP:</strong> {{$json[\"ip\"]}}</p>\n    <p><strong>Current Location:</strong> {{$json[\"city\"]}}, {{$json[\"country_name\"]}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 15px; border-radius: 5px; margin: 15px 0;\">\n    <h3>🔧 Troubleshooting Steps</h3>\n    <ol>\n      <li>Check VPN service status</li>\n      <li>Try a different server</li>\n      <li>Restart VPN client</li>\n      <li>Check internet connection</li>\n    </ol>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 20px;\">Please try again or contact support.</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-vpn-failure-email",
+      "name": "Send VPN Failure Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 12,
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "id": "daily-deals-check",
+      "name": "Daily Deals Check (12 PM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rotate through countries to check for regional deals\nconst countries = ['USA', 'UK', 'Germany', 'Canada', 'Japan'];\nconst today = new Date();\nconst dayIndex = today.getDate() % countries.length;\nconst selectedCountry = countries[dayIndex];\n\nreturn [{\n  json: {\n    country: selectedCountry,\n    reason: 'Daily deals check',\n    rotationDay: dayIndex + 1,\n    totalCountries: countries.length\n  }\n}];"
+      },
+      "id": "select-daily-country",
+      "name": "Select Daily Country",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.exchangerate-api.com/v4/latest/USD",
+        "options": {}
+      },
+      "id": "get-exchange-rates",
+      "name": "Get Exchange Rates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "shakti:latest"
+            },
+            {
+              "name": "prompt",
+              "value": "Generate a report about current deals, offers, and opportunities available in {{$node[\"Select Daily Country\"].json[\"country\"]}} for a biotechnology professional. Include online courses, software deals, research resources, and any special regional offers. Current exchange rates: USD to local currency rates available."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-deals-research",
+      "name": "AI Deals Research",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "💰 Daily Deals Alert: {{$node[\"Select Daily Country\"].json[\"country\"]}} Opportunities",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">💰 आज के ऑफर्स - Today's Deals</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>🌍 Target Region: {{$node[\"Select Daily Country\"].json[\"country\"]}}</h2>\n    <p><strong>Rotation Day:</strong> {{$node[\"Select Daily Country\"].json[\"rotationDay\"]}} of {{$node[\"Select Daily Country\"].json[\"totalCountries\"]}}</p>\n    <p><strong>USD Exchange Rate:</strong> 1 USD = {{$node[\"Get Exchange Rates\"].json[\"rates\"][\"INR\"]}} INR</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    {{JSON.parse($json[\"response\"]).response}}\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔧 To Access These Deals</h3>\n    <ol>\n      <li>Send POST to VPN webhook: <code>{\"country\": \"{{$node[\"Select Daily Country\"].json[\"country\"]}}\"}</code></li>\n      <li>Wait for VPN connection confirmation</li>\n      <li>Browse region-specific websites</li>\n      <li>Take advantage of local pricing</li>\n    </ol>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">Happy deal hunting! 🛍️</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-deals-email",
+      "name": "Send Deals Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 23,
+              "minute": 30
+            }
+          ]
+        }
+      },
+      "id": "auto-disconnect-trigger",
+      "name": "Auto Disconnect (11:30 PM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "command": "nordvpn disconnect",
+        "options": {}
+      },
+      "id": "disconnect-vpn",
+      "name": "Disconnect VPN",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        460,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🌙 VPN Auto-Disconnected - Good Night",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #2c3e50; color: white; border-radius: 10px;\">\n  <h2 style=\"text-align: center;\">🌙 शुभ रात्रि! Good Night!</h2>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 15px; border-radius: 5px; margin: 15px 0;\">\n    <p>VPN has been automatically disconnected for the night.</p>\n    <p><strong>Disconnected At:</strong> {{new Date().toLocaleString('hi-IN')}}</p>\n    <p><strong>Reason:</strong> Scheduled auto-disconnect</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 15px; border-radius: 5px; margin: 15px 0;\">\n    <h3>🔒 Security Notes</h3>\n    <ul>\n      <li>Your IP is now back to original location</li>\n      <li>All VPN connections terminated</li>\n      <li>Regular internet connection restored</li>\n    </ul>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 20px; font-style: italic;\">Sleep well! The automation continues tomorrow. 💤</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-disconnect-notification",
+      "name": "Send Disconnect Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        680,
+        800
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "VPN Switch Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate Country",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Country": {
+      "main": [
+        [
+          {
+            "node": "Select VPN Server",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select VPN Server": {
+      "main": [
+        [
+          {
+            "node": "Connect VPN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Connect VPN": {
+      "main": [
+        [
+          {
+            "node": "Verify IP Location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify IP Location": {
+      "main": [
+        [
+          {
+            "node": "Check Connection Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Connection Success": {
+      "main": [
+        [
+          {
+            "node": "AI Regional Benefits",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send VPN Failure Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Regional Benefits": {
+      "main": [
+        [
+          {
+            "node": "Send VPN Success Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Deals Check (12 PM)": {
+      "main": [
+        [
+          {
+            "node": "Select Daily Country",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Daily Country": {
+      "main": [
+        [
+          {
+            "node": "Get Exchange Rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Exchange Rates": {
+      "main": [
+        [
+          {
+            "node": "AI Deals Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Deals Research": {
+      "main": [
+        [
+          {
+            "node": "Send Deals Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto Disconnect (11:30 PM)": {
+      "main": [
+        [
+          {
+            "node": "Disconnect VPN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Disconnect VPN": {
+      "main": [
+        [
+          {
+            "node": "Send Disconnect Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-01-15T10:00:00.000Z",
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1",
+  "triggerCount": 3,
+  "tags": [
+    {
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z",
+      "id": "vpn-automation",
+      "name": "VPN Automation"
+    }
+  ]
+}
