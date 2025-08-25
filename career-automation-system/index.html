@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Career Automation System - बायोटेक्नोलॉजी प्रोफेशनल</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CareerAI">
+    
+    <!-- Fallback fonts for offline mode -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" onload="this.onload=null;" onerror="this.remove();">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" onload="this.onload=null;" onerror="this.remove();">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -364,6 +371,31 @@
                             <div class="progress-fill" style="width: 90%"></div>
                         </div>
                         <span>9/10</span>
+                    </div>
+                </div>
+                
+                <!-- Data Management Section -->
+                <div class="data-management-section">
+                    <h3><i class="fas fa-database"></i> डेटा मैनेजमेंट</h3>
+                    <p>अपना डेटा सुरक्षित रखें और बैकअप लें</p>
+                    
+                    <div class="data-management-buttons">
+                        <button class="btn-secondary" onclick="exportData()">
+                            <i class="fas fa-download"></i> डेटा एक्सपोर्ट करें
+                        </button>
+                        <button class="btn-secondary" onclick="importData()">
+                            <i class="fas fa-upload"></i> डेटा इम्पोर्ट करें
+                        </button>
+                        <button class="btn-secondary" onclick="restoreFromBackup()">
+                            <i class="fas fa-history"></i> बैकअप से रिस्टोर करें
+                        </button>
+                        <button class="btn-secondary" onclick="clearOldBackups()">
+                            <i class="fas fa-trash-alt"></i> पुराने बैकअप साफ करें
+                        </button>
+                    </div>
+                    
+                    <div class="storage-info">
+                        <small id="storageInfo">स्टोरेज जानकारी लोड हो रही है...</small>
                     </div>
                 </div>
             </section>
