@@ -1,0 +1,228 @@
+{
+  "name": "Analytics Dashboard Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 0"
+            }
+          ]
+        }
+      },
+      "name": "Every Sunday 9 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "YOUR_JOB_TRACKER_SHEET_ID",
+        "sheetName": "Job Applications",
+        "range": "A:H"
+      },
+      "name": "Get Job Applications Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "YOUR_CONTENT_CALENDAR_SHEET_ID",
+        "sheetName": "Content Calendar",
+        "range": "A:G"
+      },
+      "name": "Get Content Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        460,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "YOUR_NETWORKING_SHEET_ID",
+        "sheetName": "Networking Log",
+        "range": "A:F"
+      },
+      "name": "Get Networking Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        460,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Calculate weekly analytics\nconst jobData = $input.first().json;\nconst contentData = $input.all()[1].json;\nconst networkingData = $input.all()[2].json;\n\n// Get current week date range\nconst now = new Date();\nconst weekStart = new Date(now.setDate(now.getDate() - now.getDay()));\nconst weekEnd = new Date(now.setDate(now.getDate() - now.getDay() + 6));\n\n// Filter data for current week\nconst thisWeekJobs = jobData.filter(job => {\n  const jobDate = new Date(job['Date Applied']);\n  return jobDate >= weekStart && jobDate <= weekEnd;\n});\n\nconst thisWeekContent = contentData.filter(content => {\n  const contentDate = new Date(content['Date']);\n  return contentDate >= weekStart && contentDate <= weekEnd;\n});\n\nconst thisWeekNetworking = networkingData.filter(network => {\n  const networkDate = new Date(network['Date']);\n  return networkDate >= weekStart && networkDate <= weekEnd;\n});\n\n// Calculate metrics\nconst analytics = {\n  week_ending: weekEnd.toISOString().split('T')[0],\n  jobs_applied: thisWeekJobs.length,\n  job_responses: thisWeekJobs.filter(job => job.Status === 'Response Received').length,\n  content_published: thisWeekContent.length,\n  total_engagement: thisWeekContent.reduce((sum, content) => sum + (parseInt(content.Engagement) || 0), 0),\n  new_connections: thisWeekNetworking.filter(network => network.Type === 'Connection').length,\n  messages_sent: thisWeekNetworking.filter(network => network.Type === 'Message').length,\n  response_rate: thisWeekJobs.length > 0 ? (thisWeekJobs.filter(job => job.Status === 'Response Received').length / thisWeekJobs.length * 100).toFixed(1) + '%' : '0%',\n  avg_engagement: thisWeekContent.length > 0 ? (thisWeekContent.reduce((sum, content) => sum + (parseInt(content.Engagement) || 0), 0) / thisWeekContent.length).toFixed(1) : '0'\n};\n\nreturn analytics;"
+      },
+      "name": "Calculate Weekly Analytics",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": "YOUR_ANALYTICS_SHEET_ID",
+        "sheetName": "Weekly Analytics",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "Week Ending",
+              "value": "={{$json.week_ending}}"
+            },
+            {
+              "column": "Jobs Applied",
+              "value": "={{$json.jobs_applied}}"
+            },
+            {
+              "column": "Job Responses",
+              "value": "={{$json.job_responses}}"
+            },
+            {
+              "column": "Response Rate",
+              "value": "={{$json.response_rate}}"
+            },
+            {
+              "column": "Content Published",
+              "value": "={{$json.content_published}}"
+            },
+            {
+              "column": "Total Engagement",
+              "value": "={{$json.total_engagement}}"
+            },
+            {
+              "column": "Avg Engagement",
+              "value": "={{$json.avg_engagement}}"
+            },
+            {
+              "column": "New Connections",
+              "value": "={{$json.new_connections}}"
+            },
+            {
+              "column": "Messages Sent",
+              "value": "={{$json.messages_sent}}"
+            }
+          ]
+        }
+      },
+      "name": "Save Weekly Analytics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "Weekly Career Analytics Report",
+        "html": "<h2>🚀 Weekly Career Progress Report</h2>\n<p><strong>Week Ending:</strong> {{$json.week_ending}}</p>\n\n<h3>📊 Job Search Metrics</h3>\n<ul>\n  <li><strong>Applications Submitted:</strong> {{$json.jobs_applied}}</li>\n  <li><strong>Responses Received:</strong> {{$json.job_responses}}</li>\n  <li><strong>Response Rate:</strong> {{$json.response_rate}}</li>\n</ul>\n\n<h3>📱 Content & Engagement</h3>\n<ul>\n  <li><strong>Content Published:</strong> {{$json.content_published}}</li>\n  <li><strong>Total Engagement:</strong> {{$json.total_engagement}}</li>\n  <li><strong>Average Engagement:</strong> {{$json.avg_engagement}}</li>\n</ul>\n\n<h3>🤝 Networking Activity</h3>\n<ul>\n  <li><strong>New Connections:</strong> {{$json.new_connections}}</li>\n  <li><strong>Messages Sent:</strong> {{$json.messages_sent}}</li>\n</ul>\n\n<hr>\n<p><em>Keep up the great work! Consistency is key to career success.</em></p>"
+      },
+      "name": "Send Weekly Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every Sunday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Get Job Applications Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Content Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Networking Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Job Applications Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Weekly Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Content Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Weekly Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Networking Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Weekly Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Weekly Analytics": {
+      "main": [
+        [
+          {
+            "node": "Save Weekly Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Weekly Analytics": {
+      "main": [
+        [
+          {
+            "node": "Send Weekly Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

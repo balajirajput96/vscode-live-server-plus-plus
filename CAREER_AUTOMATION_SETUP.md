@@ -10,6 +10,7 @@ This guide will help you set up a complete career automation system using n8n, d
 2. **Job Application Tracking**: Tracks applications and sends follow-up reminders
 3. **Analytics Dashboard**: Monitors your career progress and metrics
 4. **Networking Automation**: Helps manage LinkedIn connections and outreach
+5. **LinkedIn Networking**: Automated follow-up reminders and strategy planning
 
 ### Key Benefits
 - ⏰ **Time Saving**: Automates repetitive tasks
@@ -47,7 +48,8 @@ career-automation-system/
 ├── workflows/                       # n8n workflow templates
 │   ├── weekly-content-generation.json
 │   ├── job-application-tracking.json
-│   └── analytics-dashboard.json
+│   ├── analytics-dashboard.json
+│   └── linkedin-networking-automation.json
 ├── career-automation-system/        # Documentation and action plans
 │   └── ACTION_PLAN.md
 └── portfolio-automation-system/     # Templates and prompts
@@ -204,6 +206,19 @@ curl -X POST http://localhost:5678/webhook/job-application \\
     "url": "https://company.com/careers/job123"
   }'
 ```
+
+---
+
+## 📱 Mobile Integration
+
+For on-the-go career management, see the comprehensive [Mobile Integration Guide](MOBILE_INTEGRATION.md).
+
+### Quick Mobile Features:
+- **Browser Bookmarklets**: One-click job application tracking
+- **Mobile Web App**: Responsive interface for all devices
+- **iOS Shortcuts**: Native integration with iOS
+- **Offline Sync**: Work without internet, sync when connected
+- **PWA Support**: Install as mobile app
 
 ---
 
