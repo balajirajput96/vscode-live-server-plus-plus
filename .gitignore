@@ -2,3 +2,19 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Docker volumes
+docker-data/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
