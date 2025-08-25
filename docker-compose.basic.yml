@@ -1,14 +1,15 @@
-# Basic local/dev setup (no reverse proxy). Exposes :5678 on host.
+# Enhanced setup for Balaji's Comprehensive Automation Workflow - Parul University
+# Exposes n8n on :5678 with Ollama for Local AI support
 services:
   n8n:
     image: "n8nio/n8n:${N8N_IMAGE_TAG}"
-    container_name: "n8n"
+    container_name: "n8n-balaji-parul"
     restart: unless-stopped
-    networks: ["n8nnet"]
+    networks: ["automation-net"]
     ports:
       - "${N8N_PORT:-5678}:5678"
     environment:
-      # General
+      # General configuration
       - NODE_ENV=production
       - TZ=${TZ}
       - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
@@ -18,35 +19,97 @@ services:
       - N8N_RUNNERS_ENABLED=true
       - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
 
-      # Auth (enable for basic protection)
+      # Enhanced auth for Parul University
       - N8N_BASIC_AUTH=${N8N_BASIC_AUTH}
       - N8N_BASIC_AUTH_USERNAME=${N8N_BASIC_AUTH_USERNAME}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
 
-      # Cookies (keep false for HTTP/local; true when HTTPS behind proxy)
+      # Cookies configuration
       - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
 
-      # URL construction (optional for local; set properly in reverse proxy mode)
+      # URL construction for Balaji's setup
       - N8N_PROTOCOL=${N8N_PROTOCOL}
       - N8N_HOST=${N8N_HOST}
       - N8N_PORT=${N8N_PORT}
       - WEBHOOK_URL=${WEBHOOK_URL}
       - N8N_TRUST_PROXY=${N8N_TRUST_PROXY}
 
-      # Encryption key for credentials
+      # Enhanced encryption for secure credentials
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
 
-      # Optional payload size, uncomment if needed
-      # - N8N_PAYLOAD_SIZE_MAX=32 # in MB
+      # Increased payload size for comprehensive automation
+      - N8N_PAYLOAD_SIZE_MAX=${N8N_PAYLOAD_SIZE_MAX:-64}
+
+      # Parul University specific settings
+      - PARUL_UNIVERSITY_ACCOUNT=${PARUL_UNIVERSITY_ACCOUNT}
+      - USER_EMAIL=${USER_EMAIL}
+      - WORKFLOW_USER=${WORKFLOW_USER}
+
+      # Local AI configuration
+      - LOCAL_AI_ENDPOINT=${LOCAL_AI_ENDPOINT}
+      - OLLAMA_HOST=ollama:11434
 
     volumes:
       - n8n_data:/home/node/.n8n
-      # Optional: If you need docker-in-docker access for certain nodes (be cautious)
-      # - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./n8n-workflows:/workflows:ro
+      - ./logs:/logs
+      # Docker socket for Execute Command nodes
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+    depends_on:
+      - ollama
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Ollama service for Local AI (Gemma 3 & SHAKTI)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: "ollama-ai-balaji"
+    restart: unless-stopped
+    networks: ["automation-net"]
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./ollama-configs:/configs:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for caching and high-speed offline functionality
+  redis:
+    image: redis:7-alpine
+    container_name: "redis-cache-balaji"
+    restart: unless-stopped
+    networks: ["automation-net"]
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=ParulUniversity2024Cache
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ParulUniversity2024Cache
 
 volumes:
   n8n_data:
+    driver: local
+  ollama_data:
+    driver: local
+  redis_data:
+    driver: local
 
 networks:
-  n8nnet:
+  automation-net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

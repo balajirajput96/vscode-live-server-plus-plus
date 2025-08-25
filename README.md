@@ -7,6 +7,47 @@
 
 यह एक comprehensive AI-powered career automation system है जो biotech और bioinformatics professionals के लिए specially designed किया गया है। यह system आपको job search से लेकर interview preparation तक, हर step में AI की power का use करके successful career बनाने में help करता है।
 
+## ⚡ NEW: Comprehensive n8n Workflow System
+
+### 🎯 Complete Automation for Balaji - Parul University
+हमने Balaji के लिए एक comprehensive n8n workflow system बनाया है जो सभी automation needs को पूरा करता है:
+
+#### 🔧 Key Features:
+- ✅ **GitHub Integration**: Automatic code sync and repository management
+- ✅ **Google Docs Integration**: Document collaboration and updates  
+- ✅ **Email Notifications**: Daily reports to balaji.web.design1@gmail.com
+- ✅ **VPN Switching**: Multi-country access (US, UK, Germany, Japan, India)
+- ✅ **Local AI Models**: Gemma 3 & SHAKTI for offline processing
+- ✅ **Test Commands**: Automated testing and validation
+- ✅ **Execution Validation**: Complete workflow monitoring
+- ✅ **📱 Offline Functionality**: High-speed operation without internet
+- ✅ **🔒 Pro Version Performance**: Enterprise-grade functionality
+
+#### 🚀 Quick Start:
+```bash
+# Navigate to n8n workflows
+cd n8n-workflows
+
+# Run automated setup
+./setup-comprehensive-workflow.sh
+
+# Access n8n interface
+open http://localhost:5678
+# Login: balaji / ParulUniversity@2024!
+
+# Import workflow: comprehensive-automation-workflow.json
+```
+
+#### 📧 Email Reports:
+Daily automation summaries sent to balaji.web.design1@gmail.com with:
+- Execution status and performance metrics
+- VPN country access reports  
+- AI model processing results
+- Security and compliance confirmations
+- Next steps and recommendations
+
+**📁 Complete Documentation**: See `n8n-workflows/` folder for detailed setup guides.
+
 ## 🎯 Key Features
 
 ### 1. 🔬 AI-Powered Portfolio Builder

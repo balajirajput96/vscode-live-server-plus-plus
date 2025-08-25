@@ -1,9 +1,269 @@
-# Optional: extend n8n image with curl + python3 for Execute Command node
-# Build: docker build -t n8n-extended --build-arg N8N_VERSION=1.82.1 -f Dockerfile.n8n-extended .
+# Extended n8n image for Balaji's Comprehensive Automation Workflow
+# Includes additional tools for VPN, AI, and system commands
+# Build: docker build -t n8n-extended-balaji --build-arg N8N_VERSION=1.82.1 -f Dockerfile.n8n-extended .
+
 ARG N8N_VERSION=1.82.1
 FROM n8nio/n8n:${N8N_VERSION}
 
 USER root
-# n8n base is Alpine; install needed tools
-RUN apk add --no-cache curl bash python3 py3-pip
+
+# Install additional packages for comprehensive automation
+RUN apk add --no-cache \
+    curl \
+    wget \
+    git \
+    openssh-client \
+    python3 \
+    py3-pip \
+    nodejs \
+    npm \
+    bash \
+    jq \
+    zip \
+    unzip \
+    rsync \
+    htop \
+    nano \
+    vim \
+    openvpn \
+    wireguard-tools \
+    && rm -rf /var/cache/apk/*
+
+# Install Python packages for data processing
+RUN pip3 install --no-cache-dir \
+    requests \
+    pandas \
+    numpy \
+    beautifulsoup4 \
+    selenium \
+    openai \
+    google-api-python-client \
+    google-auth-httplib2 \
+    google-auth-oauthlib
+
+# Install additional Node.js packages
+RUN npm install -g \
+    @google-cloud/translate \
+    googleapis \
+    nodemailer \
+    axios \
+    cheerio \
+    puppeteer \
+    playwright
+
+# Create directories for configurations
+RUN mkdir -p /etc/n8n/configs \
+    /etc/n8n/scripts \
+    /etc/n8n/vpn \
+    /var/log/n8n
+
+# Create script for VPN management
+RUN cat > /etc/n8n/scripts/vpn-manager.sh << 'EOF'
+#!/bin/bash
+# VPN Management Script for Multi-Country Access
+
+VPN_CONFIG_DIR="/etc/n8n/vpn"
+LOG_FILE="/var/log/n8n/vpn.log"
+
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
+
+connect_vpn() {
+    local country="$1"
+    log_message "Connecting to VPN server in $country"
+    
+    case "$country" in
+        "US")
+            # ExpressVPN US server logic
+            expressvpn connect usa
+            ;;
+        "UK")
+            # ExpressVPN UK server logic
+            expressvpn connect uk
+            ;;
+        "DE")
+            # ExpressVPN Germany server logic
+            expressvpn connect germany
+            ;;
+        "JP")
+            # ExpressVPN Japan server logic
+            expressvpn connect japan
+            ;;
+        *)
+            log_message "Unknown country: $country"
+            return 1
+            ;;
+    esac
+    
+    # Verify connection
+    if verify_connection "$country"; then
+        log_message "Successfully connected to $country VPN"
+        return 0
+    else
+        log_message "Failed to connect to $country VPN"
+        return 1
+    fi
+}
+
+verify_connection() {
+    local expected_country="$1"
+    local current_ip=$(curl -s https://ipapi.co/ip/)
+    local current_country=$(curl -s https://ipapi.co/country_name/)
+    
+    log_message "Current IP: $current_ip, Country: $current_country"
+    echo "$current_country"
+}
+
+disconnect_vpn() {
+    log_message "Disconnecting VPN"
+    expressvpn disconnect
+}
+
+case "$1" in
+    "connect")
+        connect_vpn "$2"
+        ;;
+    "disconnect")
+        disconnect_vpn
+        ;;
+    "status")
+        expressvpn status
+        ;;
+    *)
+        echo "Usage: $0 {connect|disconnect|status} [country]"
+        echo "Countries: US, UK, DE, JP"
+        exit 1
+        ;;
+esac
+EOF
+
+# Create AI model management script
+RUN cat > /etc/n8n/scripts/ai-manager.sh << 'EOF'
+#!/bin/bash
+# AI Model Management Script for Local Processing
+
+OLLAMA_HOST="http://ollama:11434"
+LOG_FILE="/var/log/n8n/ai.log"
+
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
+
+query_model() {
+    local model="$1"
+    local prompt="$2"
+    local response
+    
+    log_message "Querying $model with prompt: ${prompt:0:50}..."
+    
+    response=$(curl -s -X POST "$OLLAMA_HOST/api/generate" \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"model\": \"$model\",
+            \"prompt\": \"$prompt\",
+            \"stream\": false
+        }")
+    
+    if [ $? -eq 0 ]; then
+        log_message "Successfully received response from $model"
+        echo "$response" | jq -r '.response'
+    else
+        log_message "Failed to query $model"
+        return 1
+    fi
+}
+
+check_model_status() {
+    local model="$1"
+    
+    if curl -s "$OLLAMA_HOST/api/tags" | jq -r '.models[].name' | grep -q "$model"; then
+        log_message "Model $model is available"
+        return 0
+    else
+        log_message "Model $model is not available"
+        return 1
+    fi
+}
+
+case "$1" in
+    "query")
+        query_model "$2" "$3"
+        ;;
+    "status")
+        check_model_status "$2"
+        ;;
+    "list")
+        curl -s "$OLLAMA_HOST/api/tags" | jq -r '.models[].name'
+        ;;
+    *)
+        echo "Usage: $0 {query|status|list} [model] [prompt]"
+        exit 1
+        ;;
+esac
+EOF
+
+# Create system monitoring script
+RUN cat > /etc/n8n/scripts/system-monitor.sh << 'EOF'
+#!/bin/bash
+# System Monitoring Script for Performance Tracking
+
+LOG_FILE="/var/log/n8n/system.log"
+
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
+
+get_system_stats() {
+    local cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | awk -F'%' '{print $1}')
+    local memory_usage=$(free | grep Mem | awk '{printf("%.2f", $3/$2 * 100.0)}')
+    local disk_usage=$(df -h / | awk 'NR==2{printf "%s", $5}')
+    
+    echo "{
+        \"timestamp\": \"$(date -Iseconds)\",
+        \"cpu_usage\": \"$cpu_usage\",
+        \"memory_usage\": \"$memory_usage\",
+        \"disk_usage\": \"$disk_usage\",
+        \"load_average\": \"$(uptime | awk -F'load average:' '{print $2}')\",
+        \"processes\": $(ps aux | wc -l)
+    }"
+}
+
+case "$1" in
+    "stats")
+        get_system_stats
+        ;;
+    "log")
+        log_message "System stats: $(get_system_stats)"
+        ;;
+    *)
+        echo "Usage: $0 {stats|log}"
+        exit 1
+        ;;
+esac
+EOF
+
+# Make all scripts executable
+RUN chmod +x /etc/n8n/scripts/*.sh
+
+# Create log rotation configuration
+RUN cat > /etc/logrotate.d/n8n << 'EOF'
+/var/log/n8n/*.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    delaycompress
+    notifempty
+    create 0644 node node
+}
+EOF
+
+# Switch back to node user
 USER node
+
+# Set environment variables for enhanced functionality
+ENV N8N_CUSTOM_EXTENSIONS=/etc/n8n/scripts
+ENV VPN_MANAGER_SCRIPT=/etc/n8n/scripts/vpn-manager.sh
+ENV AI_MANAGER_SCRIPT=/etc/n8n/scripts/ai-manager.sh
+ENV SYSTEM_MONITOR_SCRIPT=/etc/n8n/scripts/system-monitor.sh
