@@ -1,8 +1,8 @@
 <p align="center">
   <img width="128" height="128" src="https://raw.githubusercontent.com/ritwickdey/vscode-live-server-plus-plus/master/images/vscode-live-server-plus-plus.png">
 </p>
-<h3 align="center">Vscode Live Server++ (BETA) </h3>
-<p align="center">It's Truly Live<p>
+<h3 align="center">Vscode Live Server++ (BETA) + n8n Automation System</h3>
+<p align="center">It's Truly Live + Complete Workflow Automation<p>
 
 
 [![VSCode Marketplace](https://img.shields.io/vscode-marketplace/v/ritwickdey.vscode-live-server-plus-plus.svg?style=flat-square&label=vscode%20marketplace)](https://marketplace.visualstudio.com/items?itemName=ritwickdey.vscode-live-server-plus-plus) [![Total Installs](https://img.shields.io/vscode-marketplace/d/ritwickdey.vscode-live-server-plus-plus.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=ritwickdey.vscode-live-server-plus-plus) [![Avarage Rating](https://img.shields.io/vscode-marketplace/r/ritwickdey.vscode-live-server-plus-plus.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=ritwickdey.vscode-live-server-plus-plus) [![Travis branch](https://img.shields.io/travis/com/ritwickdey/vscode-live-server-plus-plus/master.svg?style=flat-square&label=travis%20branch)](https://travis-ci.com/ritwickdey/vscode-live-server-plus-plus) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ritwickdey/vscode-live-server-plus-plus/)
@@ -12,7 +12,55 @@
 ![VSCode Live Server++](./images/vscode-live-server-plus-plus_preview1.gif)
 
 ---
-## Features
+
+## 🚀 New: Complete n8n Automation System
+
+This repository now includes **Balaji's Complete n8n Automation System** with:
+
+### ✨ Key Features
+- **🔄 Complete Workflow Automation**: GitHub, Google Docs, Email, VPN, Local AI integration
+- **📧 Dual Account Support**: balaji.web.design1@gmail.com ↔ 22034563001@paruluniversity.ac.in
+- **🤖 Local AI Integration**: Gemma 3n and SHAKTI models for offline processing
+- **🌐 VPN Switching**: Multi-country access for global opportunities
+- **⚡ High-Speed Execution**: Pro-level performance with offline capabilities
+- **🔒 Enterprise Security**: End-to-end encryption and secure credential management
+
+### 📋 Workflow Components
+1. **Test Command Node** - System validation and health checks
+2. **Sample Test Payload Node** - Data validation and test parameters
+3. **VPN Switch Node** - Multi-region access (India, USA, UK, Germany, Singapore, Japan, Australia)
+4. **Local AI Node** - Gemma 3n & SHAKTI models for offline AI processing
+5. **Execution Validation Node** - Comprehensive performance monitoring
+6. **Summary Node** - Detailed execution reporting and analytics
+7. **Email Node** - Professional notifications to both accounts
+8. **Execution Guide Node** - Step-by-step automation guidance
+
+### 🎯 Quick Start for n8n Automation
+
+```bash
+# 1. Clone repository
+git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
+cd vscode-live-server-plus-plus
+
+# 2. Run automated setup
+./setup-n8n.sh
+
+# 3. Verify installation
+./verify-n8n.sh
+
+# 4. Access n8n dashboard
+open http://localhost:5678
+```
+
+### 📚 Documentation
+- **[Complete n8n Setup Guide](N8N_AUTOMATION_README.md)** - Full system overview
+- **[7-Day Quick Start](portfolio-automation-system/QUICK_START_GUIDE.md)** - Step-by-step setup
+- **[n8n Technical Setup](README-n8n-setup.md)** - Docker configuration
+- **[AI Prompts Library](portfolio-automation-system/prompts/)** - GitHub documentation automation
+
+---
+
+## VSCode Live Server++ Features
 
 - **No Need to save HTML, CSS, JS** :smile:
 - **No Browser full reload** (for HTML & CSS)
@@ -49,12 +97,35 @@
   - hot Reload supported
   - No need to save
   - 5 settings are added (Port, Root, indexFile, timeout, browser)
+  - **NEW**: Complete n8n automation system integration
+  - **NEW**: Portfolio automation tools
+  - **NEW**: AI-powered documentation generation
 
 ---
 
 ## Changelog
 
 To check full changelog [click here](CHANGELOG.md).
+
+---
+
+## Repository Structure
+
+```
+├── src/                             # VSCode extension source
+├── career-automation-system/        # Career automation tools
+├── portfolio-automation-system/     # Portfolio automation tools
+│   ├── automation/                  # Automation scripts
+│   ├── templates/                   # Workflow templates
+│   ├── prompts/                     # AI prompts library
+│   └── config/                      # Configuration files
+├── workflows/                       # n8n workflow files
+├── credentials/                     # Credential templates
+├── docker-compose.*.yml             # Docker configurations
+├── setup-n8n.sh                    # Automated setup script
+├── verify-n8n.sh                   # Verification script
+└── README-n8n-setup.md             # n8n setup documentation
+```
 
 ---
 

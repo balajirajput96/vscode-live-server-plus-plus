@@ -1,0 +1,79 @@
+{
+  "n8n_instance": {
+    "version": "1.108.1",
+    "instance_id": "8f75859920be976c80a11c1dd4be8852c698c893b1073cb8716ee93cd8d6a3c9",
+    "license": "Sustainable Use License + n8n Enterprise License"
+  },
+  "user_accounts": {
+    "primary": {
+      "email": "balaji.web.design1@gmail.com",
+      "name": "Balaji",
+      "role": "Primary Account"
+    },
+    "university": {
+      "email": "22034563001@paruluniversity.ac.in",
+      "name": "Balaji - Parul University",
+      "role": "University Account"
+    }
+  },
+  "workflow_settings": {
+    "execution_timeout": 3600,
+    "max_timeout": 7200,
+    "save_on_error": true,
+    "save_on_success": true,
+    "timezone": "Asia/Kolkata",
+    "log_level": "info"
+  },
+  "performance_settings": {
+    "high_speed_mode": true,
+    "offline_capability": true,
+    "pro_features": true,
+    "auto_optimization": true
+  },
+  "security_settings": {
+    "encryption_enabled": true,
+    "secure_cookies": true,
+    "trust_proxy": true,
+    "credential_encryption": "AES-256"
+  },
+  "email_configuration": {
+    "primary_smtp": {
+      "host": "smtp.gmail.com",
+      "port": 587,
+      "secure": true,
+      "from": "balaji.web.design1@gmail.com"
+    },
+    "university_smtp": {
+      "host": "smtp.gmail.com", 
+      "port": 587,
+      "secure": true,
+      "from": "22034563001@paruluniversity.ac.in"
+    }
+  },
+  "ai_models": {
+    "gemma_3n": {
+      "path": "/app/models/gemma-3n",
+      "enabled": true,
+      "offline": true
+    },
+    "shakti": {
+      "path": "/app/models/shakti", 
+      "enabled": true,
+      "offline": true
+    }
+  },
+  "vpn_configuration": {
+    "provider": "expressvpn",
+    "supported_countries": [
+      "India", "USA", "UK", "Germany", "Singapore", "Japan", "Australia"
+    ],
+    "auto_switch": true
+  },
+  "backup_settings": {
+    "schedule": "0 2 * * *",
+    "retention_days": 30,
+    "include_credentials": true,
+    "include_workflows": true,
+    "include_executions": true
+  }
+}
