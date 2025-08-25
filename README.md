@@ -404,10 +404,43 @@ This system is designed for personal career development use. Feel free to:
 
 ---
 
-**🚀 Ready to transform your biotech career with AI? Start with `index.html` and follow the automation guide!**
+## 🐳 Docker Automation Backend
+
+For advanced automation capabilities, this system now includes a powerful n8n-based backend with Docker support:
+
+### Quick Start with Docker
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Configure your settings (VPN, API keys, etc.)
+nano .env
+
+# Start the automation system
+docker compose up -d
+
+# Access n8n automation interface
+open http://localhost:5678
+```
+
+### Features Included
+- **🔒 VPN Integration**: Geo-switching for job applications
+- **🤖 Local AI Server**: Privacy-focused AI with Ollama
+- **📊 Queue Processing**: High-performance workflow execution
+- **🗄️ PostgreSQL**: Robust data storage
+- **⚡ Redis**: Fast queue management
+
+### Documentation
+- **[Complete Docker Setup Guide](README-n8n-setup.md)** - Detailed installation and configuration
+- **[Workflow Templates](workflows/)** - Pre-built automation workflows
+- **Environment Configuration** - Use `.env.example` as template
+
+---
+
+**🚀 Ready to transform your biotech career with AI? Start with `index.html` for the dashboard or `docker compose up -d` for full automation!**
 
 ---
 
 *Last Updated: January 2024*
-*Version: 1.0*
-*Compatibility: All modern browsers*
+*Version: 1.1*
+*Compatibility: All modern browsers, Docker 20.10+*

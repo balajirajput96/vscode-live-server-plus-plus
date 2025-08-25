@@ -1,0 +1,125 @@
+services:
+  # VPN Container for geo-switching
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    cap_add: [NET_ADMIN]
+    environment:
+      - VPN_SERVICE_PROVIDER=surfshark  # या आपका provider
+      - SURFSHARK_USER=your_username
+      - SURFSHARK_PASSWORD=your_password
+      - SERVER_COUNTRIES=US,IN,DE,UK,JP
+      - HTTPPROXY=on
+      - HTTPPROXY_LISTENING_ADDRESS=:8888
+      - FIREWALL_OUTBOUND_SUBNETS=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+    ports:
+      - "8888:8888"  # HTTP Proxy port for n8n
+    networks: [n8n-stack]
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n_secure_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [n8n-stack]
+    restart: unless-stopped
+
+  # Redis for Queue Mode
+  redis:
+    image: redis:7-alpine
+    networks: [n8n-stack]
+    restart: unless-stopped
+
+  # Local AI Server (Ollama)
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks: [n8n-stack]
+    restart: unless-stopped
+
+  # n8n Main Instance
+  n8n:
+    image: n8nio/n8n:1.108.1
+    environment:
+      # Database
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n_secure_password
+      
+      # Encryption (CRITICAL - Change this!)
+      - N8N_ENCRYPTION_KEY=CHANGE_ME_TO_STRONG_32_CHAR_KEY
+      
+      # Queue Mode for Pro Performance
+      - N8N_EXECUTIONS_MODE=queue
+      - N8N_QUEUE_BULL_REDIS_HOST=redis
+      
+      # Basic Config
+      - N8N_PROTOCOL=http
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_GENERIC_TIMEZONE=Asia/Kolkata
+      
+      # Performance
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=336  # 2 weeks
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/data/workflows:ro  # Mount for imports
+    depends_on:
+      - postgres
+      - redis
+      - ollama
+      - gluetun
+    networks: [n8n-stack]
+    restart: unless-stopped
+
+  # n8n Worker for Queue Processing
+  n8n-worker:
+    image: n8nio/n8n:1.108.1
+    environment:
+      # Same database config as main
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n_secure_password
+      
+      # Same encryption key
+      - N8N_ENCRYPTION_KEY=CHANGE_ME_TO_STRONG_32_CHAR_KEY
+      
+      # Worker specific
+      - N8N_EXECUTIONS_MODE=queue
+      - N8N_QUEUE_BULL_REDIS_HOST=redis
+    command: ["n8n", "worker", "--concurrency=3"]
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+      - redis
+      - ollama
+      - gluetun
+    networks: [n8n-stack]
+    restart: unless-stopped
+    deploy:
+      replicas: 2  # Multiple workers for performance
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_data:
+  n8n_data:
+
+networks:
+  n8n-stack:
+    driver: bridge

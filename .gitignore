@@ -2,3 +2,18 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# n8n Docker Environment
+.env
+docker-compose.override.yml
+*.log
+
+# n8n Data (will be in Docker volumes)
+n8n_data/
+postgres_data/
+redis_data/
+ollama_data/
+
+# Backup files
+*.sql
+backup.tar.gz

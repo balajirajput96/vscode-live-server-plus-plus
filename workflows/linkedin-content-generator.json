@@ -1,0 +1,134 @@
+{
+  "name": "LinkedIn Career Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "cron": "0 9 * * 1"
+      },
+      "name": "Weekly Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// AI-powered LinkedIn content generation for biotech professionals\nconst projectData = {\n  name: \"Gene Expression Analysis\",\n  description: \"Analyzed breast cancer gene expression data using Python and R\",\n  tools: [\"Python\", \"Pandas\", \"R\", \"Bioconductor\"],\n  findings: \"Identified 3 key biomarkers for early detection\",\n  impact: \"Could improve early diagnosis accuracy by 15%\"\n};\n\nconst linkedinPost = `🧬 Exciting breakthrough in cancer research! \n\n🔬 Just completed analysis of breast cancer gene expression data that identified 3 potential biomarkers for early detection.\n\n📊 Using Python & R with Bioconductor packages, our analysis suggests these markers could improve diagnostic accuracy by 15%.\n\n🎯 Key tools used:\n• Python with Pandas for data preprocessing\n• R with Bioconductor for genomic analysis  \n• Statistical modeling for biomarker validation\n\n💡 This research demonstrates the power of bioinformatics in advancing personalized medicine.\n\n#Bioinformatics #CancerResearch #DataScience #Biotechnology #Python #GenomicAnalysis #PrecisionMedicine\n\n🔗 Full analysis available on my GitHub`;\n\nreturn [{json: {content: linkedinPost, project: projectData}}];"
+      },
+      "name": "Generate LinkedIn Content",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "url": "https://api.linkedin.com/v2/shares",
+        "authentication": "headerAuth",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "content",
+              "value": "={{$json.content}}"
+            }
+          ]
+        }
+      },
+      "name": "Post to LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "posted"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{$now}}"
+            },
+            {
+              "name": "content_preview",
+              "value": "={{$json.content.substring(0, 100)}}"
+            }
+          ]
+        }
+      },
+      "name": "Log Success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Weekly Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate LinkedIn Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate LinkedIn Content": {
+      "main": [
+        [
+          {
+            "node": "Post to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "1",
+  "meta": {
+    "instanceId": "career-automation-system"
+  },
+  "tags": [
+    {
+      "name": "career-automation",
+      "id": "1"
+    },
+    {
+      "name": "linkedin",
+      "id": "2"  
+    },
+    {
+      "name": "biotech",
+      "id": "3"
+    }
+  ]
+}
