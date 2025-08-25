@@ -376,23 +376,59 @@ Write a compelling cover letter for [POSITION] at [COMPANY]. Include:
 ### Day 1-2: Automation Setup
 
 #### Step 1: n8n Workflow Setup
-**Action**: Free automation tool setup
+**Action**: Complete automation tool setup with account migration
+
+**Prerequisites**:
+1. Copy `.env.example` to `.env` and configure:
+   - Source account: balaji.web.design1@gmail.com
+   - Target account: 22034563001@paruluniversity.ac.in
+   - Generate encryption key: `openssl rand -base64 32`
+
+2. Run automated migration:
+   ```bash
+   npm run migrate-account
+   ```
 
 **Workflow 1: Weekly Content Generation**
 ```
-Trigger: Every Monday 9 AM
-Action 1: Generate weekly post ideas
-Action 2: Create social media posts
-Action 3: Schedule posts
-Action 4: Send reminder email
+Trigger: Every Monday 9 AM (Asia/Kolkata)
+Action 1: Generate weekly post ideas using AI
+Action 2: Create LinkedIn & Facebook posts
+Action 3: Schedule posts with Buffer/Hootsuite
+Action 4: Send reminder email to Parul University account
+Template: /n8n-workflows/weekly-content-generation.json
 ```
 
 **Workflow 2: Job Application Tracking**
 ```
-Trigger: New job application
-Action 1: Add to tracking sheet
-Action 2: Set follow-up reminder
-Action 3: Update analytics
+Trigger: Webhook on new job application
+Action 1: Add to Google Sheets tracking
+Action 2: Set follow-up reminder (1 week)
+Action 3: Update analytics dashboard
+Action 4: Send confirmation email
+Template: /n8n-workflows/job-application-tracking.json
+```
+
+**Workflow 3: High-Speed Offline Mode**
+```
+Trigger: Every 6 hours sync check
+Action 1: Check network connectivity
+Action 2: Sync data when online
+Action 3: Cache for offline use
+Action 4: Enable high-speed processing
+Template: /n8n-workflows/high-speed-offline-mode.json
+```
+
+**Quick Setup Commands**:
+```bash
+# Local development setup
+npm run n8n:setup
+
+# Production setup with HTTPS
+npm run n8n:setup-production
+
+# Stop services
+npm run n8n:stop
 ```
 
 #### Step 2: Google Sheets Automation

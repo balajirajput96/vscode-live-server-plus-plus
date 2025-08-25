@@ -1,0 +1,28 @@
+{$DOMAIN} {
+    reverse_proxy n8n:5678
+    
+    # Enable compression
+    encode gzip
+    
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security max-age=31536000;
+        # Prevent some categories of XSS attacks
+        X-Content-Type-Options nosniff
+        # Enable the Cross-site scripting (XSS) filter
+        X-XSS-Protection "1; mode=block"
+        # Deny certain framing
+        X-Frame-Options DENY
+        # Remove Server header
+        -Server
+    }
+    
+    # Logging
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb
+            roll_keep 10
+        }
+    }
+}

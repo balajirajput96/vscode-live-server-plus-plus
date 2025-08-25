@@ -2,3 +2,16 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# n8n specific
+.env
+migration-data/
+n8n-data/
+logs/
+.setup-completed
+
+# Docker volumes
+postgres_data/
+redis_data/
+caddy_data/
+caddy_config/

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${N8N_HOST:-0.0.0.0}
+      - N8N_PORT=${N8N_PORT:-5678}
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_CACHE_ENABLED=${N8N_CACHE_ENABLED:-true}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - N8N_METRICS=${N8N_METRICS:-true}
+      - N8N_EXECUTE_IN_PROCESS=${N8N_EXECUTE_IN_PROCESS:-true}
+      - N8N_DEFAULT_BINARY_DATA_MODE=${N8N_DEFAULT_BINARY_DATA_MODE:-filesystem}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - n8n_network
+
+  redis:
+    image: redis:alpine
+    container_name: n8n_redis
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n_network
+
+volumes:
+  n8n_data:
+  redis_data:
+
+networks:
+  n8n_network:
+    driver: bridge
