@@ -1,0 +1,136 @@
+# Local Development Docker Compose
+# Use this for local development without HTTPS/domain requirements
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: n8n-postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: localdev123
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n -d n8n"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-redis-local
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data_local:/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: n8nio/n8n:1.82.1
+    container_name: n8n-local
+    restart: unless-stopped
+    environment:
+      # General
+      GENERIC_TIMEZONE: Asia/Kolkata
+      TZ: Asia/Kolkata
+      NODE_ENV: development
+
+      # n8n settings for local development
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://localhost:5678/
+      N8N_TRUST_PROXY: 'false'
+      N8N_SECURE_COOKIE: 'false'
+      N8N_ENCRYPTION_KEY: localdev-key-change-in-production
+      N8N_DIAGNOSTICS_ENABLED: 'false'
+      N8N_TEMPLATES_ENABLED: 'true'
+      N8N_PERSONALIZATION_ENABLED: 'true'
+
+      # Database: Postgres
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_USER: n8n
+      DB_POSTGRESDB_PASSWORD: localdev123
+
+      # Queue mode (Redis)
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_BULL_REDIS_PORT: 6379
+      QUEUE_BULL_REDIS_DB: 0
+
+      # Executions data
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: none
+      EXECUTIONS_DATA_SAVE_ON_ERROR: all
+      EXECUTIONS_DATA_SAVE_ON_PROGRESS: 'true'
+      EXECUTIONS_DATA_PRUNE: 'true'
+      EXECUTIONS_DATA_MAX_AGE: 72  # 3 days for local dev
+      EXECUTIONS_DATA_PRUNE_MAX_COUNT: 50
+
+    volumes:
+      - n8n_data_local:/home/node/.n8n
+    networks:
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5678:5678"
+
+  # Single worker for local development
+  n8n-worker:
+    image: n8nio/n8n:1.82.1
+    container_name: n8n-worker-local
+    restart: unless-stopped
+    command: n8n worker --concurrency=2
+    environment:
+      GENERIC_TIMEZONE: Asia/Kolkata
+      TZ: Asia/Kolkata
+      NODE_ENV: development
+
+      N8N_ENCRYPTION_KEY: localdev-key-change-in-production
+
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_USER: n8n
+      DB_POSTGRESDB_PASSWORD: localdev123
+
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_BULL_REDIS_PORT: 6379
+      QUEUE_BULL_REDIS_DB: 0
+    networks:
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  n8n_data_local:
+  postgres_data_local:
+  redis_data_local:
+
+networks:
+  internal:
+    driver: bridge
