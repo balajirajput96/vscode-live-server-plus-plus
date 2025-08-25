@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: n8n-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+    networks:
+      - n8n-network
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_SECURE_COOKIE=true
+      - N8N_TRUST_PROXY=true
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
+      - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
+      - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - TZ=${TZ:-Asia/Kolkata}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - N8N_EXECUTIONS_TIMEOUT=${N8N_EXECUTIONS_TIMEOUT:-3600}
+      - N8N_EXECUTIONS_MAX_TIMEOUT=${N8N_EXECUTIONS_MAX_TIMEOUT:-7200}
+      - N8N_EXECUTIONS_DATA_SAVE_ON_ERROR=${N8N_EXECUTIONS_DATA_SAVE_ON_ERROR:-all}
+      - N8N_EXECUTIONS_DATA_SAVE_ON_SUCCESS=${N8N_EXECUTIONS_DATA_SAVE_ON_SUCCESS:-all}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows
+      - ./credentials:/home/node/.n8n/credentials
+      - ./custom-nodes:/home/node/.n8n/custom
+      - ${AI_MODEL_PATH:-./models}:/app/models
+    depends_on:
+      - postgres
+      - caddy
+    networks:
+      - n8n-network
+
+  postgres:
+    image: postgres:15
+    container_name: n8n-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
+      - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
+      - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - TZ=${TZ:-Asia/Kolkata}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - n8n-network
+
+  vpn-client:
+    image: qmcgaw/gluetun
+    container_name: n8n-vpn
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=${VPN_PROVIDER:-expressvpn}
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${VPN_USERNAME}
+      - OPENVPN_PASSWORD=${VPN_PASSWORD}
+      - SERVER_COUNTRIES=India,USA,UK,Germany,Singapore,Japan,Australia
+      - TZ=${TZ:-Asia/Kolkata}
+    volumes:
+      - ./vpn-config:/gluetun
+    ports:
+      - "8888:8888"  # Control server port
+    networks:
+      - n8n-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n-network
+
+  ai-service:
+    image: ollama/ollama:latest
+    container_name: n8n-ai
+    restart: unless-stopped
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - TZ=${TZ:-Asia/Kolkata}
+    volumes:
+      - ollama_data:/root/.ollama
+      - ${AI_MODEL_PATH:-./models}:/app/models
+    ports:
+      - "11434:11434"
+    networks:
+      - n8n-network
+
+volumes:
+  n8n_data:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
+  ollama_data:
+
+networks:
+  n8n-network:
+    driver: bridge
