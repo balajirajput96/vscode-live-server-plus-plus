@@ -9,9 +9,20 @@
 
 ## 🐳 n8n Workflow Automation Setup
 
-इस repository में एक production-ready n8n Docker setup भी है जो आपको automation workflows बनाने में help करता है:
+इस repository में एक production-ready n8n Docker setup भी है जो आपको automation workflows बनाने में help करता है। **Special support for account migration and workflow transfer between different email accounts/domains.**
 
 ### Quick Start for n8n:
+
+#### Option 1: Local Development (No domain required)
+```bash
+# Start local development setup
+docker compose -f docker-compose.local.yml up -d
+
+# Access n8n at http://localhost:5678
+# Default encryption key is set for development only
+```
+
+#### Option 2: Production Setup with Custom Domain
 ```bash
 # Copy environment file
 cp .env.example .env
@@ -22,16 +33,25 @@ cp .env.example .env
 # Start the services
 docker compose up -d
 
-# Access n8n at http://localhost:5678
+# Access n8n at your configured domain
 ```
 
+### 🔄 Workflow Migration Support
+**Need to transfer workflows between accounts?** (e.g., from personal to university account)
+- See detailed guide: [WORKFLOW_MIGRATION_GUIDE.md](./WORKFLOW_MIGRATION_GUIDE.md)
+- Export/import workflows between different n8n instances
+- Maintain pro-level functionality across migrations
+- Secure credential and data transfer
+
 **Key Features:**
-- 🗄️ **Postgres Database**: Reliable data storage
+- 🗄️ **Postgres Database**: Reliable data storage with backup support
 - ⚡ **Redis Queue**: High-performance job processing  
 - 👥 **Scalable Workers**: Multiple worker containers for heavy workloads
 - 🔒 **HTTPS Support**: Optional Caddy reverse proxy with auto-TLS
 - 📊 **Health Monitoring**: Built-in healthchecks for all services
 - 🔧 **Production Ready**: Proper data pruning and security settings
+- 📧 **Email Integration**: SMTP configuration for workflow notifications
+- 🚀 **Migration Tools**: Easy workflow and account migration support
 
 For detailed setup instructions, see [n8n-README.md](./n8n-README.md)
 
