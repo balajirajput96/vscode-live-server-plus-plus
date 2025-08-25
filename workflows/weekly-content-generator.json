@@ -1,0 +1,195 @@
+{
+  "name": "Weekly Career Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "cronExpression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Every Monday 9 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Generate weekly content themes\nconst themes = [\n  'Machine Learning in Biotechnology',\n  'Data Science Career Tips',\n  'Python for Bioinformatics',\n  'Research Methodology',\n  'Industry Trends and Insights',\n  'Professional Development',\n  'Technical Skills Showcase',\n  'Project Case Studies'\n];\n\nconst randomTheme = themes[Math.floor(Math.random() * themes.length)];\n\nconst contentData = {\n  theme: randomTheme,\n  week: new Date().getWeek(),\n  year: new Date().getFullYear(),\n  platforms: ['linkedin', 'facebook', 'twitter'],\n  targetAccounts: [\n    'balaji.web.design1@gmail.com',\n    '22034563001@paruluniversity.ac.in'\n  ]\n};\n\nreturn [{ json: contentData }];"
+      },
+      "id": "2",
+      "name": "Generate Content Theme",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "messageType": "text",
+          "message": "Create a professional LinkedIn post about {{$json.theme}} for a biotechnology professional. Include:\n- Engaging hook in first line\n- 3-4 key insights or tips\n- Personal touch or experience\n- Call to action for engagement\n- Relevant hashtags (max 5)\n- Professional but conversational tone\n\nKeep it under 1300 characters."
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Generate LinkedIn Post",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "messageType": "text",
+          "message": "Create an engaging Facebook post about {{$json.theme}} that:\n- Starts with an attention-grabbing question or statement\n- Shares valuable insights for biotechnology professionals\n- Encourages comments and discussion\n- Uses appropriate emojis\n- Includes relevant hashtags\n- Maintains a friendly, approachable tone\n\nKeep it engaging and shareable."
+        },
+        "options": {}
+      },
+      "id": "4",
+      "name": "Generate Facebook Post",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "messageType": "text",
+          "message": "Create a Twitter thread (3-4 tweets) about {{$json.theme}}:\n- Start with a compelling hook\n- Share actionable insights\n- Use thread format (1/n, 2/n, etc.)\n- Include relevant hashtags\n- End with engagement question\n- Keep each tweet under 280 characters\n\nMake it informative and engaging for the biotech community."
+        },
+        "options": {}
+      },
+      "id": "5",
+      "name": "Generate Twitter Thread",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1234567890abcdef",
+        "sheetName": "Content Calendar",
+        "values": {
+          "values": [
+            [
+              "={{new Date().toISOString().split('T')[0]}}",
+              "={{$node[\"Generate Content Theme\"].json[\"theme\"]}}",
+              "={{$node[\"Generate LinkedIn Post\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+              "={{$node[\"Generate Facebook Post\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+              "={{$node[\"Generate Twitter Thread\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+              "Generated"
+            ]
+          ]
+        },
+        "options": {}
+      },
+      "id": "6",
+      "name": "Save to Content Calendar",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "to": "balaji.web.design1@gmail.com,22034563001@paruluniversity.ac.in",
+        "subject": "Weekly Content Generated - {{$node[\"Generate Content Theme\"].json[\"theme\"]}}",
+        "text": "Hello,\\n\\nYour weekly social media content has been generated for the theme: {{$node[\"Generate Content Theme\"].json[\"theme\"]}}\\n\\n📱 LINKEDIN POST:\\n{{$node[\"Generate LinkedIn Post\"].json[\"choices\"][0][\"message\"][\"content\"]}}\\n\\n📘 FACEBOOK POST:\\n{{$node[\"Generate Facebook Post\"].json[\"choices\"][0][\"message\"][\"content\"]}}\\n\\n🐦 TWITTER THREAD:\\n{{$node[\"Generate Twitter Thread\"].json[\"choices\"][0][\"message\"][\"content\"]}}\\n\\nThe content has been saved to your content calendar. You can now review, edit, and schedule these posts.\\n\\nBest regards,\\nAI Career Automation System"
+      },
+      "id": "7",
+      "name": "Email Content to Both Accounts",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Every Monday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Generate Content Theme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Content Theme": {
+      "main": [
+        [
+          {
+            "node": "Generate LinkedIn Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Facebook Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Twitter Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Save to Content Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Facebook Post": {
+      "main": [
+        [
+          {
+            "node": "Save to Content Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Twitter Thread": {
+      "main": [
+        [
+          {
+            "node": "Save to Content Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Content Calendar": {
+      "main": [
+        [
+          {
+            "node": "Email Content to Both Accounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "weekly-content-generator"
+}
