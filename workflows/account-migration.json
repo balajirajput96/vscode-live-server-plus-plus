@@ -1,0 +1,132 @@
+{
+  "name": "Account Migration Assistant",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Account Migration Helper\n// This workflow helps migrate workflows between accounts\n\nconst sourceAccount = {\n  email: 'balaji.web.design1@gmail.com',\n  apiKey: process.env.SOURCE_API_KEY\n};\n\nconst targetAccount = {\n  email: '22034563001@paruluniversity.ac.in',\n  apiKey: process.env.TARGET_API_KEY\n};\n\n// Prepare migration data\nconst migrationData = {\n  sourceAccount,\n  targetAccount,\n  timestamp: new Date().toISOString(),\n  status: 'started'\n};\n\nreturn [{\n  json: migrationData\n}];"
+      },
+      "id": "2",
+      "name": "Initialize Migration",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Initialize Migration\"].json[\"sourceAccount\"][\"apiUrl\"]}}/workflows",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "3",
+      "name": "Export Source Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process and clean workflows for import\nconst workflows = $input.all();\nconst cleanedWorkflows = [];\n\nfor (const workflow of workflows) {\n  // Remove source-specific IDs and timestamps\n  const cleaned = {\n    ...workflow.json,\n    id: undefined,\n    createdAt: undefined,\n    updatedAt: undefined,\n    // Update credentials to target account\n    nodes: workflow.json.nodes.map(node => ({\n      ...node,\n      credentials: node.credentials ? {\n        ...node.credentials,\n        // Map credentials to target account\n      } : undefined\n    }))\n  };\n  \n  cleanedWorkflows.push({ json: cleaned });\n}\n\nreturn cleanedWorkflows;"
+      },
+      "id": "4",
+      "name": "Process Workflows",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Initialize Migration\"].json[\"targetAccount\"][\"apiUrl\"]}}/workflows",
+        "requestMethod": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "5",
+      "name": "Import to Target",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "to": "={{$node[\"Initialize Migration\"].json[\"targetAccount\"][\"email\"]}}",
+        "subject": "n8n Account Migration Completed",
+        "text": "Hello,\\n\\nYour n8n workflows have been successfully migrated from {{$node[\"Initialize Migration\"].json[\"sourceAccount\"][\"email\"]}} to {{$node[\"Initialize Migration\"].json[\"targetAccount\"][\"email\"]}}.\\n\\nMigration Details:\\n- Started: {{$node[\"Initialize Migration\"].json[\"timestamp\"]}}\\n- Workflows transferred: {{$node[\"Process Workflows\"].json.length}}\\n- Status: Completed successfully\\n\\nPlease verify that all workflows are working correctly in your new account.\\n\\nBest regards,\\nn8n Automation System"
+      },
+      "id": "6",
+      "name": "Send Completion Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Initialize Migration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Migration": {
+      "main": [
+        [
+          {
+            "node": "Export Source Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export Source Workflows": {
+      "main": [
+        [
+          {
+            "node": "Process Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Workflows": {
+      "main": [
+        [
+          {
+            "node": "Import to Target",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Import to Target": {
+      "main": [
+        [
+          {
+            "node": "Send Completion Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "account-migration"
+}
