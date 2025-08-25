@@ -1,0 +1,149 @@
+{
+  "name": "Weekly Content Generation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "name": "Every Monday 9 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "completion",
+        "prompt": "Generate 5 LinkedIn post ideas for a biotechnology professional transitioning to bioinformatics. Topics should be educational, personal journey, industry insights, project showcases, and networking. Each idea should be 2-3 sentences.",
+        "maxTokens": 500,
+        "temperature": 0.7
+      },
+      "name": "Generate Post Ideas",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "completion",
+        "prompt": "Based on these post ideas: {{$json[\"choices\"][0][\"text\"]}}, write 2 complete LinkedIn posts. Make them professional, engaging, and include relevant hashtags for biotechnology and bioinformatics.",
+        "maxTokens": 800,
+        "temperature": 0.7
+      },
+      "name": "Create Social Media Posts",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "Content Calendar",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "Date",
+              "value": "={{new Date().toISOString().split('T')[0]}}"
+            },
+            {
+              "column": "Content Type",
+              "value": "LinkedIn Posts"
+            },
+            {
+              "column": "Content",
+              "value": "={{$json[\"choices\"][0][\"text\"]}}"
+            },
+            {
+              "column": "Status",
+              "value": "Generated"
+            }
+          ]
+        }
+      },
+      "name": "Save to Content Calendar",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "Weekly Content Generated",
+        "text": "Your weekly LinkedIn content has been generated and saved to the content calendar. Please review and schedule for posting."
+      },
+      "name": "Send Notification Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every Monday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Generate Post Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post Ideas": {
+      "main": [
+        [
+          {
+            "node": "Create Social Media Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Social Media Posts": {
+      "main": [
+        [
+          {
+            "node": "Save to Content Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Content Calendar": {
+      "main": [
+        [
+          {
+            "node": "Send Notification Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

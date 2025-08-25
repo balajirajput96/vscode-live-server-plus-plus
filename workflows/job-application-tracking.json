@@ -1,0 +1,238 @@
+{
+  "name": "Job Application Tracking Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "job-application",
+        "responseMode": "responseNode"
+      },
+      "name": "Webhook - New Job Application",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "job-application-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": "YOUR_JOB_TRACKER_SHEET_ID",
+        "sheetName": "Job Applications",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "Date Applied",
+              "value": "={{new Date().toISOString().split('T')[0]}}"
+            },
+            {
+              "column": "Company Name",
+              "value": "={{$json[\"body\"][\"company\"]}}"
+            },
+            {
+              "column": "Position",
+              "value": "={{$json[\"body\"][\"position\"]}}"
+            },
+            {
+              "column": "Application URL",
+              "value": "={{$json[\"body\"][\"url\"]}}"
+            },
+            {
+              "column": "Status",
+              "value": "Applied"
+            },
+            {
+              "column": "Follow-up Date",
+              "value": "={{new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}}"
+            }
+          ]
+        }
+      },
+      "name": "Add to Tracking Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 7
+            }
+          ]
+        }
+      },
+      "name": "Schedule Follow-up Reminder",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "YOUR_JOB_TRACKER_SHEET_ID",
+        "sheetName": "Job Applications",
+        "range": "A:F"
+      },
+      "name": "Get Applications Due for Follow-up",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Follow-up Date\"]}}",
+              "operation": "equal",
+              "value2": "={{new Date().toISOString().split('T')[0]}}"
+            },
+            {
+              "value1": "={{$json[\"Status\"]}}",
+              "operation": "equal",
+              "value2": "Applied"
+            }
+          ]
+        }
+      },
+      "name": "Filter Applications for Follow-up",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "Follow-up Required: {{$json[\"Company Name\"]}} - {{$json[\"Position\"]}}",
+        "text": "It's time to follow up on your application to {{$json[\"Company Name\"]}} for the {{$json[\"Position\"]}} position.\n\nApplication submitted: {{$json[\"Date Applied\"]}}\nApplication URL: {{$json[\"Application URL\"]}}\n\nRecommended follow-up actions:\n1. Send a polite follow-up email to the hiring manager\n2. Connect with employees on LinkedIn\n3. Check for any updates on the job posting\n4. Update your application status in the tracker"
+      },
+      "name": "Send Follow-up Reminder",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "message",
+              "value": "Job application tracked successfully"
+            }
+          ]
+        }
+      },
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        680,
+        180
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        900,
+        180
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - New Job Application": {
+      "main": [
+        [
+          {
+            "node": "Add to Tracking Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Tracking Sheet": {
+      "main": [
+        [
+          {
+            "node": "Schedule Follow-up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Follow-up Reminder": {
+      "main": [
+        [
+          {
+            "node": "Get Applications Due for Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Applications Due for Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Filter Applications for Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Applications for Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

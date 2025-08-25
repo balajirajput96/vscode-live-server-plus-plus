@@ -70,6 +70,34 @@ Okay, now coming to the point, Code of the `Live Server` can't be migrated with 
 
 ---
 
+---
+
+## 🚀 Career Automation System
+
+This repository also includes a comprehensive **Career Automation System** designed specifically for biotechnology professionals transitioning to bioinformatics and data analysis roles.
+
+### Features
+- **n8n Workflow Automation**: Automate job applications, content creation, and networking
+- **Portfolio Management**: Templates and prompts for professional development
+- **LinkedIn Optimization**: AI-powered content generation and networking strategies
+- **Progress Tracking**: Analytics dashboard for career development metrics
+
+### Quick Start
+```bash
+# Setup n8n automation system
+cp .env.example .env
+docker compose --env-file .env -f docker-compose.basic.yml up -d
+
+# Access n8n interface
+open http://localhost:5678
+```
+
+📚 **Complete Setup Guide**: [CAREER_AUTOMATION_SETUP.md](CAREER_AUTOMATION_SETUP.md)
+
+📋 **Detailed Action Plan**: [career-automation-system/ACTION_PLAN.md](career-automation-system/ACTION_PLAN.md)
+
+---
+
 ## LICENSE
 
 This extension is licensed under the [MIT License](LICENSE)
