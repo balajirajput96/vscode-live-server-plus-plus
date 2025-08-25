@@ -1,4 +1,77 @@
 out
 node_modules
+
+# n8n workflow files
+.env
+*.log
+n8n-database.sqlite
+binary-data/
+verification-results.json
+test-report-*.json
+
+# Credentials and secrets
+credentials/*.json
+credentials/*.key
+credentials/*.pem
+*.secret
+.encryption_key
+
+# AI Models
+models/*.bin
+models/*.gguf
+models/*.safetensors
+
+# VPN configs
+vpn-configs/
+*.ovpn
+*.conf
+
+# Docker volumes and data
+postgres_data/
+redis_data/
+n8n_data/
+prometheus_data/
+grafana_data/
+caddy_data/
+caddy_config/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+backup/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 .vscode-test/
 *.vsix

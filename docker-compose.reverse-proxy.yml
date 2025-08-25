@@ -1,0 +1,305 @@
+version: '3.8'
+
+services:
+  # Caddy Reverse Proxy for HTTPS
+  caddy:
+    image: caddy:latest
+    container_name: caddy-balaji-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - n8n-network
+    depends_on:
+      - n8n
+
+  # n8n Main Service
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-balaji-automation
+    restart: unless-stopped
+    expose:
+      - "5678"
+    environment:
+      # Basic Configuration
+      - N8N_PORT=5678
+      - N8N_HOST=0.0.0.0
+      - N8N_PROTOCOL=https
+      - N8N_SECURE_COOKIE=true
+      - N8N_TRUST_PROXY=true
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      
+      # Database
+      - DB_TYPE=sqlite
+      - DB_SQLITE_DATABASE=/home/node/.n8n/database.sqlite
+      
+      # Security
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-true}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-balaji}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-secure-password}
+      
+      # Performance
+      - N8N_PAYLOAD_SIZE_MAX=${N8N_PAYLOAD_SIZE_MAX:-16}
+      - N8N_EXECUTIONS_TIMEOUT=${N8N_EXECUTIONS_TIMEOUT:-3600}
+      - N8N_EXECUTIONS_DATA_PRUNE=${N8N_EXECUTIONS_DATA_PRUNE:-true}
+      
+      # Localization
+      - N8N_DEFAULT_LOCALE=hi
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      
+      # Queue and Redis
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD}
+      
+      # Encryption
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      
+      # API Keys and Credentials
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET}
+      - GMAIL_REFRESH_TOKEN=${GMAIL_REFRESH_TOKEN}
+      - GMAIL_USER_EMAIL=${GMAIL_USER_EMAIL}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_USERNAME=${GITHUB_USERNAME}
+      - GOOGLE_DOCS_API_KEY=${GOOGLE_DOCS_API_KEY}
+      - VPN_API_KEY=${VPN_API_KEY}
+      - LOCAL_AI_ENDPOINT=http://local-ai:8080
+      
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/workflows
+      - ./credentials:/home/node/credentials
+      - ./custom-nodes:/home/node/custom-nodes
+      - ./models:/home/node/models
+      - ./scripts:/home/node/scripts
+      - ./binary-data:/home/node/binary-data
+      
+    networks:
+      - n8n-network
+      
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    depends_on:
+      - redis
+      - local-ai
+
+  # n8n Worker for Queue Processing
+  n8n-worker:
+    image: n8nio/n8n:latest
+    container_name: n8n-worker-balaji
+    restart: unless-stopped
+    command: n8n worker
+    environment:
+      # Database
+      - DB_TYPE=sqlite
+      - DB_SQLITE_DATABASE=/home/node/.n8n/database.sqlite
+      
+      # Queue Configuration
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD}
+      - QUEUE_WORKER_TIMEOUT=30
+      
+      # Localization
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      
+      # Encryption
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      
+      # API Keys and Credentials
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET}
+      - GMAIL_REFRESH_TOKEN=${GMAIL_REFRESH_TOKEN}
+      - GMAIL_USER_EMAIL=${GMAIL_USER_EMAIL}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_USERNAME=${GITHUB_USERNAME}
+      - GOOGLE_DOCS_API_KEY=${GOOGLE_DOCS_API_KEY}
+      - VPN_API_KEY=${VPN_API_KEY}
+      - LOCAL_AI_ENDPOINT=http://local-ai:8080
+      
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/workflows
+      - ./credentials:/home/node/credentials
+      - ./custom-nodes:/home/node/custom-nodes
+      - ./models:/home/node/models
+      - ./scripts:/home/node/scripts
+      - ./binary-data:/home/node/binary-data
+      
+    networks:
+      - n8n-network
+    
+    depends_on:
+      - redis
+      - local-ai
+
+  # Local AI Service (Gemma 3n और SHAKTI models)
+  local-ai:
+    image: localai/localai:latest
+    container_name: local-ai-balaji
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - DEBUG=true
+      - MODELS_PATH=/models
+      - UPLOAD_LIMIT=50
+      - CONTEXT_SIZE=4096
+      - THREADS=4
+      - F16=true
+    volumes:
+      - ./models:/models
+      - ./local-ai-config:/config
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # VPN Service (WireGuard/OpenVPN)
+  vpn-service:
+    image: thrnz/docker-wireguard-pia:latest
+    container_name: vpn-balaji
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - LOC=${VPN_DEFAULT_LOCATION:-india}
+      - USER=${VPN_USERNAME}
+      - PASS=${VPN_PASSWORD}
+      - LOCAL_NETWORK=172.20.0.0/16
+      - KEEPALIVE=25
+      - VPNDNS=8.8.8.8,8.8.4.4
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - ./vpn-configs:/pia
+    networks:
+      - n8n-network
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.default.disable_ipv6=1
+
+  # Redis for Queue Management and Caching
+  redis:
+    image: redis:7-alpine
+    container_name: redis-balaji
+    restart: unless-stopped
+    expose:
+      - "6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL Database (Optional - for Production)
+  postgres:
+    image: postgres:15
+    container_name: postgres-balaji
+    restart: unless-stopped
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
+      - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
+      - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:-n8n-password}
+      - POSTGRES_NON_ROOT_USER=${DB_POSTGRESDB_USER:-n8n}
+      - POSTGRES_NON_ROOT_PASSWORD=${DB_POSTGRESDB_PASSWORD:-n8n-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_POSTGRESDB_USER:-n8n}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-balaji
+    restart: unless-stopped
+    expose:
+      - "9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - n8n-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-balaji
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=balaji
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - n8n-network
+    depends_on:
+      - prometheus
+
+networks:
+  n8n-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  n8n_data:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

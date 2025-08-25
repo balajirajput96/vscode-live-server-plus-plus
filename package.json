@@ -40,7 +40,18 @@
     "compile": "tsc -p ./ && npm run copy-assets",
     "watch": "npm run copy-assets  && tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "n8n:setup": "python3 scripts/verify-setup.py",
+    "n8n:test": "bash scripts/test-workflow.sh",
+    "n8n:start": "docker compose --env-file .env -f docker-compose.basic.yml up -d",
+    "n8n:start-prod": "docker compose --env-file .env -f docker-compose.reverse-proxy.yml up -d",
+    "n8n:stop": "docker compose down",
+    "n8n:logs": "docker compose logs -f n8n",
+    "n8n:health": "curl -f http://localhost:5678/healthz || echo 'n8n not accessible'",
+    "test:health": "npm run n8n:health",
+    "test:apis": "python3 scripts/test-apis.py",
+    "test:workflow": "bash scripts/test-workflow.sh",
+    "test:performance": "python3 scripts/performance-test.py"
   },
   "main": "./out/extension/index.js",
   "contributes": {
@@ -123,5 +134,30 @@
     "mime-types": "^2.1.22",
     "open": "^6.1.0",
     "ws": "^6.2.1"
+  },
+  "n8nWorkflow": {
+    "name": "बालाजी का Complete Automation Workflow",
+    "version": "1.0.0",
+    "description": "Comprehensive n8n workflow with GitHub, Google Docs, Email, VPN, Local AI integration",
+    "author": "Balaji (Parul University)",
+    "email": "balaji.web.design1@gmail.com",
+    "features": [
+      "GitHub Integration",
+      "Google Docs Automation", 
+      "Email Notifications",
+      "VPN Switching",
+      "Local AI (Gemma 3n/SHAKTI)",
+      "Test Commands",
+      "Execution Validation",
+      "Sample Payloads",
+      "Execution Guides",
+      "Hindi Language Support"
+    ],
+    "requirements": {
+      "docker": ">=20.0.0",
+      "docker-compose": ">=2.0.0",
+      "python": ">=3.8",
+      "node": ">=16.0.0"
+    }
   }
 }
