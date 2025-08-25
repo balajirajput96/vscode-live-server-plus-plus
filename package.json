@@ -43,6 +43,7 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "n8n:setup": "python3 scripts/verify-setup.py",
     "n8n:test": "bash scripts/test-workflow.sh",
+    "n8n:demo": "python3 scripts/demo-mode.py",
     "n8n:start": "docker compose --env-file .env -f docker-compose.basic.yml up -d",
     "n8n:start-prod": "docker compose --env-file .env -f docker-compose.reverse-proxy.yml up -d",
     "n8n:stop": "docker compose down",
