@@ -1,0 +1,157 @@
+{
+  "name": "Job Application Tracking",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "job-application",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "New Job Application Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "job-application-tracker"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+        "sheetName": "Job Applications",
+        "values": {
+          "values": [
+            [
+              "={{DateTime.now().toFormat('yyyy-MM-dd')}}",
+              "={{$json['company']}}",
+              "={{$json['position']}}",
+              "={{$json['application_url']}}",
+              "Applied",
+              "={{DateTime.now().plus({weeks: 1}).toFormat('yyyy-MM-dd')}}"
+            ]
+          ]
+        }
+      },
+      "id": "add-to-sheet",
+      "name": "Add to Tracking Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "title": "Follow up: ={{$json['position']}} at ={{$json['company']}}",
+        "dueDate": "={{DateTime.now().plus({weeks: 1}).toISODate()}}",
+        "description": "Follow up on job application for ={{$json['position']}} position at ={{$json['company']}}.\n\nApplication URL: ={{$json['application_url']}}\nApplied on: ={{DateTime.now().toFormat('yyyy-MM-dd')}}"
+      },
+      "id": "set-reminder",
+      "name": "Set Follow-up Reminder",
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+        "sheetName": "Analytics",
+        "range": "A1:D1",
+        "values": {
+          "values": [
+            [
+              "={{DateTime.now().toFormat('yyyy-MM')}}",
+              "={{$('Add to Tracking Sheet').all().length}}",
+              "Total Applications",
+              "Active"
+            ]
+          ]
+        }
+      },
+      "id": "update-analytics",
+      "name": "Update Analytics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendEmail",
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "22034563001@paruluniversity.ac.in",
+        "subject": "New Job Application Logged: ={{$json['position']}} at ={{$json['company']}}",
+        "text": "A new job application has been automatically logged:\n\n🏢 Company: ={{$json['company']}}\n💼 Position: ={{$json['position']}}\n🔗 Application URL: ={{$json['application_url']}}\n📅 Applied on: ={{DateTime.now().toFormat('yyyy-MM-dd')}}\n⏰ Follow-up scheduled: ={{DateTime.now().plus({weeks: 1}).toFormat('yyyy-MM-dd')}}\n\nGood luck! 🍀"
+      },
+      "id": "notification-email",
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "New Job Application Webhook": {
+      "main": [
+        [
+          {
+            "node": "Add to Tracking Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Tracking Sheet": {
+      "main": [
+        [
+          {
+            "node": "Set Follow-up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Follow-up Reminder": {
+      "main": [
+        [
+          {
+            "node": "Update Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Analytics": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "timezone": "Asia/Kolkata"
+  },
+  "createdAt": "2024-08-25T16:00:00.000Z",
+  "updatedAt": "2024-08-25T16:00:00.000Z",
+  "tags": [
+    {
+      "name": "job-tracking",
+      "id": "3"
+    },
+    {
+      "name": "automation",
+      "id": "1"
+    }
+  ]
+}
