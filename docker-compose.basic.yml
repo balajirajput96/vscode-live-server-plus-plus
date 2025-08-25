@@ -1,0 +1,158 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-balaji-automation
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Basic Configuration
+      - N8N_PORT=5678
+      - N8N_HOST=0.0.0.0
+      - N8N_PROTOCOL=http
+      - N8N_SECURE_COOKIE=false
+      - WEBHOOK_URL=http://localhost:5678/
+      
+      # Database
+      - DB_TYPE=sqlite
+      - DB_SQLITE_DATABASE=/home/node/.n8n/database.sqlite
+      
+      # Security
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-true}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-balaji}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-secure-password}
+      
+      # Performance
+      - N8N_PAYLOAD_SIZE_MAX=${N8N_PAYLOAD_SIZE_MAX:-16}
+      - N8N_EXECUTIONS_TIMEOUT=${N8N_EXECUTIONS_TIMEOUT:-3600}
+      - N8N_EXECUTIONS_DATA_PRUNE=${N8N_EXECUTIONS_DATA_PRUNE:-true}
+      
+      # Localization
+      - N8N_DEFAULT_LOCALE=hi
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      
+      # Custom Configuration
+      - NODE_ENV=${NODE_ENV:-production}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - N8N_METRICS=true
+      
+      # Encryption
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      
+      # API Keys and Credentials
+      - GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID}
+      - GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET}
+      - GMAIL_REFRESH_TOKEN=${GMAIL_REFRESH_TOKEN}
+      - GMAIL_USER_EMAIL=${GMAIL_USER_EMAIL}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_USERNAME=${GITHUB_USERNAME}
+      - GOOGLE_DOCS_API_KEY=${GOOGLE_DOCS_API_KEY}
+      - VPN_API_KEY=${VPN_API_KEY}
+      - LOCAL_AI_ENDPOINT=${LOCAL_AI_ENDPOINT}
+      
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/workflows
+      - ./credentials:/home/node/credentials
+      - ./custom-nodes:/home/node/custom-nodes
+      - ./models:/home/node/models
+      - ./scripts:/home/node/scripts
+      - ./binary-data:/home/node/binary-data
+      
+    networks:
+      - n8n-network
+      
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Local AI Service (Gemma 3n और SHAKTI models)
+  local-ai:
+    image: localai/localai:latest
+    container_name: local-ai-balaji
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - DEBUG=true
+      - MODELS_PATH=/models
+      - UPLOAD_LIMIT=50
+      - CONTEXT_SIZE=4096
+    volumes:
+      - ./models:/models
+      - ./local-ai-config:/config
+    networks:
+      - n8n-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # VPN Service (OpenVPN client)
+  vpn-service:
+    image: dperson/openvpn-client:latest
+    container_name: vpn-balaji
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - VPN_PROVIDER=${VPN_PROVIDER:-nordvpn}
+      - VPN_USERNAME=${VPN_USERNAME}
+      - VPN_PASSWORD=${VPN_PASSWORD}
+    volumes:
+      - ./vpn-configs:/vpn
+    networks:
+      - n8n-network
+
+  # Redis for caching and queue management
+  redis:
+    image: redis:7-alpine
+    container_name: redis-balaji
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+
+  # Monitoring and Health Check Service
+  health-monitor:
+    image: prom/prometheus:latest
+    container_name: health-monitor-balaji
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - n8n-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+
+networks:
+  n8n-network:
+    driver: bridge
+
+volumes:
+  n8n_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local

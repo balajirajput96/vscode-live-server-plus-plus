@@ -1,0 +1,409 @@
+{
+  "name": "बालाजी का Complete Automation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "balaji-automation",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "owner": "={{$node['Webhook Trigger'].json['github_username'] || 'balajirajput96'}}",
+        "repository": "={{$node['Webhook Trigger'].json['repo_name'] || 'default-repo'}}",
+        "additionalParameters": {}
+      },
+      "id": "github-node",
+      "name": "GitHub Integration",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        300,
+        200
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "github-credentials",
+          "name": "GitHub Personal Access Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "documentId": "",
+        "simple": true,
+        "bodyData": "={{$node['Webhook Trigger'].json['document_content'] || 'Default content'}}"
+      },
+      "id": "google-docs-node",
+      "name": "Google Docs Integration",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        300,
+        350
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "google-docs-credentials",
+          "name": "Google Docs API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "balaji.web.design1@gmail.com",
+        "subject": "={{$node['Webhook Trigger'].json['email_subject'] || 'n8n Workflow Notification'}}",
+        "message": "={{$node['Webhook Trigger'].json['email_message'] || 'Workflow executed successfully'}}",
+        "options": {
+          "attachments": "={{$node['Google Docs Integration'].json['documentUrl'] ? [{'name': 'document.pdf', 'url': $node['Google Docs Integration'].json['documentUrl']}] : []}}"
+        }
+      },
+      "id": "email-node",
+      "name": "Email Notification",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmail-credentials",
+          "name": "Gmail OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "curl -X POST \"{{$env['VPN_API_ENDPOINT']}}/switch\" -H \"Authorization: Bearer {{$env['VPN_API_KEY']}}\" -d '{\"country\": \"{{$node['Webhook Trigger'].json['vpn_country'] || 'IN'}}\"}'",
+        "options": {}
+      },
+      "id": "vpn-switch-node",
+      "name": "VPN Switch Node",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        300,
+        50
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env['LOCAL_AI_ENDPOINT']}}/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "={{$node['Webhook Trigger'].json['ai_model'] || 'gemma-3n'}}"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\": \"user\", \"content\": \"{{$node['Webhook Trigger'].json['ai_prompt'] || 'Process this automation task'}}\"}]"
+            },
+            {
+              "name": "max_tokens",
+              "value": "={{$node['Webhook Trigger'].json['max_tokens'] || 2048}}"
+            },
+            {
+              "name": "temperature",
+              "value": "={{$node['Webhook Trigger'].json['temperature'] || 0.7}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "local-ai-node",
+      "name": "Local AI Node (Gemma 3n/SHAKTI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        300,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{$node['Webhook Trigger'].json['test_command'] || 'echo \"Test command executed successfully\"'}}",
+        "options": {}
+      },
+      "id": "test-command-node",
+      "name": "Test Command Node",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        100,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Execution Validation Logic\nconst results = {\n  timestamp: new Date().toISOString(),\n  workflow_id: $workflow.id,\n  execution_id: $execution.id,\n  status: 'success',\n  validated_nodes: [],\n  errors: [],\n  performance_metrics: {\n    total_execution_time: 0,\n    node_execution_times: {},\n    memory_usage: process.memoryUsage(),\n    cpu_usage: process.cpuUsage()\n  }\n};\n\n// Validate each node execution\nconst nodes_to_validate = [\n  'GitHub Integration',\n  'Google Docs Integration', \n  'Email Notification',\n  'VPN Switch Node',\n  'Local AI Node (Gemma 3n/SHAKTI)',\n  'Test Command Node'\n];\n\nfor (const node_name of nodes_to_validate) {\n  try {\n    const node_data = $node[node_name];\n    if (node_data && node_data.json) {\n      results.validated_nodes.push({\n        node: node_name,\n        status: 'success',\n        data_size: JSON.stringify(node_data.json).length,\n        execution_time: node_data.executionTime || 0\n      });\n    } else {\n      results.errors.push({\n        node: node_name,\n        error: 'No data returned or node failed'\n      });\n    }\n  } catch (error) {\n    results.errors.push({\n      node: node_name,\n      error: error.message\n    });\n  }\n}\n\n// Calculate overall status\nif (results.errors.length > 0) {\n  results.status = 'partial_success';\n  if (results.errors.length >= nodes_to_validate.length / 2) {\n    results.status = 'failed';\n  }\n}\n\n// Performance calculations\nresults.performance_metrics.total_execution_time = \n  results.validated_nodes.reduce((total, node) => total + (node.execution_time || 0), 0);\n\nresults.performance_metrics.success_rate = \n  (results.validated_nodes.length / nodes_to_validate.length) * 100;\n\nresults.performance_metrics.error_rate = \n  (results.errors.length / nodes_to_validate.length) * 100;\n\n// Add Hindi status message\nif (results.status === 'success') {\n  results.hindi_message = 'सभी nodes सफलतापूर्वक execute हुए हैं!';\n} else if (results.status === 'partial_success') {\n  results.hindi_message = 'कुछ nodes में समस्या है, लेकिन workflow चालू है।';\n} else {\n  results.hindi_message = 'Workflow execution में गंभीर समस्या है।';\n}\n\nreturn results;"
+      },
+      "id": "execution-validation-node",
+      "name": "Execution Validation Node",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Sample Test Payload Generator\nconst sample_payloads = {\n  github_test: {\n    github_username: 'balajirajput96',\n    repo_name: 'test-automation-repo',\n    action: 'create_issue',\n    issue_title: 'Automated Test Issue',\n    issue_body: 'This is a test issue created by n8n automation workflow'\n  },\n  google_docs_test: {\n    document_content: 'यह एक automated document है जो n8n workflow द्वारा बनाया गया है।\\n\\nFeatures tested:\\n1. Hindi language support\\n2. Document creation\\n3. Content formatting\\n4. Automation integration',\n    document_title: 'n8n Test Document - बालाजी'\n  },\n  email_test: {\n    email_subject: 'n8n Workflow Test - सफल execution',\n    email_message: 'नमस्ते बालाजी,\\n\\nआपका n8n workflow सफलतापूर्वक execute हुआ है।\\n\\nTest Results:\\n✅ GitHub Integration - Working\\n✅ Google Docs - Working\\n✅ Email System - Working\\n✅ VPN Switch - Active\\n✅ Local AI - Responding\\n✅ Validation - Passed\\n\\nWorkflow ID: ' + $workflow.id + '\\nExecution Time: ' + new Date().toISOString() + '\\n\\nधन्यवाद,\\nn8n Automation System'\n  },\n  vpn_test: {\n    vpn_country: 'IN',\n    vpn_city: 'Mumbai',\n    vpn_protocol: 'OpenVPN'\n  },\n  ai_test: {\n    ai_model: 'gemma-3n',\n    ai_prompt: 'आपका automation workflow सफलतापूर्वक चल रहा है। कृपया एक संक्षिप्त status report हिंदी में तैयार करें।',\n    max_tokens: 500,\n    temperature: 0.7\n  },\n  test_commands: [\n    'echo \"System health check: $(date)\"',\n    'curl -s http://httpbin.org/ip | jq .origin',\n    'python3 -c \"print(\\'Python is working! 🐍\\')\"',\n    'node -e \"console.log(\\'Node.js is working! 🚀\\')\"'\n  ],\n  performance_test: {\n    test_duration: '30s',\n    expected_response_time: '< 2s',\n    expected_success_rate: '> 95%',\n    concurrent_requests: 10\n  },\n  security_test: {\n    test_encryption: true,\n    test_authentication: true,\n    test_authorization: true,\n    test_data_validation: true\n  }\n};\n\n// Generate specific payload based on input or return all\nconst requested_payload = $node['Webhook Trigger'].json['payload_type'];\n\nif (requested_payload && sample_payloads[requested_payload]) {\n  return {\n    payload_type: requested_payload,\n    payload: sample_payloads[requested_payload],\n    generated_at: new Date().toISOString(),\n    hindi_description: `${requested_payload} के लिए sample payload तैयार किया गया।`\n  };\n} else {\n  return {\n    all_payloads: sample_payloads,\n    payload_count: Object.keys(sample_payloads).length,\n    generated_at: new Date().toISOString(),\n    hindi_description: 'सभी available sample payloads तैयार किए गए हैं।'\n  };\n}"
+      },
+      "id": "sample-payload-node",
+      "name": "Sample Test Payload Node",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Execution Guide Generator\nconst execution_guide = {\n  workflow_name: 'बालाजी का Complete Automation Workflow',\n  version: '1.0.0',\n  last_updated: new Date().toISOString(),\n  \n  step_by_step_guide: {\n    'स्टेप 1: Webhook Trigger': {\n      description: 'Workflow को trigger करने के लिए webhook endpoint पर POST request भेजें',\n      endpoint: $workflow.settings.webhook_url || 'https://your-domain.com/webhook/balaji-automation',\n      method: 'POST',\n      sample_payload: {\n        github_username: 'balajirajput96',\n        repo_name: 'target-repository',\n        email_subject: 'Custom Subject',\n        ai_prompt: 'Your AI query here'\n      }\n    },\n    \n    'स्टेप 2: VPN Switch': {\n      description: 'Required country के लिए VPN connection स्विच करें',\n      supported_countries: ['IN', 'US', 'UK', 'CA', 'AU', 'DE', 'JP'],\n      default_country: 'IN',\n      verification: 'IP address change होना चाहिए'\n    },\n    \n    'स्टेप 3: Test Command': {\n      description: 'System health और connectivity check करें',\n      default_commands: [\n        'echo \"Health check: $(date)\"',\n        'curl -s ifconfig.me',\n        'python3 --version',\n        'node --version'\n      ],\n      expected_output: 'सभी commands successful होना चाहिए'\n    },\n    \n    'स्टेप 4: GitHub Integration': {\n      description: 'GitHub repository के साथ interaction करें',\n      operations: ['get', 'create', 'update', 'delete'],\n      authentication: 'Personal Access Token required',\n      permissions: ['repo', 'user', 'notifications']\n    },\n    \n    'स्टेप 5: Google Docs': {\n      description: 'Google Docs document create या update करें',\n      authentication: 'OAuth2 या Service Account',\n      supported_operations: ['create', 'read', 'update', 'format'],\n      output_formats: ['PDF', 'DOCX', 'HTML']\n    },\n    \n    'स्टेप 6: Local AI Processing': {\n      description: 'Gemma 3n या SHAKTI model का उपयोग करके AI processing',\n      supported_models: ['gemma-3n', 'shakti', 'custom'],\n      offline_capability: true,\n      hindi_support: true,\n      max_tokens: 4096\n    },\n    \n    'स्टेप 7: Execution Validation': {\n      description: 'सभी steps का validation और error checking',\n      validation_points: [\n        'Node execution status',\n        'Data integrity',\n        'Performance metrics',\n        'Error detection',\n        'Success rate calculation'\n      ]\n    },\n    \n    'स्टेप 8: Email Notification': {\n      description: 'Results को email के माध्यम से भेजना',\n      recipient: 'balaji.web.design1@gmail.com',\n      includes: ['Execution summary', 'Performance metrics', 'Any errors', 'Success confirmation'],\n      format: 'HTML with Hindi support'\n    }\n  },\n  \n  troubleshooting: {\n    'VPN Issues': {\n      problem: 'VPN connection failed',\n      solution: '1. Check VPN credentials\\n2. Verify API key\\n3. Try different country\\n4. Check network connectivity'\n    },\n    'GitHub API Issues': {\n      problem: 'GitHub API calls failing',\n      solution: '1. Verify Personal Access Token\\n2. Check repository permissions\\n3. Verify rate limits\\n4. Check network access'\n    },\n    'Local AI Issues': {\n      problem: 'AI model not responding',\n      solution: '1. Check local AI service status\\n2. Verify model files\\n3. Check endpoint URL\\n4. Restart AI service'\n    },\n    'Email Issues': {\n      problem: 'Email sending failed',\n      solution: '1. Check Gmail OAuth2 credentials\\n2. Verify email permissions\\n3. Check recipient address\\n4. Check attachment size'\n    }\n  },\n  \n  best_practices: {\n    security: [\n      'सभी credentials encrypted रखें',\n      'Regular access token rotation करें',\n      'Webhook endpoints को secure करें',\n      'Sensitive data को log न करें'\n    ],\n    performance: [\n      'Parallel execution का उपयोग करें',\n      'Error handling implement करें',\n      'Timeout values set करें',\n      'Monitoring setup करें'\n    ],\n    maintenance: [\n      'Regular backup लें',\n      'Performance metrics track करें',\n      'Error logs review करें',\n      'Dependencies update करें'\n    ]\n  },\n  \n  future_automation_tasks: [\n    'Daily report generation',\n    'Automated code deployment', \n    'Social media posting',\n    'Data backup scheduling',\n    'Performance monitoring',\n    'Error alerting',\n    'Credential rotation',\n    'System health checks'\n  ],\n  \n  contact_support: {\n    email: 'balaji.web.design1@gmail.com',\n    documentation: '/docs/n8n-workflow-guide.md',\n    video_tutorials: '/docs/videos/',\n    community: 'https://community.n8n.io'\n  }\n};\n\nreturn {\n  execution_guide,\n  generated_at: new Date().toISOString(),\n  hindi_message: 'Execution guide सफलतापूर्वक तैयार किया गया है। इसमें सभी steps, troubleshooting, और best practices शामिल हैं।'\n};"
+      },
+      "id": "execution-guide-node",
+      "name": "Execution Guide Node",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Summary और Notification Generator\nconst workflow_summary = {\n  execution_info: {\n    workflow_id: $workflow.id,\n    execution_id: $execution.id,\n    started_at: $execution.startedAt,\n    completed_at: new Date().toISOString(),\n    total_duration: Date.now() - new Date($execution.startedAt).getTime(),\n    user: 'बालाजी (Parul University)',\n    environment: process.env.NODE_ENV || 'production'\n  },\n  \n  node_results: {\n    vpn_switch: {\n      status: $node['VPN Switch Node'].json ? 'success' : 'failed',\n      country: $node['Webhook Trigger'].json['vpn_country'] || 'IN',\n      execution_time: $node['VPN Switch Node'].executionTime || 0\n    },\n    test_command: {\n      status: $node['Test Command Node'].json ? 'success' : 'failed',\n      command: $node['Webhook Trigger'].json['test_command'] || 'default test',\n      output: $node['Test Command Node'].json?.stdout || 'No output'\n    },\n    github_integration: {\n      status: $node['GitHub Integration'].json ? 'success' : 'failed',\n      repository: $node['Webhook Trigger'].json['repo_name'] || 'default-repo',\n      operation: 'Repository accessed successfully'\n    },\n    google_docs: {\n      status: $node['Google Docs Integration'].json ? 'success' : 'failed',\n      document_created: !!$node['Google Docs Integration'].json?.documentId,\n      document_url: $node['Google Docs Integration'].json?.documentUrl || 'N/A'\n    },\n    local_ai: {\n      status: $node['Local AI Node (Gemma 3n/SHAKTI)'].json ? 'success' : 'failed',\n      model_used: $node['Webhook Trigger'].json['ai_model'] || 'gemma-3n',\n      response_length: $node['Local AI Node (Gemma 3n/SHAKTI)'].json?.choices?.[0]?.message?.content?.length || 0\n    },\n    execution_validation: {\n      status: $node['Execution Validation Node'].json?.status || 'unknown',\n      success_rate: $node['Execution Validation Node'].json?.performance_metrics?.success_rate || 0,\n      errors_found: $node['Execution Validation Node'].json?.errors?.length || 0\n    }\n  },\n  \n  performance_metrics: {\n    total_execution_time: Date.now() - new Date($execution.startedAt).getTime(),\n    average_node_time: 0,\n    success_rate: 0,\n    error_count: 0,\n    memory_usage: process.memoryUsage(),\n    cpu_usage: process.cpuUsage()\n  },\n  \n  summary_statistics: {\n    total_nodes: 11,\n    successful_nodes: 0,\n    failed_nodes: 0,\n    processing_time: {\n      fastest_node: '',\n      slowest_node: '',\n      total_time: 0\n    }\n  },\n  \n  hindi_summary: '',\n  recommendations: [],\n  next_steps: []\n};\n\n// Calculate performance metrics\nlet successful_count = 0;\nlet total_time = 0;\nlet node_times = [];\n\nObject.keys(workflow_summary.node_results).forEach(node_key => {\n  const node_result = workflow_summary.node_results[node_key];\n  if (node_result.status === 'success') {\n    successful_count++;\n  }\n  if (node_result.execution_time) {\n    total_time += node_result.execution_time;\n    node_times.push({name: node_key, time: node_result.execution_time});\n  }\n});\n\nworkflow_summary.performance_metrics.success_rate = (successful_count / Object.keys(workflow_summary.node_results).length) * 100;\nworkflow_summary.performance_metrics.average_node_time = total_time / Object.keys(workflow_summary.node_results).length;\nworkflow_summary.performance_metrics.error_count = Object.keys(workflow_summary.node_results).length - successful_count;\n\nworkflow_summary.summary_statistics.successful_nodes = successful_count;\nworkflow_summary.summary_statistics.failed_nodes = Object.keys(workflow_summary.node_results).length - successful_count;\nworkflow_summary.summary_statistics.processing_time.total_time = total_time;\n\nif (node_times.length > 0) {\n  node_times.sort((a, b) => a.time - b.time);\n  workflow_summary.summary_statistics.processing_time.fastest_node = node_times[0].name;\n  workflow_summary.summary_statistics.processing_time.slowest_node = node_times[node_times.length - 1].name;\n}\n\n// Generate Hindi summary\nif (workflow_summary.performance_metrics.success_rate >= 90) {\n  workflow_summary.hindi_summary = `🎉 बहुत बढ़िया! आपका n8n workflow ${workflow_summary.performance_metrics.success_rate.toFixed(1)}% success rate के साथ सफलतापूर्वक execute हुआ है। सभी मुख्य components (GitHub, Google Docs, Email, VPN, Local AI) सही तरीके से काम कर रहे हैं। Total execution time ${(workflow_summary.performance_metrics.total_execution_time / 1000).toFixed(2)} seconds था।`;\n  workflow_summary.recommendations.push('Excellent performance! Continue with current configuration.');\n} else if (workflow_summary.performance_metrics.success_rate >= 70) {\n  workflow_summary.hindi_summary = `⚠️ आपका workflow ${workflow_summary.performance_metrics.success_rate.toFixed(1)}% success rate के साथ चला है। कुछ components में minor issues हैं लेकिन overall functionality ठीक है। कृपया failed nodes को check करें।`;\n  workflow_summary.recommendations.push('Check failed nodes and optimize configuration.');\n} else {\n  workflow_summary.hindi_summary = `❌ Workflow में significant issues हैं। Success rate केवल ${workflow_summary.performance_metrics.success_rate.toFixed(1)}% है। तुरंत troubleshooting की आवश्यकता है।`;\n  workflow_summary.recommendations.push('Immediate attention required. Check all credentials and connections.');\n}\n\n// Next steps based on performance\nif (workflow_summary.performance_metrics.success_rate >= 90) {\n  workflow_summary.next_steps = [\n    'Schedule regular automated runs',\n    'Set up monitoring alerts',\n    'Create backup workflows',\n    'Optimize for better performance'\n  ];\n} else {\n  workflow_summary.next_steps = [\n    'Debug failed components',\n    'Verify all credentials',\n    'Check network connectivity', \n    'Review error logs',\n    'Update configurations'\n  ];\n}\n\n// Email content for notification\nworkflow_summary.email_content = {\n  subject: `n8n Workflow ${workflow_summary.performance_metrics.success_rate >= 90 ? '✅ Success' : '⚠️ Issues'} - ${new Date().toLocaleString('hi-IN')}`,\n  html_body: `\n    <h2>🤖 n8n Workflow Execution Report</h2>\n    <h3>नमस्ते बालाजी जी,</h3>\n    \n    <p><strong>आपका automation workflow complete हो गया है!</strong></p>\n    \n    <h4>📊 Execution Summary:</h4>\n    <ul>\n      <li><strong>Success Rate:</strong> ${workflow_summary.performance_metrics.success_rate.toFixed(1)}%</li>\n      <li><strong>Total Time:</strong> ${(workflow_summary.performance_metrics.total_execution_time / 1000).toFixed(2)} seconds</li>\n      <li><strong>Successful Nodes:</strong> ${workflow_summary.summary_statistics.successful_nodes}/${workflow_summary.summary_statistics.total_nodes}</li>\n      <li><strong>Errors:</strong> ${workflow_summary.performance_metrics.error_count}</li>\n    </ul>\n    \n    <h4>🔍 Node Results:</h4>\n    <ul>\n      <li><strong>VPN Switch:</strong> ${workflow_summary.node_results.vpn_switch.status === 'success' ? '✅' : '❌'} ${workflow_summary.node_results.vpn_switch.status}</li>\n      <li><strong>GitHub Integration:</strong> ${workflow_summary.node_results.github_integration.status === 'success' ? '✅' : '❌'} ${workflow_summary.node_results.github_integration.status}</li>\n      <li><strong>Google Docs:</strong> ${workflow_summary.node_results.google_docs.status === 'success' ? '✅' : '❌'} ${workflow_summary.node_results.google_docs.status}</li>\n      <li><strong>Local AI:</strong> ${workflow_summary.node_results.local_ai.status === 'success' ? '✅' : '❌'} ${workflow_summary.node_results.local_ai.status}</li>\n      <li><strong>Validation:</strong> ${workflow_summary.node_results.execution_validation.status === 'success' ? '✅' : '❌'} ${workflow_summary.node_results.execution_validation.status}</li>\n    </ul>\n    \n    <h4>📝 Summary (हिंदी में):</h4>\n    <p><em>${workflow_summary.hindi_summary}</em></p>\n    \n    <h4>🎯 Next Steps:</h4>\n    <ul>\n      ${workflow_summary.next_steps.map(step => `<li>${step}</li>`).join('')}\n    </ul>\n    \n    <h4>📞 Support:</h4>\n    <p>किसी भी प्रकार की सहायता के लिए संपर्क करें: <a href=\"mailto:balaji.web.design1@gmail.com\">balaji.web.design1@gmail.com</a></p>\n    \n    <hr>\n    <p><small>Generated by n8n Automation System | ${new Date().toISOString()}</small></p>\n  `\n};\n\nreturn workflow_summary;"
+      },
+      "id": "summary-notification-node",
+      "name": "Summary & Notification Node",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "balaji.web.design1@gmail.com",
+        "subject": "={{$node['Summary & Notification Node'].json['email_content']['subject']}}",
+        "emailFormat": "html",
+        "message": "={{$node['Summary & Notification Node'].json['email_content']['html_body']}}",
+        "options": {
+          "ccList": "",
+          "bccList": "",
+          "replyTo": "balaji.web.design1@gmail.com"
+        }
+      },
+      "id": "final-email-node",
+      "name": "Final Email Confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmail-credentials",
+          "name": "Gmail OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "VPN Switch Node",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Test Command Node",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sample Test Payload Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VPN Switch Node": {
+      "main": [
+        [
+          {
+            "node": "GitHub Integration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Command Node": {
+      "main": [
+        [
+          {
+            "node": "GitHub Integration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub Integration": {
+      "main": [
+        [
+          {
+            "node": "Google Docs Integration",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Local AI Node (Gemma 3n/SHAKTI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs Integration": {
+      "main": [
+        [
+          {
+            "node": "Email Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local AI Node (Gemma 3n/SHAKTI)": {
+      "main": [
+        [
+          {
+            "node": "Execution Guide Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Notification": {
+      "main": [
+        [
+          {
+            "node": "Execution Validation Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sample Test Payload Node": {
+      "main": [
+        [
+          {
+            "node": "Execution Guide Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execution Guide Node": {
+      "main": [
+        [
+          {
+            "node": "Execution Validation Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execution Validation Node": {
+      "main": [
+        [
+          {
+            "node": "Summary & Notification Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary & Notification Node": {
+      "main": [
+        [
+          {
+            "node": "Final Email Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "workflow-error-handler"
+  },
+  "staticData": {
+    "node:Webhook Trigger": {
+      "webhookId": "balaji-automation-webhook"
+    }
+  },
+  "tags": [
+    {
+      "name": "automation",
+      "id": "automation-tag"
+    },
+    {
+      "name": "balaji",
+      "id": "balaji-tag"
+    },
+    {
+      "name": "parul-university",
+      "id": "parul-tag"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-25T00:00:00.000Z",
+  "versionId": "1.0.0"
+}

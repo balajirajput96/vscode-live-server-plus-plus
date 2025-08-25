@@ -1,0 +1,91 @@
+# Caddyfile for n8n reverse proxy
+{$DOMAIN} {
+    # Reverse proxy to n8n
+    reverse_proxy n8n:5678 {
+        # Header forwarding for WebSockets
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+    }
+
+    # Automatic HTTPS with Let's Encrypt
+    tls {$EMAIL}
+
+    # Security headers
+    header {
+        # HSTS
+        Strict-Transport-Security max-age=31536000;
+        # Prevent MIME sniffing
+        X-Content-Type-Options nosniff
+        # XSS Protection
+        X-XSS-Protection "1; mode=block"
+        # Prevent embedding in frames
+        X-Frame-Options DENY
+        # Referrer Policy
+        Referrer-Policy strict-origin-when-cross-origin
+        # Content Security Policy
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws: wss:; font-src 'self';"
+    }
+
+    # Enable gzip compression
+    encode gzip
+
+    # Logging
+    log {
+        output file /var/log/caddy/{$DOMAIN}.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+        level INFO
+    }
+
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+    }
+
+    # Webhook endpoints
+    handle /webhook/* {
+        reverse_proxy n8n:5678
+    }
+
+    # API endpoints
+    handle /api/* {
+        reverse_proxy n8n:5678
+    }
+
+    # Static files for custom nodes
+    handle /static/* {
+        file_server {
+            root /var/www/static
+        }
+    }
+}
+
+# Monitoring subdomain (optional)
+monitoring.{$DOMAIN} {
+    # Grafana dashboard
+    handle /grafana/* {
+        reverse_proxy grafana:3000
+    }
+    
+    # Prometheus (restricted access)
+    handle /prometheus/* {
+        reverse_proxy prometheus:9090
+        # Basic auth for prometheus
+        basicauth {
+            balaji $2a$10$example-hash-here
+        }
+    }
+    
+    tls {$EMAIL}
+}
+
+# Redirect www to non-www
+www.{$DOMAIN} {
+    redir https://{$DOMAIN}{uri} permanent
+}
