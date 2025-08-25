@@ -40,7 +40,12 @@
     "compile": "tsc -p ./ && npm run copy-assets",
     "watch": "npm run copy-assets  && tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "migrate-account": "node ./scripts/migrate-account.js",
+    "setup-n8n": "bash ./scripts/setup-n8n.sh",
+    "n8n:setup": "docker compose --env-file .env -f docker-compose.basic.yml up -d",
+    "n8n:setup-production": "docker compose --env-file .env -f docker-compose.reverse-proxy.yml up -d",
+    "n8n:stop": "docker compose down"
   },
   "main": "./out/extension/index.js",
   "contributes": {
