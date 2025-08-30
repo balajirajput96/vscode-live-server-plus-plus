@@ -1,0 +1,166 @@
+{
+  "name": "Low Storage Alert Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hour",
+              "hour": 2
+            }
+          ]
+        }
+      },
+      "id": "s1234567-1234-1234-1234-123456789abc",
+      "name": "Every 2 Hours Monitor Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "# Get storage information\necho 'Getting storage information...'\n\n# Get total and available storage in bytes\nstorage_info=$(df /sdcard | tail -1)\ntotal_kb=$(echo $storage_info | awk '{print $2}')\navailable_kb=$(echo $storage_info | awk '{print $4}')\nused_kb=$(echo $storage_info | awk '{print $3}')\n\n# Convert to MB for easier handling\ntotal_mb=$((total_kb / 1024))\navailable_mb=$((available_kb / 1024))\nused_mb=$((used_kb / 1024))\n\n# Calculate percentage used\nused_percent=$((used_mb * 100 / total_mb))\navailable_percent=$((100 - used_percent))\n\necho \"total_mb:$total_mb\"\necho \"available_mb:$available_mb\"\necho \"used_mb:$used_mb\"\necho \"used_percent:$used_percent\"\necho \"available_percent:$available_percent\""
+      },
+      "id": "s2234567-1234-1234-1234-123456789abc",
+      "name": "Check Storage Status",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse storage information\nconst output = $input.first().json.stdout;\nconst lines = output.split('\\n');\n\nlet totalMB = 0;\nlet availableMB = 0;\nlet usedMB = 0;\nlet usedPercent = 0;\nlet availablePercent = 0;\n\nlines.forEach(line => {\n  if (line.includes('total_mb:')) totalMB = parseInt(line.split(':')[1]);\n  if (line.includes('available_mb:')) availableMB = parseInt(line.split(':')[1]);\n  if (line.includes('used_mb:')) usedMB = parseInt(line.split(':')[1]);\n  if (line.includes('used_percent:')) usedPercent = parseInt(line.split(':')[1]);\n  if (line.includes('available_percent:')) availablePercent = parseInt(line.split(':')[1]);\n});\n\n// Determine alert level\nlet alertLevel = 'normal';\nlet alertMessage = '';\nlet shouldAlert = false;\n\nif (availablePercent <= 5) {\n  alertLevel = 'critical';\n  alertMessage = '🚨 CRITICAL: Less than 5% storage remaining!';\n  shouldAlert = true;\n} else if (availablePercent <= 10) {\n  alertLevel = 'high';\n  alertMessage = '⚠️ HIGH: Less than 10% storage remaining!';\n  shouldAlert = true;\n} else if (availablePercent <= 20) {\n  alertLevel = 'medium';\n  alertMessage = '⚡ MEDIUM: Less than 20% storage remaining!';\n  shouldAlert = true;\n} else {\n  alertLevel = 'normal';\n  alertMessage = '✅ Storage levels normal';\n  shouldAlert = false;\n}\n\nreturn [{\n  json: {\n    total_mb: totalMB,\n    available_mb: availableMB,\n    used_mb: usedMB,\n    used_percent: usedPercent,\n    available_percent: availablePercent,\n    alert_level: alertLevel,\n    alert_message: alertMessage,\n    should_alert: shouldAlert,\n    timestamp: new Date().toISOString(),\n    formatted_total: `${(totalMB / 1024).toFixed(1)} GB`,\n    formatted_available: `${(availableMB / 1024).toFixed(1)} GB`,\n    formatted_used: `${(usedMB / 1024).toFixed(1)} GB`\n  }\n}];"
+      },
+      "id": "s3234567-1234-1234-1234-123456789abc",
+      "name": "Process Storage Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "should-alert-condition",
+              "leftValue": "={{ $json.should_alert }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "s4234567-1234-1234-1234-123456789abc",
+      "name": "Check If Alert Needed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "{{ $('Process Storage Data').item.json.alert_message }}\n\n📊 **Storage Report:**\n• **Total:** {{ $('Process Storage Data').item.json.formatted_total }}\n• **Available:** {{ $('Process Storage Data').item.json.formatted_available }} ({{ $('Process Storage Data').item.json.available_percent }}%)\n• **Used:** {{ $('Process Storage Data').item.json.formatted_used }} ({{ $('Process Storage Data').item.json.used_percent }}%)\n\n💡 **Recommended Actions:**\n{% if $('Process Storage Data').item.json.alert_level == 'critical' %}• Delete unnecessary files immediately\n• Move photos to cloud storage\n• Clear app caches\n• Remove old downloads{% elif $('Process Storage Data').item.json.alert_level == 'high' %}• Review and delete old files\n• Upload photos to cloud\n• Clear caches{% else %}• Consider cleanup soon\n• Regular maintenance{% endif %}\n\n🕐 **Time:** {{ new Date().toLocaleString() }}"
+      },
+      "id": "s5234567-1234-1234-1234-123456789abc",
+      "name": "Send Storage Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 2 Hours Monitor Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Storage Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Storage Status": {
+      "main": [
+        [
+          {
+            "node": "Process Storage Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Storage Data": {
+      "main": [
+        [
+          {
+            "node": "Check If Alert Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Alert Needed": {
+      "main": [
+        [
+          {
+            "node": "Send Storage Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "android-automation",
+      "name": "Android Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}
