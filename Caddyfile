@@ -1,0 +1,31 @@
+{DOMAIN} {
+    reverse_proxy n8n:5678
+    
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent XSS attacks
+        X-XSS-Protection "1; mode=block"
+        # Prevent MIME sniffing
+        X-Content-Type-Options "nosniff"
+        # Clickjacking protection
+        X-Frame-Options "SAMEORIGIN"
+        # CSP header
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
+    }
+    
+    # Logging
+    log {
+        output file /var/log/caddy/n8n.log
+        level INFO
+    }
+    
+    # TLS configuration
+    tls {EMAIL}
+}
+
+# Health check endpoint
+{DOMAIN}/health {
+    respond "OK" 200
+}

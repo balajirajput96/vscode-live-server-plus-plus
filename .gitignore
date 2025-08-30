@@ -2,3 +2,35 @@ out
 node_modules
 .vscode-test/
 *.vsix
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Career automation system environment
+career-automation-system/.env
+career-automation-system/.env.local
+
+# n8n automation system files
+models/
+backups/
+vpn-config/
+credentials/*.json
+!credentials/credentials-template.json
+
+# Docker volumes
+*_data/
+
+# AI model files
+*.bin
+*.gguf
+*.pt
+*.safetensors
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db

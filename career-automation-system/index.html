@@ -32,6 +32,9 @@
             <button class="nav-tab" data-tab="jobs">
                 <i class="fas fa-search"></i> Job Tracker
             </button>
+            <button class="nav-tab" data-tab="career-plan">
+                <i class="fas fa-route"></i> Career Planning
+            </button>
             <button class="nav-tab" data-tab="prompts">
                 <i class="fas fa-magic"></i> AI Prompts
             </button>
@@ -57,13 +60,13 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="projectDescription">प्रोजेक्ट का विवरण:</label>
-                            <textarea id="projectDescription" placeholder="प्रोजेक्ट का लक्ष्य और उपयोग किए गए टूल्स बताएं..." rows="3"></textarea>
+                            <label for="projectDesc">प्रोजेक्ट का विवरण:</label>
+                            <textarea id="projectDesc" placeholder="प्रोजेक्ट का लक्ष्य और उपयोग किए गए टूल्स बताएं..." rows="3"></textarea>
                         </div>
                         
                         <div class="form-group">
-                            <label for="toolsUsed">उपयोग किए गए टूल्स:</label>
-                            <input type="text" id="toolsUsed" placeholder="Python, Pandas, Matplotlib, SQL">
+                            <label for="projectTech">उपयोग किए गए टूल्स:</label>
+                            <input type="text" id="projectTech" placeholder="Python, Pandas, Matplotlib, SQL">
                         </div>
                         
                         <div class="form-group">
@@ -72,13 +75,18 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="keyFindings">मुख्य निष्कर्ष:</label>
-                            <textarea id="keyFindings" placeholder="आपके विश्लेषण के मुख्य परिणाम..." rows="3"></textarea>
+                            <label for="projectConclusion">मुख्य निष्कर्ष:</label>
+                            <textarea id="projectConclusion" placeholder="आपके विश्लेषण के मुख्य परिणाम..." rows="3"></textarea>
                         </div>
                         
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-magic"></i> AI से README बनाएं
-                        </button>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-magic"></i> AI से README बनाएं
+                            </button>
+                            <button type="button" class="btn btn-github" onclick="showGitHubSetup()">
+                                <i class="fab fa-github"></i> GitHub Setup
+                            </button>
+                        </div>
                     </form>
                 </div>
                 
@@ -230,27 +238,73 @@
                     </div>
                     
                     <div class="company-list">
-                        <div class="company-card">
+                        <div class="company-card entry-level">
                             <h3>Sun Pharmaceutical Industries</h3>
-                            <p><strong>पद:</strong> Bioinformatics Analyst</p>
-                            <p><strong>स्थान:</strong> मुंबई, महाराष्ट्र</p>
-                            <p><strong>अनुभव:</strong> 1-3 वर्ष</p>
-                            <button class="btn-apply">आवेदन करें</button>
-                        </div>
-                        
-                        <div class="company-card">
-                            <h3>Zydus Cadila</h3>
-                            <p><strong>पद:</strong> Clinical Data Analyst</p>
-                            <p><strong>स्थान:</strong> अहमदाबाद, गुजरात</p>
-                            <p><strong>अनुभव:</strong> 0-2 वर्ष</p>
-                            <button class="btn-apply">आवेदन करें</button>
-                        </div>
-                        
-                        <div class="company-card">
-                            <h3>Alembic Pharmaceuticals</h3>
-                            <p><strong>पद:</strong> Research Associate</p>
+                            <p><strong>पद:</strong> QC/QA Trainee</p>
                             <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
-                            <p><strong>अनुभव:</strong> 1-4 वर्ष</p>
+                            <p><strong>सैलरी:</strong> ₹15,000–25,000</p>
+                            <p><strong>अनुभव:</strong> 0-1 वर्ष (Freshers Welcome)</p>
+                            <p><strong>आवेदन:</strong> Naukri, NAPS Portal, Walk-in</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card entry-level">
+                            <h3>Zydus Lifesciences</h3>
+                            <p><strong>पद:</strong> Production Trainee</p>
+                            <p><strong>स्थान:</strong> अहमदाबाद, गुजरात</p>
+                            <p><strong>सैलरी:</strong> ₹14,000–20,000</p>
+                            <p><strong>अनुभव:</strong> 0-1 वर्ष (Freshers Welcome)</p>
+                            <p><strong>आवेदन:</strong> नेटवर्किंग, प्लेसमेंट सेल</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card entry-level">
+                            <h3>Alembic Pharmaceuticals</h3>
+                            <p><strong>पद:</strong> Lab Technician</p>
+                            <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
+                            <p><strong>सैलरी:</strong> ₹14,000–22,000</p>
+                            <p><strong>अनुभव:</strong> 0-1 वर्ष (Freshers Welcome)</p>
+                            <p><strong>आवेदन:</strong> जॉब पोर्टल्स, फिजिकल विजिट</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card entry-level">
+                            <h3>Supratech Micropath Lab</h3>
+                            <p><strong>पद:</strong> Lab Technician</p>
+                            <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
+                            <p><strong>सैलरी:</strong> ₹14,000–22,000</p>
+                            <p><strong>अनुभव:</strong> 0-2 वर्ष</p>
+                            <p><strong>आवेदन:</strong> जॉब पोर्टल्स, फिजिकल विजिट</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card entry-level">
+                            <h3>Bills Biotech</h3>
+                            <p><strong>पद:</strong> Research Assistant</p>
+                            <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
+                            <p><strong>सैलरी:</strong> ₹16,000–28,000</p>
+                            <p><strong>अनुभव:</strong> 0-1 वर्ष (Freshers Welcome)</p>
+                            <p><strong>आवेदन:</strong> डायरेक्ट ईमेल, LinkedIn</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card">
+                            <h3>Abbott Healthcare</h3>
+                            <p><strong>पद:</strong> Medical Representative</p>
+                            <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
+                            <p><strong>सैलरी:</strong> ₹18,000–40,000</p>
+                            <p><strong>अनुभव:</strong> 0-2 वर्ष</p>
+                            <p><strong>आवेदन:</strong> डिस्ट्रिक्ट मैनेजर संपर्क</p>
+                            <button class="btn-apply">आवेदन करें</button>
+                        </div>
+                        
+                        <div class="company-card">
+                            <h3>Cipla Limited</h3>
+                            <p><strong>पद:</strong> Medical Representative</p>
+                            <p><strong>स्थान:</strong> वडोदरा, गुजरात</p>
+                            <p><strong>सैलरी:</strong> ₹18,000–40,000</p>
+                            <p><strong>अनुभव:</strong> 0-2 वर्ष</p>
+                            <p><strong>आवेदन:</strong> डिस्ट्रिक्ट मैनेजर संपर्क</p>
                             <button class="btn-apply">आवेदन करें</button>
                         </div>
                         
@@ -258,7 +312,9 @@
                             <h3>Dr. Reddy's Laboratories</h3>
                             <p><strong>पद:</strong> Data Scientist</p>
                             <p><strong>स्थान:</strong> हैदराबाद, तेलंगाना</p>
+                            <p><strong>सैलरी:</strong> ₹40,000–80,000</p>
                             <p><strong>अनुभव:</strong> 2-5 वर्ष</p>
+                            <p><strong>आवेदन:</strong> Naukri, LinkedIn</p>
                             <button class="btn-apply">आवेदन करें</button>
                         </div>
                     </div>
@@ -378,6 +434,121 @@
                             <p class="metric-change positive">+1 इस सप्ताह</p>
                         </div>
                     </div>
+
+                    <!-- New Career Progression Metrics -->
+                    <div class="metric-card career-milestone">
+                        <div class="metric-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Courses Completed</h3>
+                            <p class="metric-value">4/12</p>
+                            <p class="metric-change positive">Python & SQL Done</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card career-milestone">
+                        <div class="metric-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Monthly Income</h3>
+                            <p class="metric-value">₹18,500</p>
+                            <p class="metric-change positive">Apprenticeship Active</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card career-milestone">
+                        <div class="metric-icon">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Career Phase</h3>
+                            <p class="metric-value">Phase 2</p>
+                            <p class="metric-change positive">Skills Building</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card career-milestone">
+                        <div class="metric-icon">
+                            <i class="fas fa-target"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Goal Progress</h3>
+                            <p class="metric-value">65%</p>
+                            <p class="metric-change positive">On Track for 18-month goal</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Progression Timeline -->
+                <div class="career-timeline-section">
+                    <h3><i class="fas fa-clock"></i> Career Transition Timeline</h3>
+                    <div class="timeline-progress">
+                        <div class="timeline-phase completed">
+                            <div class="phase-marker">✓</div>
+                            <div class="phase-content">
+                                <h4>Phase 1: Foundation (0-3 months)</h4>
+                                <p>Job secured, basic setup complete</p>
+                                <div class="phase-status">Completed</div>
+                            </div>
+                        </div>
+                        <div class="timeline-phase active">
+                            <div class="phase-marker">2</div>
+                            <div class="phase-content">
+                                <h4>Phase 2: Skill Building (3-9 months)</h4>
+                                <p>Python, SQL, Bioinformatics courses</p>
+                                <div class="phase-status">In Progress (65%)</div>
+                            </div>
+                        </div>
+                        <div class="timeline-phase pending">
+                            <div class="phase-marker">3</div>
+                            <div class="phase-content">
+                                <h4>Phase 3: Portfolio & Projects (9-15 months)</h4>
+                                <p>Advanced projects, GitHub portfolio</p>
+                                <div class="phase-status">Upcoming</div>
+                            </div>
+                        </div>
+                        <div class="timeline-phase pending">
+                            <div class="phase-marker">4</div>
+                            <div class="phase-content">
+                                <h4>Phase 4: Transition (15-18 months)</h4>
+                                <p>Bioinformatics job applications</p>
+                                <div class="phase-status">Future</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Tracking -->
+                <div class="financial-tracking">
+                    <h3><i class="fas fa-chart-pie"></i> Financial Progress</h3>
+                    <div class="financial-summary">
+                        <div class="financial-item income">
+                            <h4>Monthly Income</h4>
+                            <div class="amount">₹18,500</div>
+                            <div class="breakdown">
+                                <span>Apprenticeship: ₹15,000</span>
+                                <span>Freelance: ₹3,500</span>
+                            </div>
+                        </div>
+                        <div class="financial-item investment">
+                            <h4>Skill Investment</h4>
+                            <div class="amount">₹8,500</div>
+                            <div class="breakdown">
+                                <span>Total Budget: ₹25,000</span>
+                                <span>Remaining: ₹16,500</span>
+                            </div>
+                        </div>
+                        <div class="financial-item roi">
+                            <h4>Projected ROI</h4>
+                            <div class="amount">250%</div>
+                            <div class="breakdown">
+                                <span>18-month target: ₹45,000/month</span>
+                                <span>Career growth on track</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="progress-section">
@@ -413,9 +584,244 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Career Planning Section -->
+            <section id="career-plan" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-route"></i> संपूर्ण करियर योजना</h2>
+                    <p>बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक - आपका व्यावहारिक रोडमैप</p>
+                </div>
+
+                <!-- Decision Framework -->
+                <div class="career-section">
+                    <h3><i class="fas fa-crossroads"></i> निर्णय फ्रेमवर्क: अभी जॉब या आगे की पढ़ाई?</h3>
+                    <div class="decision-grid">
+                        <div class="decision-card recommended">
+                            <h4><i class="fas fa-star"></i> सिफारिश: पहले जॉब</h4>
+                            <div class="decision-content">
+                                <ul>
+                                    <li><strong>पेड इंटर्नशिप/अप्रेंटिसशिप</strong> - तुरंत आय</li>
+                                    <li><strong>1 साल का औद्योगिक अनुभव</strong> - भविष्य में अधिक वैल्यू</li>
+                                    <li><strong>नौकरी + अपस्किलिंग</strong> - सबसे कारगर रणनीति</li>
+                                    <li><strong>व्यावहारिक कौशल</strong> - SOPs, GMP, डॉक्यूमेंटेशन</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="decision-card">
+                            <h4><i class="fas fa-graduation-cap"></i> बाद में पढ़ाई</h4>
+                            <div class="decision-content">
+                                <ul>
+                                    <li><strong>कार्यरत रहते हुए</strong> - Evening/Weekend courses</li>
+                                    <li><strong>Online Specialization</strong> - Python, SQL, R, Bioinformatics</li>
+                                    <li><strong>1-2 साल बाद</strong> - डिग्री के लिए apply करें</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Realistic Job Roles -->
+                <div class="career-section">
+                    <h3><i class="fas fa-briefcase"></i> अभी उपलब्ध जॉब अवसर</h3>
+                    <div class="jobs-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>पद</th>
+                                    <th>सैलरी</th>
+                                    <th>कंपनियाँ (वडोदरा)</th>
+                                    <th>आवेदन विधि</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>QC/QA Trainee</td>
+                                    <td>₹15,000–25,000</td>
+                                    <td>Sun Pharma, Zydus, Alembic</td>
+                                    <td>Naukri, NAPS Portal, Walk-in</td>
+                                </tr>
+                                <tr>
+                                    <td>Lab Technician</td>
+                                    <td>₹14,000–22,000</td>
+                                    <td>Supratech, Bills Biotech</td>
+                                    <td>जॉब पोर्टल्स, फिजिकल विजिट</td>
+                                </tr>
+                                <tr>
+                                    <td>Production Trainee</td>
+                                    <td>₹14,000–20,000</td>
+                                    <td>Zytex, इंफिनिटा, छोटी कंपनियाँ</td>
+                                    <td>नेटवर्किंग, प्लेसमेंट सेल</td>
+                                </tr>
+                                <tr>
+                                    <td>Research Assistant</td>
+                                    <td>₹16,000–28,000</td>
+                                    <td>छोटी लैब्स, स्टार्टअप्स</td>
+                                    <td>डायरेक्ट ईमेल, LinkedIn</td>
+                                </tr>
+                                <tr>
+                                    <td>Medical Representative</td>
+                                    <td>₹18,000–40,000</td>
+                                    <td>अब्बट, सिप्ला, रोश</td>
+                                    <td>डिस्ट्रिक्ट मैनेजर संपर्क</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Skills Roadmap -->
+                <div class="career-section">
+                    <h3><i class="fas fa-road"></i> बायोइन्फॉर्मेटिक्स स्किल रोडमैप</h3>
+                    <div class="roadmap-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker">1-2</div>
+                            <div class="timeline-content">
+                                <h4>महीने 1-2: Python & SQL Foundation</h4>
+                                <p>Python basics, SQL for Data Science (रोज़ 1-2 घंटे)</p>
+                                <div class="project-idea">प्रोजेक्ट: Simple lab data analysis in Jupyter</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">3-4</div>
+                            <div class="timeline-content">
+                                <h4>महीने 3-4: Bioinformatics Specialization</h4>
+                                <p>Coursera/edX से Bioinformatics कोर्स</p>
+                                <div class="project-idea">प्रोजेक्ट: NCBI/Genome data parsing script</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">5-6</div>
+                            <div class="timeline-content">
+                                <h4>महीने 5-6: R & Statistics</h4>
+                                <p>R Programming for Biostatistics</p>
+                                <div class="project-idea">प्रोजेक्ट: स्टेटिस्टिकल QC विश्लेषण</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">7-8</div>
+                            <div class="timeline-content">
+                                <h4>महीने 7-8: NGS & Cloud</h4>
+                                <p>NGS data analysis, Biopython, Cloud platforms</p>
+                                <div class="project-idea">प्रोजेक्ट: Simple pipeline for DNA analysis</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">9-12</div>
+                            <div class="timeline-content">
+                                <h4>महीने 9-12: Portfolio & Projects</h4>
+                                <p>Capstone Project, Complete Portfolio</p>
+                                <div class="project-idea">प्रोजेक्ट: पूरा workflow बनाएँ, वीडियो डेमो</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Plan -->
+                <div class="career-section">
+                    <h3><i class="fas fa-tasks"></i> तुरंत करने योग्य कार्य (अगले 24 घंटे)</h3>
+                    <div class="action-checklist">
+                        <div class="action-item">
+                            <input type="checkbox" id="action1">
+                            <label for="action1">Resume/LinkedIn आज ही अपडेट करें</label>
+                        </div>
+                        <div class="action-item">
+                            <input type="checkbox" id="action2">
+                            <label for="action2">NAPS/MY GUJARAT पोर्टल पर रजिस्टर करें</label>
+                        </div>
+                        <div class="action-item">
+                            <input type="checkbox" id="action3">
+                            <label for="action3">Sun Pharma, Zydus, Alembic की वेबसाइट पर आवेदन करें</label>
+                        </div>
+                        <div class="action-item">
+                            <input type="checkbox" id="action4">
+                            <label for="action4">LinkedIn पर 10-20 नए कनेक्शन बनाएँ</label>
+                        </div>
+                        <div class="action-item">
+                            <input type="checkbox" id="action5">
+                            <label for="action5">Upwork/Fiverr पर profile बनाएँ</label>
+                        </div>
+                        <div class="action-item">
+                            <input type="checkbox" id="action6">
+                            <label for="action6">Python/SQL सीखना शुरू करें</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Timeline -->
+                <div class="career-section">
+                    <h3><i class="fas fa-chart-line"></i> सफलता की संभावित टाइमलाइन</h3>
+                    <div class="success-timeline">
+                        <div class="success-milestone">
+                            <div class="milestone-period">30 दिन</div>
+                            <div class="milestone-goal">Interview calls आना शुरू</div>
+                            <div class="milestone-probability">90% संभावना</div>
+                        </div>
+                        <div class="success-milestone">
+                            <div class="milestone-period">60 दिन</div>
+                            <div class="milestone-goal">Job/apprenticeship offer</div>
+                            <div class="milestone-probability">85% संभावना</div>
+                        </div>
+                        <div class="success-milestone">
+                            <div class="milestone-period">6 महीने</div>
+                            <div class="milestone-goal">Stable income + basic upskilling</div>
+                            <div class="milestone-probability">80% संभावना</div>
+                        </div>
+                        <div class="success-milestone">
+                            <div class="milestone-period">12 महीने</div>
+                            <div class="milestone-goal">Advanced skills + industry experience</div>
+                            <div class="milestone-probability">75% संभावना</div>
+                        </div>
+                        <div class="success-milestone">
+                            <div class="milestone-period">18 महीने</div>
+                            <div class="milestone-goal">Bioinformatics transition ready</div>
+                            <div class="milestone-probability">70% संभावना</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Planning -->
+                <div class="career-section">
+                    <h3><i class="fas fa-rupee-sign"></i> वित्तीय योजना</h3>
+                    <div class="financial-grid">
+                        <div class="financial-card income">
+                            <h4>तुरंत आय स्रोत</h4>
+                            <ul>
+                                <li>Apprenticeship: ₹8,000-15,000/माह</li>
+                                <li>Freelance writing: ₹5,000-10,000/माह</li>
+                                <li><strong>कुल: ₹13,000-25,000/माह</strong></li>
+                            </ul>
+                        </div>
+                        <div class="financial-card investment">
+                            <h4>स्किल डेवलपमेंट निवेश</h4>
+                            <ul>
+                                <li>Python course: ₹3,000-5,000</li>
+                                <li>Bioinformatics specialization: ₹15,000-20,000</li>
+                                <li><strong>18 महीनों में कुल: ₹25,000-30,000</strong></li>
+                                <li><strong>ROI: 200-300% in 2 years</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important Warning -->
+                <div class="career-section warning">
+                    <h3><i class="fas fa-exclamation-triangle"></i> महत्वपूर्ण सलाह</h3>
+                    <div class="warning-content">
+                        <p><strong>IBM ₹2.6 Lakh Subscription बिल्कुल न खरीदें!</strong></p>
+                        <ul>
+                            <li><strong>Over-investment:</strong> आपकी current earning capacity के अनुपात में बहुत ज्यादा</li>
+                            <li><strong>Opportunity cost:</strong> यह पैसा job search और practical skills में invest करना बेहतर</li>
+                            <li><strong>Market reality:</strong> Employers practical experience > expensive certificates देखते हैं</li>
+                            <li><strong>Alternative:</strong> Free/low-cost courses से same knowledge मिल सकती है</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
+    <!-- GitHub API Integration -->
+    <script src="github-api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

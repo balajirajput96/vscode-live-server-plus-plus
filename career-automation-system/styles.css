@@ -706,3 +706,975 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #5a67d8;
 }
+
+/* GitHub Integration Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    padding: 0;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.close-modal:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-body p {
+    margin-bottom: 20px;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.modal-body .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-body .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.modal-body .form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-body .form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-body .form-group small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-github {
+    background: linear-gradient(135deg, #24292e 0%, #586069 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.btn-github:hover {
+    background: linear-gradient(135deg, #1c2025 0%, #4a5058 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(36, 41, 46, 0.3);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e0;
+}
+
+.automation-section {
+    margin-top: 30px;
+}
+
+.automation-section .card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.automation-section .card h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.automation-section textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.automation-section textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.automation-results {
+    background: #f7fafc;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.automation-results h4 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+}
+
+.result-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #48bb78;
+}
+
+.result-item.error {
+    border-left-color: #f56565;
+}
+
+.result-item h5 {
+    margin: 0 0 10px 0;
+    color: #2d3748;
+    font-size: 1.1rem;
+}
+
+.result-item p {
+    margin: 0;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.result-item a {
+    color: #667eea;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.result-item a:hover {
+    text-decoration: underline;
+}
+
+.repo-link-card {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.repo-link-card h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+}
+
+.repo-link-card p {
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+}
+
+.repo-link-card a {
+    color: #fff;
+    text-decoration: none;
+    word-break: break-all;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.repo-link-card a:hover {
+    background: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+}
+
+.repo-link-card .btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    margin-top: 10px;
+}
+
+.repo-link-card .btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Loading Animation Enhancement */
+.loading-overlay {
+    background: rgba(102, 126, 234, 0.95);
+    color: white;
+}
+
+.loading-content {
+    color: white;
+}
+
+/* Mobile Responsiveness for GitHub Features */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+    
+    .repo-link-card {
+        text-align: left;
+    }
+    
+    .automation-section .form-actions {
+        flex-direction: column;
+    }
+}
+
+/* Career Planning Styles */
+.career-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.career-section h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.career-section h3 i {
+    color: #667eea;
+}
+
+/* Decision Framework Styles */
+.decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.decision-card {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 15px;
+    padding: 25px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.decision-card.recommended {
+    background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+    border-color: #38b2ac;
+}
+
+.decision-card h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.decision-card.recommended h4 i {
+    color: #38b2ac;
+}
+
+.decision-content ul {
+    list-style: none;
+}
+
+.decision-content li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.decision-content li:last-child {
+    border-bottom: none;
+}
+
+/* Jobs Table Styles */
+.jobs-table {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.jobs-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.jobs-table th,
+.jobs-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.jobs-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.jobs-table tr:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+/* Timeline Styles */
+.roadmap-timeline {
+    position: relative;
+    margin-top: 30px;
+}
+
+.roadmap-timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+    border-radius: 3px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    padding-left: 80px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.timeline-content {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #667eea;
+}
+
+.timeline-content h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.timeline-content p {
+    color: #718096;
+    margin-bottom: 15px;
+}
+
+.project-idea {
+    background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+    padding: 12px 15px;
+    border-radius: 8px;
+    border-left: 4px solid #f6ad55;
+    font-weight: 500;
+    color: #744210;
+}
+
+/* Action Checklist Styles */
+.action-checklist {
+    margin-top: 20px;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.action-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.action-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.action-item label {
+    font-weight: 500;
+    color: #2d3748;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* Success Timeline Styles */
+.success-timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.success-milestone {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #38b2ac;
+    transition: all 0.3s ease;
+}
+
+.success-milestone:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.milestone-period {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.milestone-goal {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3748;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.milestone-probability {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #38b2ac;
+    background: rgba(56, 178, 172, 0.1);
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* Financial Planning Styles */
+.financial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.financial-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.financial-card.income {
+    border-left: 4px solid #48bb78;
+}
+
+.financial-card.investment {
+    border-left: 4px solid #ed8936;
+}
+
+.financial-card h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 15px;
+}
+
+.financial-card ul {
+    list-style: none;
+}
+
+.financial-card li {
+    padding: 8px 0;
+    color: #718096;
+}
+
+.financial-card li strong {
+    color: #2d3748;
+}
+
+/* Warning Section Styles */
+.career-section.warning {
+    background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+    border-left: 6px solid #f56565;
+}
+
+.warning-content p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #742a2a;
+    margin-bottom: 15px;
+}
+
+.warning-content ul {
+    list-style: none;
+}
+
+.warning-content li {
+    padding: 8px 0;
+    color: #742a2a;
+    font-weight: 500;
+}
+
+.warning-content li strong {
+    color: #2d0909;
+}
+
+/* Responsive Design for Career Planning */
+@media (max-width: 768px) {
+    .decision-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .jobs-table {
+        font-size: 0.85rem;
+    }
+    
+    .jobs-table th,
+    .jobs-table td {
+        padding: 10px 12px;
+    }
+    
+    .timeline-item {
+        padding-left: 60px;
+    }
+    
+    .timeline-marker {
+        width: 45px;
+        height: 45px;
+        font-size: 0.8rem;
+    }
+    
+    .roadmap-timeline::before {
+        left: 22px;
+    }
+    
+    .success-timeline {
+        grid-template-columns: 1fr;
+    }
+    
+    .financial-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Entry-level Job Cards Enhancement */
+.company-card.entry-level {
+    border-left: 4px solid #48bb78;
+    background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+}
+
+.company-card.entry-level::before {
+    content: "Freshers Welcome";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #48bb78;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.company-card {
+    position: relative;
+}
+
+/* Enhanced Analytics Styles */
+.metric-card.career-milestone {
+    background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+    border-left: 4px solid #f6ad55;
+}
+
+.metric-card.career-milestone .metric-icon i {
+    color: #dd6b20;
+}
+
+/* Career Timeline Styles */
+.career-timeline-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 30px 0;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.career-timeline-section h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.career-timeline-section h3 i {
+    color: #667eea;
+}
+
+.timeline-progress {
+    display: grid;
+    gap: 20px;
+}
+
+.timeline-phase {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.timeline-phase:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.timeline-phase.completed {
+    background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+    border-left: 4px solid #38b2ac;
+}
+
+.timeline-phase.active {
+    background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+    border-left: 4px solid #4299e1;
+}
+
+.timeline-phase.pending {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-left: 4px solid #a0aec0;
+}
+
+.phase-marker {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.timeline-phase.completed .phase-marker {
+    background: #38b2ac;
+    color: white;
+}
+
+.timeline-phase.active .phase-marker {
+    background: #4299e1;
+    color: white;
+}
+
+.timeline-phase.pending .phase-marker {
+    background: #a0aec0;
+    color: white;
+}
+
+.phase-content {
+    flex: 1;
+}
+
+.phase-content h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.phase-content p {
+    color: #718096;
+    margin-bottom: 10px;
+}
+
+.phase-status {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.timeline-phase.completed .phase-status {
+    background: rgba(56, 178, 172, 0.2);
+    color: #2c5530;
+}
+
+.timeline-phase.active .phase-status {
+    background: rgba(66, 153, 225, 0.2);
+    color: #2a4365;
+}
+
+.timeline-phase.pending .phase-status {
+    background: rgba(160, 174, 192, 0.2);
+    color: #4a5568;
+}
+
+/* Financial Tracking Styles */
+.financial-tracking {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 30px 0;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.financial-tracking h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.financial-tracking h3 i {
+    color: #667eea;
+}
+
+.financial-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.financial-item {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.financial-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.financial-item.income {
+    border-top: 4px solid #48bb78;
+}
+
+.financial-item.investment {
+    border-top: 4px solid #ed8936;
+}
+
+.financial-item.roi {
+    border-top: 4px solid #667eea;
+}
+
+.financial-item h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 15px;
+}
+
+.amount {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.financial-item.income .amount {
+    color: #48bb78;
+}
+
+.financial-item.investment .amount {
+    color: #ed8936;
+}
+
+.financial-item.roi .amount {
+    color: #667eea;
+}
+
+.breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.breakdown span {
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+/* Responsive Design for Enhanced Analytics */
+@media (max-width: 768px) {
+    .timeline-progress {
+        gap: 15px;
+    }
+    
+    .timeline-phase {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .phase-marker {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .financial-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .amount {
+        font-size: 1.5rem;
+    }
+}
