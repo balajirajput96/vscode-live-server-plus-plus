@@ -1,0 +1,313 @@
+{
+  "name": "Auto-Upload Files Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "android-upload",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "f1234567-1234-1234-1234-123456789abc",
+      "name": "Webhook - File Upload Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "android-upload-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "upload-condition-1",
+              "leftValue": "={{ $json.file_path }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            },
+            {
+              "id": "upload-condition-2", 
+              "leftValue": "={{ $json.file_size }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f2234567-1234-1234-1234-123456789abc",
+      "name": "Check File Validity",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "resource": "file",
+        "operation": "upload",
+        "name": "={{ $json.file_name }}",
+        "resolveData": true,
+        "parents": {
+          "values": [
+            {
+              "id": "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            }
+          ]
+        },
+        "options": {
+          "keepRevisionForever": false
+        }
+      },
+      "id": "f3234567-1234-1234-1234-123456789abc", 
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-credentials",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "success-condition-1",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f4234567-1234-1234-1234-123456789abc",
+      "name": "Check Upload Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "rm -f '{{ $('Webhook - File Upload Trigger').item.json.file_path }}'"
+      },
+      "id": "f5234567-1234-1234-1234-123456789abc",
+      "name": "Delete Local File",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "{{ $json.telegram_chat_id || 'YOUR_TELEGRAM_CHAT_ID' }}",
+        "text": "✅ File uploaded successfully!\n\n📁 **File:** {{ $('Webhook - File Upload Trigger').item.json.file_name }}\n☁️ **Drive ID:** {{ $('Upload to Google Drive').item.json.id }}\n🗑️ **Local file deleted:** {{ $('Webhook - File Upload Trigger').item.json.file_path }}\n\n🕐 **Time:** {{ new Date().toLocaleString() }}"
+      },
+      "id": "f6234567-1234-1234-1234-123456789abc",
+      "name": "Send Success Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1340,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials", 
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "{{ $json.telegram_chat_id || 'YOUR_TELEGRAM_CHAT_ID' }}",
+        "text": "❌ Upload failed!\n\n📁 **File:** {{ $('Webhook - File Upload Trigger').item.json.file_name }}\n📂 **Path:** {{ $('Webhook - File Upload Trigger').item.json.file_path }}\n\n⚠️ Local file NOT deleted for safety.\n\n🕐 **Time:** {{ new Date().toLocaleString() }}"
+      },
+      "id": "f7234567-1234-1234-1234-123456789abc",
+      "name": "Send Error Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        480
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"success\", \"message\": \"File uploaded and deleted\", \"drive_id\": $('Upload to Google Drive').item.json.id, \"timestamp\": new Date().toISOString() } }}"
+      },
+      "id": "f8234567-1234-1234-1234-123456789abc",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json", 
+        "responseBody": "={{ { \"status\": \"error\", \"message\": \"Upload failed\", \"file_path\": $('Webhook - File Upload Trigger').item.json.file_path, \"timestamp\": new Date().toISOString() } }}"
+      },
+      "id": "f9234567-1234-1234-1234-123456789abc",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - File Upload Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check File Validity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check File Validity": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Check Upload Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Upload Success": {
+      "main": [
+        [
+          {
+            "node": "Delete Local File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Local File": {
+      "main": [
+        [
+          {
+            "node": "Send Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Success Notification": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Error Notification": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "android-automation",
+      "name": "Android Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,332 @@
+{
+  "name": "Cache Cleaner Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weekday",
+              "weekday": 0
+            },
+            {
+              "field": "hour",
+              "hour": 2
+            },
+            {
+              "field": "minute",
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "id": "c1234567-1234-1234-1234-123456789abc",
+      "name": "Every Sunday 2AM Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "🧹 Starting Weekly Cache Cleanup...\n\n📱 **Target Apps:**\n• Instagram\n• Facebook\n• YouTube\n• Chrome Browser\n• WhatsApp\n• Telegram\n\n⏰ **Started:** {{ new Date().toLocaleString() }}"
+      },
+      "id": "c2234567-1234-1234-1234-123456789abc",
+      "name": "Send Cleanup Start Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Define cache-heavy apps to clean\nconst cacheHeavyApps = [\n  { package: 'com.instagram.android', name: 'Instagram' },\n  { package: 'com.facebook.katana', name: 'Facebook' },\n  { package: 'com.google.android.youtube', name: 'YouTube' },\n  { package: 'com.android.chrome', name: 'Chrome' },\n  { package: 'com.whatsapp', name: 'WhatsApp' },\n  { package: 'org.telegram.messenger', name: 'Telegram' },\n  { package: 'com.twitter.android', name: 'Twitter' },\n  { package: 'com.snapchat.android', name: 'Snapchat' },\n  { package: 'com.google.android.apps.photos', name: 'Google Photos' },\n  { package: 'com.spotify.music', name: 'Spotify' }\n];\n\nreturn cacheHeavyApps.map(app => ({ json: app }));"
+      },
+      "id": "c3234567-1234-1234-1234-123456789abc",
+      "name": "Generate App List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "c4234567-1234-1234-1234-123456789abc",
+      "name": "Process Apps One by One",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "pm clear {{ $json.package }} 2>/dev/null || echo 'App not found: {{ $json.package }}'"
+      },
+      "id": "c5234567-1234-1234-1234-123456789abc",
+      "name": "Clear App Cache",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check if cache clear was successful\nconst output = $input.first().json.stdout;\nconst appName = $('Process Apps One by One').item.json.name;\nconst packageName = $('Process Apps One by One').item.json.package;\n\nconst success = !output.includes('App not found') && !output.includes('error');\n\nreturn [{\n  json: {\n    app_name: appName,\n    package_name: packageName,\n    cache_cleared: success,\n    output: output,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "c6234567-1234-1234-1234-123456789abc",
+      "name": "Check Clear Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "du -sh /data/data/* 2>/dev/null | sort -hr | head -10 || echo 'Cannot access app data directories'"
+      },
+      "id": "c7234567-1234-1234-1234-123456789abc",
+      "name": "Check Storage Usage",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "# Clean additional system caches\necho 'Cleaning system caches...'\n\n# Clear download cache\nrm -rf /sdcard/Download/.thumbnails 2>/dev/null\nrm -rf /sdcard/Android/data/*/cache/* 2>/dev/null\n\n# Clear browser cache\nrm -rf /sdcard/Android/data/com.android.chrome/cache/* 2>/dev/null\n\n# Clear temporary files\nrm -rf /sdcard/.temp/* 2>/dev/null\nrm -rf /sdcard/temp/* 2>/dev/null\n\n# Clear log files\nfind /sdcard -name '*.log' -type f -delete 2>/dev/null\nfind /sdcard -name '*.tmp' -type f -delete 2>/dev/null\n\necho 'System cache cleanup completed'"
+      },
+      "id": "c8234567-1234-1234-1234-123456789abc",
+      "name": "Clean System Caches",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "df -h /sdcard | tail -1 | awk '{print $4}'"
+      },
+      "id": "c9234567-1234-1234-1234-123456789abc",
+      "name": "Check Available Storage",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate cleanup statistics\nconst allResults = $('Check Clear Result').all();\nconst totalApps = allResults.length;\nconst successfulClears = allResults.filter(item => item.json.cache_cleared).length;\nconst failedClears = totalApps - successfulClears;\n\nconst storageInfo = $('Check Available Storage').first().json.stdout.trim();\nconst storageUsage = $('Check Storage Usage').first().json.stdout;\n\nconst successApps = allResults\n  .filter(item => item.json.cache_cleared)\n  .map(item => `✅ ${item.json.app_name}`)\n  .join('\\n');\n\nconst failedApps = allResults\n  .filter(item => !item.json.cache_cleared)\n  .map(item => `❌ ${item.json.app_name}`)\n  .join('\\n');\n\nreturn [{\n  json: {\n    total_apps: totalApps,\n    successful_clears: successfulClears,\n    failed_clears: failedClears,\n    available_storage: storageInfo,\n    storage_usage_top: storageUsage.split('\\n').slice(0, 5).join('\\n'),\n    success_apps: successApps,\n    failed_apps: failedApps,\n    cleanup_time: new Date().toLocaleString()\n  }\n}];"
+      },
+      "id": "c10234567-1234-1234-1234-123456789abc",
+      "name": "Generate Summary Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "🧹 **Weekly Cache Cleanup Complete!**\n\n📊 **Summary:**\n• **Total Apps:** {{ $json.total_apps }}\n• **Successfully Cleaned:** {{ $json.successful_clears }}\n• **Failed:** {{ $json.failed_clears }}\n• **Available Storage:** {{ $json.available_storage }}\n\n✅ **Successfully Cleaned:**\n{{ $json.success_apps }}\n\n{% if $json.failed_apps %}❌ **Failed to Clean:**\n{{ $json.failed_apps }}{% endif %}\n\n💾 **Top Storage Users:**\n```\n{{ $json.storage_usage_top }}\n```\n\n🕐 **Completed:** {{ $json.cleanup_time }}"
+      },
+      "id": "c11234567-1234-1234-1234-123456789abc",
+      "name": "Send Cleanup Summary",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2440,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "# Emergency cleanup if storage is critically low\navailable=$(df /sdcard | tail -1 | awk '{print $4}' | sed 's/[^0-9]//g')\nif [ \"$available\" -lt 1000000 ]; then\n  echo 'Performing emergency cleanup...'\n  \n  # Clear more aggressive caches\n  rm -rf /sdcard/DCIM/.thumbnails 2>/dev/null\n  rm -rf /sdcard/Pictures/.thumbnails 2>/dev/null\n  rm -rf /sdcard/Movies/.thumbnails 2>/dev/null\n  \n  # Clear old downloads\n  find /sdcard/Download -type f -mtime +7 -delete 2>/dev/null\n  \n  echo 'Emergency cleanup completed'\nelse\n  echo 'Storage level OK, no emergency cleanup needed'\nfi"
+      },
+      "id": "c12234567-1234-1234-1234-123456789abc",
+      "name": "Emergency Cleanup If Needed",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2660,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every Sunday 2AM Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send Cleanup Start Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Cleanup Start Notification": {
+      "main": [
+        [
+          {
+            "node": "Generate App List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate App List": {
+      "main": [
+        [
+          {
+            "node": "Process Apps One by One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Apps One by One": {
+      "main": [
+        [
+          {
+            "node": "Clear App Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear App Cache": {
+      "main": [
+        [
+          {
+            "node": "Check Clear Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Clear Result": {
+      "main": [
+        [
+          {
+            "node": "Check Storage Usage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Storage Usage": {
+      "main": [
+        [
+          {
+            "node": "Clean System Caches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean System Caches": {
+      "main": [
+        [
+          {
+            "node": "Check Available Storage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Available Storage": {
+      "main": [
+        [
+          {
+            "node": "Generate Summary Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Summary Stats": {
+      "main": [
+        [
+          {
+            "node": "Send Cleanup Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Cleanup Summary": {
+      "main": [
+        [
+          {
+            "node": "Emergency Cleanup If Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "android-automation",
+      "name": "Android Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

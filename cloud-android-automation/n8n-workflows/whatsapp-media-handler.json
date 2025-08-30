@@ -1,0 +1,417 @@
+{
+  "name": "WhatsApp Media Handler Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minute",
+              "minute": 30
+            }
+          ]
+        }
+      },
+      "id": "w1234567-1234-1234-1234-123456789abc",
+      "name": "Every 30 Minutes Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "find /sdcard/WhatsApp/Media -type f -name '*' -newer /tmp/last_whatsapp_check 2>/dev/null || find /sdcard/WhatsApp/Media -type f -name '*' -mmin -30"
+      },
+      "id": "w2234567-1234-1234-1234-123456789abc",
+      "name": "Find New WhatsApp Media",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse file list and create individual items\nconst output = $input.first().json.stdout;\nif (!output || output.trim() === '') {\n  return [];\n}\n\nconst files = output.trim().split('\\n').filter(file => file.length > 0);\nconst items = [];\n\nfor (const filePath of files) {\n  // Extract file info\n  const fileName = filePath.split('/').pop();\n  const isImage = /\\.(jpg|jpeg|png|gif|webp)$/i.test(fileName);\n  const isVideo = /\\.(mp4|mkv|avi|mov|3gp)$/i.test(fileName);\n  const isAudio = /\\.(mp3|wav|ogg|m4a|opus)$/i.test(fileName);\n  const isDocument = /\\.(pdf|doc|docx|txt|zip|rar)$/i.test(fileName);\n  \n  // Determine target folder\n  let targetFolder = 'WhatsApp/Other';\n  if (isImage) targetFolder = 'WhatsApp/Images';\n  else if (isVideo) targetFolder = 'WhatsApp/Videos';\n  else if (isAudio) targetFolder = 'WhatsApp/Audio';\n  else if (isDocument) targetFolder = 'WhatsApp/Documents';\n  \n  items.push({\n    file_path: filePath,\n    file_name: fileName,\n    file_type: isImage ? 'image' : isVideo ? 'video' : isAudio ? 'audio' : isDocument ? 'document' : 'other',\n    target_folder: targetFolder,\n    source: 'whatsapp'\n  });\n}\n\nreturn items;"
+      },
+      "id": "w3234567-1234-1234-1234-123456789abc",
+      "name": "Process File List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "w4234567-1234-1234-1234-123456789abc",
+      "name": "Process Files One by One",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "resource": "file",
+        "operation": "upload",
+        "name": "={{ $json.file_name }}",
+        "resolveData": true,
+        "parents": {
+          "values": [
+            {
+              "id": "1WhatsAppFolderID123456789"
+            }
+          ]
+        },
+        "options": {
+          "keepRevisionForever": false
+        }
+      },
+      "id": "w5234567-1234-1234-1234-123456789abc",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-credentials",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "upload-success-condition",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "w6234567-1234-1234-1234-123456789abc",
+      "name": "Check Upload Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "rm -f '{{ $('Process Files One by One').item.json.file_path }}'"
+      },
+      "id": "w7234567-1234-1234-1234-123456789abc",
+      "name": "Delete Local File",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo $(date) > /tmp/last_whatsapp_check"
+      },
+      "id": "w8234567-1234-1234-1234-123456789abc",
+      "name": "Update Check Timestamp",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "📱 WhatsApp Media Backup Complete!\n\n✅ **Processed:** {{ $('Process File List').all().length }} files\n☁️ **Uploaded:** {{ $runIndex + 1 }} files\n📁 **Type:** {{ $json.file_type }}\n🗑️ **Local cleaned:** Yes\n\n🕐 **Time:** {{ new Date().toLocaleString() }}"
+      },
+      "id": "w9234567-1234-1234-1234-123456789abc",
+      "name": "Send Summary Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "find /sdcard/Telegram -type f -name '*' -newer /tmp/last_telegram_check 2>/dev/null || find /sdcard/Telegram -type f -name '*' -mmin -30"
+      },
+      "id": "w10234567-1234-1234-1234-123456789abc",
+      "name": "Find New Telegram Media",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        460,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process Telegram files similar to WhatsApp\nconst output = $input.first().json.stdout;\nif (!output || output.trim() === '') {\n  return [];\n}\n\nconst files = output.trim().split('\\n').filter(file => file.length > 0);\nconst items = [];\n\nfor (const filePath of files) {\n  const fileName = filePath.split('/').pop();\n  const isImage = /\\.(jpg|jpeg|png|gif|webp)$/i.test(fileName);\n  const isVideo = /\\.(mp4|mkv|avi|mov|3gp)$/i.test(fileName);\n  const isAudio = /\\.(mp3|wav|ogg|m4a|opus)$/i.test(fileName);\n  const isDocument = /\\.(pdf|doc|docx|txt|zip|rar)$/i.test(fileName);\n  \n  let targetFolder = 'Telegram/Other';\n  if (isImage) targetFolder = 'Telegram/Images';\n  else if (isVideo) targetFolder = 'Telegram/Videos';\n  else if (isAudio) targetFolder = 'Telegram/Audio';\n  else if (isDocument) targetFolder = 'Telegram/Documents';\n  \n  items.push({\n    file_path: filePath,\n    file_name: fileName,\n    file_type: isImage ? 'image' : isVideo ? 'video' : isAudio ? 'audio' : isDocument ? 'document' : 'other',\n    target_folder: targetFolder,\n    source: 'telegram'\n  });\n}\n\nreturn items;"
+      },
+      "id": "w11234567-1234-1234-1234-123456789abc",
+      "name": "Process Telegram Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "resource": "file",
+        "operation": "upload",
+        "name": "={{ $json.file_name }}",
+        "resolveData": true,
+        "parents": {
+          "values": [
+            {
+              "id": "1TelegramFolderID123456789"
+            }
+          ]
+        },
+        "options": {
+          "keepRevisionForever": false
+        }
+      },
+      "id": "w12234567-1234-1234-1234-123456789abc",
+      "name": "Upload Telegram to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        900,
+        500
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-credentials",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "rm -f '{{ $json.file_path }}'"
+      },
+      "id": "w13234567-1234-1234-1234-123456789abc",
+      "name": "Delete Telegram File",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo $(date) > /tmp/last_telegram_check"
+      },
+      "id": "w14234567-1234-1234-1234-123456789abc",
+      "name": "Update Telegram Timestamp",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find New WhatsApp Media",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find New Telegram Media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find New WhatsApp Media": {
+      "main": [
+        [
+          {
+            "node": "Process File List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process File List": {
+      "main": [
+        [
+          {
+            "node": "Process Files One by One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Files One by One": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Check Upload Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Upload Success": {
+      "main": [
+        [
+          {
+            "node": "Delete Local File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Local File": {
+      "main": [
+        [
+          {
+            "node": "Update Check Timestamp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Check Timestamp": {
+      "main": [
+        [
+          {
+            "node": "Send Summary Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find New Telegram Media": {
+      "main": [
+        [
+          {
+            "node": "Process Telegram Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Telegram Files": {
+      "main": [
+        [
+          {
+            "node": "Upload Telegram to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Telegram to Drive": {
+      "main": [
+        [
+          {
+            "node": "Delete Telegram File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Telegram File": {
+      "main": [
+        [
+          {
+            "node": "Update Telegram Timestamp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "android-automation",
+      "name": "Android Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,71 @@
+# rclone Configuration Template for Cloud-Only Android Setup
+
+# Google Drive Configuration Template
+[mydrive]
+type = drive
+client_id = your-google-drive-client-id
+client_secret = your-google-drive-client-secret
+scope = drive
+root_folder_id = your-root-folder-id
+service_account_file = /path/to/service-account.json
+
+# OneDrive Configuration Template (alternative)
+[onedrive]
+type = onedrive
+client_id = your-onedrive-client-id
+client_secret = your-onedrive-client-secret
+region = global
+drive_id = your-drive-id
+drive_type = personal
+
+# Dropbox Configuration Template (alternative)
+[dropbox]
+type = dropbox
+client_id = your-dropbox-client-id
+client_secret = your-dropbox-client-secret
+token = your-access-token
+
+# Configuration Instructions:
+# 
+# For Google Drive:
+# 1. Go to Google Cloud Console
+# 2. Create a new project or use existing
+# 3. Enable Google Drive API
+# 4. Create OAuth2 credentials or Service Account
+# 5. Download credentials file
+# 6. Run: rclone config to complete setup
+#
+# For OneDrive:
+# 1. Go to Azure Portal
+# 2. Register a new application
+# 3. Add redirect URI: http://localhost:53682/
+# 4. Generate client secret
+# 5. Run: rclone config to complete OAuth
+#
+# For Dropbox:
+# 1. Go to Dropbox App Console
+# 2. Create a new app
+# 3. Set permissions (files.metadata.write, files.content.write, files.content.read)
+# 4. Generate access token
+# 5. Run: rclone config to complete setup
+
+# Advanced Performance Settings (add to any remote)
+# These can be added to improve performance on mobile devices
+
+# Performance optimizations for mobile
+# --vfs-cache-mode writes
+# --vfs-cache-max-age 24h
+# --vfs-cache-max-size 1G
+# --vfs-read-chunk-size 64M
+# --buffer-size 64M
+# --dir-cache-time 24h
+# --poll-interval 1m
+
+# Bandwidth limiting (optional)
+# --bwlimit 10M  # Limit to 10MB/s
+# --tpslimit 10  # Limit to 10 transactions per second
+
+# Error handling
+# --retries 3
+# --low-level-retries 3
+# --retry-delay 1s
