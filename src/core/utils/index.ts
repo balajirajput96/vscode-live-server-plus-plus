@@ -6,7 +6,7 @@ export { INJECTED_TEXT } from './injectedText';
  * Live Server++ only do dirty read if it's supported
  */
 
-export const SUPPORTED_FILES = ['.js', '.html', '.css'];
+export const SUPPORTED_FILES = ['.js', '.html', '.css', '.json', '.ts', '.jsx', '.tsx', '.vue', '.scss', '.sass', '.less'];
 
 /**
  * Live Server++ will inject extra js code.

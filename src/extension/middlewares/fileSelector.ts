@@ -1,6 +1,7 @@
 import { ServerResponse } from 'http';
 import path from 'path';
 import * as url from 'url';
+import * as fs from 'fs';
 import { ILSPPIncomingMessage } from '../../core/types';
 import { extensionConfig } from '../utils/extensionConfig';
 
@@ -23,8 +24,33 @@ function getReqFileUrl(req: ILSPPIncomingMessage): string {
   const { pathname = '/' } = url.parse(req.url || '/');
 
   if (!path.extname(pathname)) {
-    //TODO: THIS NEED TO FIX. WE HAVE TO LOOK INTO DISK
-    return `.${path.join(pathname, extensionConfig.indexFile.get())}`;
+    // Check if path is a directory and if index file exists in it
+    const indexFileName = extensionConfig.indexFile.get();
+    const indexFilePath = `.${path.join(pathname, indexFileName)}`;
+    
+    // Check if the index file exists on disk
+    try {
+      const stats = fs.statSync(indexFilePath);
+      if (stats.isFile()) {
+        return indexFilePath;
+      }
+    } catch (error) {
+      // File doesn't exist, check if it's a directory without index file
+      try {
+        const dirPath = `.${pathname}`;
+        const dirStats = fs.statSync(dirPath);
+        if (dirStats.isDirectory()) {
+          // Directory exists but no index file - return the directory path
+          // Let the main handler decide what to do (may result in 404)
+          return dirPath;
+        }
+      } catch (dirError) {
+        // Neither file nor directory exists
+      }
+    }
+    
+    // Fallback to original behavior for backwards compatibility
+    return indexFilePath;
   }
   return pathname;
 }
