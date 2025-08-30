@@ -269,39 +269,219 @@
             <section id="prompts" class="tab-content">
                 <div class="section-header">
                     <h2><i class="fas fa-magic"></i> AI Prompts Library</h2>
-                    <p>सभी AI टूल्स के लिए ready-to-use प्रॉम्प्ट्स</p>
+                    <p>सभी AI टूल्स के लिए ready-to-use प्रॉम्प्ट्स और critical thinking optimization</p>
                 </div>
                 
-                <div class="prompts-grid">
-                    <div class="prompt-card">
-                        <h4><i class="fas fa-globe"></i> वेबसाइट बिल्डर</h4>
-                        <div class="prompt-content">
-                            <p>Create a professional portfolio website for a biotechnology professional transitioning into bioinformatics and data analysis...</p>
-                            <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                <!-- Prompt Categories Tabs -->
+                <div class="prompt-categories">
+                    <button class="prompt-category-tab active" data-category="basic">
+                        <i class="fas fa-rocket"></i> Basic Prompts
+                    </button>
+                    <button class="prompt-category-tab" data-category="optimization">
+                        <i class="fas fa-brain"></i> Critical Thinking
+                    </button>
+                    <button class="prompt-category-tab" data-category="analysis">
+                        <i class="fas fa-chart-line"></i> Performance Analysis
+                    </button>
+                </div>
+                
+                <!-- Basic Prompts -->
+                <div id="basic-prompts" class="prompt-category-content active">
+                    <div class="prompts-grid">
+                        <div class="prompt-card">
+                            <h4><i class="fas fa-globe"></i> वेबसाइट बिल्डर</h4>
+                            <div class="prompt-content">
+                                <p>Create a professional portfolio website for a biotechnology professional transitioning into bioinformatics and data analysis...</p>
+                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-card">
+                            <h4><i class="fab fa-github"></i> GitHub README</h4>
+                            <div class="prompt-content">
+                                <p>Analyze the provided Python script. Generate a comprehensive README.md file...</p>
+                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-card">
+                            <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
+                            <div class="prompt-content">
+                                <p>Act as a social media marketing expert for the biotech industry...</p>
+                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-card">
+                            <h4><i class="fas fa-file-alt"></i> Resume Summary</h4>
+                            <div class="prompt-content">
+                                <p>Act as a professional resume writer. Write a compelling summary...</p>
+                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Critical Thinking Optimization Prompts -->
+                <div id="optimization-prompts" class="prompt-category-content">
+                    <div class="optimization-tools">
+                        <div class="tool-section">
+                            <h3><i class="fas fa-brain"></i> Master Critical Thinking Template</h3>
+                            <p>Universal framework for analytical career optimization</p>
+                            
+                            <div class="prompt-card advanced">
+                                <h4><i class="fas fa-cogs"></i> Universal Analysis Framework</h4>
+                                <div class="prompt-content">
+                                    <div class="framework-steps">
+                                        <div class="step">
+                                            <span class="step-number">1</span>
+                                            <div class="step-content">
+                                                <strong>Understanding:</strong> Core facts and objectives
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <span class="step-number">2</span>
+                                            <div class="step-content">
+                                                <strong>Analysis:</strong> Component breakdown and patterns
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <span class="step-number">3</span>
+                                            <div class="step-content">
+                                                <strong>Evaluation:</strong> Compare options and assess strengths
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <span class="step-number">4</span>
+                                            <div class="step-content">
+                                                <strong>Synthesis:</strong> Actionable recommendations
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <span class="step-number">5</span>
+                                            <div class="step-content">
+                                                <strong>Review:</strong> Validate and identify gaps
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <textarea id="masterPrompt" rows="8" readonly>**Role**: You are a critical thinking expert and career optimization specialist who uses systematic analysis to provide the most accurate and actionable solutions.
+
+**Objective**: Analyze the provided career/content data using critical thinking methodology and provide optimized recommendations with clear reasoning.
+
+**Critical Thinking Process**:
+1️⃣ **Understanding Phase**: What are the core facts and objectives?
+2️⃣ **Analysis Phase**: Break down components and identify patterns
+3️⃣ **Evaluation Phase**: Compare options and assess strengths/weaknesses  
+4️⃣ **Synthesis Phase**: Combine insights into actionable recommendations
+5️⃣ **Review Phase**: Validate recommendations and identify potential gaps
+
+**Required Output Format**:
+- **Summary**: Key findings in 2-3 bullet points
+- **Analysis**: Detailed breakdown with reasoning steps
+- **Recommendations**: Specific, actionable solutions prioritized by impact
+- **Optimization Score**: Rate effectiveness (1-10) with justification
+- **Next Steps**: Clear action items with timeline
+
+**Context**: [User provides their specific career situation, content, or problem]
+**Question**: [User's specific question or optimization goal]</textarea>
+                                    <button class="btn btn-sm btn-primary" onclick="copyAdvancedPrompt('masterPrompt')">
+                                        <i class="fas fa-copy"></i> Copy Master Template
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tool-section">
+                            <h3><i class="fas fa-search"></i> Specialized Analysis Tools</h3>
+                            <div class="analysis-tools-grid">
+                                <div class="analysis-tool">
+                                    <h4><i class="fab fa-linkedin"></i> LinkedIn Profile Analysis</h4>
+                                    <p>Critical evaluation of LinkedIn profile effectiveness</p>
+                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('linkedin')">Load Prompt</button>
+                                </div>
+                                
+                                <div class="analysis-tool">
+                                    <h4><i class="fas fa-file-alt"></i> Resume Optimization</h4>
+                                    <p>Performance analysis for resume content</p>
+                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('resume')">Load Prompt</button>
+                                </div>
+                                
+                                <div class="analysis-tool">
+                                    <h4><i class="fas fa-briefcase"></i> Job Strategy Analysis</h4>
+                                    <p>Critical evaluation of job search approach</p>
+                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('jobstrategy')">Load Prompt</button>
+                                </div>
+                                
+                                <div class="analysis-tool">
+                                    <h4><i class="fas fa-chart-bar"></i> Portfolio Review</h4>
+                                    <p>Comprehensive project portfolio assessment</p>
+                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('portfolio')">Load Prompt</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="prompt-card">
-                        <h4><i class="fab fa-github"></i> GitHub README</h4>
-                        <div class="prompt-content">
-                            <p>Analyze the provided Python script. Generate a comprehensive README.md file...</p>
-                            <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                    <div id="specializedPromptDisplay" class="specialized-prompt" style="display: none;">
+                        <h4 id="specializedPromptTitle"></h4>
+                        <textarea id="specializedPromptContent" rows="12" readonly></textarea>
+                        <div class="prompt-actions">
+                            <button class="btn btn-primary" onclick="copyAdvancedPrompt('specializedPromptContent')">
+                                <i class="fas fa-copy"></i> Copy Prompt
+                            </button>
+                            <button class="btn btn-secondary" onclick="customizePrompt()">
+                                <i class="fas fa-edit"></i> Customize
+                            </button>
                         </div>
                     </div>
-                    
-                    <div class="prompt-card">
-                        <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
-                        <div class="prompt-content">
-                            <p>Act as a social media marketing expert for the biotech industry...</p>
-                            <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                </div>
+                
+                <!-- Performance Analysis -->
+                <div id="analysis-prompts" class="prompt-category-content">
+                    <div class="analysis-dashboard">
+                        <h3><i class="fas fa-tachometer-alt"></i> Performance Optimization Dashboard</h3>
+                        
+                        <div class="performance-metrics">
+                            <div class="metric-card">
+                                <h4>Content Effectiveness</h4>
+                                <div class="metric-value" id="contentScore">-</div>
+                                <p>Based on recent AI-generated content</p>
+                                <button class="btn btn-sm btn-primary" onclick="analyzeContentPerformance()">Analyze</button>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>Profile Optimization</h4>
+                                <div class="metric-value" id="profileScore">-</div>
+                                <p>LinkedIn and resume optimization level</p>
+                                <button class="btn btn-sm btn-primary" onclick="analyzeProfileOptimization()">Check Score</button>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>AI Usage Efficiency</h4>
+                                <div class="metric-value" id="efficiencyScore">-</div>
+                                <p>How effectively you're using AI tools</p>
+                                <button class="btn btn-sm btn-primary" onclick="analyzeAIUsage()">Measure</button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="prompt-card">
-                        <h4><i class="fas fa-file-alt"></i> Resume Summary</h4>
-                        <div class="prompt-content">
-                            <p>Act as a professional resume writer. Write a compelling summary...</p>
-                            <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
+                        
+                        <div class="optimization-suggestions">
+                            <h4><i class="fas fa-lightbulb"></i> Smart Optimization Suggestions</h4>
+                            <div id="optimizationSuggestions" class="suggestions-list">
+                                <div class="suggestion-item">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span>Use critical thinking prompts to analyze your LinkedIn posts for better engagement</span>
+                                    <button class="btn btn-xs btn-outline" onclick="applySuggestion(this)">Apply</button>
+                                </div>
+                                <div class="suggestion-item">
+                                    <i class="fas fa-arrow-up text-warning"></i>
+                                    <span>Optimize your resume using performance analysis prompts</span>
+                                    <button class="btn btn-xs btn-outline" onclick="applySuggestion(this)">Apply</button>
+                                </div>
+                                <div class="suggestion-item">
+                                    <i class="fas fa-arrow-up text-info"></i>
+                                    <span>Run portfolio review analysis for better project presentation</span>
+                                    <button class="btn btn-xs btn-outline" onclick="applySuggestion(this)">Apply</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
