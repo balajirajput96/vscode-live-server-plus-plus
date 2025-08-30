@@ -43,7 +43,14 @@
 
 ## 🚀 Quick Start Guide
 
-### Step 1: Open Your Dashboard
+### Option 1: Using VS Code Live Server++
+1. Open this project in VS Code
+2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+3. Type "Live Server++: Open Server"
+4. The AI Career Dashboard will open automatically in your browser
+5. Access all tools and features directly through the web interface
+
+### Option 2: Open Directly in Browser
 ```bash
 # Open the main dashboard in your browser
 open index.html

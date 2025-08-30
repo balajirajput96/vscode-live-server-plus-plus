@@ -1,0 +1,72 @@
+# Caddyfile for n8n with SSL termination
+
+{$DOMAIN} {
+    # Enable automatic HTTPS
+    tls {
+        # Use Let's Encrypt for SSL certificate
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+    
+    # Reverse proxy to n8n
+    reverse_proxy n8n:5678 {
+        # Add headers for proper WebSocket support
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+        
+        # WebSocket support
+        transport http {
+            # Enable HTTP/2
+            versions h1 h2c
+        }
+    }
+    
+    # Security headers
+    header {
+        # Remove server information
+        -Server
+        
+        # Security headers
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+        
+        # Content Security Policy
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' ws: wss:;"
+    }
+    
+    # Rate limiting
+    rate_limit {
+        zone n8n {
+            key {remote}
+            events 100
+            window 1m
+        }
+    }
+    
+    # Enable gzip compression
+    encode gzip
+    
+    # Access logging
+    log {
+        output file /var/log/caddy/n8n.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+    }
+}
+
+# Health check endpoint
+health.{$DOMAIN} {
+    respond /health "OK" 200
+    
+    # Log health checks separately
+    log {
+        output file /var/log/caddy/health.log
+    }
+}

@@ -1,0 +1,478 @@
+{
+  "name": "GitHub Automation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "webhookId": "github-webhook",
+        "httpMethod": "POST"
+      },
+      "id": "webhook-github",
+      "name": "GitHub Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"action\"]}}",
+              "operation": "equal",
+              "value2": "opened"
+            }
+          ]
+        }
+      },
+      "id": "filter-pr-opened",
+      "name": "Filter: PR Opened",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "operation": "get",
+        "owner": "={{$json[\"repository\"][\"owner\"][\"login\"]}}",
+        "repository": "={{$json[\"repository\"][\"name\"]}}"
+      },
+      "id": "get-repo-info",
+      "name": "Get Repository Info",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        680,
+        200
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "github-credentials",
+          "name": "GitHub API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gemma:3b"
+            },
+            {
+              "name": "prompt",
+              "value": "Generate a professional README.md for repository: {{$json[\"name\"]}}. Description: {{$json[\"description\"]}}. Language: {{$json[\"language\"]}}. Include installation instructions, usage examples, and contribution guidelines in both English and Hindi."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-readme-generator",
+      "name": "AI README Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "create",
+        "owner": "={{$node[\"GitHub Webhook\"].json[\"repository\"][\"owner\"][\"login\"]}}",
+        "repository": "={{$node[\"GitHub Webhook\"].json[\"repository\"][\"name\"]}}",
+        "filePath": "README.md",
+        "fileContent": "={{JSON.parse($json[\"response\"]).response}}",
+        "commitMessage": "📝 Auto-generated README.md by n8n AI workflow"
+      },
+      "id": "create-readme",
+      "name": "Create README",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        200
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "github-credentials",
+          "name": "GitHub API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "issue",
+        "operation": "create",
+        "owner": "={{$node[\"GitHub Webhook\"].json[\"repository\"][\"owner\"][\"login\"]}}",
+        "repository": "={{$node[\"GitHub Webhook\"].json[\"repository\"][\"name\"]}}",
+        "title": "🤖 AI Documentation Update",
+        "body": "Repository documentation has been automatically updated using AI.\n\n**Changes Made:**\n- ✅ README.md generated with Gemma 3B model\n- ✅ Bilingual content (English/Hindi)\n- ✅ Professional formatting\n- ✅ Installation and usage instructions\n\n**Next Steps:**\n- Review the generated content\n- Make any necessary customizations\n- Close this issue when satisfied\n\n*This issue was created automatically by the n8n AI workflow.*",
+        "labels": [
+          "documentation",
+          "ai-generated",
+          "automation"
+        ]
+      },
+      "id": "create-tracking-issue",
+      "name": "Create Tracking Issue",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        200
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "github-credentials",
+          "name": "GitHub API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🚀 GitHub Repository Documentation Updated",
+        "html": "<h2>🤖 AI Workflow Execution Report</h2>\n\n<p><strong>Repository:</strong> {{$node[\"GitHub Webhook\"].json[\"repository\"][\"full_name\"]}}</p>\n\n<p><strong>Action Completed:</strong> README.md automatically generated</p>\n\n<p><strong>AI Model Used:</strong> Gemma 3B (Local)</p>\n\n<p><strong>Features Added:</strong></p>\n<ul>\n  <li>✅ Professional documentation</li>\n  <li>✅ Bilingual content (English/Hindi)</li>\n  <li>✅ Installation instructions</li>\n  <li>✅ Usage examples</li>\n  <li>✅ Contribution guidelines</li>\n</ul>\n\n<p><strong>Next Steps:</strong></p>\n<ol>\n  <li>Review the generated README.md</li>\n  <li>Customize content as needed</li>\n  <li>Close the tracking issue</li>\n</ol>\n\n<p><strong>Repository Link:</strong> <a href=\"{{$node[\"GitHub Webhook\"].json[\"repository\"][\"html_url\"]}}\">View Repository</a></p>\n\n<hr>\n<p><em>This email was sent automatically by your n8n AI automation workflow.</em></p>",
+        "options": {}
+      },
+      "id": "send-notification-email",
+      "name": "Send Notification Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"action\"]}}",
+              "operation": "equal",
+              "value2": "closed"
+            }
+          ]
+        }
+      },
+      "id": "filter-pr-closed",
+      "name": "Filter: PR Closed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        680,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "shakti:latest"
+            },
+            {
+              "name": "prompt",
+              "value": "Create a professional release notes summary for the merged PR: {{$json[\"pull_request\"][\"title\"]}}. Changes: {{$json[\"pull_request\"][\"body\"]}}. Generate content in both English and Hindi suitable for GitHub releases."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-release-notes",
+      "name": "AI Release Notes Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "release",
+        "operation": "create",
+        "owner": "={{$node[\"GitHub Webhook\"].json[\"repository\"][\"owner\"][\"login\"]}}",
+        "repository": "={{$node[\"GitHub Webhook\"].json[\"repository\"][\"name\"]}}",
+        "tag": "v{{new Date().getFullYear()}}.{{new Date().getMonth() + 1}}.{{new Date().getDate()}}",
+        "name": "🚀 Auto Release - {{new Date().toLocaleDateString()}}",
+        "body": "{{JSON.parse($json[\"response\"]).response}}",
+        "draft": false,
+        "prerelease": false
+      },
+      "id": "create-release",
+      "name": "Create Release",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        400
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "github-credentials",
+          "name": "GitHub API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"ref\"]}}",
+              "operation": "equal",
+              "value2": "refs/heads/main"
+            }
+          ]
+        }
+      },
+      "id": "filter-main-push",
+      "name": "Filter: Main Branch Push",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        680,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gemma:3b"
+            },
+            {
+              "name": "prompt",
+              "value": "Generate social media posts for the repository update: {{$json[\"repository\"][\"name\"]}}. Commits: {{$json[\"commits\"].length}}. Create engaging posts for LinkedIn and Twitter highlighting the project progress."
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "ai-social-posts",
+      "name": "AI Social Media Posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "📱 Social Media Content Ready",
+        "html": "<h2>📱 AI-Generated Social Media Content</h2>\n\n<p><strong>Repository:</strong> {{$node[\"GitHub Webhook\"].json[\"repository\"][\"full_name\"]}}</p>\n\n<p><strong>Generated Content:</strong></p>\n<div style=\"background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;\">\n{{JSON.parse($json[\"response\"]).response}}\n</div>\n\n<p><strong>Usage Instructions:</strong></p>\n<ol>\n  <li>Copy the content above</li>\n  <li>Customize as needed</li>\n  <li>Post on LinkedIn/Twitter</li>\n  <li>Tag relevant people/companies</li>\n</ol>\n\n<p><strong>Repository Link:</strong> <a href=\"{{$node[\"GitHub Webhook\"].json[\"repository\"][\"html_url\"]}}\">View Repository</a></p>\n\n<hr>\n<p><em>This content was generated by your n8n AI automation workflow.</em></p>",
+        "options": {}
+      },
+      "id": "send-social-content",
+      "name": "Send Social Content",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "GitHub Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter: PR Opened",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter: PR Closed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter: Main Branch Push",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: PR Opened": {
+      "main": [
+        [
+          {
+            "node": "Get Repository Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Repository Info": {
+      "main": [
+        [
+          {
+            "node": "AI README Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI README Generator": {
+      "main": [
+        [
+          {
+            "node": "Create README",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create README": {
+      "main": [
+        [
+          {
+            "node": "Create Tracking Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Tracking Issue": {
+      "main": [
+        [
+          {
+            "node": "Send Notification Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: PR Closed": {
+      "main": [
+        [
+          {
+            "node": "AI Release Notes Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Release Notes Generator": {
+      "main": [
+        [
+          {
+            "node": "Create Release",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Main Branch Push": {
+      "main": [
+        [
+          {
+            "node": "AI Social Media Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Social Media Posts": {
+      "main": [
+        [
+          {
+            "node": "Send Social Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-01-15T10:00:00.000Z",
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z",
+      "id": "github-automation",
+      "name": "GitHub Automation"
+    }
+  ]
+}
