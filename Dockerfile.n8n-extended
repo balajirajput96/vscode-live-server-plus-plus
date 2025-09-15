@@ -1,9 +1,0 @@
-# Optional: extend n8n image with curl + python3 for Execute Command node
-# Build: docker build -t n8n-extended --build-arg N8N_VERSION=1.82.1 -f Dockerfile.n8n-extended .
-ARG N8N_VERSION=1.82.1
-FROM n8nio/n8n:${N8N_VERSION}
-
-USER root
-# n8n base is Alpine; install needed tools
-RUN apk add --no-cache curl bash python3 py3-pip
-USER node

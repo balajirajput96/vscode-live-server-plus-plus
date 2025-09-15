@@ -1,0 +1,153 @@
+{
+  "name": "Main Command Router",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "command-router",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "{{$json.body.command}}"
+          },
+          "rules": [
+            {
+              "operation": "contains",
+              "rightValue": "resume"
+            },
+            {
+              "operation": "contains",
+              "rightValue": "linkedin"
+            },
+            {
+              "operation": "contains",
+              "rightValue": "social post"
+            },
+            {
+              "operation": "contains",
+              "rightValue": "portfolio"
+            },
+            {
+              "operation": "contains",
+              "rightValue": "scan drive"
+            }
+          ]
+        }
+      },
+      "id": "command-switch",
+      "name": "Command Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ 'social_media_poster.json' }}"
+      },
+      "id": "execute-social-post",
+      "name": "Execute Social Post Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [700, 200]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ 'resume_builder.json' }}"
+      },
+      "id": "execute-resume-builder",
+      "name": "Execute Resume Builder",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [700, 0]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ 'portfolio_updater.json' }}"
+      },
+      "id": "execute-portfolio-updater",
+      "name": "Execute Portfolio Updater",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [700, 400]
+    },
+    {
+      "parameters": {},
+      "id": "unknown-command",
+      "name": "Unknown Command",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [700, 600]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Command Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Command Switch": {
+      "main": [
+        [
+          {
+            "node": "Execute Resume Builder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Social Post Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Social Post Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Portfolio Updater",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Portfolio Updater",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unknown Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsNote": "This workflow orchestrates sub-workflows. Ensure sub-workflows (e.g., social_media_poster.json) are present in the same n8n instance."
+  }
+}

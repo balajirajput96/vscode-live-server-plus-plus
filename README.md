@@ -1,506 +1,99 @@
-# 🚀 AI-Powered Career Automation System
-**Complete Biotech & Bioinformatics Career Success Platform**
+# Balaji Rajput's Personal AI Automation System
+
+Welcome to your unified AI-powered automation system. This project combines a professional portfolio dashboard with a powerful, command-driven automation engine powered by n8n. This guide explains the structure and how to get everything set up.
 
 ---
 
-## 📋 Overview
+## 🚀 Core Components
 
-यह एक comprehensive AI-powered career automation system है जो biotech और bioinformatics professionals के लिए specially designed किया गया है। यह system आपको job search से लेकर interview preparation तक, हर step में AI की power का use करके successful career बनाने में help करता है।
+This repository has been organized into a clean, modular structure. Here's what each part does:
 
-## 🎯 Key Features
-
-### 1. 🔬 AI-Powered Portfolio Builder
-- Project documentation generator
-- GitHub README automation
-- LinkedIn project posts
-- Portfolio website content
-
-### 2. 📱 Social Media Automation
-- LinkedIn professional posts
-- Facebook personal updates
-- Twitter quick updates
-- Content calendar management
-
-### 3. 📄 Resume & LinkedIn Optimizer
-- AI-generated headlines
-- Professional summaries
-- Skill-based content
-- Company-targeted messaging
-
-### 4. 🤖 Microsoft Copilot Integration ⭐ **NEW**
-- M365 Copilot project templates
-- Teams collaboration automation
-- Lab workflow optimization
-- Clinical data dashboard examples
-- Copilot API integration guides
-- Ready-to-use LinkedIn showcases
-- Resume enhancement templates
-
-### 5. 💼 Job Application Tracker
-- Pharma companies database
-- Application status tracking
-- Interview scheduling
-- Success analytics
-
-### 6. 🤖 AI Prompt Library
-- Ready-to-use prompts for all tools
-- Copy-paste templates
-- Industry-specific content
-- Multi-platform compatibility
-- **Microsoft Copilot specialized prompts** ⭐ **NEW**
-
-### 6. 🔍 Sonar API Integration
-- Complete Perplexity API documentation (Hindi)
-- Step-by-step implementation guide
-- Code examples in multiple languages
-- Real-time AI search and responses
-- [सोनार एपीआई त्वरित प्रारंभ गाइड](./Sonar_API_Quick_Start.md)
-
-### 6. 🔄 AI Agent Automation Pack
-- **N8N Workflows**: Complete weekly social posting automation
-- **HTTP-only variant**: Uses standard nodes for broader compatibility
-- **Google Sheets Integration**: Pull topics and track posted content
-- **Multi-platform posting**: LinkedIn, Facebook via Buffer API
-- **AI-generated images**: Predis.ai integration for professional visuals
-- **Ready-to-import**: JSON workflows with setup documentation
-
-📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
+-   `📁 portfolio_website/`: This is your professional dashboard and portfolio. Open the `index.html` file in a browser to see and use it. It has been personalized for you and enhanced for maintainability.
+-   `📁 n8n_workflows/`: Contains all the n8n workflow JSON files.
+    -   `n8n_workflows/00_main_command_router.json`: The most important workflow. This is the central brain that receives all your commands.
+    -   `n8n_workflows/commands/`: Contains the individual task workflows (like posting to social media) that the main router calls.
+    -   `n8n_workflows/existing_workflows/`: A collection of your previous workflows, kept for reference.
+-   `📁 docs/`: Contains the core documentation for the system.
+    -   `docs/AI_INSTRUCTIONS.md`: **The AI's Brain.** This file tells the AI agent how to behave. You can edit this file to change the AI's instructions, personality, and commands.
+-   `📁 scripts/`: A centralized location for all the helper scripts (`.py`, `.js`, `.sh`) found in the original repository.
+-   `📁 templates/`: Contains the consolidated library of AI prompts and other templates.
+    -   `templates/prompts_library.md`: A master file containing all the high-quality prompts for generating resumes, social media posts, and more.
+-   `📁 archive/`: Contains all the files and folders from the original repository that were duplicates or have been superseded by the new, unified system.
 
 ---
 
-## 🚀 Quick Start Guide
+## ⚙️ How It Works: The Automation Flow
 
-### Step 1: Open Your Dashboard
-```bash
-# Open the main dashboard in your browser
-open index.html
+The system is designed for one-command automation. Here's the high-level flow:
+
+1.  **Command:** You issue a command via an Android voice trigger, an HTTP Shortcut, or an email.
+2.  **Router Receives:** The command is sent to your n8n instance and is caught by the **`00_main_command_router.json`** workflow.
+3.  **Router Analyzes:** A Switch node inside the router analyzes your command to understand its intent (e.g., it looks for keywords like "resume" or "linkedin").
+4.  **Task Dispatched:** The router triggers the appropriate sub-workflow from the `n8n_workflows/commands/` directory.
+5.  **AI Executes:** The sub-workflow, guided by the master prompt in `docs/AI_INSTRUCTIONS.md`, performs the task (e.g., drafting a post, generating a document).
+6.  **Result Returned:** The system returns a structured JSON response to you, containing links to documents, drafts for approval, or status updates.
+
+---
+
+## 🛠️ Setup and Installation Guide
+
+Follow these steps to get the system fully operational.
+
+### Step 1: View Your Portfolio Dashboard
+
+No complex setup is needed to view the dashboard.
+-   Simply navigate to the `portfolio_website/` directory.
+-   Open the `index.html` file in any modern web browser (like Chrome, Firefox, or Edge).
+-   For the best experience, you can use a simple tool like the "Live Server" extension in VS Code to serve the file locally.
+
+### Step 2: Set Up n8n Workflows
+
+You need to import the workflows into your n8n instance at `balajiwebdesign.app.n8n.cloud`.
+
+1.  **Import the Main Router:**
+    -   In your n8n dashboard, go to "Workflows" and click "Import from File".
+    -   Select and upload `n8n_workflows/00_main_command_router.json`.
+2.  **Import the Command Workflows:**
+    -   Repeat the process for the command workflows located in `n8n_workflows/commands/`. Start with `social_media_poster.json`.
+    -   **Important:** The "Execute Workflow" nodes in the main router refer to other workflows by name. Ensure the names match up in your n8n instance.
+3.  **Activate the Workflows:** Make sure to activate the main router and any command workflows you have imported. The webhook in the main router will give you a URL to send your commands to.
+
+### Step 3: Configure Credentials & Environment
+
+The automation workflows need to connect to various services.
+
+1.  **n8n Credentials:**
+    -   In your n8n instance, go to the "Credentials" section.
+    -   Add new credentials for each service you need to connect to (e.g., Google for Gmail/Drive, OpenAI, LinkedIn, etc.). The workflows I've provided will show you which credentials you need to create.
+2.  **Environment Variables:**
+    -   Some workflows may require environment variables (like API keys or Sheet IDs).
+    -   This project includes a `.env.example` file which lists the variables needed for the social media posting workflow.
+    -   You will need to set these variables in your n8n server environment or directly in the workflow where needed.
+
+---
+
+## ▶️ Usage Examples
+
+Once set up, you can send commands to the webhook URL provided by the `00_main_command_router.json` workflow. The command should be in a JSON format in the body of a POST request:
+
+```json
+{
+  "command": "Draft a LinkedIn post about my latest project on DNA sequence analysis."
+}
 ```
 
-### Step 2: Set Up AI Tools
-Register for these free/premium AI tools:
-- **ChatGPT** (Free/Plus $20/month)
-- **Perplexity (Sonar API)** (Free/Pro $20/month)
-- **Wix AI** (Free/Premium $16/month) 
-- **Predis.ai** (Free/Pro $32/month)
-- **Buffer** (Free/Pro $6/month)
+Or simply:
 
-### Step 3: Use Ready-Made Prompts & Templates
-1. Copy prompts from the AI Prompt Library
-2. **NEW**: Access Microsoft Copilot integration templates
-3. Paste into your chosen AI tool
-4. Customize with your specific details
-5. Generate professional content
-6. **NEW**: Use Copilot project generators for instant LinkedIn posts and resume bullets
-
-### Step 4: Showcase Microsoft Copilot Expertise ⭐ **NEW**
-- **Monday**: Create Copilot integration project showcase
-- **Wednesday**: Generate LinkedIn posts highlighting M365 expertise  
-- **Friday**: Update resume with Copilot achievements
-- **Sunday**: Plan next Copilot implementation project
-
----
-
-## 📁 File Structure
-
-```
-📦 AI-Career-Automation-System
-├── 📄 index.html                    # Main Dashboard
-├── 📄 Job_Tracking_System.html      # Job Application Tracker
-├── 📄 AI_Career_Automation_Guide.md # Complete Guide
-├── 📄 Social_Media_Templates.md     # Content Templates
-├── 📄 Sonar_API_Quick_Start.md      # Sonar API Documentation (Hindi)
-└── 📄 README.md                     # This File
+```json
+{
+  "command": "create my resume"
+}
 ```
 
----
-
-## 🔧 System Components
-
-### 1. Main Dashboard (`index.html`)
-**Features:**
-- Portfolio content generator
-- Social media post creator
-- Resume & LinkedIn optimizer
-- AI prompt library
-- Analytics dashboard
-
-**How to Use:**
-1. Fill in your project details
-2. Select target platform (GitHub/LinkedIn/Portfolio)
-3. Click "Generate AI Content"
-4. Copy the generated content
-5. Use in your applications
-
-### 📋 **NEW: Complete Personal Automation Guide**
-**🎓 [GitHub Student Pack से Complete Personal Automation Setup](Complete_Personal_Automation_Guide.md)**
-
-**जो इस guide में मिलेगा:**
-- **$200,000+ worth tools** बिल्कुल मुफ्त
-- **n8n, Google Apps Script, Make.com** complete setup
-- **YouTube automation** workflows
-- **Personal assistant** AI agents
-- **Step-by-step instructions** with verified links
-- **Social media automation** templates
-- **GitHub Student Pack** benefits aur access methods
-
-**🚀 क्यों जरूरी है?**
-- Time save करें: 2-3 hours daily
-- Automate करें: 50+ daily tasks
-- Professional automation: YouTube से social media तक
-- Free tools का maximum use
-
-### 2. Job Tracking System (`Job_Tracking_System.html`)
-**Features:**
-- 10+ top pharma companies database
-- Application status tracking
-- Interview preparation questions
-- Success metrics and analytics
-
-**How to Use:**
-1. Browse companies database
-2. Add job applications
-3. Track status updates
-4. Prepare for interviews
-5. Analyze success patterns
-
-### 3. Automation Guide (`AI_Career_Automation_Guide.md`)
-**Contents:**
-- Step-by-step setup instructions
-- AI tools comparison
-- Weekly workflow automation
-- Copy-paste prompts
-- Troubleshooting tips
-
-### 4. Social Media Templates (`Social_Media_Templates.md`)
-**Contents:**
-- 25+ LinkedIn post templates
-- Facebook personal updates
-- Twitter quick posts
-- Project showcase formats
-- Industry commentary templates
-- **Microsoft Copilot integration showcases** ⭐ **NEW**
-- **M365 transformation stories** ⭐ **NEW**
-
-### 5. Microsoft Copilot Templates (`Microsoft_Copilot_Templates.md`) ⭐ **NEW**
-**Contents:**
-- Lab automation project examples
-- Clinical data dashboard templates
-- Copilot API integration guides
-- LinkedIn showcase templates
-- Resume enhancement examples
-- Technical documentation samples
-- Implementation best practices
-
-### 6. Copilot-Specific AI Prompts (`ai-prompts/copilot-specific-prompts.md`) ⭐ **NEW**
-**Contents:**
-- LinkedIn content creation prompts
-- Resume enhancement prompts
-- Technical documentation prompts
-- Interview preparation prompts
-- Portfolio building prompts
-- Microsoft ecosystem integration guides
+The system will process the command and execute the correct workflow.
 
 ---
 
-## 🎯 Target Companies Database
+## 🧠 Modifying the AI's Brain
 
-### Large Pharmaceutical Companies
-| Company | Location | Focus Area |
-|---------|----------|------------|
-| **Sun Pharma** | Mumbai | Drug Discovery |
-| **Zydus Cadila** | Ahmedabad | R&D Innovation |
-| **Dr. Reddy's** | Hyderabad | Computational Biology |
-| **Lupin** | Mumbai | Biosimilars |
-| **Cipla** | Mumbai | Respiratory & Oncology |
-
-### Biotech Companies
-| Company | Location | Specialization |
-|---------|----------|----------------|
-| **Biocon** | Bangalore | Diabetes & Oncology |
-| **Glenmark** | Mumbai | Novel Drug Discovery |
-| **Aurobindo** | Hyderabad | Generic Pharmaceuticals |
-
----
-
-## 🤖 AI Prompts Quick Reference
-
-### Portfolio Generation
-```
-Create professional documentation for my bioinformatics project:
-- Project: [Your Project Name]
-- Tools: Python, Pandas, Matplotlib
-- Goal: [Analysis objective]
-- Results: [Key findings]
-
-Generate README.md, LinkedIn post, and portfolio description.
-```
-
-### LinkedIn Headline
-```
-Act as a career coach. Create 5 LinkedIn headlines for a biotech professional with Python, data analysis skills, seeking bioinformatics roles in pharmaceutical companies.
-```
-
-### Job Application
-```
-Write a compelling cover letter for [Company Name] [Position].
-My background: Biotechnology education, Python/SQL skills, bioinformatics passion.
-Company research: [Brief company info]
-```
-
----
-
-## 📊 Success Metrics
-
-### Expected Results (After 3 Months)
-- **Applications**: 60-75 quality applications
-- **Response Rate**: 15-20%
-- **Interview Rate**: 30-40% of responses  
-- **LinkedIn Connections**: 150+ new connections
-- **Portfolio Views**: 300+ monthly visitors
-
-### Key Performance Indicators
-- Profile optimization score: 85%+
-- Content engagement rate: 5%+
-- Application success rate: 25%+
-- Network growth: 50+ connections/month
-
----
-
-## 🔄 Weekly Automation Workflow
-
-### Monday (45 minutes)
-- Generate LinkedIn post using dashboard
-- Schedule content for the week
-- Update portfolio with new projects
-
-### Wednesday (60 minutes)  
-- Update GitHub documentation
-- Create new repository
-- Improve existing project READMEs
-
-### Friday (90 minutes)
-- Search and apply to 3-5 jobs
-- Network with 5 new professionals
-- Follow up on previous applications
-
-### Sunday (30 minutes)
-- Review analytics and metrics
-- Plan content for next week
-- Update job tracking system
-
----
-
-## 🛠️ Technical Requirements
-
-### Browser Compatibility
-- Chrome 90+ (Recommended)
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-### Internet Connection
-- Stable internet for AI tool access
-- Minimum 5 Mbps for optimal performance
-
-### Accounts Needed
-- LinkedIn (Free/Premium)
-- GitHub (Free)
-- AI tools (ChatGPT, Wix, etc.)
-- Email for applications
-
----
-
-## 📱 Mobile Usage
-
-### Mobile-Friendly Features
-- Responsive dashboard design
-- Touch-optimized interface
-- Mobile social media posting
-- On-the-go job applications
-
-### Mobile Workflow
-1. Check job alerts on phone
-2. Use dashboard to generate content
-3. Post directly to social media
-4. Track applications on mobile
-
----
-
-## 🎓 Learning Resources
-
-### Recommended Courses
-- **Coursera**: Bioinformatics Specialization
-- **edX**: Data Science for Healthcare  
-- **Udemy**: Python for Bioinformatics
-- **YouTube**: Free tutorials and webinars
-
-### Industry Publications
-- Nature Biotechnology
-- Bioinformatics Journal
-- Drug Discovery Today
-- Pharmaceutical Research
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**Issue**: AI content sounds generic
-**Solution**: Add personal experiences and specific project details
-
-**Issue**: Low social media engagement  
-**Solution**: Post at optimal times (9 AM, 2 PM IST), use relevant hashtags
-
-**Issue**: Not getting interview calls
-**Solution**: Optimize LinkedIn with keywords, apply directly to companies
-
-**Issue**: AI prompts not working well
-**Solution**: Be more specific, provide more context, iterate based on results
-
----
-
-## 🚀 Advanced Features
-
-### Automation Integrations
-- **Zapier**: Connect different platforms
-- **IFTTT**: Create automated workflows  
-- **Buffer API**: Schedule social posts
-- **LinkedIn API**: Automate networking
-
-### Analytics Tracking
-- Google Analytics for portfolio
-- LinkedIn analytics for posts
-- Application response tracking
-- ROI measurement tools
-
----
-
-## 🎯 Success Stories Template
-
-### Before Using System:
-- Random job applications
-- Inconsistent social media
-- Generic portfolio
-- Low response rates
-
-### After Using System:
-- Targeted applications to right companies
-- Professional social media presence
-- Optimized portfolio with AI content
-- 3x higher response rates
-
----
-
-## 📞 Support & Updates
-
-### Getting Help
-1. Check troubleshooting section
-2. Review automation guide
-3. Use community resources
-4. Contact system maintainer
-
-### System Updates
-- Regular prompt library updates
-- New AI tool integrations
-- Enhanced templates
-- Industry trend adaptations
-
----
-
-## 🎉 Next Steps
-
-### Week 1: Foundation
-- [ ] Set up all AI tool accounts
-- [ ] Complete dashboard walkthrough
-- [ ] Create first portfolio content
-- [ ] Optimize LinkedIn profile
-
-### Week 2: Content Creation
-- [ ] Generate 5 LinkedIn posts
-- [ ] Document 3 GitHub projects  
-- [ ] Write first blog post
-- [ ] Create content calendar
-
-### Week 3: Job Search
-- [ ] Research 20 target companies
-- [ ] Apply to 5 positions
-- [ ] Start networking activities
-- [ ] Set up tracking system
-
-### Week 4: Optimization
-- [ ] Analyze performance metrics
-- [ ] Refine content strategy  
-- [ ] Update portfolio based on feedback
-- [ ] Plan next month's goals
-
----
-
-## ⚡ Pro Tips for Maximum Success
-
-1. **Consistency is Key**: Use the system daily, even for 15 minutes
-2. **Personalize Everything**: Never use AI content without customization
-3. **Network Actively**: Engage with others before promoting yourself
-4. **Track Everything**: Measure what matters and optimize continuously
-5. **Stay Updated**: Keep learning new tools and industry trends
-
----
-
-## 🏆 Success Guarantee
-
-**Follow this system consistently for 90 days, and you will see:**
-- ✅ Professional online presence
-- ✅ Higher application response rates  
-- ✅ Expanded professional network
-- ✅ Better interview opportunities
-- ✅ Clear career progression path
-
----
-
-## 📄 License & Usage
-
-This system is designed for personal career development use. Feel free to:
-- Customize templates for your needs
-- Share prompts with fellow professionals  
-- Adapt workflows to your schedule
-- Build upon the foundation provided
-
----
-
----
-
-## 🤖 Microsoft Copilot Integration Highlights ⭐ **NEW FEATURE**
-
-### What Makes This Special
-This system now includes comprehensive **Microsoft Copilot integration templates** specifically designed for biotechnology professionals, making it the first career automation platform to focus on showcasing M365 Copilot expertise in scientific careers.
-
-### Ready-to-Use Copilot Showcases
-- **Lab Automation Project**: 70% efficiency improvement templates
-- **Clinical Data Dashboard**: Power BI Copilot integration examples  
-- **Bioinformatics Pipeline**: Custom Copilot API implementations
-- **Teams Collaboration**: Research workflow automation examples
-
-### Instant Content Generation
-Click "Generate Template" and instantly get:
-✅ **LinkedIn Posts**: Professional Copilot project showcases
-✅ **Resume Bullets**: Quantified achievements and technical skills
-✅ **Technical Documentation**: Complete implementation guides
-✅ **Interview Prep**: Copilot-specific behavioral questions
-
-### Industry Impact
-Pharmaceutical companies are rapidly adopting Microsoft 365 Copilot. Professionals who can demonstrate hands-on Copilot integration experience in biotech contexts will be in **extremely high demand**.
-
-### Getting Started with Copilot Features
-1. Open the main dashboard (`career-automation-system/index.html`)
-2. Click the **"Copilot Integration"** tab
-3. Choose from 3 professional project templates
-4. Click **"Generate Template"** for instant LinkedIn posts and resume content
-5. Use the **"Copy Prompt"** feature for AI-powered content creation
-
----
-
-**🚀 Ready to transform your biotech career with AI? Start with `index.html` and follow the automation guide!**
-
-*Last Updated: January 2024 - Now with Microsoft Copilot Integration!*
-*Version: 2.0 - Copilot Enhanced Edition*
-*Compatibility: All modern browsers + Microsoft 365 ecosystem*
+The heart of the AI's intelligence is the **`docs/AI_INSTRUCTIONS.md`** file. If you want to change how the AI responds, add new commands, or modify its personality, simply edit this Markdown file. The n8n workflows are designed to fetch and use these instructions for every execution.
