@@ -1,0 +1,316 @@
+/* General Body Styles */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header and Navigation */
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #0078D4;
+}
+
+.logo img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
+    padding: 20px 10px;
+    display: block;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-links a:hover {
+    color: #0078D4;
+    border-bottom: 2px solid #0078D4;
+}
+
+/* Main Content */
+main {
+    padding: 0;
+}
+
+section {
+    padding: 60px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section:nth-child(even) {
+    background-color: #ffffff;
+}
+
+h2 {
+    font-size: 2.5rem;
+    color: #005A9E;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.8rem;
+    color: #0078D4;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    border-left: 4px solid #0078D4;
+    padding-left: 15px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+/* Hero Section */
+#hero {
+    background: linear-gradient(rgba(0, 90, 158, 0.7), rgba(0, 120, 212, 0.7)), url('https://w.wallhaven.cc/full/zy/wallhaven-zyxvox.jpg') no-repeat center center/cover;
+    color: #ffffff;
+    text-align: center;
+    padding: 100px 5%;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto 30px;
+}
+
+.cta-button {
+    background-color: #ffffff;
+    color: #0078D4;
+    padding: 15px 30px;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    border: 2px solid transparent;
+}
+
+.cta-button:hover {
+    background-color: #0078D4;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+.cta-button.secondary {
+    background-color: transparent;
+    color: #0078D4;
+    border: 2px solid #0078D4;
+}
+
+.cta-button.secondary:hover {
+    background-color: #0078D4;
+    color: #ffffff;
+}
+
+/* Introduction Section */
+#introduction h2 .highlight {
+    color: #0078D4;
+}
+#introduction p {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+}
+
+/* Lesson Grid */
+.lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.lesson-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.lesson-card h3 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    border: none;
+    padding: 0;
+}
+
+.lesson-card p {
+    flex-grow: 1;
+    color: #555;
+}
+
+.card-link {
+    text-decoration: none;
+    color: #0078D4;
+    font-weight: 600;
+    align-self: flex-start;
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.upcoming-list {
+    list-style-type: '✅';
+    padding-left: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.upcoming-list li {
+    padding: 5px 0 5px 10px;
+    font-size: 1.1rem;
+}
+
+/* Tools Section */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.tool-card {
+    background-color: #f8f9fa;
+    border-left: 5px solid #0078D4;
+    padding: 25px;
+    border-radius: 0 8px 8px 0;
+}
+
+.tool-card h4 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #005A9E;
+}
+
+/* Community Section */
+#community {
+    text-align: center;
+}
+
+.community-links {
+    margin-top: 30px;
+}
+
+.community-links a {
+    margin: 0 10px;
+}
+
+/* Language Section */
+.language-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.language-tags span {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Footer */
+footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    text-align: center;
+    padding: 30px 5%;
+}
+
+footer a {
+    color: #00aaff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        padding: 10px 5%;
+    }
+
+    .nav-links {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-links li {
+        margin: 0 5px;
+    }
+
+    .nav-links a {
+        padding: 10px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+}
