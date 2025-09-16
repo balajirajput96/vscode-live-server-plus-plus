@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AutoFlow AI - Complete Mobile Platform</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Complete AI-powered mobile platform with chat, image generation, voice input, and web search">
+    <meta name="theme-color" content="#2196F3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AutoFlow AI">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #1976D2;
+            --accent-color: #FF4081;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --error-color: #F44336;
+            --background-color: #fafafa;
+            --surface-color: #ffffff;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle, .settings-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .theme-toggle:hover, .settings-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 1rem 1rem;
+            min-height: 100vh;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 120px;
+            background: none;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-tab:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: var(--background-color);
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .message.user .message-content {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .message.ai .message-content {
+            background: var(--surface-color);
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            background: var(--background-color);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .voice-btn, .send-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .voice-btn:hover, .send-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--background-color);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--text-secondary);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+        }
+
+        .btn-error {
+            background: var(--error-color);
+        }
+
+        /* Image Generation */
+        .image-preview {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .style-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .style-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .style-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        /* Web Search Results */
+        .search-result {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            background: var(--surface-color);
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .search-result-snippet {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .search-result-url {
+            font-size: 0.9rem;
+            color: var(--success-color);
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 70px 0.5rem 1rem;
+            }
+            
+            .header-content {
+                padding: 0 1rem;
+            }
+            
+            .nav-tabs {
+                margin: 0 -0.5rem 2rem;
+                border-radius: 0;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .style-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Status indicators */
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status.online {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+
+        .status.offline {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error-color);
+        }
+
+        /* File upload styles */
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(33, 150, 243, 0.05);
+        }
+
+        .file-upload.drag-over {
+            border-color: var(--primary-color);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>AutoFlow AI</span>
+                <span class="status online">Online</span>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="settings-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="settings-btn" onclick="showUserProfile()">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('chat')">
+                <i class="fas fa-comments"></i> Chat
+            </button>
+            <button class="nav-tab" onclick="switchTab('search')">
+                <i class="fas fa-search"></i> Search
+            </button>
+            <button class="nav-tab" onclick="switchTab('image')">
+                <i class="fas fa-image"></i> Images
+            </button>
+            <button class="nav-tab" onclick="switchTab('voice')">
+                <i class="fas fa-microphone"></i> Voice
+            </button>
+            <button class="nav-tab" onclick="switchTab('files')">
+                <i class="fas fa-folder"></i> Files
+            </button>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="chat" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-robot" style="color: var(--primary-color);"></i>
+                    <h2 class="card-title">AI Assistant Chat</h2>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-content">
+                                Hello! I'm your AI assistant. I can help you with questions, search the web, generate images, transcribe voice, and much more. How can I assist you today?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <button class="voice-btn" onclick="startVoiceRecording()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+                        <button class="send-btn" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-bolt" style="color: var(--warning-color);"></i>
+                    <h3 class="card-title">Quick Actions</h3>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <button class="btn" onclick="askAI('Explain quantum computing')">
+                        <i class="fas fa-atom"></i> Explain Quantum Computing
+                    </button>
+                    <button class="btn" onclick="askAI('Latest tech news')">
+                        <i class="fas fa-newspaper"></i> Latest Tech News
+                    </button>
+                    <button class="btn" onclick="askAI('Weather forecast')">
+                        <i class="fas fa-cloud-sun"></i> Weather Forecast
+                    </button>
+                    <button class="btn" onclick="askAI('Programming tips')">
+                        <i class="fas fa-code"></i> Programming Tips
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Tab -->
+        <div id="search" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-search" style="color: var(--success-color);"></i>
+                    <h2 class="card-title">Web Search & Information</h2>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Search Query</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" class="form-input" id="searchInput" placeholder="Enter your search query..." onkeypress="handleSearchKeyPress(event)">
+                        <button class="btn" onclick="performWebSearch()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+                <div id="searchResults"></div>
+            </div>
+
+            <!-- News Section -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-newspaper" style="color: var(--accent-color);"></i>
+                    <h3 class="card-title">Latest News</h3>
+                </div>
+                <div id="newsResults">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading latest news...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Generation Tab -->
+        <div id="image" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-paint-brush" style="color: var(--accent-color);"></i>
+                    <h2 class="card-title">AI Image Generation</h2>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image Description</label>
+                    <textarea class="form-input" id="imagePrompt" rows="3" placeholder="Describe the image you want to generate..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Style</label>
+                    <div class="style-selector">
+                        <div class="style-option selected" data-style="realistic">
+                            <i class="fas fa-camera"></i>
+                            <div>Realistic</div>
+                        </div>
+                        <div class="style-option" data-style="artistic">
+                            <i class="fas fa-palette"></i>
+                            <div>Artistic</div>
+                        </div>
+                        <div class="style-option" data-style="cartoon">
+                            <i class="fas fa-smile"></i>
+                            <div>Cartoon</div>
+                        </div>
+                        <div class="style-option" data-style="abstract">
+                            <i class="fas fa-shapes"></i>
+                            <div>Abstract</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="generateImage()">
+                    <i class="fas fa-magic"></i> Generate Image
+                </button>
+
+                <div id="imageResult"></div>
+            </div>
+        </div>
+
+        <!-- Voice Tab -->
+        <div id="voice" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-microphone" style="color: var(--warning-color);"></i>
+                    <h2 class="card-title">Voice Input & Transcription</h2>
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn" id="recordBtn" onclick="toggleRecording()" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                        <i class="fas fa-microphone"></i> Start Recording
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Transcription</label>
+                    <textarea class="form-input" id="transcriptionText" rows="5" placeholder="Your speech will appear here..." readonly></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="clearTranscription()">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyTranscription()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="btn btn-secondary" onclick="saveTranscription()">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+            </div>
+
+            <!-- Audio File Upload -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-file-audio" style="color: var(--primary-color);"></i>
+                    <h3 class="card-title">Audio File Transcription</h3>
+                </div>
+                <div class="file-upload" onclick="document.getElementById('audioFile').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-secondary);"></i>
+                    <p>Click to upload audio file or drag and drop</p>
+                    <input type="file" id="audioFile" accept="audio/*" style="display: none;" onchange="handleAudioUpload(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Tab -->
+        <div id="files" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-folder-open" style="color: var(--success-color);"></i>
+                    <h2 class="card-title">File Management</h2>
+                </div>
+                
+                <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-secondary);"></i>
+                    <p>Click to upload files or drag and drop</p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Supports images, documents, audio, and video files</p>
+                    <input type="file" id="fileInput" multiple accept="*/*" style="display: none;" onchange="handleFileUpload(event)">
+                </div>
+
+                <div id="fileList" style="margin-top: 2rem;"></div>
+            </div>
+
+            <!-- Export Data -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-download" style="color: var(--accent-color);"></i>
+                    <h3 class="card-title">Export Data</h3>
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" onclick="exportChatHistory()">
+                        <i class="fas fa-comments"></i> Export Chat History
+                    </button>
+                    <button class="btn" onclick="exportSearchHistory()">
+                        <i class="fas fa-search"></i> Export Search History
+                    </button>
+                    <button class="btn" onclick="exportAllData()">
+                        <i class="fas fa-database"></i> Export All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSettings()">&times;</button>
+            <h2>Settings</h2>
+            <div class="settings-panel">
+                <div class="setting-item">
+                    <div>
+                        <strong>Dark Theme</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Toggle dark/light mode</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleTheme()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <strong>Voice Recognition</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Enable voice input</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="voiceToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <strong>Auto-save Conversations</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Automatically save chat history</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autosaveToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <strong>Push Notifications</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">Receive push notifications</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notificationToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProfile()">&times;</button>
+            <h2>User Profile</h2>
+            <div class="settings-panel">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" class="form-input" id="displayName" value="User">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="userEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Language</label>
+                    <select class="form-input" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">中文</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> Save Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentTab = 'chat';
+        let isRecording = false;
+        let recognition = null;
+        let chatHistory = [];
+        let searchHistory = [];
+        let uploadedFiles = [];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadSavedData();
+            setupServiceWorker();
+            requestNotificationPermission();
+        });
+
+        function initializeApp() {
+            // Initialize speech recognition
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+
+                recognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    const transcriptionElement = document.getElementById('transcriptionText');
+                    if (transcriptionElement) {
+                        transcriptionElement.value = finalTranscript + interimTranscript;
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    showNotification('Speech recognition error: ' + event.error, 'error');
+                };
+            }
+
+            // Load news on startup
+            loadLatestNews();
+
+            // Setup file drag and drop
+            setupDragAndDrop();
+        }
+
+        function loadSavedData() {
+            // Load chat history
+            const savedChatHistory = localStorage.getItem('autoflow_chat_history');
+            if (savedChatHistory) {
+                chatHistory = JSON.parse(savedChatHistory);
+                displayChatHistory();
+            }
+
+            // Load search history
+            const savedSearchHistory = localStorage.getItem('autoflow_search_history');
+            if (savedSearchHistory) {
+                searchHistory = JSON.parse(savedSearchHistory);
+            }
+
+            // Load user preferences
+            const savedTheme = localStorage.getItem('autoflow_theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                const toggle = document.getElementById('darkModeToggle');
+                if (toggle) toggle.checked = true;
+            }
+
+            // Load profile data
+            const savedProfile = localStorage.getItem('autoflow_profile');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                document.getElementById('displayName').value = profile.name || 'User';
+                document.getElementById('userEmail').value = profile.email || '';
+                document.getElementById('languageSelect').value = profile.language || 'en';
+            }
+        }
+
+        function saveData(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showNotification('Error saving data', 'error');
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            currentTab = tabName;
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            
+            if (isDark) {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('autoflow_theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('autoflow_theme', 'dark');
+            }
+        }
+
+        // Chat functionality
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Simulate AI response (in real app, this would call an AI API)
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = generateAIResponse(message);
+                addChatMessage(response, 'ai');
+            }, 1000 + Math.random() * 2000);
+        }
+
+        function addChatMessage(message, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${message}
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Save to history
+            chatHistory.push({ message, sender, timestamp: new Date().toISOString() });
+            
+            if (document.getElementById('autosaveToggle').checked) {
+                saveData('autoflow_chat_history', chatHistory);
+            }
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="spinner"></div>
+                    AI is typing...
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function generateAIResponse(message) {
+            const responses = [
+                "That's an interesting question! Let me help you with that.",
+                "Based on your query, here's what I can tell you:",
+                "I understand what you're asking. Here's my response:",
+                "Great question! Let me provide you with some insights:",
+                "I'd be happy to help you with that topic.",
+            ];
+
+            // Simple keyword-based responses
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('weather')) {
+                return "I'd need access to a weather API to provide current weather information. In a production version, I would integrate with services like OpenWeatherMap to give you real-time weather data.";
+            } else if (lowerMessage.includes('news')) {
+                return "For the latest news, I can search recent headlines and articles. In the full version, I would integrate with news APIs to provide current information from reliable sources.";
+            } else if (lowerMessage.includes('image') || lowerMessage.includes('picture')) {
+                return "I can help you generate images! Switch to the Images tab where you can describe what you want to create and I'll generate it for you using AI image generation.";
+            } else if (lowerMessage.includes('voice') || lowerMessage.includes('speak')) {
+                return "You can use voice input by clicking the microphone button or switching to the Voice tab for full speech recognition and transcription capabilities.";
+            }
+            
+            return responses[Math.floor(Math.random() * responses.length)] + " " + 
+                   "This is a demo response. In a full implementation, this would connect to advanced AI models like GPT-4, Claude, or Gemini for intelligent responses.";
+        }
+
+        function askAI(question) {
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        }
+
+        function displayChatHistory() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+            
+            // Add welcome message
+            addChatMessage("Hello! I'm your AI assistant. I can help you with questions, search the web, generate images, transcribe voice, and much more. How can I assist you today?", 'ai');
+            
+            // Add saved messages
+            chatHistory.forEach(item => {
+                addChatMessage(item.message, item.sender);
+            });
+        }
+
+        // Search functionality
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                performWebSearch();
+            }
+        }
+
+        function performWebSearch() {
+            const input = document.getElementById('searchInput');
+            const query = input.value.trim();
+            
+            if (!query) return;
+
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Searching...</div>';
+
+            // Add to search history
+            searchHistory.push({ query, timestamp: new Date().toISOString() });
+            saveData('autoflow_search_history', searchHistory);
+
+            // Simulate search results (in real app, this would call a search API)
+            setTimeout(() => {
+                const mockResults = generateSearchResults(query);
+                displaySearchResults(mockResults);
+            }, 1500);
+        }
+
+        function generateSearchResults(query) {
+            return [
+                {
+                    title: `${query} - Comprehensive Guide`,
+                    snippet: `A detailed explanation about ${query} covering all the essential aspects you need to know...`,
+                    url: `https://example.com/guide-to-${query.replace(/\s+/g, '-')}`
+                },
+                {
+                    title: `Latest ${query} News and Updates`,
+                    snippet: `Stay updated with the latest developments and news related to ${query}...`,
+                    url: `https://news.example.com/latest-${query.replace(/\s+/g, '-')}`
+                },
+                {
+                    title: `${query} Tutorial for Beginners`,
+                    snippet: `Learn ${query} from scratch with this comprehensive tutorial designed for beginners...`,
+                    url: `https://tutorial.example.com/learn-${query.replace(/\s+/g, '-')}`
+                }
+            ];
+        }
+
+        function displaySearchResults(results) {
+            const container = document.getElementById('searchResults');
+            container.innerHTML = '';
+
+            if (results.length === 0) {
+                container.innerHTML = '<p>No results found.</p>';
+                return;
+            }
+
+            results.forEach(result => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'search-result';
+                resultDiv.innerHTML = `
+                    <div class="search-result-title">${result.title}</div>
+                    <div class="search-result-snippet">${result.snippet}</div>
+                    <div class="search-result-url">${result.url}</div>
+                `;
+                container.appendChild(resultDiv);
+            });
+        }
+
+        function loadLatestNews() {
+            const newsContainer = document.getElementById('newsResults');
+            
+            // Simulate loading news
+            setTimeout(() => {
+                const mockNews = [
+                    {
+                        title: "AI Technology Breakthrough in Healthcare",
+                        snippet: "New AI model shows 95% accuracy in early disease detection...",
+                        url: "https://technews.example.com/ai-healthcare-breakthrough"
+                    },
+                    {
+                        title: "Mobile App Development Trends 2024",
+                        snippet: "Progressive Web Apps continue to gain popularity among developers...",
+                        url: "https://devnews.example.com/mobile-trends-2024"
+                    },
+                    {
+                        title: "Climate Tech Innovation Awards",
+                        snippet: "Innovative solutions for environmental challenges recognized...",
+                        url: "https://climatetech.example.com/innovation-awards"
+                    }
+                ];
+
+                newsContainer.innerHTML = '';
+                mockNews.forEach(news => {
+                    const newsDiv = document.createElement('div');
+                    newsDiv.className = 'search-result';
+                    newsDiv.innerHTML = `
+                        <div class="search-result-title">${news.title}</div>
+                        <div class="search-result-snippet">${news.snippet}</div>
+                        <div class="search-result-url">${news.url}</div>
+                    `;
+                    newsContainer.appendChild(newsDiv);
+                });
+            }, 2000);
+        }
+
+        // Image generation
+        function generateImage() {
+            const prompt = document.getElementById('imagePrompt').value.trim();
+            const selectedStyle = document.querySelector('.style-option.selected').dataset.style;
+            
+            if (!prompt) {
+                showNotification('Please enter an image description', 'warning');
+                return;
+            }
+
+            const resultContainer = document.getElementById('imageResult');
+            resultContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Generating image...</div>';
+
+            // Simulate image generation (in real app, this would call an AI image API)
+            setTimeout(() => {
+                const mockImageUrl = `https://picsum.photos/500/400?random=${Date.now()}`;
+                resultContainer.innerHTML = `
+                    <div style="margin-top: 1rem;">
+                        <img src="${mockImageUrl}" alt="Generated image" class="image-preview" />
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="regenerateImage()">
+                                <i class="fas fa-redo"></i> Regenerate
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadImage('${mockImageUrl}')">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-secondary" onclick="shareImage('${mockImageUrl}')">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            Style: ${selectedStyle} | Prompt: "${prompt}"
+                        </p>
+                    </div>
+                `;
+            }, 3000);
+        }
+
+        function regenerateImage() {
+            generateImage();
+        }
+
+        function downloadImage(url) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `autoflow-generated-${Date.now()}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification('Image downloaded successfully', 'success');
+        }
+
+        function shareImage(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'AutoFlow AI Generated Image',
+                    text: 'Check out this AI-generated image!',
+                    url: url
+                });
+            } else {
+                // Fallback to copying URL
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Image URL copied to clipboard', 'success');
+                });
+            }
+        }
+
+        // Style selection
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.style-option')) {
+                document.querySelectorAll('.style-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                event.target.closest('.style-option').classList.add('selected');
+            }
+        });
+
+        // Voice functionality
+        function startVoiceRecording() {
+            if (!recognition) {
+                showNotification('Speech recognition not supported in this browser', 'error');
+                return;
+            }
+
+            try {
+                recognition.start();
+                document.getElementById('transcriptionText').value = '';
+                showNotification('Voice recording started', 'success');
+            } catch (error) {
+                console.error('Error starting voice recognition:', error);
+                showNotification('Error starting voice recognition', 'error');
+            }
+        }
+
+        function toggleRecording() {
+            const recordBtn = document.getElementById('recordBtn');
+            
+            if (!isRecording) {
+                startRecording();
+                recordBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Recording';
+                recordBtn.style.background = 'var(--error-color)';
+                isRecording = true;
+            } else {
+                stopRecording();
+                recordBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Recording';
+                recordBtn.style.background = 'var(--primary-color)';
+                isRecording = false;
+            }
+        }
+
+        function startRecording() {
+            if (recognition) {
+                recognition.start();
+                showNotification('Recording started', 'success');
+            }
+        }
+
+        function stopRecording() {
+            if (recognition) {
+                recognition.stop();
+                showNotification('Recording stopped', 'success');
+            }
+        }
+
+        function clearTranscription() {
+            document.getElementById('transcriptionText').value = '';
+        }
+
+        function copyTranscription() {
+            const text = document.getElementById('transcriptionText').value;
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Transcription copied to clipboard', 'success');
+                });
+            }
+        }
+
+        function saveTranscription() {
+            const text = document.getElementById('transcriptionText').value;
+            if (text) {
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `transcription-${Date.now()}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showNotification('Transcription saved', 'success');
+            }
+        }
+
+        function handleAudioUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                showNotification('Audio transcription feature would process the uploaded file in a full implementation', 'info');
+                // In a real app, this would use speech-to-text APIs
+            }
+        }
+
+        // File management
+        function setupDragAndDrop() {
+            const dropZones = document.querySelectorAll('.file-upload');
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    
+                    const files = Array.from(e.dataTransfer.files);
+                    handleFiles(files);
+                });
+            });
+        }
+
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            files.forEach(file => {
+                uploadedFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    uploadedAt: new Date().toISOString()
+                });
+            });
+
+            displayFileList();
+            showNotification(`${files.length} file(s) uploaded successfully`, 'success');
+        }
+
+        function displayFileList() {
+            const fileList = document.getElementById('fileList');
+            
+            if (uploadedFiles.length === 0) {
+                fileList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No files uploaded yet</p>';
+                return;
+            }
+
+            fileList.innerHTML = uploadedFiles.map((file, index) => `
+                <div class="card" style="margin-bottom: 1rem; padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${file.name}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                ${formatFileSize(file.size)} • ${file.type || 'Unknown type'} • ${formatDate(file.uploadedAt)}
+                            </div>
+                        </div>
+                        <button class="btn btn-error" onclick="removeFile(${index})" style="padding: 0.5rem;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            displayFileList();
+            showNotification('File removed', 'success');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(isoString) {
+            return new Date(isoString).toLocaleDateString();
+        }
+
+        // Export functionality
+        function exportChatHistory() {
+            const data = JSON.stringify(chatHistory, null, 2);
+            downloadData(data, `autoflow-chat-history-${Date.now()}.json`);
+        }
+
+        function exportSearchHistory() {
+            const data = JSON.stringify(searchHistory, null, 2);
+            downloadData(data, `autoflow-search-history-${Date.now()}.json`);
+        }
+
+        function exportAllData() {
+            const allData = {
+                chatHistory,
+                searchHistory,
+                uploadedFiles: uploadedFiles.map(f => ({ name: f.name, size: f.size, type: f.type, uploadedAt: f.uploadedAt })),
+                exportedAt: new Date().toISOString()
+            };
+            const data = JSON.stringify(allData, null, 2);
+            downloadData(data, `autoflow-complete-export-${Date.now()}.json`);
+        }
+
+        function downloadData(data, filename) {
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showNotification('Data exported successfully', 'success');
+        }
+
+        // Settings and Profile
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function showUserProfile() {
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeProfile() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const profile = {
+                name: document.getElementById('displayName').value,
+                email: document.getElementById('userEmail').value,
+                language: document.getElementById('languageSelect').value
+            };
+            
+            saveData('autoflow_profile', profile);
+            showNotification('Profile saved successfully', 'success');
+            closeProfile();
+        }
+
+        // Notifications
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: var(--surface-color);
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+                padding: 1rem 1.5rem;
+                box-shadow: var(--shadow);
+                z-index: 3000;
+                max-width: 300px;
+                transition: all 0.3s ease;
+            `;
+
+            const colors = {
+                success: 'var(--success-color)',
+                error: 'var(--error-color)',
+                warning: 'var(--warning-color)',
+                info: 'var(--primary-color)'
+            };
+
+            notification.style.borderLeft = `4px solid ${colors[type]}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}" style="color: ${colors[type]};"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Service Worker for PWA
+        function setupServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                // In a real app, you would register a service worker here
+                console.log('Service Worker would be registered here for offline functionality');
+            }
+        }
+
+        // Push Notifications
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notification permission granted');
+                        // You could show a welcome notification here
+                    }
+                });
+            }
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            const settingsModal = document.getElementById('settingsModal');
+            const profileModal = document.getElementById('profileModal');
+            
+            if (event.target === settingsModal) {
+                closeSettings();
+            }
+            if (event.target === profileModal) {
+                closeProfile();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Ctrl/Cmd + Enter to send message
+            if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                if (currentTab === 'chat') {
+                    sendChatMessage();
+                } else if (currentTab === 'search') {
+                    performWebSearch();
+                }
+            }
+            
+            // Escape to close modals
+            if (event.key === 'Escape') {
+                closeSettings();
+                closeProfile();
+            }
+        });
+
+        // Initialize file list display
+        displayFileList();
+
+        // Add installation prompt for PWA
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button or notification
+            showNotification('You can install this app for a better experience!', 'info');
+        });
+
+        // Auto-save functionality
+        setInterval(() => {
+            if (document.getElementById('autosaveToggle').checked) {
+                saveData('autoflow_chat_history', chatHistory);
+                saveData('autoflow_search_history', searchHistory);
+            }
+        }, 30000); // Auto-save every 30 seconds
+    </script>
+</body>
+</html>
