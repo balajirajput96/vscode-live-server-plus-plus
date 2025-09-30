@@ -3,6 +3,19 @@
 
 ---
 
+## 🚀 Quick Deployment
+
+**Deploy everything in one command:**
+```bash
+./deploy-complete.sh
+```
+
+**Or follow the step-by-step guide:** [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+📊 **Track Status:** [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) | 🎯 **Quick Ref:** [QUICK-DEPLOY.md](./QUICK-DEPLOY.md)
+
+---
+
 ## 📋 Overview
 
 यह एक comprehensive AI-powered career automation system है जो biotech और bioinformatics professionals के लिए specially designed किया गया है। यह system आपको job search से लेकर interview preparation तक, हर step में AI की power का use करके successful career बनाने में help करता है।
