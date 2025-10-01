@@ -3,6 +3,33 @@
 
 ---
 
+## ⚡ DEPLOY NOW - One Command Setup
+
+```bash
+./deploy-complete.sh
+```
+
+**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md)
+
+### Complete Deployment System Included
+- ✅ **One-command deployment** with interactive setup
+- ✅ **Automated verification** of all components
+- ✅ **Comprehensive documentation** for every scenario
+- ✅ **Status tracking** and progress monitoring
+- ✅ **GitHub Pages auto-deployment** for web components
+- ✅ **n8n automation platform** with Docker
+- ✅ **Pre-flight checklist** to ensure smooth setup
+- ✅ **Multiple deployment modes** (local/production/custom)
+
+### Quick Links
+📖 [START-HERE.md](./START-HERE.md) - Begin deployment
+🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
+📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress
+✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks
+🗺️ [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md) - Visual guide
+
+---
+
 ## 📋 Overview
 
 यह एक comprehensive AI-powered career automation system है जो biotech और bioinformatics professionals के लिए specially designed किया गया है। यह system आपको job search से लेकर interview preparation तक, हर step में AI की power का use करके successful career बनाने में help करता है।
