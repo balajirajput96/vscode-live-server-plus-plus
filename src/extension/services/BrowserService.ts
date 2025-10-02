@@ -1,4 +1,3 @@
-import open from 'open';
 import { extensionConfig } from '../utils/extensionConfig';
 import {
   ILiveServerPlusPlusService,
@@ -19,7 +18,7 @@ export class BrowserService implements ILiveServerPlusPlusService {
     this.liveServerPlusPlus.onServerError(this.openIfServerIsAlreadyRunning.bind(this));
   }
 
-  private openInBrowser(event: GoLiveEvent) {
+  private async openInBrowser(event: GoLiveEvent) {
     const host = '127.0.0.1';
     const port = event.LSPP.port;
     const pathname = this.getPathname();
@@ -33,7 +32,8 @@ export class BrowserService implements ILiveServerPlusPlusService {
       openParams.push(getNormalizedBrowserName(browserName));
     }
 
-    open(`${protocol}//${host}:${port}${pathname}`, { app: openParams });
+    const { default: open } = await import('open');
+    await open(`${protocol}//${host}:${port}${pathname}`, { app: openParams });
   }
 
   private getPathname() {
