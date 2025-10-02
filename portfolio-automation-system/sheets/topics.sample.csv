@@ -1,0 +1,4 @@
+Project,Link,Context
+Drug Response Prediction with Random Forest,https://yourportfolio.example/projects/drug-response,"Dataset: GDSC; Metrics: ROC-AUC; Tools: Python, scikit-learn"
+Variant Calling Pipeline (GATK),https://yourportfolio.example/projects/variant-calling,"WES data; BQSR + HaplotypeCaller; Results summarized"
+Spatial Transcriptomics Visualization,https://yourportfolio.example/projects/spatial-tx,"Seurat + custom Python; Key findings and plots"

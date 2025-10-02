@@ -8,3 +8,10 @@ vsc-extension-quickstart.md
 **/tslint.json
 **/*.map
 **/*.ts
+# Reduce vsix size
+portfolio-automation-system/**
+docs/**
+images/**
+!images/vscode-live-server-plus-plus.png
+**/*.gif
+.travis.yml

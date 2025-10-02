@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-export { INJECTED_TEXT } from './injectedText';
+export { getInjectedText } from './injectedText';
 
 /**
  * Live Server++ only do dirty read if it's supported
