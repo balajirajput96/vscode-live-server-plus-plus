@@ -32,6 +32,9 @@
             <button class="nav-tab" data-tab="jobs">
                 <i class="fas fa-search"></i> Job Tracker
             </button>
+            <button class="nav-tab" data-tab="bullets">
+                <i class="fas fa-list"></i> Bullet Points Generator
+            </button>
             <button class="nav-tab" data-tab="prompts">
                 <i class="fas fa-magic"></i> AI Prompts
             </button>
@@ -260,6 +263,222 @@
                                 <button class="btn btn-sm btn-primary">Apply</button>
                                 <button class="btn btn-sm btn-secondary">Save</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bullet Points Generator Section -->
+            <section id="bullets" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Bullet Points Generator</h2>
+                    <p>जल्दी और साफ़ प्रमुख बिंदु लिखने के लिए तेज़ टूल्स</p>
+                </div>
+                
+                <div class="quick-links-grid">
+                    <div class="tool-card">
+                        <h4><i class="fas fa-brain"></i> Notion AI</h4>
+                        <p>सबसे आसान "प्रमुख बिंदु" जेनरेट करना</p>
+                        <a href="https://notion.so" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
+                        </a>
+                        <div class="usage-tip">
+                            <small>Usage: "/" टाइप करके "Summarize into bullet points"</small>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4><i class="fab fa-google"></i> Google Gemini</h4>
+                        <p>हिंदी में क्लियर bullets, तेज़ और मुफ्त</p>
+                        <a href="https://gemini.google.com" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
+                        </a>
+                        <div class="usage-tip">
+                            <small>Usage: "इसे 5-7 प्रमुख बिंदुओं में लिखो"</small>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4><i class="fas fa-robot"></i> ChatGPT</h4>
+                        <p>तेज़ bullets और टोन कंट्रोल</p>
+                        <a href="https://chat.openai.com" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
+                        </a>
+                        <div class="usage-tip">
+                            <small>Usage: "5 मुख्य बिंदुओं में, 1-लाइन प्रत्येक"</small>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4><i class="fab fa-microsoft"></i> Microsoft Copilot</h4>
+                        <p>Office/Edge के साथ बेहतरीन integration</p>
+                        <a href="https://copilot.microsoft.com" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
+                        </a>
+                        <div class="usage-tip">
+                            <small>Usage: "Clear bullet points 5-7"</small>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4><i class="fas fa-feather-alt"></i> QuillBot</h4>
+                        <p>सीधे "Key points" summarizer</p>
+                        <a href="https://quillbot.com/summarize" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
+                        </a>
+                        <div class="usage-tip">
+                            <small>Usage: Text paste करें → "Key Sentences"</small>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4><i class="fas fa-microphone"></i> Notta.ai</h4>
+                        <p>ऑडियो से bullet summary</p>
+                        <a href="https://notta.ai" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
+                        </a>
+                        <div class="usage-tip">
+                            <small>Usage: ऑडियो अपलोड → "Key takeaways" बटन</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prompt-generator">
+                    <h3><i class="fas fa-magic"></i> Ready-to-Use Prompt</h3>
+                    <div class="prompt-box">
+                        <p><strong>किसी भी AI टूल में copy-paste करें:</strong></p>
+                        <div class="prompt-text" id="bulletPrompt">
+नीचे दिए गए विषय पर 5‑7 स्पष्ट और संक्षिप्त 'प्रमुख बिंदु' लिखो। हर बिंदु 1 लाइन में हो, बिना फालतू शब्दों के, सरल हिंदी में। यदि सूची लंबी हो रही है तो सबसे ज़रूरी बातें पहले दो।
+
+विषय: [यहाँ विषय/टेक्स्ट पेस्ट करें]
+                        </div>
+                        <button class="btn btn-secondary" onclick="copyToClipboard('bulletPrompt')">
+                            <i class="fas fa-copy"></i> प्रॉम्प्ट कॉपी करें
+                        </button>
+                    </div>
+                    
+                    <div class="prompt-box">
+                        <p><strong>English Version:</strong></p>
+                        <div class="prompt-text" id="bulletPromptEn">
+Create 5-7 clear and concise bullet points on the topic below. Each point should be one line, without unnecessary words, in simple language. If the list is getting long, prioritize the most important points first.
+
+Topic: [Paste your topic/text here]
+                        </div>
+                        <button class="btn btn-secondary" onclick="copyToClipboard('bulletPromptEn')">
+                            <i class="fas fa-copy"></i> Copy Prompt
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="workflow-section">
+                    <h3><i class="fas fa-bolt"></i> सबसे तेज़ वर्कफ़्लो (30 सेकंड में)</h3>
+                    <div class="workflow-grid">
+                        <div class="workflow-card">
+                            <h4><i class="fas fa-mobile-alt"></i> मोबाइल पर</h4>
+                            <ol>
+                                <li>Google Keep में माइक से बोलें</li>
+                                <li>Text कॉपी करें</li>
+                                <li>Gemini में prompt paste करें</li>
+                                <li>साफ़ bullets मिल जाएं</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="workflow-card">
+                            <h4><i class="fas fa-desktop"></i> डेस्कटॉप पर</h4>
+                            <ol>
+                                <li>ChatGPT खोलें</li>
+                                <li>ऊपर का prompt paste करें</li>
+                                <li>अपना content add करें</li>
+                                <li>Perfect bullets तैयार</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="workflow-card">
+                            <h4><i class="fas fa-microphone"></i> ऑडियो से</h4>
+                            <ol>
+                                <li>Notta.ai खोलें</li>
+                                <li>ऑडियो/video upload करें</li>
+                                <li>"Key takeaways" दबाएं</li>
+                                <li>Direct bullets मिल जाएं</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="templates-section">
+                    <h3><i class="fas fa-clipboard-list"></i> Pre-Made Templates</h3>
+                    <div class="template-grid">
+                        <div class="template-card">
+                            <h4>📊 प्रोजेक्ट सारांश</h4>
+                            <div class="template-text" id="projectTemplate">
+🎯 [प्रोजेक्ट नाम] - मुख्य बिंदु:
+
+• उद्देश्य: [एक लाइन में लक्ष्य]
+• समस्या: [क्या हल किया]
+• समाधान: [कैसे हल किया]
+• परिणाम: [क्या मिला]
+• सीख: [क्या सीखा]
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="copyToClipboard('projectTemplate')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                        
+                        <div class="template-card">
+                            <h4>💼 मीटिंग नोट्स</h4>
+                            <div class="template-text" id="meetingTemplate">
+📅 [तारीख] - [मीटिंग का नाम]
+
+• मुख्य चर्चा: [विषय]
+• निर्णय: [क्या तय हुआ]
+• एक्शन आइटम: [किसे क्या करना है]
+• अगला कदम: [अगली मीटिंग/काम]
+• डेडलाइन: [कब तक]
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="copyToClipboard('meetingTemplate')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                        
+                        <div class="template-card">
+                            <h4>📚 स्टडी नोट्स</h4>
+                            <div class="template-text" id="studyTemplate">
+📖 [विषय/अध्याय] - प्रमुख बिंदु:
+
+• परिभाषा: [मुख्य कॉन्सेप्ट]
+• विशेषताएं: [खासियतें]
+• उदाहरण: [रियल-लाइफ एक्जाम्पल]
+• अनुप्रयोग: [कहाँ इस्तेमाल होता है]
+• महत्व: [क्यों जरूरी है]
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="copyToClipboard('studyTemplate')">
+                                <i class="fas fa-copy"></i> कॉपी करें
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card success">
+                            <h4>✅ करें</h4>
+                            <ul>
+                                <li>Specific keywords दें ("5 actionable steps")</li>
+                                <li>"1 line each" जरूर mention करें</li>
+                                <li>Context दें - "For presentation" etc.</li>
+                                <li>2-3 iterations करें better results के लिए</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-card warning">
+                            <h4>❌ न करें</h4>
+                            <ul>
+                                <li>Generic prompts न दें ("summarize this")</li>
+                                <li>बहुत लंबा text एक साथ न दें</li>
+                                <li>First draft को final न मानें</li>
+                                <li>Format specify करना न भूलें</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

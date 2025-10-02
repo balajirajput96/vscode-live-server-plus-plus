@@ -1,0 +1,272 @@
+{
+  "name": "Perplexity AI Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-content",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Content Request Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "perplexity-content-gen"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "content_type",
+              "value": "={{ $json.body.content_type || 'linkedin_post' }}"
+            },
+            {
+              "name": "topic",
+              "value": "={{ $json.body.topic || 'Bioinformatics career opportunities' }}"
+            },
+            {
+              "name": "target_audience",
+              "value": "={{ $json.body.target_audience || 'Biotechnology professionals' }}"
+            },
+            {
+              "name": "tone",
+              "value": "={{ $json.body.tone || 'professional_engaging' }}"
+            },
+            {
+              "name": "email",
+              "value": "balaji.web.design1@gmail.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-content-params",
+      "name": "Set Content Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "{\n  \"model\": \"llama-3.1-sonar-large-128k-online\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert content creator for biotechnology and bioinformatics professionals. Create engaging, valuable content that demonstrates expertise and attracts career opportunities. Always include relevant hashtags and call-to-actions.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Create {{ $json.content_type }} content about: {{ $json.topic }}. Target audience: {{ $json.target_audience }}. Tone: {{ $json.tone }}. Requirements: 1) Research-backed insights, 2) Practical value, 3) Engaging hook, 4) Relevant hashtags, 5) Clear call-to-action, 6) Professional but approachable tone. Include current industry trends and data where relevant.\"\n    }\n  ],\n  \"max_tokens\": 1000,\n  \"temperature\": 0.3,\n  \"return_citations\": true,\n  \"return_images\": false\n}",
+        "options": {}
+      },
+      "id": "perplexity-content-gen",
+      "name": "Perplexity Content Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "perplexity-auth",
+          "name": "Perplexity API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.all()[0].json;\nconst content = response.choices[0].message.content;\nconst citations = response.citations || [];\nconst params = $('Set Content Parameters').item.json;\n\n// Format the generated content\nconst formattedContent = {\n  content_id: `content_${Date.now()}`,\n  generated_date: new Date().toISOString(),\n  content_type: params.content_type,\n  topic: params.topic,\n  target_audience: params.target_audience,\n  tone: params.tone,\n  content: content,\n  citations: citations,\n  word_count: content.split(' ').length,\n  character_count: content.length,\n  email: params.email,\n  status: 'generated'\n};\n\nreturn { json: formattedContent };"
+      },
+      "id": "format-content",
+      "name": "Format Generated Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"content_id\": \"{{ $json.content_id }}\",\n  \"generated_date\": \"{{ $json.generated_date }}\",\n  \"content_type\": \"{{ $json.content_type }}\",\n  \"topic\": \"{{ $json.topic }}\",\n  \"word_count\": {{ $json.word_count }},\n  \"character_count\": {{ $json.character_count }},\n  \"citations_count\": {{ $json.citations.length }},\n  \"content\": {{ JSON.stringify($json.content) }},\n  \"citations\": {{ JSON.stringify($json.citations) }},\n  \"message\": \"Content generated successfully using Perplexity AI Pro\"\n}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "your_content_log_sheet_id",
+          "mode": "list",
+          "cachedResultName": "Content Generation Log"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "valueInputMode": "defineBelow",
+        "fieldsToMatchOn": [
+          {
+            "column": "content_id",
+            "fieldValue": "={{ $json.content_id }}"
+          },
+          {
+            "column": "generated_date",
+            "fieldValue": "={{ $json.generated_date }}"
+          },
+          {
+            "column": "content_type",
+            "fieldValue": "={{ $json.content_type }}"
+          },
+          {
+            "column": "topic",
+            "fieldValue": "={{ $json.topic }}"
+          },
+          {
+            "column": "target_audience",
+            "fieldValue": "={{ $json.target_audience }}"
+          },
+          {
+            "column": "tone",
+            "fieldValue": "={{ $json.tone }}"
+          },
+          {
+            "column": "word_count",
+            "fieldValue": "={{ $json.word_count }}"
+          },
+          {
+            "column": "character_count",
+            "fieldValue": "={{ $json.character_count }}"
+          },
+          {
+            "column": "citations_count",
+            "fieldValue": "={{ $json.citations.length }}"
+          },
+          {
+            "column": "content_preview",
+            "fieldValue": "={{ $json.content.substring(0, 100) }}..."
+          },
+          {
+            "column": "status",
+            "fieldValue": "={{ $json.status }}"
+          }
+        ],
+        "options": {}
+      },
+      "id": "log-to-sheets",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.3,
+      "position": [
+        900,
+        150
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-auth",
+          "name": "Google Sheets API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Content Request Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Content Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Content Parameters": {
+      "main": [
+        [
+          {
+            "node": "Perplexity Content Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity Content Generation": {
+      "main": [
+        [
+          {
+            "node": "Format Generated Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Generated Content": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "perplexity-automation",
+      "name": "Perplexity Automation"
+    },
+    {
+      "id": "content-generation",
+      "name": "Content Generation"
+    },
+    {
+      "id": "webhook",
+      "name": "Webhook"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T00:00:00.000Z",
+  "versionId": "1"
+}

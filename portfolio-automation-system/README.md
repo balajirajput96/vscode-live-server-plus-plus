@@ -25,14 +25,32 @@ This system automates your entire digital presence as a Biotechnology & Bioinfor
 - **Purpose**: Professional headline and about section optimization
 - **Features**: Keyword optimization, industry-specific language
 
+### 5. n8n AI Agent Automation Pack 🆕
+- **Tool**: n8n workflows + OpenAI + Predis + Buffer
+- **Purpose**: Automated weekly social posts from Google Sheets
+- **Features**: No-code automation, custom/HTTP nodes, scheduled posting
+- **See**: [AI-AGENT-README.md](AI-AGENT-README.md) for setup guide
+
 ## 📁 Project Structure
 ```
 portfolio-automation-system/
 ├── prompts/                 # AI prompts for different tasks
+│   ├── ai-prompts-library.md    # Copy-paste ready prompts for all platforms
+│   ├── github-documentation-prompts.md
+│   ├── linkedin-optimization-prompts.md
+│   └── website-builder-prompts.md
 ├── templates/              # Content templates
 ├── automation/             # Automation scripts
-├── config/                 # Configuration files
-└── docs/                   # Documentation
+├── workflows/              # n8n automation workflows
+│   └── n8n/               # n8n JSON workflow files
+│       ├── demo-weekly-social-posts.json
+│       └── http-variant-weekly-social-posts.json
+├── sheets/                 # Sample data sheets
+│   └── topics.sample.csv  # Example Google Sheets format
+├── docs/                   # Documentation
+│   └── setup.md           # n8n setup guide
+├── .env.example           # Environment variables template
+└── AI-AGENT-README.md     # Quick start for n8n automation
 ```
 
 ## 🚀 Quick Start

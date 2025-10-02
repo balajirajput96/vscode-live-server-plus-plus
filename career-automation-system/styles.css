@@ -581,3 +581,286 @@ body {
     width: 100px;
     height: 100px;
 }
+
+/* Bullet Points Generator Styles */
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.tool-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tool-card:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    border-color: #667eea;
+}
+
+.tool-card h4 {
+    color: #2d3748;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tool-card h4 i {
+    color: #667eea;
+    font-size: 1.1em;
+}
+
+.tool-card p {
+    color: #718096;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.tool-card .btn {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.usage-tip {
+    background: #f7fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.usage-tip small {
+    color: #4a5568;
+    font-size: 0.85rem;
+}
+
+.prompt-generator {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.prompt-generator h3 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.prompt-generator h3 i {
+    color: #667eea;
+}
+
+.prompt-box {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.prompt-text {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 10px 0;
+    white-space: pre-wrap;
+}
+
+.workflow-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.workflow-section h3 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.workflow-section h3 i {
+    color: #f6ad55;
+}
+
+.workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.workflow-card {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.workflow-card h4 {
+    color: #2d3748;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+}
+
+.workflow-card h4 i {
+    color: #667eea;
+}
+
+.workflow-card ol {
+    padding-left: 20px;
+}
+
+.workflow-card li {
+    color: #4a5568;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.templates-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.templates-section h3 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.templates-section h3 i {
+    color: #38b2ac;
+}
+
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.template-card {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.template-card h4 {
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.template-text {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+.tips-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.tips-section h3 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tips-section h3 i {
+    color: #fbb6ce;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.tip-card {
+    border-radius: 10px;
+    padding: 20px;
+    border: 2px solid;
+}
+
+.tip-card.success {
+    background: #f0fff4;
+    border-color: #38a169;
+}
+
+.tip-card.warning {
+    background: #fffaf0;
+    border-color: #ed8936;
+}
+
+.tip-card h4 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.tip-card.success h4 {
+    color: #38a169;
+}
+
+.tip-card.warning h4 {
+    color: #ed8936;
+}
+
+.tip-card ul {
+    padding-left: 20px;
+}
+
+.tip-card li {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
+}
