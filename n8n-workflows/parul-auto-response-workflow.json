@@ -1,0 +1,104 @@
+{
+  "name": "Parul_Auto_Response_v1",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "balaji-automation",
+        "responseMode": "onReceived",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "balaji-automation"
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "credential": "openaiApi",
+        "model": "gpt-4o-mini",
+        "prompt": "Reply in Hindi+English. User query: {{$json[\"query\"]}}. Be concise, helpful, university tone. For Parul University students and donors.",
+        "maxTokens": 180,
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "name": "AI Response Generator",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@paruluniversity.ac.in",
+        "toEmail": "={{$json[\"email\"] || \"2203456300001@paruluniversity.ac.in\"}}",
+        "subject": "Parul University — Response to Your Query",
+        "text": "={{$node[\"AI Response Generator\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "options": {
+          "ccEmail": "",
+          "bccEmail": "",
+          "replyTo": "support@paruluniversity.ac.in"
+        }
+      },
+      "name": "Gmail Send",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [680, 220]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "upload",
+        "fileName": "response_{{Date.now()}}.txt",
+        "fileContent": "Query: {{$json[\"query\"]}}\nEmail: {{$json[\"email\"]}}\nTimestamp: {{new Date().toISOString()}}\n\nResponse:\n{{$node[\"AI Response Generator\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "parentFolderId": "REPLACE_WITH_ACTUAL_DRIVE_FOLDER_ID",
+        "options": {
+          "parents": []
+        }
+      },
+      "name": "Drive Save",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [680, 380]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Response Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Response Generator": {
+      "main": [
+        [
+          {
+            "node": "Drive Save",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "1",
+  "tags": ["university", "automation", "parul"]
+}

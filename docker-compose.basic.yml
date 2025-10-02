@@ -1,0 +1,52 @@
+# Basic local/dev setup (no reverse proxy). Exposes :5678 on host.
+services:
+  n8n:
+    image: "n8nio/n8n:${N8N_IMAGE_TAG}"
+    container_name: "n8n"
+    restart: unless-stopped
+    networks: ["n8nnet"]
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      # General
+      - NODE_ENV=production
+      - TZ=${TZ}
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+
+      # n8n core settings
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+
+      # Auth (enable for basic protection)
+      - N8N_BASIC_AUTH=${N8N_BASIC_AUTH}
+      - N8N_BASIC_AUTH_USERNAME=${N8N_BASIC_AUTH_USERNAME}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+
+      # Cookies (keep false for HTTP/local; true when HTTPS behind proxy)
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
+
+      # URL construction (optional for local; set properly in reverse proxy mode)
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_TRUST_PROXY=${N8N_TRUST_PROXY}
+
+      # Encryption key for credentials
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+
+      # Optional payload size, uncomment if needed
+      # - N8N_PAYLOAD_SIZE_MAX=32 # in MB
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+      # Optional: If you need docker-in-docker access for certain nodes (be cautious)
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  n8n_data:
+
+networks:
+  n8nnet:
+    driver: bridge

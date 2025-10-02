@@ -1,0 +1,277 @@
+{
+  "name": "Job Application Tracker Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "everyDay",
+        "hour": 10,
+        "minute": 0
+      },
+      "id": "daily-job-check",
+      "name": "Daily Job Check Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_JOB_TRACKING_SHEET_ID",
+        "range": "Applications!A:H",
+        "options": {}
+      },
+      "id": "get-applications",
+      "name": "Get Job Applications",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [400, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": "YOUR_GOOGLE_SHEETS_CREDENTIAL"
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{Math.floor((new Date() - new Date($json.ApplicationDate)) / (1000 * 60 * 60 * 24))}}",
+              "operation": "equal",
+              "value2": 7
+            }
+          ]
+        }
+      },
+      "id": "check-follow-up-needed",
+      "name": "Check Follow-up Needed (7 days)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a professional career advisor. Write polite follow-up emails for job applications."
+            },
+            {
+              "role": "user",
+              "content": "Write a follow-up email for this job application:\n\nCompany: {{$json.Company}}\nPosition: {{$json.Position}}\nApplication Date: {{$json.ApplicationDate}}\nContact Person: {{$json.ContactPerson}}\n\nEmail should be:\n- Professional and courteous\n- Brief (under 150 words)\n- Express continued interest\n- Mention any new relevant achievements\n- Request status update\n- Include portfolio link\n\nGenerate subject line and email body."
+            }
+          ]
+        }
+      },
+      "id": "generate-follow-up-email",
+      "name": "Generate Follow-up Email",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [800, 200],
+      "credentials": {
+        "openAIApi": "YOUR_OPENAI_API_KEY"
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{Math.floor((new Date() - new Date($json.ApplicationDate)) / (1000 * 60 * 60 * 24))}}",
+              "operation": "equal",
+              "value2": 14
+            }
+          ]
+        }
+      },
+      "id": "check-second-follow-up",
+      "name": "Check Second Follow-up (14 days)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [600, 400]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Write a second follow-up email that adds value and shows continued professionalism."
+            },
+            {
+              "role": "user",
+              "content": "Write a second follow-up email for this job application (first follow-up was sent 7 days ago):\n\nCompany: {{$json.Company}}\nPosition: {{$json.Position}}\nApplication Date: {{$json.ApplicationDate}}\n\nThis email should:\n- Acknowledge first follow-up\n- Add new value (recent project, industry insight)\n- Remain professional and respectful\n- Show genuine interest in company\n- Offer to provide additional information\n- Be brief and actionable"
+            }
+          ]
+        }
+      },
+      "id": "generate-second-follow-up",
+      "name": "Generate Second Follow-up",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [800, 400],
+      "credentials": {
+        "openAIApi": "YOUR_OPENAI_API_KEY"
+      }
+    },
+    {
+      "parameters": {
+        "to": "{{$json.ContactEmail}}",
+        "subject": "{{$node['Generate Follow-up Email'].json.choices[0].message.content.split('Subject:')[1].split('\n')[0]}}",
+        "emailType": "text",
+        "message": "={{$node['Generate Follow-up Email'].json.choices[0].message.content.split('Email Body:')[1]}}"
+      },
+      "id": "send-follow-up-email",
+      "name": "Send Follow-up Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1000, 200],
+      "credentials": {
+        "smtp": "YOUR_SMTP_CREDENTIALS"
+      }
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_JOB_TRACKING_SHEET_ID",
+        "range": "Applications!{{$json.RowNumber}}:{{$json.RowNumber}}",
+        "values": [
+          [
+            "{{$json.Company}}",
+            "{{$json.Position}}",
+            "{{$json.ApplicationDate}}",
+            "{{$json.ContactPerson}}",
+            "{{$json.ContactEmail}}",
+            "Follow-up Sent",
+            "={{new Date().toISOString()}}",
+            "Automated follow-up email sent"
+          ]
+        ]
+      },
+      "id": "update-application-status",
+      "name": "Update Application Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1200, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": "YOUR_GOOGLE_SHEETS_CREDENTIAL"
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Research companies and provide insights for job applications."
+            },
+            {
+              "role": "user",
+              "content": "Research this company and provide insights for job application:\n\nCompany: {{$json.Company}}\nPosition: {{$json.Position}}\n\nProvide:\n1. Recent company news (last 3 months)\n2. Key leadership changes\n3. New product launches or research\n4. Company culture highlights\n5. Recent achievements or awards\n6. How my biotech/bioinformatics background aligns\n7. Specific talking points for interview\n\nKeep insights relevant to pharmaceutical/biotech industry."
+            }
+          ]
+        }
+      },
+      "id": "company-research",
+      "name": "Generate Company Research",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [600, 500],
+      "credentials": {
+        "openAIApi": "YOUR_OPENAI_API_KEY"
+      }
+    }
+  ],
+  "connections": {
+    "Daily Job Check Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Job Applications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Job Applications": {
+      "main": [
+        [
+          {
+            "node": "Check Follow-up Needed (7 days)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Second Follow-up (14 days)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Company Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Follow-up Needed (7 days)": {
+      "main": [
+        [
+          {
+            "node": "Generate Follow-up Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Second Follow-up (14 days)": {
+      "main": [
+        [
+          {
+            "node": "Generate Second Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Follow-up Email": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Follow-up Email": {
+      "main": [
+        [
+          {
+            "node": "Update Application Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "timezone": "Asia/Kolkata"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "job-tracking",
+      "name": "Job Tracking"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "versionId": "1"
+}

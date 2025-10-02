@@ -1,0 +1,23 @@
+{
+	email {env.EMAIL}
+	# Optional: increase reverse proxy timeouts if you do long webhooks
+	# servers {
+	#   timeouts {
+	#     read_body 120s
+	#     read_header 30s
+	#     write 120s
+	#     idle 120s
+	#   }
+	# }
+}
+
+{env.DOMAIN} {
+	encode gzip zstd
+	# If you want to force HTTPS only:
+	# tls {
+	#   dns ...
+	# }
+
+	# Pass all traffic to n8n service on the docker network
+	reverse_proxy n8n:5678
+}
