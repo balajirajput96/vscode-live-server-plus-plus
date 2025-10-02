@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { LiveServerPlusPlus } from '../core/LiveServerPlusPlus';
+// Note: Avoid type-only import for TS 3.3 compatibility and to prevent eager require
+// import type { LiveServerPlusPlus } from '../core/LiveServerPlusPlus';
 import { NotificationService } from './services/NotificationService';
 import { fileSelector, setMIME } from './middlewares';
 import { ILiveServerPlusPlusConfig } from '../core/types';
@@ -8,20 +9,51 @@ import { BrowserService } from './services/BrowserService';
 import { workspaceUtils } from './utils/workSpaceUtils';
 import { StatusbarService } from './services/StatusbarService';
 
+interface LiveServerPlusPlusLike {
+  port: number;
+  useMiddleware: (...fns: any[]) => void;
+  useService: (...fns: any[]) => void;
+  reloadConfig: (config: ILiveServerPlusPlusConfig) => void;
+  goLive: () => Promise<void> | void;
+  shutdown: () => Promise<void> | void;
+}
+
 export function activate(context: vscode.ExtensionContext) {
-  const liveServerPlusPlus = new LiveServerPlusPlus(getLSPPConfig());
+  let liveServerPlusPlus: LiveServerPlusPlusLike | undefined;
 
-  liveServerPlusPlus.useMiddleware(fileSelector, setMIME);
-  liveServerPlusPlus.useService(NotificationService, BrowserService, StatusbarService);
+  async function ensureServer() {
+    if (!liveServerPlusPlus) {
+      const module = await import('../core/LiveServerPlusPlus');
+      const LiveServerPlusPlusCtor = module.LiveServerPlusPlus as {
+        new (config: ILiveServerPlusPlusConfig): LiveServerPlusPlusLike;
+      };
+      liveServerPlusPlus = new LiveServerPlusPlusCtor(getLSPPConfig());
+      liveServerPlusPlus.useMiddleware(fileSelector, setMIME);
+      liveServerPlusPlus.useService(
+        NotificationService,
+        BrowserService,
+        StatusbarService
+      );
+    }
+  }
 
-  const openServer = vscode.commands.registerCommand(getCmdWithPrefix('open'), () => {
-    liveServerPlusPlus.reloadConfig(getLSPPConfig());
-    liveServerPlusPlus.goLive();
-  });
+  const openServer = vscode.commands.registerCommand(
+    getCmdWithPrefix('open'),
+    async () => {
+      await ensureServer();
+      liveServerPlusPlus!.reloadConfig(getLSPPConfig());
+      await liveServerPlusPlus!.goLive();
+    }
+  );
 
-  const closeServer = vscode.commands.registerCommand(getCmdWithPrefix('close'), () => {
-    liveServerPlusPlus.shutdown();
-  });
+  const closeServer = vscode.commands.registerCommand(
+    getCmdWithPrefix('close'),
+    async () => {
+      if (liveServerPlusPlus) {
+        await liveServerPlusPlus.shutdown();
+      }
+    }
+  );
 
   context.subscriptions.push(openServer);
   context.subscriptions.push(closeServer);
