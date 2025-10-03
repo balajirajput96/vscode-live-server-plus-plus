@@ -24,6 +24,7 @@
 
 | Platform | Ease of Use | Speed | Free Tier | Best For |
 |----------|-------------|-------|-----------|----------|
+| **Ollama** ⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 100% Free (local) | Local AI/LLMs |
 | **Make.com** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 1,000 ops/month | Visual workflows |
 | **n8n** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Unlimited (self-hosted) | Technical users |
 | **Zapier** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | 100 tasks/month | App integrations |
@@ -141,14 +142,44 @@ n8n start
 
 ## 🤖 AI Agent Frameworks
 
-### 1. AutoGen (Microsoft)
+### 1. Ollama (Local LLMs) ⭐ **RECOMMENDED FOR FREE USAGE**
+**Direct Link:** https://ollama.com
+
+**Free Offer:**
+- 100% Free - No API costs
+- Privacy-focused - Data stays local
+- Offline capability
+- Multiple models (Llama, Mistral, Phi, Gemma)
+- OpenAI-compatible API
+
+**Setup:**
+```bash
+# Docker installation (easiest)
+docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+
+# Run a model
+docker exec -it ollama ollama run llama3.2
+```
+
+**Capabilities:**
+- Text generation and completion
+- Code generation
+- Chat and Q&A
+- Compatible with n8n workflows
+- GPU acceleration support
+
+**📖 Complete Setup Guide:** [OLLAMA-DOCKER-SETUP.md](./OLLAMA-DOCKER-SETUP.md)
+
+---
+
+### 2. AutoGen (Microsoft)
 **Direct Link:** https://github.com/microsoft/autogen
 
 **Free Offer:**
 - Completely open source
 - Unlimited usage
 - Multi-agent conversations
-- Integration with GPT/Claude
+- Integration with GPT/Claude/Ollama
 
 **Setup:**
 ```bash
@@ -163,7 +194,7 @@ pip install autogen-agentchat
 
 ---
 
-### 2. CrewAI
+### 3. CrewAI
 **Direct Link:** https://crewai.com
 
 **Free Offer:**
@@ -210,7 +241,7 @@ result = crew.kickoff()
 
 ---
 
-### 3. LangGraph
+### 4. LangGraph
 **Direct Link:** https://langchain-ai.github.io/langgraph/
 
 **Free Offer:**
@@ -226,7 +257,7 @@ pip install langgraph
 
 ---
 
-### 4. OpenAI Swarm
+### 5. OpenAI Swarm
 **Direct Link:** https://github.com/openai/swarm
 
 **Free Offer:**
@@ -242,7 +273,7 @@ pip install git+https://github.com/openai/swarm.git
 
 ---
 
-### 5. AgentGPT (Browser-based)
+### 6. AgentGPT (Browser-based)
 **Direct Link:** https://agentgpt.reworkd.ai
 
 **Free Offer:**
