@@ -106,6 +106,7 @@ open index.html
 ### Step 2: Set Up AI Tools
 Register for these free/premium AI tools:
 - **ChatGPT** (Free/Plus $20/month)
+- **Ollama** (100% Free - Local LLMs) ⭐ **NEW** - [Setup Guide](./OLLAMA-DOCKER-SETUP.md)
 - **Perplexity (Sonar API)** (Free/Pro $20/month)
 - **Wix AI** (Free/Premium $16/month) 
 - **Predis.ai** (Free/Pro $32/month)
