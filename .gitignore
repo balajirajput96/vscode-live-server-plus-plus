@@ -12,3 +12,13 @@ node_modules
 n8n_data/
 caddy_data/
 caddy_config/
+
+# Temporary deployment files
+*.log
+monitor-automation.sh
+automation-setup-guide.md
+test_permission.txt
+
+# Backup files
+*.backup
+*.bak
