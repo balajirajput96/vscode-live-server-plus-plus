@@ -1,6 +1,14 @@
 # 🚀 Quick Deployment Reference Card
 
 ## One-Command Deployment
+
+### 🚀 Cloud Deployment (Fastest - 30 seconds)
+```bash
+./deploy-to-cloud.sh
+# Choose: Railway, Render, Vercel, or Netlify
+```
+
+### 🐳 Docker Deployment (Full Control)
 ```bash
 ./deploy-complete.sh
 ```
@@ -9,21 +17,32 @@
 
 ## 🎯 Deployment Options
 
-### Option 1: Complete Automated Deployment (Recommended)
+### Option 1: One-Click Cloud Deployment ⚡ (Recommended)
+```bash
+./deploy-to-cloud.sh
+# Interactive menu:
+# 1) Railway (n8n + full stack) - 30 sec
+# 2) Render (n8n + static) - 2 min
+# 3) Vercel (static only) - 1 min
+# 4) Netlify (static only) - 1 min
+```
+**See**: [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md)
+
+### Option 2: Complete Automated Docker Deployment
 ```bash
 chmod +x deploy-complete.sh
 ./deploy-complete.sh
 # Follow interactive prompts
 ```
 
-### Option 2: Quick Setup (Beginner Friendly)
+### Option 3: Quick Setup (Beginner Friendly)
 ```bash
 chmod +x quick-setup.sh
 ./quick-setup.sh
 # Choose: 1 for Local Dev, 2 for Production
 ```
 
-### Option 3: Manual Step-by-Step
+### Option 4: Manual Step-by-Step
 ```bash
 # 1. Configure environment
 cp .env.example .env
