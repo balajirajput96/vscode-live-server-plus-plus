@@ -1,0 +1,44 @@
+# Render Deployment Configuration
+# One-click deployment to Render: https://render.com
+
+services:
+  # n8n Automation Platform
+  - type: web
+    name: n8n-automation
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: N8N_PORT
+        value: 5678
+      - key: N8N_PROTOCOL
+        value: https
+      - key: N8N_HOST
+        sync: false
+      - key: WEBHOOK_URL
+        sync: false
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      - key: N8N_BASIC_AUTH_USER
+        value: admin
+      - key: N8N_BASIC_AUTH_PASSWORD
+        generateValue: true
+      - key: N8N_SECURE_COOKIE
+        value: true
+      - key: GENERIC_TIMEZONE
+        value: America/New_York
+    disk:
+      name: n8n-data
+      mountPath: /home/node/.n8n
+      sizeGB: 1
+    healthCheckPath: /healthz
+
+  # Static Web Pages (GitHub Pages alternative)
+  - type: web
+    name: career-automation-web
+    env: static
+    buildCommand: echo "Static site - no build needed"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /
+        destination: /index.html

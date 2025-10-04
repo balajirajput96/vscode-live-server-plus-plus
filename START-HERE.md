@@ -2,20 +2,31 @@
 
 ## 🚀 Deploy in 3 Steps
 
-### Step 1: Run Pre-Flight Check
+### Quick Cloud Deployment (Fastest - 30 seconds)
+```bash
+# One-click deployment to Railway, Render, Vercel, or Netlify
+./deploy-to-cloud.sh
+```
+**See**: [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) for complete guide.
+
+---
+
+### Traditional Docker Deployment
+
+#### Step 1: Run Pre-Flight Check
 ```bash
 # Review the checklist
 cat PRE-DEPLOYMENT-CHECKLIST.md
 ```
 
-### Step 2: Deploy
+#### Step 2: Deploy
 ```bash
 # Make executable and run
 chmod +x deploy-complete.sh
 ./deploy-complete.sh
 ```
 
-### Step 3: Verify
+#### Step 3: Verify
 ```bash
 # Check everything is working
 ./verify-deployment.sh

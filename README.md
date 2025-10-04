@@ -5,24 +5,34 @@
 
 ## ⚡ DEPLOY NOW - One Command Setup
 
+### 🚀 One-Click Cloud Deployment
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
 ```bash
+# Automated cloud deployment
+./deploy-to-cloud.sh
+
+# OR traditional Docker deployment
 ./deploy-complete.sh
 ```
 
-**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md)
+**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md)
 
 ### Complete Deployment System Included
-- ✅ **One-command deployment** with interactive setup
+- ✅ **One-click cloud deployment** to Railway, Render, Vercel, Netlify
+- ✅ **Automated Docker deployment** with interactive setup
 - ✅ **Automated verification** of all components
 - ✅ **Comprehensive documentation** for every scenario
 - ✅ **Status tracking** and progress monitoring
 - ✅ **GitHub Pages auto-deployment** for web components
 - ✅ **n8n automation platform** with Docker
 - ✅ **Pre-flight checklist** to ensure smooth setup
-- ✅ **Multiple deployment modes** (local/production/custom)
+- ✅ **Multiple deployment modes** (local/production/custom/cloud)
 
 ### Quick Links
 📖 [START-HERE.md](./START-HERE.md) - Begin deployment
+☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide
 🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
 📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress
 ✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks

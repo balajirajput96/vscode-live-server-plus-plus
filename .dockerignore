@@ -1,0 +1,51 @@
+# Docker ignore file for optimized builds
+
+# Git
+.git
+.gitignore
+.github
+
+# Node modules (not needed in container)
+node_modules
+npm-debug.log
+
+# Build artifacts
+out
+dist
+*.vsix
+
+# Documentation (not needed in runtime)
+*.md
+!README.md
+
+# Tests
+test
+*.test.js
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.log
+
+# Scripts not needed in container
+*.sh
+!*.bash
+
+# Personal automation scripts
+personal-automation
+
+# Development files
+tsconfig.json
+tslint.json
+.travis.yml
