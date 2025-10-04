@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Deployment Platform - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .card h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-upload {
+            border: 3px dashed #667eea;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .model-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .model-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .model-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .model-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .prediction-result {
+            background: #e7f3ff;
+            border-left: 5px solid #2196F3;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .prediction-result h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+
+        .api-endpoint {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .api-endpoint h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 ML Deployment Platform</h1>
+            <p>Production-Ready Machine Learning Model Deployment</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('upload')">🤖 Upload Model</button>
+            <button class="nav-tab" onclick="showTab('predict')">🎯 Predict</button>
+            <button class="nav-tab" onclick="showTab('batch')">📦 Batch Predict</button>
+            <button class="nav-tab" onclick="showTab('models')">📂 Models</button>
+            <button class="nav-tab" onclick="showTab('api')">🔬 API Docs</button>
+            <button class="nav-tab" onclick="showTab('monitoring')">📈 Monitoring</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Models</div>
+                    <div class="stat-value" id="stat-models">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Predictions</div>
+                    <div class="stat-value" id="stat-predictions">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Models</div>
+                    <div class="stat-value" id="stat-active">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">API Status</div>
+                    <div class="stat-value" id="stat-status">✅</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Welcome to ML Deployment Platform! 🚀</h2>
+                <p style="margin-bottom: 20px; color: #666; font-size: 1.1em;">
+                    A complete production-ready platform for deploying and managing machine learning models with real-time monitoring and analytics.
+                </p>
+                
+                <h3>✨ Features</h3>
+                <ul style="color: #666; line-height: 2;">
+                    <li>📤 <strong>Model Upload</strong> - Upload and deploy ML models (.pkl, .joblib)</li>
+                    <li>🎯 <strong>Single Predictions</strong> - Make individual predictions with confidence scores</li>
+                    <li>📦 <strong>Batch Processing</strong> - Process multiple predictions efficiently</li>
+                    <li>📊 <strong>Real-time Monitoring</strong> - Track performance metrics and statistics</li>
+                    <li>🔬 <strong>API Testing</strong> - Interactive API documentation and testing</li>
+                    <li>📈 <strong>Analytics Dashboard</strong> - Visualize model usage and predictions</li>
+                </ul>
+
+                <h3 style="margin-top: 30px;">🚀 Quick Start</h3>
+                <ol style="color: #666; line-height: 2;">
+                    <li>Upload your trained ML model using the "Upload Model" tab</li>
+                    <li>Test predictions using the "Predict" tab</li>
+                    <li>Process batch data using the "Batch Predict" tab</li>
+                    <li>Monitor performance in the "Monitoring" tab</li>
+                    <li>Access API endpoints via the "API Docs" tab</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div id="upload" class="content-section">
+            <div class="card">
+                <h2>Upload ML Model</h2>
+                <div id="upload-alert"></div>
+                
+                <div class="file-upload" onclick="document.getElementById('model-file').click()">
+                    <input type="file" id="model-file" accept=".pkl,.joblib,.pickle">
+                    <p style="font-size: 1.5em; margin-bottom: 10px;">📁 Click to upload model</p>
+                    <p style="color: #666;">Supported formats: .pkl, .joblib, .pickle</p>
+                    <p id="file-name" style="color: #667eea; margin-top: 10px; font-weight: 600;"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Model Name</label>
+                    <input type="text" id="model-name" placeholder="e.g., Fraud Detection Model">
+                </div>
+
+                <div class="form-group">
+                    <label>Version</label>
+                    <input type="text" id="model-version" placeholder="e.g., 1.0.0" value="1.0.0">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="model-description" rows="3" placeholder="Describe your model..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Model Type</label>
+                    <select id="model-type">
+                        <option value="sklearn">Scikit-learn</option>
+                        <option value="xgboost">XGBoost</option>
+                        <option value="tensorflow">TensorFlow</option>
+                        <option value="pytorch">PyTorch</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="uploadModel()">🚀 Upload & Deploy</button>
+            </div>
+        </div>
+
+        <!-- Predict Section -->
+        <div id="predict" class="content-section">
+            <div class="card">
+                <h2>Make Prediction</h2>
+                <div id="predict-alert"></div>
+
+                <div class="form-group">
+                    <label>Select Model</label>
+                    <select id="predict-model-id">
+                        <option value="">Select a model...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Input Features (comma-separated)</label>
+                    <input type="text" id="predict-features" placeholder="e.g., 5.1, 3.5, 1.4, 0.2">
+                    <small style="color: #666;">Enter feature values separated by commas</small>
+                </div>
+
+                <button class="btn btn-primary" onclick="makePrediction()">🎯 Predict</button>
+
+                <div id="prediction-result"></div>
+            </div>
+        </div>
+
+        <!-- Batch Predict Section -->
+        <div id="batch" class="content-section">
+            <div class="card">
+                <h2>Batch Predictions</h2>
+                <div id="batch-alert"></div>
+
+                <div class="form-group">
+                    <label>Select Model</label>
+                    <select id="batch-model-id">
+                        <option value="">Select a model...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Batch Data (JSON array of arrays)</label>
+                    <textarea id="batch-data" rows="8" placeholder='[[5.1, 3.5, 1.4, 0.2], [4.9, 3.0, 1.4, 0.2]]'></textarea>
+                    <small style="color: #666;">Enter data as JSON array of feature arrays</small>
+                </div>
+
+                <button class="btn btn-primary" onclick="makeBatchPrediction()">📦 Process Batch</button>
+
+                <div id="batch-result"></div>
+            </div>
+        </div>
+
+        <!-- Models Section -->
+        <div id="models" class="content-section">
+            <div class="card">
+                <h2>Deployed Models</h2>
+                <button class="btn btn-primary" onclick="loadModels()">🔄 Refresh</button>
+                <div id="models-list" class="model-list" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- API Docs Section -->
+        <div id="api" class="content-section">
+            <div class="card">
+                <h2>API Documentation</h2>
+                
+                <div class="api-endpoint">
+                    <h4>POST /models/upload</h4>
+                    <p>Upload and deploy a new ML model</p>
+                    <div class="code-block">curl -X POST http://localhost:8000/models/upload \
+  -F "file=@model.pkl" \
+  -F "name=My Model" \
+  -F "version=1.0"</div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h4>GET /models</h4>
+                    <p>List all deployed models</p>
+                    <div class="code-block">curl http://localhost:8000/models</div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h4>POST /predict</h4>
+                    <p>Make a single prediction</p>
+                    <div class="code-block">curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model_id": "model-id-here",
+    "features": [5.1, 3.5, 1.4, 0.2]
+  }'</div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h4>POST /predict/batch</h4>
+                    <p>Make batch predictions</p>
+                    <div class="code-block">curl -X POST http://localhost:8000/predict/batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model_id": "model-id-here",
+    "data": [[5.1, 3.5, 1.4, 0.2], [4.9, 3.0, 1.4, 0.2]]
+  }'</div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h4>GET /stats</h4>
+                    <p>Get platform statistics</p>
+                    <div class="code-block">curl http://localhost:8000/stats</div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h4>GET /health</h4>
+                    <p>Health check endpoint</p>
+                    <div class="code-block">curl http://localhost:8000/health</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div id="monitoring" class="content-section">
+            <div class="card">
+                <h2>Platform Monitoring</h2>
+                <button class="btn btn-primary" onclick="loadStats()">🔄 Refresh Stats</button>
+                
+                <div id="stats-content" style="margin-top: 20px;"></div>
+                
+                <h3>Recent Predictions</h3>
+                <div id="history-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load data when switching tabs
+            if (tabName === 'dashboard') loadDashboard();
+            if (tabName === 'models') loadModels();
+            if (tabName === 'predict' || tabName === 'batch') loadModelOptions();
+            if (tabName === 'monitoring') loadStats();
+        }
+
+        // File upload handling
+        document.getElementById('model-file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.getElementById('file-name').textContent = `Selected: ${fileName}`;
+            }
+        });
+
+        // Upload model
+        async function uploadModel() {
+            const fileInput = document.getElementById('model-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('upload-alert', 'Please select a model file', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('name', document.getElementById('model-name').value || 'ML Model');
+            formData.append('version', document.getElementById('model-version').value || '1.0.0');
+            formData.append('description', document.getElementById('model-description').value || '');
+            formData.append('model_type', document.getElementById('model-type').value);
+
+            try {
+                const response = await fetch(`${API_BASE}/models/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('upload-alert', `✅ Model uploaded successfully! ID: ${data.model_id}`, 'success');
+                    // Clear form
+                    fileInput.value = '';
+                    document.getElementById('file-name').textContent = '';
+                    document.getElementById('model-name').value = '';
+                    document.getElementById('model-description').value = '';
+                } else {
+                    showAlert('upload-alert', `❌ Error: ${data.detail}`, 'error');
+                }
+            } catch (error) {
+                showAlert('upload-alert', `❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        // Make prediction
+        async function makePrediction() {
+            const modelId = document.getElementById('predict-model-id').value;
+            const featuresStr = document.getElementById('predict-features').value;
+            
+            if (!modelId) {
+                showAlert('predict-alert', 'Please select a model', 'error');
+                return;
+            }
+            
+            if (!featuresStr) {
+                showAlert('predict-alert', 'Please enter features', 'error');
+                return;
+            }
+
+            try {
+                const features = featuresStr.split(',').map(x => parseFloat(x.trim()));
+                
+                const response = await fetch(`${API_BASE}/predict`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model_id: modelId, features })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayPredictionResult(data);
+                } else {
+                    showAlert('predict-alert', `❌ Error: ${data.detail}`, 'error');
+                }
+            } catch (error) {
+                showAlert('predict-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Make batch prediction
+        async function makeBatchPrediction() {
+            const modelId = document.getElementById('batch-model-id').value;
+            const dataStr = document.getElementById('batch-data').value;
+            
+            if (!modelId) {
+                showAlert('batch-alert', 'Please select a model', 'error');
+                return;
+            }
+            
+            if (!dataStr) {
+                showAlert('batch-alert', 'Please enter batch data', 'error');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(dataStr);
+                
+                const response = await fetch(`${API_BASE}/predict/batch`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model_id: modelId, data })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    displayBatchResult(result);
+                } else {
+                    showAlert('batch-alert', `❌ Error: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showAlert('batch-alert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Display prediction result
+        function displayPredictionResult(data) {
+            const html = `
+                <div class="prediction-result">
+                    <h3>Prediction Result</h3>
+                    <p><strong>Prediction:</strong> ${JSON.stringify(data.prediction)}</p>
+                    ${data.confidence ? `
+                        <p><strong>Confidence:</strong> ${(data.confidence.max_confidence * 100).toFixed(2)}%</p>
+                        <p><strong>Probabilities:</strong> ${data.confidence.probabilities.map(p => (p * 100).toFixed(2) + '%').join(', ')}</p>
+                    ` : ''}
+                    <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                </div>
+            `;
+            document.getElementById('prediction-result').innerHTML = html;
+        }
+
+        // Display batch result
+        function displayBatchResult(data) {
+            const html = `
+                <div class="prediction-result">
+                    <h3>Batch Prediction Results</h3>
+                    <p><strong>Total Predictions:</strong> ${data.count}</p>
+                    <p><strong>Predictions:</strong> ${JSON.stringify(data.predictions)}</p>
+                    <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                </div>
+            `;
+            document.getElementById('batch-result').innerHTML = html;
+        }
+
+        // Load models
+        async function loadModels() {
+            const listDiv = document.getElementById('models-list');
+            listDiv.innerHTML = '<div class="loading">Loading models</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/models`);
+                const data = await response.json();
+                
+                if (data.models.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666;">No models deployed yet. Upload your first model!</p>';
+                    return;
+                }
+                
+                const html = data.models.map(model => `
+                    <div class="model-item">
+                        <h4>${model.name} <span class="status-badge status-active">${model.status}</span></h4>
+                        <div class="model-meta">
+                            <span>📦 Version: ${model.version}</span>
+                            <span>🎯 Predictions: ${model.predictions}</span>
+                            <span>📅 Uploaded: ${new Date(model.uploaded_at).toLocaleDateString()}</span>
+                        </div>
+                        <p style="color: #666; margin: 10px 0;">${model.description || 'No description'}</p>
+                        <p style="color: #999; font-size: 0.9em;">ID: ${model.id}</p>
+                    </div>
+                `).join('');
+                
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = `<p style="color: #dc3545;">Error loading models: ${error.message}</p>`;
+            }
+        }
+
+        // Load model options for dropdowns
+        async function loadModelOptions() {
+            try {
+                const response = await fetch(`${API_BASE}/models`);
+                const data = await response.json();
+                
+                const options = data.models.map(model => 
+                    `<option value="${model.id}">${model.name} (${model.version})</option>`
+                ).join('');
+                
+                document.getElementById('predict-model-id').innerHTML = 
+                    '<option value="">Select a model...</option>' + options;
+                document.getElementById('batch-model-id').innerHTML = 
+                    '<option value="">Select a model...</option>' + options;
+            } catch (error) {
+                console.error('Error loading models:', error);
+            }
+        }
+
+        // Load dashboard stats
+        async function loadDashboard() {
+            try {
+                const [statsRes, healthRes] = await Promise.all([
+                    fetch(`${API_BASE}/stats`),
+                    fetch(`${API_BASE}/health`)
+                ]);
+                
+                const stats = await statsRes.json();
+                const health = await healthRes.json();
+                
+                document.getElementById('stat-models').textContent = stats.total_models;
+                document.getElementById('stat-predictions').textContent = stats.total_predictions;
+                document.getElementById('stat-active').textContent = stats.active_models;
+                document.getElementById('stat-status').textContent = health.status === 'healthy' ? '✅' : '❌';
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            const statsDiv = document.getElementById('stats-content');
+            const historyDiv = document.getElementById('history-content');
+            
+            statsDiv.innerHTML = '<div class="loading">Loading statistics</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                const usageHtml = Object.entries(data.model_usage || {})
+                    .map(([modelId, count]) => `<li>${modelId}: ${count} predictions</li>`)
+                    .join('');
+                
+                statsDiv.innerHTML = `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                        <h3>Platform Statistics</h3>
+                        <p><strong>Total Models:</strong> ${data.total_models}</p>
+                        <p><strong>Total Predictions:</strong> ${data.total_predictions}</p>
+                        <p><strong>Active Models:</strong> ${data.active_models}</p>
+                        <h4>Model Usage:</h4>
+                        <ul>${usageHtml || '<li>No usage data yet</li>'}</ul>
+                    </div>
+                `;
+                
+                // Load history
+                const historyRes = await fetch(`${API_BASE}/history?limit=10`);
+                const historyData = await historyRes.json();
+                
+                if (historyData.history.length > 0) {
+                    const tableHtml = `
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Model ID</th>
+                                    <th>Prediction</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${historyData.history.map(h => `
+                                    <tr>
+                                        <td>${h.model_id.substring(0, 8)}...</td>
+                                        <td>${JSON.stringify(h.prediction).substring(0, 50)}</td>
+                                        <td>${new Date(h.timestamp).toLocaleString()}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    historyDiv.innerHTML = tableHtml;
+                } else {
+                    historyDiv.innerHTML = '<p style="text-align: center; color: #666;">No prediction history yet</p>';
+                }
+            } catch (error) {
+                statsDiv.innerHTML = `<p style="color: #dc3545;">Error loading stats: ${error.message}</p>`;
+            }
+        }
+
+        // Show alert
+        function showAlert(elementId, message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            const html = `<div class="alert ${alertClass}">${message}</div>`;
+            document.getElementById(elementId).innerHTML = html;
+            
+            setTimeout(() => {
+                document.getElementById(elementId).innerHTML = '';
+            }, 5000);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>
