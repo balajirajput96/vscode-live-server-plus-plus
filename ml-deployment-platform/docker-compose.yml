@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  ml-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./predictions:/app/predictions
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

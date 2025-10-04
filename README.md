@@ -36,6 +36,15 @@
 
 ## 🎯 Key Features
 
+### 🎉 NEW: ML Deployment Platform ⭐
+- **Complete ML model deployment solution**
+- FastAPI backend with auto-generated API docs
+- Interactive web dashboard for model management
+- Single & batch prediction endpoints
+- Real-time monitoring and analytics
+- Multi-platform deployment (Railway, Render, Heroku, Docker)
+- **[📘 View Complete Guide →](./ml-deployment-platform/README.md)**
+
 ### 1. 🔬 AI-Powered Portfolio Builder
 - Project documentation generator
 - GitHub README automation

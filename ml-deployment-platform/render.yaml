@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: ml-deployment-platform
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: PORT
+        value: 8000
