@@ -3,6 +3,22 @@
 
 ---
 
+## 🎉 **AUTOFLOW AI - LIVE DEPLOYMENT AVAILABLE!**
+
+### 📡 **New: API-Powered Automated Deployment**
+🚀 **Status**: Infrastructure Ready | Phase 2 Active | Ready to Deploy
+
+**Deployment ID**: `autoflow-ai-live-deploy-1726553544`
+
+✅ All automation components ready  
+✅ 8+ workflow templates prepared  
+✅ Multi-cloud deployment support  
+✅ Real-time monitoring configured  
+
+**👉 [Launch AutoFlow AI Deployment →](./AUTOFLOW-AI-DEPLOYMENT.md)**
+
+---
+
 ## ⚡ DEPLOY NOW - One Command Setup
 
 ### 🚀 One-Click Cloud Deployment
@@ -31,6 +47,7 @@
 - ✅ **Multiple deployment modes** (local/production/custom/cloud)
 
 ### Quick Links
+🚀 [AUTOFLOW-AI-DEPLOYMENT.md](./AUTOFLOW-AI-DEPLOYMENT.md) - **AutoFlow AI Live Deployment** 🆕
 📖 [START-HERE.md](./START-HERE.md) - Begin deployment
 ☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide
 🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
