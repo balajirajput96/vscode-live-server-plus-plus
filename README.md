@@ -11,7 +11,9 @@
 
 **Your site will be live at:** `https://balajirajput96.github.io/vscode-live-server-plus-plus/`
 
-📖 **Complete Guide:** [DEPLOYMENT-COMPLETE-FINAL.md](./DEPLOYMENT-COMPLETE-FINAL.md)
+📖 **Complete Guide:** [DEPLOYMENT-COMPLETE-FINAL.md](./DEPLOYMENT-COMPLETE-FINAL.md)  
+🗺️ **Site Map:** [SITE-MAP.md](./SITE-MAP.md) - All available pages  
+🌐 **Enable GitHub Pages:** [ENABLE-GITHUB-PAGES.md](./ENABLE-GITHUB-PAGES.md)
 
 ---
 
@@ -43,11 +45,14 @@
 - ✅ **Multiple deployment modes** (local/production/custom/cloud)
 
 ### Quick Links
-📖 [START-HERE.md](./START-HERE.md) - Begin deployment
-☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide
-🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
-📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress
-✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks
+🚀 [START-HERE.md](./START-HERE.md) - Begin deployment  
+🌐 [ENABLE-GITHUB-PAGES.md](./ENABLE-GITHUB-PAGES.md) - Enable GitHub Pages (2 minutes)  
+📖 [DEPLOYMENT-COMPLETE-FINAL.md](./DEPLOYMENT-COMPLETE-FINAL.md) - Complete deployment guide  
+🗺️ [SITE-MAP.md](./SITE-MAP.md) - All available pages and URLs  
+☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide  
+🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference  
+📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress  
+✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks  
 🗺️ [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md) - Visual guide
 
 ---
