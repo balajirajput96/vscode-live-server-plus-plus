@@ -11,6 +11,7 @@
 
 **Your site will be live at:** `https://balajirajput96.github.io/vscode-live-server-plus-plus/`
 
+✅ **Quick Start (5 min):** [QUICK-START-CHECKLIST.md](./QUICK-START-CHECKLIST.md) - Step-by-step checklist  
 📖 **Complete Guide:** [DEPLOYMENT-COMPLETE-FINAL.md](./DEPLOYMENT-COMPLETE-FINAL.md)  
 🗺️ **Site Map:** [SITE-MAP.md](./SITE-MAP.md) - All available pages  
 🌐 **Enable GitHub Pages:** [ENABLE-GITHUB-PAGES.md](./ENABLE-GITHUB-PAGES.md)
