@@ -28,9 +28,15 @@
 
 # OR traditional Docker deployment
 ./deploy-complete.sh
+
+# OR enable GitHub Pages (Settings → Pages)
 ```
 
-**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md)
+**📚 New to deployment?** 
+- 🚀 [DEPLOY-NOW.md](./DEPLOY-NOW.md) - One-page quick start ⭐
+- 🌟 [DEPLOYMENT-SUCCESS.md](./DEPLOYMENT-SUCCESS.md) - Hindi/English guide ⭐  
+- 📖 [START-HERE.md](./START-HERE.md) - Complete getting started
+- ☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud platforms
 
 ### Complete Deployment System Included
 - ✅ **One-click cloud deployment** to Railway, Render, Vercel, Netlify
@@ -44,7 +50,9 @@
 - ✅ **Multiple deployment modes** (local/production/custom/cloud)
 
 ### Quick Links
+🚀 **[DEPLOY-NOW.md](./DEPLOY-NOW.md)** - **One-Page Deploy Guide** ⭐ NEW!
 🎉 **[DEPLOYMENT-COMPLETE-STATUS.md](./DEPLOYMENT-COMPLETE-STATUS.md)** - **100% Complete Status** ⭐
+🌟 **[DEPLOYMENT-SUCCESS.md](./DEPLOYMENT-SUCCESS.md)** - **Hindi/English Guide** ⭐
 📖 [START-HERE.md](./START-HERE.md) - Begin deployment
 ☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide
 🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
