@@ -114,12 +114,12 @@ Run through this checklist before starting deployment to ensure smooth setup.
 ### Repository Setup
 - [ ] **Repository cloned/downloaded**
   ```bash
-  git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
+  git clone https://github.com/your-username/ai-career-automation-system.git
   ```
 
 - [ ] **In correct directory**
   ```bash
-  cd vscode-live-server-plus-plus
+  cd ai-career-automation-system
   pwd  # Should show full path to repo
   ```
 

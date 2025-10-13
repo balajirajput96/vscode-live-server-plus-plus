@@ -143,7 +143,7 @@ docker-compose --env-file .env -f docker-compose.reverse-proxy.yml up -d
 # Settings → Pages → Custom domain: your-domain.com
 
 # 3. Access your site
-# https://username.github.io/vscode-live-server-plus-plus
+# https://username.github.io/ai-career-automation-system
 ```
 
 ### Files Deployed

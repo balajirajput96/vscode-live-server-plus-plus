@@ -172,6 +172,7 @@ setup_environment() {
     echo ""
 }
 
+
 # Deployment mode selection
 select_deployment_mode() {
     print_header "${ROCKET} Select Deployment Mode"
@@ -317,96 +318,18 @@ deploy_n8n() {
 # Setup automation scripts
 setup_automation_scripts() {
     print_header "${PACKAGE} Setting Up Automation Scripts"
-    
-    # Create automation setup guide if it doesn't exist
-    if [ ! -f automation-setup-guide.md ]; then
-        print_info "Creating automation setup guide..."
-        cat > automation-setup-guide.md << 'EOF'
-# 🤖 Automation Setup Complete!
-
-## What's installed:
-1. ✅ n8n automation platform
-2. ✅ Google Apps Script templates
-3. ✅ YouTube automation workflows
-4. ✅ Social media cross-posting templates
-
-## Next Steps:
-
-### 1. Access n8n Dashboard
-- **Local**: http://localhost:5678
-- **Production**: https://your-domain.com
-
-### 2. Import Workflows
-- Navigate to Workflows → Import from file
-- Import JSON files from:
-  - `automation-scripts/n8n-workflows/`
-  - `ai-agent-automation-pack/workflows/`
-  - `n8n-workflows/`
-
-### 3. Configure Credentials
-- OpenAI API key
-- Gmail OAuth
-- Google Drive OAuth
-- Buffer API token
-
-### 4. Test Workflows
-- Run each workflow manually
-- Verify webhook endpoints
-- Check API integrations
-
-## 📚 Documentation
-- [Complete Guide](./Complete_Personal_Automation_Guide.md)
-- [n8n Setup](./README-n8n-setup.md)
-- [Deployment Guide](./DEPLOYMENT.md)
-EOF
-        print_status "Automation setup guide created"
-    fi
-    
-    # Create monitoring script if it doesn't exist
-    if [ ! -f monitor-automation.sh ]; then
-        print_info "Creating monitoring script..."
-        cat > monitor-automation.sh << 'EOF'
-#!/bin/bash
-
-# Automation System Monitor
-
-echo "🔍 Automation System Status Check"
-echo "=================================="
-
-# Check Docker containers
-echo ""
-echo "📦 Docker Containers:"
-docker-compose ps
-
-# Check n8n health
-echo ""
-echo "🤖 n8n Health Check:"
-if curl -f http://localhost:5678/healthz >/dev/null 2>&1; then
-    echo "✅ n8n is running and healthy"
-else
-    echo "❌ n8n is not responding"
-fi
-
-# Check disk space
-echo ""
-echo "💾 Disk Usage:"
-df -h | grep -E '^/dev|^overlay'
-
-# Check memory usage
-echo ""
-echo "🧠 Memory Usage:"
-free -h 2>/dev/null || vm_stat
-
-# Check recent n8n logs
-echo ""
-echo "📋 Recent n8n Logs (last 10 lines):"
-docker-compose logs --tail=10 n8n 2>/dev/null || echo "n8n container not running"
-
-echo ""
-echo "✅ Status check complete!"
-EOF
+    print_info "Ensuring automation scripts and guides are ready..."
+    if [ -f monitor-automation.sh ]; then
         chmod +x monitor-automation.sh
-        print_status "Monitoring script created"
+        print_status "Monitoring script is ready."
+    else
+        print_warning "monitor-automation.sh not found."
+    fi
+
+    if [ -f automation-setup-guide.md ]; then
+        print_status "Automation setup guide is ready."
+    else
+        print_warning "automation-setup-guide.md not found."
     fi
 }
 

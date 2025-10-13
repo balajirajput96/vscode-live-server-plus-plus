@@ -205,8 +205,8 @@ Weekend Mode: Entertainment, personal tasks
 ### Local Development Setup
 ```bash
 # Clone this repository
-git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
-cd vscode-live-server-plus-plus
+git clone https://github.com/your-username/ai-career-automation-system.git
+cd ai-career-automation-system
 
 # Copy environment file
 cp .env.example .env
@@ -231,8 +231,8 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 
 # Clone repository
-git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
-cd vscode-live-server-plus-plus
+git clone https://github.com/your-username/ai-career-automation-system.git
+cd ai-career-automation-system
 
 # Setup environment
 cp .env.example .env

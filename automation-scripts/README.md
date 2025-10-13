@@ -117,8 +117,8 @@ Ctrl+S → Run setupEmailAutomation
 ### Step 2: n8n Setup (Digital Ocean Credits)
 ```bash
 # 1. Clone this repository
-git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
-cd vscode-live-server-plus-plus
+git clone https://github.com/your-username/ai-career-automation-system.git
+cd ai-career-automation-system
 
 # 2. Run quick setup
 ./quick-setup.sh
