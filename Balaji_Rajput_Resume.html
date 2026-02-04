@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balaji Rajput - Professional Resume</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --text-dark: #1f2937;
+            --text-medium: #374151;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-light: #f9fafb;
+        }
+
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: var(--text-dark);
+            background-color: #f3f4f6;
+        }
+
+        /* A4 Page sizing */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 18mm;
+            margin: 10mm auto;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background-color: white;
+            }
+
+            .page {
+                margin: 0;
+                padding: 12mm 15mm;
+                box-shadow: none;
+                page-break-after: always;
+            }
+
+            .page:last-child {
+                page-break-after: avoid;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        /* Header section */
+        .header {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 22pt;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .contact-info {
+            font-size: 10pt;
+            color: var(--text-medium);
+            line-height: 1.6;
+        }
+
+        .contact-info a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .contact-row span {
+            white-space: nowrap;
+        }
+
+        .contact-separator {
+            color: var(--text-light);
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        /* Professional Summary */
+        .summary {
+            font-size: 10.5pt;
+            line-height: 1.5;
+            text-align: justify;
+            color: var(--text-medium);
+        }
+
+        /* Skills section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .skill-category {
+            margin-bottom: 6px;
+        }
+
+        .skill-category-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+
+        .skill-list {
+            font-size: 9.5pt;
+            color: var(--text-medium);
+            line-height: 1.4;
+        }
+
+        /* Experience and Projects */
+        .experience-item, .project-item {
+            margin-bottom: 12px;
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .job-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .company-info {
+            font-size: 10pt;
+            color: var(--text-medium);
+            font-style: italic;
+        }
+
+        .duration {
+            font-size: 10pt;
+            color: var(--text-light);
+            text-align: right;
+        }
+
+        .bullet-list {
+            list-style-type: disc;
+            margin-left: 18px;
+            font-size: 10pt;
+            color: var(--text-medium);
+            line-height: 1.45;
+        }
+
+        .bullet-list li {
+            margin-bottom: 3px;
+        }
+
+        .achievement-highlight {
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* Project section */
+        .project-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .project-role {
+            font-size: 9.5pt;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Education section */
+        .education-item {
+            margin-bottom: 8px;
+        }
+
+        .degree-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .institution {
+            font-size: 10pt;
+            color: var(--text-medium);
+        }
+
+        .coursework {
+            font-size: 9.5pt;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        /* Certifications */
+        .cert-list {
+            list-style-type: disc;
+            margin-left: 18px;
+            font-size: 10pt;
+            color: var(--text-medium);
+        }
+
+        .cert-list li {
+            margin-bottom: 3px;
+        }
+
+        /* Additional Info */
+        .additional-info {
+            font-size: 9.5pt;
+            color: var(--text-medium);
+            line-height: 1.5;
+        }
+
+        .info-row {
+            margin-bottom: 4px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* Portfolio items */
+        .portfolio-item {
+            margin-bottom: 10px;
+        }
+
+        .portfolio-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .portfolio-tech {
+            font-size: 9pt;
+            color: var(--primary-color);
+            font-style: italic;
+        }
+
+        .portfolio-desc {
+            font-size: 9.5pt;
+            color: var(--text-medium);
+            margin-top: 2px;
+        }
+
+        /* Print/Download buttons */
+        .no-print {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-light);
+        }
+
+        /* Page break */
+        .page-break {
+            page-break-after: always;
+        }
+
+        /* Responsive adjustments for screen */
+        @media screen and (max-width: 220mm) {
+            .page {
+                width: 100%;
+                margin: 0;
+                padding: 15px;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .no-print {
+                position: static;
+                margin: 15px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Print/Download Buttons -->
+    <div class="no-print">
+        <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn btn-secondary" onclick="window.print()">Print Resume</button>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page page-1">
+        <!-- Header -->
+        <header class="header">
+            <h1>BALAJI DILIPSINGH RAJPUT</h1>
+            <div class="contact-info">
+                <div class="contact-row">
+                    <span>Vadodara, Gujarat, India</span>
+                    <span class="contact-separator">|</span>
+                    <span>+91 8780861044</span>
+                    <span class="contact-separator">|</span>
+                    <span><a href="mailto:balajirajput970@gmail.com">balajirajput970@gmail.com</a></span>
+                </div>
+                <div class="contact-row">
+                    <span>LinkedIn: <a href="https://linkedin.com/in/balajirajput-483a86194" target="_blank">linkedin.com/in/balajirajput-483a86194</a></span>
+                    <span class="contact-separator">|</span>
+                    <span>GitHub: <a href="https://github.com/balajirajput970" target="_blank">github.com/balajirajput970</a></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Professional Summary -->
+        <section class="section">
+            <h2 class="section-title">Professional Summary</h2>
+            <p class="summary">
+                Results-driven Biotechnology professional with hands-on experience in Bioinformatics, Laboratory Research, 
+                and Quality Assurance (QA). Skilled in Python (Biopython, Pandas, NumPy), R (Bioconductor), genomic data analysis, 
+                and wet-lab techniques including PCR, gel electrophoresis, and cell culture. Proven track record of optimizing 
+                laboratory workflows, achieving 95% accuracy in sample processing, and increasing bioethanol yield by 15% through 
+                process optimization. Seeking challenging roles in Bioinformatics, Research, or QA/QC in the pharmaceutical and 
+                biotechnology industry. <strong>Immediate availability with willingness to relocate anywhere in India.</strong>
+            </p>
+        </section>
+
+        <!-- Core Skills -->
+        <section class="section">
+            <h2 class="section-title">Core Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <div class="skill-category-title">Biotechnology Laboratory</div>
+                    <div class="skill-list">PCR, Gel Electrophoresis, Cell Culture, Protein Expression, Microbial Culture Management, Fermentation Methods, Recombinant DNA Technology, Spectrophotometry, High-Throughput Screening (HTS)</div>
+                </div>
+                <div class="skill-category">
+                    <div class="skill-category-title">Bioinformatics & Programming</div>
+                    <div class="skill-list">Python (Biopython, Pandas, NumPy, Matplotlib), R (Bioconductor), BLAST, ClustalW, Multiple Sequence Alignment, Phylogenetic Analysis, NGS Data Interpretation, NCBI, UniProt, Ensembl</div>
+                </div>
+                <div class="skill-category">
+                    <div class="skill-category-title">Data Analysis & Statistics</div>
+                    <div class="skill-list">SPSS, MATLAB, Regression Analysis, ANOVA, Hypothesis Testing, T-tests, Data Visualization, Experimental Design</div>
+                </div>
+                <div class="skill-category">
+                    <div class="skill-category-title">Quality Assurance & Compliance</div>
+                    <div class="skill-list">QA/QC Process Optimization, Good Laboratory Practice (GLP) Compliance, SOP Documentation, Analytical Testing, Data Accuracy Protocols</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work Experience -->
+        <section class="section">
+            <h2 class="section-title">Work Experience</h2>
+            
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div>
+                        <div class="job-title">Bioinformatics Intern</div>
+                        <div class="company-info">Biotecnika | Remote</div>
+                    </div>
+                    <div class="duration">2024 (3 months)</div>
+                </div>
+                <ul class="bullet-list">
+                    <li>Completed comprehensive bioinformatics training program focusing on genomic data analysis and computational biology methodologies</li>
+                    <li>Performed DNA and protein sequence analysis using BLAST, ClustalW, and phylogenetic tools for comparative genomics studies</li>
+                    <li>Applied Python (Biopython, Pandas, NumPy) and R (Bioconductor) for biological data processing and visualization</li>
+                    <li>Gained hands-on experience with NCBI, UniProt, and Ensembl genomic databases for sequence retrieval and annotation</li>
+                    <li>Interpreted Next-Generation Sequencing (NGS) data and conducted genomic variant analysis for research projects</li>
+                    <li>Developed automated workflows for sequence alignment and annotation, improving data processing efficiency</li>
+                    <li><span class="achievement-highlight">Achievement:</span> Earned Bioinformatics Internship Certificate (2024)</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div>
+                        <div class="job-title">Laboratory Intern</div>
+                        <div class="company-info">Gujarat Biotech Innovations | Vadodara, Gujarat</div>
+                    </div>
+                    <div class="duration">2023 (2 months)</div>
+                </div>
+                <ul class="bullet-list">
+                    <li>Contributed to biotechnology research operations and Quality Control (QC) processes in a professional laboratory environment</li>
+                    <li>Executed core laboratory techniques: PCR, gel electrophoresis, and microbial culture management with high precision</li>
+                    <li><span class="achievement-highlight">Achieved 95% accuracy rate</span> in sample processing and experimental procedures, exceeding quality benchmarks</li>
+                    <li><span class="achievement-highlight">Improved laboratory efficiency by 20%</span> through workflow optimization and process streamlining initiatives</li>
+                    <li>Maintained detailed Good Laboratory Practice (GLP) compliant documentation and enhanced data accuracy protocols</li>
+                    <li>Operated laboratory equipment: spectrophotometers, centrifuges, incubators, PCR thermocyclers</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page page-2">
+        <!-- Research Projects -->
+        <section class="section">
+            <h2 class="section-title">Research Projects</h2>
+            
+            <div class="project-item">
+                <div class="project-title">Bioethanol Production Optimization (2024) <span class="project-role">- Lead Researcher</span></div>
+                <ul class="bullet-list">
+                    <li><span class="achievement-highlight">Increased bioethanol yield by 15%</span> through microbial process optimization and advanced fermentation techniques</li>
+                    <li>Implemented statistical validation using SPSS, optimizing substrate concentration, pH, temperature, and fermentation duration</li>
+                    <li><span class="achievement-highlight">Recognition:</span> Best Research Project Award - Parul Institute (2024)</li>
+                </ul>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Antimicrobial Nanoparticle Synthesis (2024) <span class="project-role">- Project Lead</span></div>
+                <ul class="bullet-list">
+                    <li>Synthesized silver nanoparticles using Pseudomonas spp. for pharmaceutical applications and antimicrobial research</li>
+                    <li>Demonstrated antimicrobial efficacy against multiple bacterial strains, exploring applications in reducing antibiotic resistance</li>
+                </ul>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Microbial Fuel Cell Development (2023) <span class="project-role">- Research Contributor</span></div>
+                <ul class="bullet-list">
+                    <li><span class="achievement-highlight">Enhanced energy output by 30%</span> through innovative wastewater treatment methodologies and electrode optimization</li>
+                    <li>Designed electrode configurations for optimized microbial activity, contributing to sustainable energy research</li>
+                </ul>
+            </div>
+
+            <div class="project-item">
+                <div class="project-title">Recombinant Protein Expression in E. coli (2023) <span class="project-role">- Research Assistant</span></div>
+                <ul class="bullet-list">
+                    <li>Achieved high-yield production of target proteins in E. coli expression systems for biotechnology and therapeutic research applications</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Bioinformatics Portfolio -->
+        <section class="section">
+            <h2 class="section-title">Bioinformatics Portfolio (GitHub Projects)</h2>
+            
+            <div class="portfolio-item">
+                <div class="portfolio-title">DNA Sequence Analyzer</div>
+                <div class="portfolio-tech">Technologies: Python 3, Biopython, SeqIO module</div>
+                <div class="portfolio-desc">Comprehensive tool for automated DNA sequence analysis from FASTA files with GC content calculation, nucleotide composition analysis, and sequence transformations (complement, reverse complement). Batch processing support with command-line interface.</div>
+            </div>
+
+            <div class="portfolio-item">
+                <div class="portfolio-title">Protein Structure Prediction Pipeline</div>
+                <div class="portfolio-tech">Technologies: R Programming, Bioconductor, ProtParam toolkit</div>
+                <div class="portfolio-desc">Automated pipeline for protein secondary structure prediction and physicochemical property analysis including molecular weight, isoelectric point, instability index, and hydrophobicity analysis.</div>
+            </div>
+
+            <div class="portfolio-item">
+                <div class="portfolio-title">COVID-19 Variant Analysis Tool</div>
+                <div class="portfolio-tech">Technologies: Python, Pandas, Matplotlib, Seaborn, NCBI E-utilities API</div>
+                <div class="portfolio-desc">Comparative genomics tool for analyzing SARS-CoV-2 variants and mutation patterns with automated sequence retrieval from NCBI GenBank and mutation hotspot identification.</div>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section class="section">
+            <h2 class="section-title">Education</h2>
+            <div class="education-item">
+                <div class="experience-header">
+                    <div>
+                        <div class="degree-title">Diploma in Biotechnology</div>
+                        <div class="institution">Parul Institute of Technology, Vadodara</div>
+                    </div>
+                    <div class="duration">2022 - 2025 | CGPA: 6.7/10</div>
+                </div>
+                <ul class="bullet-list">
+                    <li><span class="achievement-highlight">Dean's List</span> for Academic Excellence (2024-2025)</li>
+                    <li><span class="achievement-highlight">Top 10% Ranking</span> in Molecular Biology Coursework (2024)</li>
+                </ul>
+                <div class="coursework">
+                    <strong>Relevant Coursework:</strong> Molecular Biology, Genetics, Microbiology, Biochemistry, Cell Biology, Immunology, Bioinformatics, Biostatistics, Fermentation Technology, Recombinant DNA Technology
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications -->
+        <section class="section">
+            <h2 class="section-title">Certifications</h2>
+            <ul class="cert-list">
+                <li>Advanced Biotechnology Techniques - Parul University (2025)</li>
+                <li>Bioinformatics Training Certification - Biotecnika (2024)</li>
+                <li>Digital Marketing Certification - ITI Vadodara (2021)</li>
+            </ul>
+        </section>
+
+        <!-- Achievements -->
+        <section class="section">
+            <h2 class="section-title">Achievements & Recognition</h2>
+            <ul class="cert-list">
+                <li><span class="achievement-highlight">Best Research Project Award:</span> Bioethanol Production Optimization - Parul Institute (2024)</li>
+                <li><span class="achievement-highlight">Dean's List Recognition:</span> Academic Excellence (2024-2025)</li>
+                <li><span class="achievement-highlight">Top 10% Ranking:</span> Molecular Biology Coursework - Parul Institute (2024)</li>
+            </ul>
+        </section>
+
+        <!-- Additional Information -->
+        <section class="section">
+            <h2 class="section-title">Additional Information</h2>
+            <div class="additional-info">
+                <div class="info-row"><span class="info-label">Date of Birth:</span> 20 June 2001</div>
+                <div class="info-row"><span class="info-label">Languages:</span> English (Fluent), Hindi (Fluent), Gujarati (Native)</div>
+                <div class="info-row"><span class="info-label">Availability:</span> Immediate</div>
+                <div class="info-row"><span class="info-label">Relocation:</span> Open to anywhere in India</div>
+                <div class="info-row"><span class="info-label">Research Interests:</span> Pharmaceutical QA, Applied Data Analysis in Biology, Sustainable Biotechnology, Nanobiotechnology, Computational Biology</div>
+                <div class="info-row"><span class="info-label">Professional Activities:</span> Member of Parul University Biotechnology Club, Active in local sustainability initiatives, Attended research symposiums and scientific presentations</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- html2pdf.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        function downloadPDF() {
+            // Hide buttons temporarily
+            const buttons = document.querySelector('.no-print');
+            buttons.style.display = 'none';
+
+            // Get all pages
+            const pages = document.querySelectorAll('.page');
+            
+            // Create a container for PDF generation
+            const container = document.createElement('div');
+            pages.forEach(page => {
+                container.appendChild(page.cloneNode(true));
+            });
+
+            // PDF options
+            const opt = {
+                margin: 0,
+                filename: 'Balaji_Rajput_Resume.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                },
+                pagebreak: { 
+                    mode: ['css', 'legacy'],
+                    before: '.page-2'
+                }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(container).save().then(() => {
+                // Show buttons again
+                buttons.style.display = 'flex';
+            }).catch(() => {
+                buttons.style.display = 'flex';
+                alert('Error generating PDF. Please try the Print option instead.');
+            });
+        }
+    </script>
+</body>
+</html>
