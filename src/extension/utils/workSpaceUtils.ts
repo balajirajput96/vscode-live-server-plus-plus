@@ -17,7 +17,7 @@ export const workspaceUtils = {
 
     const activeDocUrl = activeTextEditor.document.uri.fsPath;
     const workspaceUrl = this.activeWorkspace.uri.fsPath;
-    const isParentPath = createPathValidator(workspaceUrl).of(activeDocUrl);
+    const isParentPath = createPathChecker(workspaceUrl).of(activeDocUrl);
 
     if (!isParentPath) return null;
 
@@ -33,7 +33,7 @@ export const workspaceUtils = {
   }
 };
 
-function createPathValidator(parentPath: string) {
+function createPathChecker(parentPath: string) {
   return {
     of: (childPath: string) => {
       return childPath.startsWith(parentPath);
