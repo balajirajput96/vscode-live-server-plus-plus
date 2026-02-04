@@ -9,17 +9,17 @@ import { workspaceUtils } from './utils/workSpaceUtils';
 import { StatusbarService } from './services/StatusbarService';
 
 export function activate(context: vscode.ExtensionContext) {
-  const liveServerPlusPlus = new LiveServerPlusPlus(getLSPPConfig());
+  const liveServerPlusPlus = new LiveServerPlusPlus(buildLiveServerConfig());
 
   liveServerPlusPlus.useMiddleware(fileSelector, setMIME);
   liveServerPlusPlus.useService(NotificationService, BrowserService, StatusbarService);
 
-  const openServer = vscode.commands.registerCommand(getCmdWithPrefix('open'), () => {
-    liveServerPlusPlus.reloadConfig(getLSPPConfig());
+  const openServer = vscode.commands.registerCommand(getExtensionCommand('open'), () => {
+    liveServerPlusPlus.reloadConfig(buildLiveServerConfig());
     liveServerPlusPlus.goLive();
   });
 
-  const closeServer = vscode.commands.registerCommand(getCmdWithPrefix('close'), () => {
+  const closeServer = vscode.commands.registerCommand(getExtensionCommand('close'), () => {
     liveServerPlusPlus.shutdown();
   });
 
@@ -29,11 +29,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {}
 
-function getCmdWithPrefix(commandName: string) {
+function getExtensionCommand(commandName: string) {
   return `extension.live-server++.${commandName}`;
 }
 
-function getLSPPConfig(): ILiveServerPlusPlusConfig {
+function buildLiveServerConfig(): ILiveServerPlusPlusConfig {
   const LSPPconfig: ILiveServerPlusPlusConfig = { cwd: workspaceUtils.cwd! };
   LSPPconfig.port = extensionConfig.port.get();
   LSPPconfig.subpath = extensionConfig.root.get();

@@ -3,7 +3,7 @@
 
   const storageKeyIsThisFirstTime = 'IsThisFirstTime_Log_From_LiveServer++';
   const { DiffDOM } = diffDOM;
-  const dd = new DiffDOM({
+  const domDiffer = new DiffDOM({
     trimNodeTextValue: true
   });
   const bodyRegex = /<body>*>((.|[\n\r])*)<\/body>/im; // https://stackoverflow.com/a/3642850/6120338
@@ -61,8 +61,8 @@
 
   function onDemandHTMLRender(html) {
     const newBody = bodyRegex.exec(html)[0];
-    const diff = dd.diff(document.body, newBody);
-    const result = dd.apply(document.body, diff);
+    const diff = domDiffer.diff(document.body, newBody);
+    const result = domDiffer.apply(document.body, diff);
     if (!result) throw "Can't able to update DOM";
   }
 
@@ -99,29 +99,29 @@
     const sheets = [].slice.call(document.getElementsByTagName('link'));
     const head = document.getElementsByTagName('head')[0];
     for (let i = 0; i < sheets.length; ++i) {
-      const elem = sheets[i];
+      const linkElement = sheets[i];
 
-      const href = elem.getAttribute('href');
+      const href = linkElement.getAttribute('href');
       if (!href || href.startsWith('http')) continue;
 
-      const parent = elem.parentElement || head;
-      parent.removeChild(elem);
-      const rel = elem.rel;
+      const parent = linkElement.parentElement || head;
+      parent.removeChild(linkElement);
+      const rel = linkElement.rel;
       if (
         (href && typeof rel != 'string') ||
         rel.length == 0 ||
         rel.toLowerCase() == 'stylesheet'
       ) {
-        const url = href.replace(/(&|\?)_cacheOverride=\d+/, '');
-        elem.setAttribute(
+        const cacheOverrideUrl = href.replace(/(&|\?)_cacheOverride=\d+/, '');
+        linkElement.setAttribute(
           'href',
-          url +
-            (url.indexOf('?') >= 0 ? '&' : '?') +
+          cacheOverrideUrl +
+            (cacheOverrideUrl.indexOf('?') >= 0 ? '&' : '?') +
             '_cacheOverride=' +
             new Date().valueOf()
         );
       }
-      parent.appendChild(elem);
+      parent.appendChild(linkElement);
     }
   }
 
@@ -146,10 +146,10 @@
         });
 
         if (src) {
-          var url = src.replace(/(&|\?)_cacheOverride=\d+/, '');
+          var cacheOverrideUrl = src.replace(/(&|\?)_cacheOverride=\d+/, '');
           newLink.src =
-            url +
-            (url.indexOf('?') >= 0 ? '&' : '?') +
+            cacheOverrideUrl +
+            (cacheOverrideUrl.indexOf('?') >= 0 ? '&' : '?') +
             '_cacheOverride=' +
             new Date().valueOf();
         }
