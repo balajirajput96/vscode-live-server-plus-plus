@@ -112,11 +112,11 @@
         rel.length == 0 ||
         rel.toLowerCase() == 'stylesheet'
       ) {
-        const cacheOverrideUrl = href.replace(/(&|\?)_cacheOverride=\d+/, '');
+        const urlWithoutCacheParam = href.replace(/(&|\?)_cacheOverride=\d+/, '');
         linkElement.setAttribute(
           'href',
-          cacheOverrideUrl +
-            (cacheOverrideUrl.indexOf('?') >= 0 ? '&' : '?') +
+          urlWithoutCacheParam +
+            (urlWithoutCacheParam.indexOf('?') >= 0 ? '&' : '?') +
             '_cacheOverride=' +
             new Date().valueOf()
         );
@@ -146,10 +146,10 @@
         });
 
         if (src) {
-          var cacheOverrideUrl = src.replace(/(&|\?)_cacheOverride=\d+/, '');
+          var urlWithoutCacheParam = src.replace(/(&|\?)_cacheOverride=\d+/, '');
           newLink.src =
-            cacheOverrideUrl +
-            (cacheOverrideUrl.indexOf('?') >= 0 ? '&' : '?') +
+            urlWithoutCacheParam +
+            (urlWithoutCacheParam.indexOf('?') >= 0 ? '&' : '?') +
             '_cacheOverride=' +
             new Date().valueOf();
         }
