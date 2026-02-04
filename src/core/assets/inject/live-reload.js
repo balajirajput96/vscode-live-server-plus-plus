@@ -146,7 +146,7 @@
         });
 
         if (src) {
-          var urlWithoutCacheParam = src.replace(/(&|\?)_cacheOverride=\d+/, '');
+          const urlWithoutCacheParam = src.replace(/(&|\?)_cacheOverride=\d+/, '');
           newLink.src =
             urlWithoutCacheParam +
             (urlWithoutCacheParam.indexOf('?') >= 0 ? '&' : '?') +
