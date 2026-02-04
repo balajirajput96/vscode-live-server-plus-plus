@@ -17,7 +17,7 @@ export const workspaceUtils = {
 
     const activeDocUrl = activeTextEditor.document.uri.fsPath;
     const workspaceUrl = this.activeWorkspace.uri.fsPath;
-    const isParentPath = isParent(workspaceUrl).of(activeDocUrl);
+    const isParentPath = isParentPathOf(workspaceUrl, activeDocUrl);
 
     if (!isParentPath) return null;
 
@@ -33,10 +33,6 @@ export const workspaceUtils = {
   }
 };
 
-function isParent(parentPath: string) {
-  return {
-    of: (childPath: string) => {
-      return childPath.startsWith(parentPath);
-    }
-  };
+function isParentPathOf(parentPath: string, childPath: string): boolean {
+  return childPath.startsWith(parentPath);
 }
