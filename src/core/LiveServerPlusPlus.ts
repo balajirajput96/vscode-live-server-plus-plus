@@ -221,11 +221,11 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     if (!this.ws) return;
 
     const WebSocket = getWebSocket();
-    let clients: WebSocketType[] = this.ws.clients as any;
+    let connectedClients: WebSocketType[] = this.ws.clients as any;
 
     //TODO: WE SHOULD WATCH ALL FILE. FOR NOW, THE LIB WORKS ONLY FOR HTML
     if (isInjectableFile(data.fileName)) {
-      clients = this.wsWatcherList.reduce(
+      connectedClients = this.wsWatcherList.reduce(
         (allClients, { client, watchingPaths }) => {
           if (this.isInWatchingList(data.fileName, watchingPaths))
             allClients.push(client);
@@ -235,7 +235,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
       );
     }
 
-    clients.forEach(client => {
+    connectedClients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify({ data, action }));
       }
@@ -270,8 +270,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
     this.ws.on('connection', ws => {
       ws.send(JSON.stringify({ action: 'connected' }));
-      ws.on('message', (_data: string) => {
-        const { watchList } = JSON.parse(_data);
+      ws.on('message', (rawMessageData: string) => {
+        const { watchList } = JSON.parse(rawMessageData);
         if (watchList) {
           this.addToWsWatcherList(ws as any, watchList);
         }

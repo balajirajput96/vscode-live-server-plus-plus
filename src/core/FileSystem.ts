@@ -6,14 +6,14 @@ import { isSupportedFile } from './utils/index';
 
 // Stream version
 export const readFileStream = (filePath: string, encoding?: string) => {
-  const dirtyFile = getDirtyFileFromVscode(filePath);
+  const unsavedTextDocument = getDirtyFileFromVscode(filePath);
 
-  if (dirtyFile) {
+  if (unsavedTextDocument) {
     console.log('[Stream]Reading Dirty file:', filePath);
     const stream = new Readable({ encoding });
     setImmediate(() => {
       stream.emit('open');
-      stream.push(dirtyFile.getText());
+      stream.push(unsavedTextDocument.getText());
       stream.push(null);
     });
     return stream;
@@ -25,11 +25,11 @@ export const readFileStream = (filePath: string, encoding?: string) => {
 
 // Promise version -- Most probably will not be used.
 export const readFile = (filePath: string): Promise<Buffer> => {
-  const dirtyFile = getDirtyFileFromVscode(filePath);
+  const unsavedTextDocument = getDirtyFileFromVscode(filePath);
 
-  if (dirtyFile) {
+  if (unsavedTextDocument) {
     console.log('[Promise]Reading Dirty file: ', filePath);
-    return readFileFromVscodeWorkspace(dirtyFile);
+    return readFileFromVscodeWorkspace(unsavedTextDocument);
   }
 
   console.log('[Promise]Reading file from disk: ', filePath);

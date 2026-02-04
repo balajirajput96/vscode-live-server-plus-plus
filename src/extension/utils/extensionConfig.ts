@@ -7,35 +7,35 @@ export type ReloadingStrategy = 'hot' | 'partial-reload' | 'reload';
 
 export const extensionConfig = {
   port: {
-    get: () => getSettings<number>('port'),
-    set: (portNo: number) => setSettings('port', portNo)
+    get: () => getConfigurationValue<number>('port'),
+    set: (portNo: number) => updateConfigurationValue('port', portNo)
   },
   browser: {
-    get: () => getSettings<IBrowserList>('browser'),
-    set: (value: IBrowserList) => setSettings('browser', value)
+    get: () => getConfigurationValue<IBrowserList>('browser'),
+    set: (value: IBrowserList) => updateConfigurationValue('browser', value)
   },
   root: {
-    get: () => getSettings<string>('root') || '/',
-    set: (value: string) => setSettings('root', value)
+    get: () => getConfigurationValue<string>('root') || '/',
+    set: (value: string) => updateConfigurationValue('root', value)
   },
   timeout: {
-    get: () => getSettings<number>('timeout'),
-    set: (value: number) => setSettings('timeout', value)
+    get: () => getConfigurationValue<number>('timeout'),
+    set: (value: number) => updateConfigurationValue('timeout', value)
   },
   indexFile: {
-    get: () => getSettings<string>('indexFile'),
-    set: (value: string) => setSettings('indexFile', value)
+    get: () => getConfigurationValue<string>('indexFile'),
+    set: (value: string) => updateConfigurationValue('indexFile', value)
   },
   reloadingStrategy: {
-    get: () => getSettings<ReloadingStrategy>('reloadingStrategy'),
-    set: (value: ReloadingStrategy) => setSettings('reloadingStrategy', value)
+    get: () => getConfigurationValue<ReloadingStrategy>('reloadingStrategy'),
+    set: (value: ReloadingStrategy) => updateConfigurationValue('reloadingStrategy', value)
   }
 };
 
-function getSettings<T = any>(settingsName: string) {
+function getConfigurationValue<T = any>(settingsName: string) {
   return workspace.getConfiguration('liveServer++').get(settingsName) as T;
 }
-function setSettings<T = any>(settingsName: string, settingsValue: T, isGlobal = false) {
+function updateConfigurationValue<T = any>(settingsName: string, settingsValue: T, isGlobal = false) {
   return workspace
     .getConfiguration('liveServer++')
     .update(settingsName, settingsValue, isGlobal);
