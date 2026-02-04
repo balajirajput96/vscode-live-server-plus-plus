@@ -1,0 +1,198 @@
+================================================================================
+                              PAGE 1
+================================================================================
+
+BALAJI DILIPSINGH RAJPUT
+
+Vadodara, Gujarat, India | +91 8780861044 | balajirajput970@gmail.com
+LinkedIn: linkedin.com/in/balajirajput-483a86194 | GitHub: github.com/balajirajput970
+
+--------------------------------------------------------------------------------
+PROFESSIONAL SUMMARY
+--------------------------------------------------------------------------------
+
+Results-driven Biotechnology professional with a Diploma in Biotechnology and 
+hands-on experience in bioinformatics analysis, laboratory research, and quality 
+assurance processes. Proficient in Python (Biopython, Pandas, NumPy), R 
+(Bioconductor), and computational biology tools including BLAST, ClustalW, and 
+NGS data interpretation. Demonstrated ability to optimize laboratory workflows, 
+achieving 95% accuracy in experimental procedures and 20% efficiency improvements. 
+Seeking a challenging role as Bioinformatics Analyst, Research Associate, or 
+QA/QC Executive in the biotechnology and pharmaceutical industry. Available 
+immediately and open to relocation anywhere in India.
+
+--------------------------------------------------------------------------------
+CORE SKILLS
+--------------------------------------------------------------------------------
+
+Bioinformatics & Computational Biology:
+• Python (Biopython, Pandas, NumPy, Matplotlib, Seaborn), R (Bioconductor)
+• BLAST, ClustalW, Multiple Sequence Alignment, Phylogenetic Analysis
+• Next-Generation Sequencing (NGS) Data Interpretation, Variant Calling
+• Genomic Databases: NCBI, UniProt, Ensembl
+
+Laboratory Techniques:
+• Polymerase Chain Reaction (PCR), Gel Electrophoresis, Protein Expression
+• Cell Culture Techniques, Microbial Culture Management, Fermentation Methods
+• Recombinant DNA Technology, High-Throughput Screening (HTS)
+
+Data Analysis & Quality Assurance:
+• Statistical Analysis: SPSS, MATLAB, ANOVA, Regression, Hypothesis Testing
+• Quality Assurance (QA), Quality Control (QC), Good Laboratory Practice (GLP)
+• Standard Operating Procedures (SOP) Documentation, Analytical Testing
+
+Laboratory Equipment:
+• PCR Thermocyclers, Spectrophotometers, Centrifuges, Electrophoresis Units
+• Bioreactors, Incubators
+
+--------------------------------------------------------------------------------
+WORK EXPERIENCE
+--------------------------------------------------------------------------------
+
+BIOINFORMATICS INTERN
+Biotecnika | Remote | 2024 (3 months)
+
+• Completed comprehensive bioinformatics training program focusing on genomic 
+  data analysis and computational biology methodologies
+• Performed DNA and protein sequence analysis using BLAST, ClustalW, and 
+  phylogenetic analysis tools for comparative genomics studies
+• Applied Python programming with Biopython, Pandas, and NumPy for biological 
+  data processing and visualization
+• Utilized R programming with Bioconductor packages for genomic data analysis 
+  and statistical interpretation
+• Gained hands-on experience with NCBI, UniProt, and Ensembl genomic databases 
+  for sequence retrieval and annotation
+• Interpreted Next-Generation Sequencing (NGS) data and conducted genomic 
+  variant analysis for research applications
+• Developed automated workflows for sequence alignment and annotation, 
+  improving data processing efficiency
+• Completed projects on comparative genomics and protein structure prediction, 
+  earning Bioinformatics Internship Certificate (2024)
+
+LABORATORY INTERN
+Gujarat Biotech Innovations | Vadodara, Gujarat | 2023 (2 months)
+
+• Contributed to biotechnology research operations and quality control 
+  processes in a GLP-compliant laboratory environment
+• Executed core laboratory techniques including PCR, gel electrophoresis, 
+  and microbial culture management
+• Achieved 95% accuracy rate in sample processing and experimental procedures 
+  through meticulous attention to detail
+• Improved laboratory efficiency by 20% through systematic workflow 
+  optimization and process standardization
+• Enhanced data accuracy protocols and maintained detailed Good Laboratory 
+  Practice (GLP) compliant documentation
+• Collaborated with multidisciplinary teams on quality control and research 
+  projects to meet project milestones
+• Operated laboratory equipment including spectrophotometers, centrifuges, 
+  and incubators following safety protocols
+
+
+================================================================================
+                              PAGE 2
+================================================================================
+
+--------------------------------------------------------------------------------
+RESEARCH PROJECTS
+--------------------------------------------------------------------------------
+
+BIOETHANOL PRODUCTION OPTIMIZATION | Lead Researcher | 2024
+• Increased bioethanol yield by 15% through systematic microbial process 
+  optimization and fermentation parameter adjustment
+• Implemented advanced fermentation methods with statistical validation using 
+  SPSS for data analysis and result interpretation
+• Optimized substrate concentration, pH, temperature, and fermentation duration 
+  using experimental design methodologies
+• Awarded Best Research Project Award - Parul Institute (2024) for outstanding 
+  research contribution
+
+ANTIMICROBIAL NANOPARTICLE SYNTHESIS | Project Lead | 2024
+• Synthesized silver nanoparticles using Pseudomonas spp. for pharmaceutical 
+  and antimicrobial applications
+• Demonstrated antimicrobial efficacy against multiple bacterial strains 
+  through rigorous testing protocols
+• Explored potential applications in reducing antibiotic resistance for 
+  healthcare and pharmaceutical industries
+
+MICROBIAL FUEL CELL DEVELOPMENT | Research Contributor | 2023
+• Enhanced energy output by 30% through innovative wastewater treatment 
+  methodologies and electrode optimization
+• Designed electrode configurations for optimized microbial activity and 
+  improved power generation efficiency
+
+RECOMBINANT PROTEIN EXPRESSION IN E. COLI | Research Assistant | 2023
+• Achieved high-yield production of target proteins in E. coli expression 
+  systems for biotechnology and therapeutic research applications
+
+--------------------------------------------------------------------------------
+BIOINFORMATICS PORTFOLIO (GitHub Projects)
+--------------------------------------------------------------------------------
+
+DNA SEQUENCE ANALYZER (Python)
+• Developed comprehensive tool for automated DNA sequence analysis from FASTA 
+  files with features including GC content calculation, nucleotide composition 
+  analysis, and sequence transformations
+• Technologies: Python 3, Biopython, SeqIO module, Command-line Interface
+
+PROTEIN STRUCTURE PREDICTION PIPELINE (R)
+• Built automated pipeline for protein secondary structure prediction and 
+  physicochemical property analysis including molecular weight calculation, 
+  isoelectric point, and hydrophobicity analysis
+• Technologies: R Programming, Bioconductor, ProtParam toolkit
+
+COVID-19 VARIANT ANALYSIS TOOL (Python)
+• Created comparative genomics tool for analyzing SARS-CoV-2 variants and 
+  mutation patterns with automated sequence retrieval from NCBI GenBank
+• Technologies: Python, Pandas, Matplotlib, Seaborn, NCBI E-utilities API
+
+--------------------------------------------------------------------------------
+EDUCATION
+--------------------------------------------------------------------------------
+
+DIPLOMA IN BIOTECHNOLOGY
+Parul Institute of Technology, Vadodara | 2022 - 2025 | CGPA: 6.7/10
+
+Academic Achievements:
+• Dean's List for Academic Excellence (2024-2025)
+• Top 10% Ranking in Molecular Biology Coursework (2024)
+
+Relevant Coursework: Molecular Biology, Genetics, Microbiology, Biochemistry, 
+Cell Biology, Immunology, Bioinformatics, Biostatistics, Fermentation 
+Technology, Recombinant DNA Technology
+
+--------------------------------------------------------------------------------
+CERTIFICATIONS
+--------------------------------------------------------------------------------
+
+• Advanced Biotechnology Techniques - Parul University (2025)
+• Bioinformatics Training Certification - Biotecnika (2024)
+• Digital Marketing Certification - ITI Vadodara (2021)
+
+--------------------------------------------------------------------------------
+ACHIEVEMENTS & RECOGNITION
+--------------------------------------------------------------------------------
+
+• Best Research Project Award: Bioethanol Production Optimization - Parul 
+  Institute (2024)
+• Dean's List Recognition: Academic Excellence (2024-2025)
+• Top 10% Ranking: Molecular Biology Coursework - Parul Institute (2024)
+
+--------------------------------------------------------------------------------
+ADDITIONAL INFORMATION
+--------------------------------------------------------------------------------
+
+Date of Birth: 20 June 2001
+Languages: English (Fluent), Hindi (Fluent), Gujarati (Native)
+Availability: Immediate
+Relocation: Open to anywhere in India
+
+Research Interests: Pharmaceutical QA, Applied Data Analysis in Biology, 
+Sustainable Biotechnology, Nanobiotechnology, Computational Biology
+
+Volunteering: Active participation in local sustainability initiatives, 
+Member of Parul University Biotechnology Club, Attended research symposiums 
+and scientific presentations
+
+Portfolio: github.com/balajirajput970 | linkedin.com/in/balajirajput-483a86194
+
+================================================================================
