@@ -519,8 +519,12 @@
 <body>
     <!-- Print/Download Buttons -->
     <div class="no-print">
-        <button class="btn btn-primary" onclick="downloadPDF()" aria-label="Download resume as PDF file">Download PDF</button>
-        <button class="btn btn-secondary" onclick="window.print()" aria-label="Print resume">Print Resume</button>
+        <button class="btn btn-primary" onclick="downloadPDF()" aria-label="Download resume as PDF file">
+            <span aria-hidden="true">📥</span> Download PDF
+        </button>
+        <button class="btn btn-secondary" onclick="window.print()" aria-label="Print resume">
+            <span aria-hidden="true">🖨️</span> Print Resume
+        </button>
     </div>
 
     <!-- PAGE 1 -->
