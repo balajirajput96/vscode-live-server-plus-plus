@@ -13,13 +13,18 @@
         }
 
         :root {
-            --primary-color: #2563eb;
-            --primary-light: #3b82f6;
+            --primary-color: #0d47a1;
+            --primary-light: #1565c0;
+            --secondary-color: #00897b;
+            --secondary-light: #26a69a;
+            --accent-gold: #f57c00;
+            --accent-gold-light: #ff9800;
             --text-dark: #1f2937;
             --text-medium: #374151;
             --text-light: #6b7280;
             --border-color: #e5e7eb;
             --bg-light: #f9fafb;
+            --gradient-primary: linear-gradient(135deg, #0d47a1 0%, #00897b 100%);
         }
 
         body {
@@ -74,7 +79,8 @@
             text-align: center;
             margin-bottom: 12px;
             padding-bottom: 12px;
-            border-bottom: 2px solid var(--primary-color);
+            border-bottom: 3px solid;
+            border-image: var(--gradient-primary) 1;
         }
 
         .name {
@@ -139,12 +145,13 @@
         .section-title {
             font-size: 12pt;
             font-weight: bold;
-            color: var(--primary-color);
+            color: white;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 8px;
+            padding: 6px 12px;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            border-radius: 4px;
         }
 
         /* Summary Section */
@@ -201,7 +208,7 @@
 
         .achievement-highlight {
             font-weight: 600;
-            color: var(--primary-color);
+            color: var(--accent-gold);
         }
 
         .bullet-list {
@@ -438,6 +445,29 @@
         .info-label {
             font-weight: bold;
             color: var(--text-dark);
+        }
+
+        /* Key Strengths Grid */
+        .strengths-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+        }
+
+        .strength-item {
+            font-size: 9.5pt;
+            color: var(--text-medium);
+            padding-left: 14px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .strength-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
         }
 
         /* Print Controls */
@@ -734,6 +764,25 @@
                 <li><strong>Dean's List Recognition:</strong> Academic Excellence (2024-2025)</li>
                 <li><strong>Top 10% Ranking:</strong> Molecular Biology Coursework - Parul Institute (2024)</li>
             </ul>
+        </section>
+
+        <!-- Key Strengths -->
+        <section class="section">
+            <h2 class="section-title">Key Strengths</h2>
+            <div class="strengths-grid">
+                <div class="strength-item">Analytical & Critical Thinking</div>
+                <div class="strength-item">Research Documentation</div>
+                <div class="strength-item">Laboratory Safety Compliance</div>
+                <div class="strength-item">Data-Driven Decision Making</div>
+                <div class="strength-item">Problem-Solving Mindset</div>
+                <div class="strength-item">Technical Report Writing</div>
+                <div class="strength-item">Cross-Functional Collaboration</div>
+                <div class="strength-item">Attention to Detail</div>
+                <div class="strength-item">Process Optimization</div>
+                <div class="strength-item">Quick Learner & Adaptable</div>
+                <div class="strength-item">Quality-Focused Approach</div>
+                <div class="strength-item">Time Management</div>
+            </div>
         </section>
 
         <!-- Additional Information -->
