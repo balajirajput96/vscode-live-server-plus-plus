@@ -109,6 +109,28 @@
             margin: 0 8px;
         }
 
+        .tagline {
+            font-size: 11pt;
+            color: var(--text-medium);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .contact-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .contact-icon {
+            font-size: 10pt;
+        }
+
+        .contact-separator {
+            color: var(--text-light);
+            margin: 0 8px;
+        }
+
         /* Section Styles */
         .section {
             margin-bottom: 14px;
@@ -129,6 +151,13 @@
         .summary-text {
             font-size: 10.5pt;
             line-height: 1.5;
+            color: var(--text-medium);
+            text-align: justify;
+        }
+
+        .objective {
+            font-size: 10.5pt;
+            line-height: 1.6;
             color: var(--text-medium);
             text-align: justify;
         }
@@ -157,6 +186,46 @@
             line-height: 1.4;
         }
 
+        .skill-category-title {
+            font-weight: bold;
+            font-size: 10pt;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .skill-list {
+            font-size: 10pt;
+            color: var(--text-medium);
+            line-height: 1.4;
+        }
+
+        .achievement-highlight {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bullet-list li {
+            font-size: 10pt;
+            line-height: 1.4;
+            color: var(--text-medium);
+            padding-left: 12px;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
         /* Experience Section */
         .experience-item {
             margin-bottom: 12px;
@@ -165,8 +234,15 @@
         .experience-header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: flex-start;
             margin-bottom: 4px;
+        }
+
+        .duration {
+            font-size: 10pt;
+            color: var(--text-light);
+            font-style: italic;
+            white-space: nowrap;
         }
 
         .job-title {
@@ -412,8 +488,12 @@
 <body>
     <!-- Print/Download Controls -->
     <div class="no-print">
-        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Resume</button>
-        <button class="btn btn-secondary" onclick="downloadPDF()">📥 Download PDF</button>
+        <button class="btn btn-primary" onclick="downloadPDF()">
+            📥 Download PDF
+        </button>
+        <button class="btn btn-secondary" onclick="window.print()">
+            🖨️ Print Resume
+        </button>
     </div>
 
     <!-- PAGE 1 -->
@@ -421,12 +501,38 @@
         <!-- Header -->
         <header class="header">
             <h1 class="name">BALAJI DILIPSINGH RAJPUT</h1>
+            <p class="tagline">Biotechnology Professional | Bioinformatics Specialist | Research &amp; QA/QC</p>
             <div class="contact-info">
                 <div class="contact-row">
-                    Vadodara, Gujarat, India<span class="separator">|</span>+91 8780861044<span class="separator">|</span><a href="mailto:balajirajput970@gmail.com">balajirajput970@gmail.com</a>
+                    <span class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        Vadodara, Gujarat, India
+                    </span>
+                    <span class="contact-separator">|</span>
+                    <span class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        +91 8780861044
+                    </span>
+                    <span class="contact-separator">|</span>
+                    <span class="contact-item">
+                        <span class="contact-icon">✉️</span>
+                        <a href="mailto:balajirajput970@gmail.com">balajirajput970@gmail.com</a>
+                    </span>
                 </div>
                 <div class="contact-row">
-                    <a href="https://linkedin.com/in/balajirajput-483a86194" target="_blank">linkedin.com/in/balajirajput-483a86194</a><span class="separator">|</span><a href="https://github.com/balajirajput970" target="_blank">github.com/balajirajput970</a>
+                    <span class="contact-item">
+                        <span class="contact-icon">🔗</span>
+                        <a href="https://linkedin.com/in/balajirajput-483a86194" target="_blank">
+                            linkedin.com/in/balajirajput-483a86194
+                        </a>
+                    </span>
+                    <span class="contact-separator">|</span>
+                    <span class="contact-item">
+                        <span class="contact-icon">💻</span>
+                        <a href="https://github.com/balajirajput970" target="_blank">
+                            github.com/balajirajput970
+                        </a>
+                    </span>
                 </div>
             </div>
         </header>
@@ -434,68 +540,88 @@
         <!-- Professional Summary -->
         <section class="section">
             <h2 class="section-title">Professional Summary</h2>
-            <p class="summary-text">
-                Results-driven Biotechnology professional with a Diploma in Biotechnology and hands-on experience in bioinformatics analysis, laboratory research, and quality assurance processes. Proficient in Python (Biopython, Pandas, NumPy), R (Bioconductor), and computational biology tools including BLAST, ClustalW, and NGS data interpretation. Demonstrated ability to optimize laboratory workflows, achieving 95% accuracy in experimental procedures and 20% efficiency improvements. Seeking a challenging role as Bioinformatics Analyst, Research Associate, or QA/QC Executive in the biotechnology and pharmaceutical industry. <strong>Available immediately and open to relocation anywhere in India.</strong>
+            <p class="objective">
+                Results-driven <strong>Biotechnology Professional</strong> with hands-on experience in 
+                <strong>Bioinformatics, Laboratory Research, and Quality Assurance (QA/QC)</strong>. Skilled in 
+                <strong>Python</strong> (Biopython, Pandas, NumPy), <strong>R</strong> (Bioconductor), genomic data analysis, and 
+                wet-lab techniques including <strong>PCR, gel electrophoresis, fermentation, and cell culture</strong>. 
+                Proven track record of <strong>optimizing laboratory workflows</strong>, achieving <strong>95% accuracy</strong> in sample 
+                processing, and improving <strong>bioethanol yield by 15%</strong> through process optimization and statistical analysis. 
+                Seeking challenging roles in <strong>Bioinformatics, Research, or QA/QC</strong> in the pharmaceutical and 
+                biotechnology industry. <strong>Immediate availability | Open to relocation across India</strong>.
             </p>
         </section>
 
-        <!-- Core Skills -->
+        <!-- Core Technical Skills -->
         <section class="section">
-            <h2 class="section-title">Core Skills</h2>
+            <h2 class="section-title">Core Technical Skills</h2>
             <div class="skills-grid">
                 <div class="skill-category">
-                    <div class="skill-label">Bioinformatics & Computational Biology:</div>
-                    <div class="skill-items">Python (Biopython, Pandas, NumPy, Matplotlib, Seaborn), R (Bioconductor), BLAST, ClustalW, Multiple Sequence Alignment, Phylogenetic Analysis, Next-Generation Sequencing (NGS) Data Interpretation, Variant Calling, Genomic Databases (NCBI, UniProt, Ensembl)</div>
+                    <div class="skill-category-title">Biotechnology Laboratory</div>
+                    <div class="skill-list">
+                        PCR, Gel Electrophoresis, Cell Culture, Protein Expression, Microbial Culture Management, 
+                        Fermentation Methods, Recombinant DNA Technology, Spectrophotometry, High-Throughput Screening (HTS)
+                    </div>
                 </div>
                 <div class="skill-category">
-                    <div class="skill-label">Laboratory Techniques:</div>
-                    <div class="skill-items">Polymerase Chain Reaction (PCR), Gel Electrophoresis, Protein Expression, Cell Culture Techniques, Microbial Culture Management, Fermentation Methods, Recombinant DNA Technology, High-Throughput Screening (HTS)</div>
+                    <div class="skill-category-title">Bioinformatics &amp; Programming</div>
+                    <div class="skill-list">
+                        Python (Biopython, Pandas, NumPy, Matplotlib), R (Bioconductor), BLAST, ClustalW, Multiple Sequence 
+                        Alignment, Phylogenetic Analysis, NGS Data Interpretation, NCBI, UniProt, Ensembl
+                    </div>
                 </div>
                 <div class="skill-category">
-                    <div class="skill-label">Data Analysis & Quality Assurance:</div>
-                    <div class="skill-items">Statistical Analysis (SPSS, MATLAB, ANOVA, Regression, Hypothesis Testing), Quality Assurance (QA), Quality Control (QC), Good Laboratory Practice (GLP) Compliance, Standard Operating Procedures (SOP) Documentation, Analytical Testing</div>
+                    <div class="skill-category-title">Data Analysis &amp; Statistics</div>
+                    <div class="skill-list">
+                        SPSS, MATLAB, Regression Analysis, ANOVA, Hypothesis Testing, T-tests, Experimental Design, 
+                        Data Visualization, Statistical Validation of Experimental Results
+                    </div>
                 </div>
                 <div class="skill-category">
-                    <div class="skill-label">Laboratory Equipment:</div>
-                    <div class="skill-items">PCR Thermocyclers, Spectrophotometers, Centrifuges, Electrophoresis Units, Bioreactors, Incubators</div>
+                    <div class="skill-category-title">Quality Assurance &amp; Compliance</div>
+                    <div class="skill-list">
+                        QA/QC Process Optimization, Good Laboratory Practice (GLP) Compliance, SOP Documentation, 
+                        Analytical Testing, Data Accuracy Protocols, Documentation &amp; Reporting Standards
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Work Experience -->
+        <!-- Professional Experience -->
         <section class="section">
-            <h2 class="section-title">Work Experience</h2>
+            <h2 class="section-title">Professional Experience</h2>
             
             <div class="experience-item">
                 <div class="experience-header">
-                    <span class="job-title">Bioinformatics Intern</span>
-                    <span class="job-duration">2024 (3 months)</span>
+                    <div>
+                        <div class="job-title">Bioinformatics Intern</div>
+                        <div class="company-info">Biotecnika | Remote</div>
+                    </div>
+                    <div class="duration">2024 • 3 Months</div>
                 </div>
-                <div class="company-info">Biotecnika | Remote</div>
-                <ul class="experience-bullets">
-                    <li>Completed comprehensive bioinformatics training program focusing on genomic data analysis and computational biology methodologies</li>
-                    <li>Performed DNA and protein sequence analysis using BLAST, ClustalW, and phylogenetic analysis tools for comparative genomics studies</li>
-                    <li>Applied Python programming with Biopython, Pandas, and NumPy for biological data processing and visualization</li>
-                    <li>Utilized R programming with Bioconductor packages for genomic data analysis and statistical interpretation</li>
-                    <li>Gained hands-on experience with NCBI, UniProt, and Ensembl genomic databases for sequence retrieval and annotation</li>
-                    <li>Interpreted Next-Generation Sequencing (NGS) data and conducted genomic variant analysis for research applications</li>
-                    <li>Developed automated workflows for sequence alignment and annotation, earning Bioinformatics Internship Certificate (2024)</li>
+                <ul class="bullet-list">
+                    <li>Completed comprehensive <span class="achievement-highlight">bioinformatics training</span> focusing on genomic data analysis and computational biology methodologies.</li>
+                    <li>Performed <span class="achievement-highlight">DNA and protein sequence analysis</span> using BLAST, ClustalW, and phylogenetic tools for comparative genomics studies.</li>
+                    <li>Applied <span class="achievement-highlight">Python (Biopython, Pandas, NumPy)</span> and <span class="achievement-highlight">R (Bioconductor)</span> for biological data processing, visualization, and exploratory analysis.</li>
+                    <li>Worked extensively with <span class="achievement-highlight">NCBI, UniProt, and Ensembl</span> for sequence retrieval, annotation, and functional interpretation.</li>
+                    <li>Interpreted <span class="achievement-highlight">Next-Generation Sequencing (NGS)</span> data and contributed to development of automated workflows for sequence alignment.</li>
                 </ul>
             </div>
 
             <div class="experience-item">
                 <div class="experience-header">
-                    <span class="job-title">Laboratory Intern</span>
-                    <span class="job-duration">2023 (2 months)</span>
+                    <div>
+                        <div class="job-title">Laboratory Intern</div>
+                        <div class="company-info">Gujarat Biotech Innovations | Vadodara, Gujarat</div>
+                    </div>
+                    <div class="duration">2023 • 2 Months</div>
                 </div>
-                <div class="company-info">Gujarat Biotech Innovations | Vadodara, Gujarat</div>
-                <ul class="experience-bullets">
-                    <li>Contributed to biotechnology research operations and quality control processes in a GLP-compliant laboratory environment</li>
-                    <li>Executed core laboratory techniques including PCR, gel electrophoresis, and microbial culture management</li>
-                    <li>Achieved <strong>95% accuracy rate</strong> in sample processing and experimental procedures through meticulous attention to detail</li>
-                    <li>Improved laboratory efficiency by <strong>20%</strong> through systematic workflow optimization and process standardization</li>
-                    <li>Enhanced data accuracy protocols and maintained detailed Good Laboratory Practice (GLP) compliant documentation</li>
-                    <li>Operated laboratory equipment including spectrophotometers, centrifuges, and incubators following safety protocols</li>
+                <ul class="bullet-list">
+                    <li>Contributed to <span class="achievement-highlight">biotechnology research operations and Quality Control (QC)</span> processes in a professional laboratory environment.</li>
+                    <li>Executed core laboratory techniques: <span class="achievement-highlight">PCR, gel electrophoresis, microbial culture management</span> with approximately 95% accuracy in sample processing.</li>
+                    <li>Improved <span class="achievement-highlight">laboratory efficiency by 20%</span> through workflow optimization and process streamlining initiatives.</li>
+                    <li>Maintained detailed <span class="achievement-highlight">GLP-compliant documentation</span> and enhanced data accuracy protocols for experimental records.</li>
+                    <li>Operated laboratory equipment including spectrophotometers, centrifuges, incubators, and bioreactors with precision and safety.</li>
                 </ul>
             </div>
         </section>
