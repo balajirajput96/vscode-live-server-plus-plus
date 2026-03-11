@@ -7,36 +7,36 @@ export type ReloadingStrategy = 'hot' | 'partial-reload' | 'reload';
 
 export const extensionConfig = {
   port: {
-    get: () => getSettings<number>('port'),
-    set: (portNo: number) => setSettings('port', portNo)
+    get: () => getExtensionSetting<number>('port'),
+    set: (portNo: number) => setExtensionSetting('port', portNo)
   },
   browser: {
-    get: () => getSettings<IBrowserList>('browser'),
-    set: (value: IBrowserList) => setSettings('browser', value)
+    get: () => getExtensionSetting<IBrowserList>('browser'),
+    set: (value: IBrowserList) => setExtensionSetting('browser', value)
   },
   root: {
-    get: () => getSettings<string>('root') || '/',
-    set: (value: string) => setSettings('root', value)
+    get: () => getExtensionSetting<string>('root') || '/',
+    set: (value: string) => setExtensionSetting('root', value)
   },
   timeout: {
-    get: () => getSettings<number>('timeout'),
-    set: (value: number) => setSettings('timeout', value)
+    get: () => getExtensionSetting<number>('timeout'),
+    set: (value: number) => setExtensionSetting('timeout', value)
   },
   indexFile: {
-    get: () => getSettings<string>('indexFile'),
-    set: (value: string) => setSettings('indexFile', value)
+    get: () => getExtensionSetting<string>('indexFile'),
+    set: (value: string) => setExtensionSetting('indexFile', value)
   },
   reloadingStrategy: {
-    get: () => getSettings<ReloadingStrategy>('reloadingStrategy'),
-    set: (value: ReloadingStrategy) => setSettings('reloadingStrategy', value)
+    get: () => getExtensionSetting<ReloadingStrategy>('reloadingStrategy'),
+    set: (value: ReloadingStrategy) => setExtensionSetting('reloadingStrategy', value)
   }
 };
 
-function getSettings<T = any>(settingsName: string) {
-  return workspace.getConfiguration('liveServer++').get(settingsName) as T;
+function getExtensionSetting<T = any>(settingKey: string) {
+  return workspace.getConfiguration('liveServer++').get(settingKey) as T;
 }
-function setSettings<T = any>(settingsName: string, settingsValue: T, isGlobal = false) {
+function setExtensionSetting<T = any>(settingKey: string, value: T, isGlobalConfiguration = false) {
   return workspace
     .getConfiguration('liveServer++')
-    .update(settingsName, settingsValue, isGlobal);
+    .update(settingKey, value, isGlobalConfiguration);
 }

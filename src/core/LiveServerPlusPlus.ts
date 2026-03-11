@@ -242,19 +242,19 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  isInWatchingList(target: string, dirList: string[]) {
-    for (let i = 0; i < dirList.length; i++) {
-      let dir = dirList[i];
+  isInWatchingList(target: string, watchDirectories: string[]) {
+    for (let i = 0; i < watchDirectories.length; i++) {
+      let directoryPath = watchDirectories[i];
 
       //TODO: THIS IS NOT THE BEST WAY. IF FOLDER CONTANTS `.`, this will not work
-      if (!path.extname(dir)) {
-        dir = urlJoin(dir, this.indexFile);
+      if (!path.extname(directoryPath)) {
+        directoryPath = urlJoin(directoryPath, this.indexFile);
       }
 
       if (target.startsWith('/')) target = target.substr(1);
-      if (dir.startsWith('/')) dir = dir.substr(1);
+      if (directoryPath.startsWith('/')) directoryPath = directoryPath.substr(1);
 
-      if (dir === target) {
+      if (directoryPath === target) {
         return true;
       }
     }
@@ -270,8 +270,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
     this.ws.on('connection', ws => {
       ws.send(JSON.stringify({ action: 'connected' }));
-      ws.on('message', (_data: string) => {
-        const { watchList } = JSON.parse(_data);
+      ws.on('message', (messageData: string) => {
+        const { watchList } = JSON.parse(messageData);
         if (watchList) {
           this.addToWsWatcherList(ws as any, watchList);
         }
@@ -302,9 +302,9 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   }
 
   private addToWsWatcherList(client: WebSocketType, watchDirs: string | string[]) {
-    const _watchDirs = Array.isArray(watchDirs) ? watchDirs : [watchDirs];
+    const normalizedWatchDirs = Array.isArray(watchDirs) ? watchDirs : [watchDirs];
 
-    this.wsWatcherList.push({ client, watchingPaths: _watchDirs });
+    this.wsWatcherList.push({ client, watchingPaths: normalizedWatchDirs });
   }
 
   private applyMiddlware(req: IncomingMessage, res: ServerResponse) {

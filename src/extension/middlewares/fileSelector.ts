@@ -6,8 +6,8 @@ import { extensionConfig } from '../utils/extensionConfig';
 
 const LIVE_SERVER_ASSETS = path.join(__dirname, '../../core/assets');
 
-export const fileSelector = (req: ILSPPIncomingMessage, res: ServerResponse) => {
-  let fileUrl = getReqFileUrl(req);
+export const fileSelector = (request: ILSPPIncomingMessage, res: ServerResponse) => {
+  let fileUrl = getRequestFileUrl(request);
 
   if (fileUrl.startsWith('/_live-server_/')) {
     fileUrl = path.join(LIVE_SERVER_ASSETS, fileUrl.replace('/_live-server_/', ''));
@@ -16,11 +16,11 @@ export const fileSelector = (req: ILSPPIncomingMessage, res: ServerResponse) => 
     fileUrl = `.${fileUrl}`;
   }
 
-  req.file = fileUrl;
+  request.file = fileUrl;
 };
 
-function getReqFileUrl(req: ILSPPIncomingMessage): string {
-  const { pathname = '/' } = url.parse(req.url || '/');
+function getRequestFileUrl(request: ILSPPIncomingMessage): string {
+  const { pathname = '/' } = url.parse(request.url || '/');
 
   if (!path.extname(pathname)) {
     //TODO: THIS NEED TO FIX. WE HAVE TO LOOK INTO DISK
