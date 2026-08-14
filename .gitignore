@@ -1,12 +1,20 @@
-out
-node_modules
+node_modules/
+out/
 .vscode-test/
+dist/
+*.log
+.DS_Store
+Thumbs.db
 *.vsix
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+temp/
+tmp/
 
 # n8n Docker Environment
 .env
 docker-compose.override.yml
-*.log
 
 # n8n Data (will be in Docker volumes)
 n8n_data/
