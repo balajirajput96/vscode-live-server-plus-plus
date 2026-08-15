@@ -11,4 +11,17 @@ Thumbs.db
 .vscode/extensions.json
 temp/
 tmp/
+
+# n8n Docker Environment
 .env
+docker-compose.override.yml
+
+# n8n Data (will be in Docker volumes)
+n8n_data/
+postgres_data/
+redis_data/
+ollama_data/
+
+# Backup files
+*.sql
+backup.tar.gz
