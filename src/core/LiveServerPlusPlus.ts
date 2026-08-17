@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as http from 'http';
-import type WebSocketType from 'ws';
+import WebSocketType = require('ws');
 import * as path from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
