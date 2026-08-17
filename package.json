@@ -118,9 +118,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.0",
-    "@babel/preset-env": "^7.22.0",
-    "@babel/plugin-transform-runtime": "^7.22.0",
     "@babel/plugin-proposal-class-properties": "^7.18.0",
+    "@babel/plugin-transform-runtime": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
     "@types/mime-types": "^2.1.0",
     "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
@@ -133,10 +133,12 @@
     "rimraf": "^5.0.0",
     "terser-webpack-plugin": "^5.3.0",
     "tslint": "^5.12.1",
-    "typescript": "^3.3.1",
-    "vscode": "^1.1.37"
+    "typescript": "^5.9.3",
+    "vscode": "^1.1.37",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@babel/runtime": "^7.29.7",
     "mime-types": "^2.1.22",
     "open": "^6.1.0",
     "ws": "^6.2.3"

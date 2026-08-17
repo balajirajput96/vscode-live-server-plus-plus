@@ -174,7 +174,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   }
 
   private listenServer() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (!this.cwd) {
         const error = new LSPPError('CWD is not defined', 'cwdUndefined');
         return reject(error);
@@ -194,7 +194,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   }
 
   private closeServer() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.server!.close(err => {
         return err ? reject(err) : resolve();
       });
@@ -203,7 +203,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   }
 
   private closeWs() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (!this.ws) return resolve();
       this.ws.close(err => (err ? reject(err) : resolve()));
     });
@@ -286,7 +286,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
   isInWatchingList(target: string, dirList: string[]) {
     for (let i = 0; i < dirList.length; i++) {
-      let dir = dirList[i];
+      let dir = dirList[i] || '';
 
       //TODO: THIS IS NOT THE BEST WAY. IF FOLDER CONTANTS `.`, this will not work
       if (!path.extname(dir)) {
@@ -310,14 +310,13 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     this.ws = new WebSocket.Server({ 
       noServer: true,
       // Performance optimizations
-      maxPayload: 1024 * 1024, // 1MB max payload
-      skipUTF8Validation: true // Skip UTF-8 validation for better performance
+      maxPayload: 1024 * 1024 // 1MB max payload
     });
 
     this.ws.on('connection', ws => {
       // Generate unique client ID for caching
       const clientId = this._generateClientId();
-      this.clientCache.set(clientId, ws);
+      this.clientCache.set(clientId, ws as any);
       
       ws.send(JSON.stringify({ action: 'connected', clientId }));
       
@@ -403,7 +402,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
       fileStream.pipe(res);
     });
 
-    fileStream.on('error', err => {
+    fileStream.on('error', (err: NodeJS.ErrnoException) => {
       console.error('ERROR ', err);
       res.statusCode = err.code === 'ENOENT' ? 404 : 500;
       return res.end(null);
