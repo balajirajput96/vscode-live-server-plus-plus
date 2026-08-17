@@ -2,50 +2,75 @@ name: Notify n8n on Push
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   notify-n8n:
     runs-on: ubuntu-latest
-    
+    env:
+      N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Get commit info
         id: commit
         run: |
-          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
-          echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
-          
+          set -euo pipefail
+          {
+            echo "sha=$(git rev-parse --short HEAD)"
+            echo "message<<EOF"
+            git log -1 --pretty=%B
+            echo "EOF"
+            echo "author=$(git log -1 --pretty=%an)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Report unconfigured webhook
+        if: ${{ env.N8N_WEBHOOK_URL == '' }}
+        run: echo 'N8N_WEBHOOK_URL is not configured; n8n notification skipped.' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Send notification to n8n
-        run: |
-          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "query": "Repository updated: ${{ steps.commit.outputs.message }}",
-              "email": "2203456300001@paruluniversity.ac.in",
-              "type": "repo_update",
-              "commit_sha": "${{ steps.commit.outputs.sha }}",
-              "author": "${{ steps.commit.outputs.author }}",
-              "repository": "${{ github.repository }}",
-              "branch": "${{ github.ref_name }}"
-            }'
+        if: ${{ env.N8N_WEBHOOK_URL != '' }}
         env:
-          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
-          
-      - name: Health check webhook
-        if: always()
+          COMMIT_SHA: ${{ steps.commit.outputs.sha }}
+          COMMIT_MESSAGE: ${{ steps.commit.outputs.message }}
+          COMMIT_AUTHOR: ${{ steps.commit.outputs.author }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
         run: |
-          echo "Testing webhook connectivity..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{"type":"health","query":"ping","email":"2203456300001@paruluniversity.ac.in"}')
-          if [ "$response" == "200" ]; then
-            echo "✅ Webhook is healthy"
-          else
-            echo "❌ Webhook returned HTTP $response"
-            exit 1
-          fi
+          set -euo pipefail
+          payload=$(jq -n \
+            --arg query "Repository updated: ${COMMIT_MESSAGE}" \
+            --arg email "2203456300001@paruluniversity.ac.in" \
+            --arg type "repo_update" \
+            --arg commit_sha "$COMMIT_SHA" \
+            --arg author "$COMMIT_AUTHOR" \
+            --arg repository "$REPOSITORY" \
+            --arg branch "$BRANCH" \
+            '{query:$query,email:$email,type:$type,commit_sha:$commit_sha,author:$author,repository:$repository,branch:$branch}')
+          curl --fail-with-body --silent --show-error --location \
+            --retry 3 --retry-delay 2 --connect-timeout 10 --max-time 30 \
+            -X POST "$N8N_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            --data "$payload"
+
+      - name: Health check webhook
+        if: ${{ env.N8N_WEBHOOK_URL != '' }}
+        run: |
+          set -euo pipefail
+          response=$(curl --silent --show-error --location \
+            --retry 3 --retry-delay 2 --connect-timeout 10 --max-time 30 \
+            --output /tmp/n8n-health-response --write-out '%{http_code}' \
+            -X POST "$N8N_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            --data '{"type":"health","query":"ping","email":"2203456300001@paruluniversity.ac.in"}')
+          case "$response" in
+            2[0-9][0-9]) echo "n8n webhook healthy (HTTP $response)" ;;
+            *) echo "n8n webhook returned HTTP $response"; cat /tmp/n8n-health-response; exit 1 ;;
+          esac
