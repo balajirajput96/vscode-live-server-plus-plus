@@ -12,6 +12,7 @@ async function runTests() {
     const webhook = new CareerAutomationWebhook();
     let testsPass = 0;
     let testsTotal = 0;
+    let testsSkipped = 0;
 
     // Test 1: Configuration check
     testsTotal++;
@@ -35,19 +36,24 @@ async function runTests() {
         console.error('❌ Template generation failed:', error.message);
     }
 
-    // Test 3: Webhook connectivity (if URL configured)
+    // Test 3: Webhook connectivity (only when an integration URL is configured)
     testsTotal++;
     console.log('Test 3: Webhook connectivity');
+    if (!process.env.N8N_WEBHOOK_URL) {
+        testsSkipped++;
+        console.log('⏭️ Webhook connectivity skipped (N8N_WEBHOOK_URL not configured)\n');
+    } else {
     try {
         const success = await webhook.testWebhook();
         if (success) {
             testsPass++;
             console.log('✅ Webhook connectivity passed\n');
         } else {
-            console.log('⚠️ Webhook not configured or not accessible\n');
+            console.error('❌ Webhook connectivity failed\n');
         }
     } catch (error) {
-        console.log('⚠️ Webhook test skipped (URL not configured)\n');
+        console.error('❌ Webhook connectivity failed:', error.message);
+    }
     }
 
     // Test 4: Portfolio data formatting
@@ -73,10 +79,11 @@ async function runTests() {
     console.log('📊 Test Results Summary:');
     console.log('========================');
     console.log(`Tests passed: ${testsPass}/${testsTotal}`);
+    console.log(`Tests skipped: ${testsSkipped}`);
     console.log(`Success rate: ${Math.round((testsPass / testsTotal) * 100)}%`);
     
-    if (testsPass === testsTotal) {
-        console.log('🎉 All tests passed! System is ready for use.');
+    if (testsPass + testsSkipped === testsTotal) {
+        console.log('🎉 All configured tests passed! System is ready for use.');
         process.exit(0);
     } else {
         console.log('⚠️ Some tests failed. Please check configuration.');
