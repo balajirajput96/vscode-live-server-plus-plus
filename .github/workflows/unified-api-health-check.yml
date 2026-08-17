@@ -23,10 +23,17 @@ on:
         required: false
         default: 'Automated health check from GitHub Actions'
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
   health-check:
     runs-on: ubuntu-latest
     name: API Health Check & Automation
+    outputs:
+      status: ${{ steps.health_check.outputs.status }}
+      error: ${{ steps.health_check.outputs.error }}
     
     steps:
       - name: Checkout repository
@@ -81,9 +88,7 @@ jobs:
               console.log('✅ API Response Status:', response.status);
               console.log('✅ API Response Data:', JSON.stringify(response.data, null, 2));
               
-              // Set output for next steps
-              console.log('::set-output name=status::success');
-              console.log('::set-output name=response::' + JSON.stringify(response.data));
+              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'status=success\n');
               
             } catch (error) {
               console.error('❌ API Test Failed:', error.message);
@@ -93,8 +98,7 @@ jobs:
                 console.error('Response Data:', error.response.data);
               }
               
-              console.log('::set-output name=status::failed');
-              console.log('::set-output name=error::' + error.message);
+              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `status=failed\nerror=${error.message}\n`);
               
               // Don't fail the workflow for API errors
               process.exit(0);
@@ -209,18 +213,19 @@ jobs:
   n8n-monitor:
     runs-on: ubuntu-latest
     name: n8n Workflow Monitor
-    if: secrets.N8N_UNIFIED_API_URL != ''
+    env:
+      N8N_UNIFIED_API_URL: ${{ secrets.N8N_UNIFIED_API_URL }}
     
     steps:
       - name: Monitor n8n Workflow Health
+        if: env.N8N_UNIFIED_API_URL != ''
         run: |
           echo "🔍 Monitoring n8n workflow health..."
           
           # Extract base URL from webhook URL
-          N8N_BASE_URL=$(echo "${{ secrets.N8N_UNIFIED_API_URL }}" | sed 's|/webhook/.*||')
+          N8N_BASE_URL=$(echo "$N8N_UNIFIED_API_URL" | sed 's|/webhook/.*||')
           
           echo "n8n Base URL: $N8N_BASE_URL"
-          echo "Full Webhook URL: ${{ secrets.N8N_UNIFIED_API_URL }}"
           
           # Test if n8n is accessible (if authentication allows)
           curl -s -f --connect-timeout 10 "$N8N_BASE_URL" > /dev/null || {
@@ -228,6 +233,9 @@ jobs:
           }
           
           echo "✅ n8n monitoring completed"
+      - name: Report skipped n8n monitor
+        if: env.N8N_UNIFIED_API_URL == ''
+        run: echo "n8n monitoring skipped because N8N_UNIFIED_API_URL is not configured."
 
   # Job to update system documentation
   update-docs:
