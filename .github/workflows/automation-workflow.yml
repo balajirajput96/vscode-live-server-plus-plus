@@ -127,3 +127,4 @@ jobs:
           echo "Automation workflow completed successfully!"
         else
           echo "Automation workflow failed"
+        fi
