@@ -256,9 +256,9 @@ class PerformanceTester {
     // Performance recommendations
     console.log('💡 Performance Recommendations:');
     
-    const httpResults = this.results.httpRequests.filter(r => !r.error && !r.timeout);
-    if (httpResults.length > 0) {
-      const avgResponseTime = httpResults.reduce((sum, r) => sum + r.responseTime, 0) / httpResults.length;
+    const recommendationHttpResults = this.results.httpRequests.filter(r => !r.error && !r.timeout);
+    if (recommendationHttpResults.length > 0) {
+      const avgResponseTime = recommendationHttpResults.reduce((sum, r) => sum + r.responseTime, 0) / recommendationHttpResults.length;
       
       if (avgResponseTime > 100) {
         console.log('  ⚠️  HTTP response times are high. Consider:');
@@ -270,9 +270,9 @@ class PerformanceTester {
       }
     }
     
-    const wsResults = this.results.websocketConnections.filter(r => !r.error && !r.timeout);
-    if (wsResults.length > 0) {
-      const successRate = (wsResults.length / this.results.websocketConnections.length) * 100;
+    const recommendationWsResults = this.results.websocketConnections.filter(r => !r.error && !r.timeout);
+    if (recommendationWsResults.length > 0) {
+      const successRate = (recommendationWsResults.length / this.results.websocketConnections.length) * 100;
       
       if (successRate < 90) {
         console.log('  ⚠️  WebSocket connection success rate is low. Consider:');
