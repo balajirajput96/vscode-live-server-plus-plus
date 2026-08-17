@@ -31,6 +31,8 @@ jobs:
   health-check:
     runs-on: ubuntu-latest
     name: API Health Check & Automation
+    env:
+      N8N_UNIFIED_API_URL: ${{ secrets.N8N_UNIFIED_API_URL }}
     outputs:
       status: ${{ steps.health_check.outputs.status }}
       error: ${{ steps.health_check.outputs.error }}
@@ -110,12 +112,11 @@ jobs:
           
           node health_check.js
         env:
-          N8N_UNIFIED_API_URL: ${{ secrets.N8N_UNIFIED_API_URL }}
           API_TYPE: ${{ github.event.inputs.api_type || 'log' }}
           TEST_MESSAGE: ${{ github.event.inputs.test_message || 'Automated health check from GitHub Actions' }}
           
       - name: Test AI Endpoint (if API is available)
-        if: steps.health_check.outputs.status == 'success' && secrets.N8N_UNIFIED_API_URL != ''
+        if: steps.health_check.outputs.status == 'success' && env.N8N_UNIFIED_API_URL != ''
         run: |
           cat > test_ai.js << 'EOF'
           const axios = require('axios');
@@ -145,8 +146,6 @@ jobs:
           EOF
           
           node test_ai.js
-        env:
-          N8N_UNIFIED_API_URL: ${{ secrets.N8N_UNIFIED_API_URL }}
           
       - name: Update Repository Status
         if: always()
