@@ -243,11 +243,7 @@ PORTFOLIO_WEBHOOK_URL=https://your-portfolio-webhook.com
 
         configs.forEach(config => {
             const status = config.value ? '✅ Configured' : (config.required ? '❌ Missing (Required)' : '⚠️ Not configured');
-            const maskedValue = config.value ? config.value.substring(0, 20) + '...' : 'Not set';
             console.log(`${config.name}: ${status}`);
-            if (config.value) {
-                console.log(`  Value: ${maskedValue}`);
-            }
         });
 
         console.log('\n📝 Next Steps:');
