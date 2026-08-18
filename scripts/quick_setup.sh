@@ -30,11 +30,11 @@ echo ""
 if [ ! -f ".env" ]; then
     echo "🔑 Generating encryption key..."
     ENCRYPTION_KEY=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
-    
+
     # Create .env file from template
     cp .env.n8n.example .env
     sed -i "s/CHANGE_ME_TO_STRONG_32_CHAR_KEY/$ENCRYPTION_KEY/g" .env
-    
+
     echo "✅ Environment file created with secure encryption key"
     echo "⚠️  IMPORTANT: Backup your encryption key: $ENCRYPTION_KEY"
 else
@@ -71,7 +71,7 @@ for i in {1..12}; do
         echo "⏳ Waiting for n8n... (attempt $i/12)"
         sleep 10
     fi
-    
+
     if [ $i -eq 12 ]; then
         echo "❌ n8n failed to start within 2 minutes"
         echo "Check logs: docker-compose -f docker-compose.n8n.yml logs n8n"

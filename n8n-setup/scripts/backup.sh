@@ -38,10 +38,10 @@ create_backup_dir() {
 # Backup n8n data
 backup_n8n_data() {
     print_status "n8n data backup कर रहे हैं..."
-    
+
     # Stop n8n temporarily for consistent backup
     docker-compose pause n8n
-    
+
     # Backup n8n data directory
     if [ -d "/home/node/.n8n" ]; then
         tar -czf "${BACKUP_DIR}/${BACKUP_NAME}/n8n_data.tar.gz" \
@@ -54,7 +54,7 @@ backup_n8n_data() {
     else
         print_warning "n8n data directory not found"
     fi
-    
+
     # Resume n8n
     docker-compose unpause n8n
 }
@@ -62,12 +62,12 @@ backup_n8n_data() {
 # Backup database
 backup_database() {
     print_status "Database backup कर रहे हैं..."
-    
+
     # Get database credentials from environment
     DB_NAME=${DB_POSTGRESDB_DATABASE:-n8n}
     DB_USER=${DB_POSTGRESDB_USER:-n8n_user}
     DB_PASSWORD=${DB_POSTGRESDB_PASSWORD:-secure_db_password}
-    
+
     # Backup PostgreSQL if it's running
     if docker-compose ps postgres | grep -q "Up"; then
         docker exec n8n-postgres-prod pg_dump \
@@ -86,7 +86,7 @@ backup_database() {
 # Backup workflows
 backup_workflows() {
     print_status "Workflows backup कर रहे हैं..."
-    
+
     # Export workflows via n8n API
     if curl -f http://localhost:5678/healthz > /dev/null 2>&1; then
         curl -s -X GET \
@@ -103,26 +103,26 @@ backup_workflows() {
 # Backup configurations
 backup_configurations() {
     print_status "Configurations backup कर रहे हैं..."
-    
+
     # Backup environment file (without sensitive data)
     if [ -f ".env" ]; then
         grep -v -E "(PASSWORD|SECRET|KEY|TOKEN)" .env > "${BACKUP_DIR}/${BACKUP_NAME}/env_template.txt"
         print_status "✅ Environment template backed up"
     fi
-    
+
     # Backup docker-compose files
     cp docker-compose*.yml "${BACKUP_DIR}/${BACKUP_NAME}/" 2>/dev/null || true
-    
+
     # Backup configuration files
     cp -r configs/ "${BACKUP_DIR}/${BACKUP_NAME}/" 2>/dev/null || true
-    
+
     print_status "✅ Configurations backed up"
 }
 
 # Backup AI models
 backup_ai_models() {
     print_status "AI models backup कर रहे हैं..."
-    
+
     # Backup Ollama models
     if docker-compose ps ollama | grep -q "Up"; then
         docker exec ollama-ai-prod ollama list > "${BACKUP_DIR}/${BACKUP_NAME}/ai_models_list.txt"
@@ -135,7 +135,7 @@ backup_ai_models() {
 # Create backup metadata
 create_metadata() {
     print_status "Backup metadata create कर रहे हैं..."
-    
+
     cat > "${BACKUP_DIR}/${BACKUP_NAME}/backup_info.txt" << EOF
 n8n Backup Information
 =====================
@@ -173,11 +173,11 @@ EOF
 # Compress backup
 compress_backup() {
     print_status "Backup compress कर रहे हैं..."
-    
+
     cd "${BACKUP_DIR}"
     tar -czf "${BACKUP_NAME}.tar.gz" "${BACKUP_NAME}/"
     rm -rf "${BACKUP_NAME}/"
-    
+
     # Calculate backup size
     backup_size=$(du -h "${BACKUP_NAME}.tar.gz" | cut -f1)
     print_status "✅ Backup compressed: ${backup_size}"
@@ -186,10 +186,10 @@ compress_backup() {
 # Clean old backups
 cleanup_old_backups() {
     print_status "Old backups cleanup कर रहे हैं..."
-    
+
     # Delete backups older than retention period
     find "${BACKUP_DIR}" -name "n8n_backup_*.tar.gz" -mtime +${RETENTION_DAYS} -delete
-    
+
     # Count remaining backups
     backup_count=$(find "${BACKUP_DIR}" -name "n8n_backup_*.tar.gz" | wc -l)
     print_status "✅ Cleanup complete. ${backup_count} backups retained"
@@ -198,12 +198,12 @@ cleanup_old_backups() {
 # Send backup notification
 send_notification() {
     print_status "Backup notification भेज रहे हैं..."
-    
+
     # Get backup file size
     backup_file="${BACKUP_DIR}/${BACKUP_NAME}.tar.gz"
     if [ -f "$backup_file" ]; then
         backup_size=$(du -h "$backup_file" | cut -f1)
-        
+
         # Send email notification (if configured)
         if command -v mail &> /dev/null; then
             echo "n8n Backup completed successfully!
@@ -226,7 +226,7 @@ This is an automated message from your n8n backup system." | \
             mail -s "✅ n8n Backup Complete - $(date +%Y-%m-%d)" \
                  -r "22034563001@paruluniversity.ac.in" \
                  "balaji.web.design1@gmail.com"
-            
+
             print_status "✅ Email notification sent"
         else
             print_warning "Mail command not available, skipping email notification"
@@ -241,7 +241,7 @@ This is an automated message from your n8n backup system." | \
 perform_backup() {
     print_status "🔄 n8n Backup शुरू कर रहे हैं..."
     print_status "Backup name: ${BACKUP_NAME}"
-    
+
     create_backup_dir
     backup_n8n_data
     backup_database
@@ -252,7 +252,7 @@ perform_backup() {
     compress_backup
     cleanup_old_backups
     send_notification
-    
+
     print_status "🎉 Backup completed successfully!"
     print_status "Backup file: ${BACKUP_DIR}/${BACKUP_NAME}.tar.gz"
 }
@@ -260,45 +260,45 @@ perform_backup() {
 # Restore function
 perform_restore() {
     local restore_file="$1"
-    
+
     if [ -z "$restore_file" ]; then
         print_error "Please specify backup file to restore"
         echo "Usage: $0 restore <backup_file.tar.gz>"
         exit 1
     fi
-    
+
     if [ ! -f "$restore_file" ]; then
         print_error "Backup file not found: $restore_file"
         exit 1
     fi
-    
+
     print_status "🔄 Restore शुरू कर रहे हैं..."
     print_warning "यह existing data को replace कर देगा!"
-    
+
     read -p "Continue with restore? (y/N): " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         print_status "Restore cancelled"
         exit 0
     fi
-    
+
     # Stop services
     docker-compose down
-    
+
     # Extract backup
     restore_dir="/tmp/n8n_restore_$(date +%s)"
     mkdir -p "$restore_dir"
     tar -xzf "$restore_file" -C "$restore_dir"
-    
+
     # Find the backup directory inside
     backup_content_dir=$(find "$restore_dir" -type d -name "n8n_backup_*" | head -1)
-    
+
     if [ -z "$backup_content_dir" ]; then
         print_error "Invalid backup file format"
         rm -rf "$restore_dir"
         exit 1
     fi
-    
+
     # Restore n8n data
     if [ -f "$backup_content_dir/n8n_data.tar.gz" ]; then
         print_status "n8n data restore कर रहे हैं..."
@@ -306,29 +306,29 @@ perform_restore() {
         tar -xzf "$backup_content_dir/n8n_data.tar.gz" -C /home/node/.n8n/
         print_status "✅ n8n data restored"
     fi
-    
+
     # Restore configurations
     if [ -d "$backup_content_dir/configs" ]; then
         cp -r "$backup_content_dir/configs/"* configs/ 2>/dev/null || true
         print_status "✅ Configurations restored"
     fi
-    
+
     # Start services
     docker-compose up -d
-    
+
     # Wait for services to start
     sleep 30
-    
+
     # Restore database
     if [ -f "$backup_content_dir/database.sql" ]; then
         print_status "Database restore कर रहे हैं..."
         docker exec -i n8n-postgres-prod psql -U "${DB_USER}" -d "${DB_NAME}" < "$backup_content_dir/database.sql"
         print_status "✅ Database restored"
     fi
-    
+
     # Cleanup
     rm -rf "$restore_dir"
-    
+
     print_status "🎉 Restore completed successfully!"
     print_status "Please verify all services are working properly"
 }
@@ -336,7 +336,7 @@ perform_restore() {
 # List available backups
 list_backups() {
     print_status "Available backups:"
-    
+
     if [ -d "$BACKUP_DIR" ]; then
         ls -lh "$BACKUP_DIR"/n8n_backup_*.tar.gz 2>/dev/null | while read line; do
             echo "  $line"

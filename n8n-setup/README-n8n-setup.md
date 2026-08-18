@@ -32,7 +32,7 @@ Edit `.env` file with your details:
 N8N_EMAIL=22034563001@paruluniversity.ac.in
 N8N_PASSWORD=your_secure_password
 
-# Your Personal Gmail for notifications  
+# Your Personal Gmail for notifications
 NOTIFICATION_EMAIL=balaji.web.design1@gmail.com
 
 # Domain for n8n access
@@ -191,7 +191,7 @@ export N8N_PARALLEL_EXECUTION=true
       "type": "n8n-nodes-base.githubTrigger"
     },
     {
-      "name": "AI Content Generator", 
+      "name": "AI Content Generator",
       "type": "n8n-nodes-base.httpRequest"
     },
     {

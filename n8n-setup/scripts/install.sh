@@ -46,37 +46,37 @@ check_root() {
 # Check system requirements
 check_requirements() {
     print_status "System requirements जांच रहे हैं..."
-    
+
     # Check if Docker is installed
     if ! command -v docker &> /dev/null; then
         print_error "Docker installed नहीं है!"
         print_status "Docker install कर रहे हैं..."
-        
+
         # Install Docker
         curl -fsSL https://get.docker.com -o get-docker.sh
         sudo sh get-docker.sh
         sudo usermod -aG docker $USER
         rm get-docker.sh
-        
+
         print_status "Docker installed successfully!"
         print_warning "Please logout and login again for Docker permissions to take effect."
     else
         print_status "✅ Docker already installed"
     fi
-    
+
     # Check if Docker Compose is installed
     if ! command -v docker-compose &> /dev/null; then
         print_error "Docker Compose installed नहीं है!"
         print_status "Docker Compose install कर रहे हैं..."
-        
+
         sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
-        
+
         print_status "Docker Compose installed successfully!"
     else
         print_status "✅ Docker Compose already installed"
     fi
-    
+
     # Check available disk space (minimum 10GB)
     available_space=$(df / | awk 'NR==2{printf "%.0f", $4/1024/1024}')
     if [ "$available_space" -lt 10 ]; then
@@ -86,7 +86,7 @@ check_requirements() {
     else
         print_status "✅ Sufficient disk space available: ${available_space}GB"
     fi
-    
+
     # Check available RAM (minimum 4GB)
     available_ram=$(free -g | awk 'NR==2{printf "%.0f", $7}')
     if [ "$available_ram" -lt 2 ]; then
@@ -99,24 +99,24 @@ check_requirements() {
 # Setup environment file
 setup_environment() {
     print_status "Environment configuration setup कर रहे हैं..."
-    
+
     if [ ! -f ".env" ]; then
         cp .env.example .env
         print_status "✅ .env file created from template"
-        
+
         # Generate encryption key
         encryption_key=$(openssl rand -base64 32)
-        
+
         # Update .env with generated values
         sed -i "s/your_32_character_encryption_key_here/$encryption_key/g" .env
         sed -i "s/change_me_secure_password/$(openssl rand -base64 12)/g" .env
-        
+
         print_status "✅ Encryption key और passwords generate किए गए"
         print_warning "Please edit .env file और अपनी details update करें:"
         print_warning "- Gmail credentials"
         print_warning "- API keys"
         print_warning "- Domain settings"
-        
+
         read -p "Press Enter to continue after updating .env file..."
     else
         print_status "✅ .env file already exists"
@@ -126,7 +126,7 @@ setup_environment() {
 # Create necessary directories
 create_directories() {
     print_status "Required directories create कर रहे हैं..."
-    
+
     mkdir -p logs
     mkdir -p backups
     mkdir -p ai-models
@@ -134,64 +134,64 @@ create_directories() {
     mkdir -p data/n8n
     mkdir -p data/postgres
     mkdir -p data/redis
-    
+
     # Set proper permissions
     chmod -R 755 logs backups ai-models uploads
-    
+
     print_status "✅ Directories created successfully"
 }
 
 # Pull Docker images
 pull_images() {
     print_status "Docker images download कर रहे हैं..."
-    
+
     print_status "n8n image pulling..."
     docker pull n8nio/n8n:latest
-    
+
     print_status "Ollama AI image pulling..."
     docker pull ollama/ollama:latest
-    
+
     print_status "PostgreSQL image pulling..."
     docker pull postgres:15-alpine
-    
+
     print_status "Redis image pulling..."
     docker pull redis:7-alpine
-    
+
     print_status "Caddy image pulling..."
     docker pull caddy:2.7-alpine
-    
+
     print_status "✅ All Docker images downloaded"
 }
 
 # Setup AI models
 setup_ai_models() {
     print_status "AI models setup कर रहे हैं..."
-    
+
     # Start Ollama temporarily to download models
     print_status "Ollama container starting..."
     docker run -d --name ollama-temp -p 11434:11434 ollama/ollama:latest
-    
+
     # Wait for Ollama to start
     sleep 10
-    
+
     print_status "Gemma 3B model download कर रहे हैं..."
     docker exec ollama-temp ollama pull gemma:3b
-    
+
     print_status "SHAKTI model download कर रहे हैं..."
     # Note: SHAKTI model might need to be configured differently
     docker exec ollama-temp ollama pull llama2:7b  # Placeholder for SHAKTI
-    
+
     # Stop and remove temporary container
     docker stop ollama-temp
     docker rm ollama-temp
-    
+
     print_status "✅ AI models downloaded successfully"
 }
 
 # Install additional tools
 install_tools() {
     print_status "Additional tools install कर रहे हैं..."
-    
+
     # Install jq for JSON processing
     if ! command -v jq &> /dev/null; then
         sudo apt-get update
@@ -200,7 +200,7 @@ install_tools() {
     else
         print_status "✅ Tools already installed"
     fi
-    
+
     # Install Node.js if not present
     if ! command -v node &> /dev/null; then
         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -214,20 +214,20 @@ install_tools() {
 # Start services
 start_services() {
     print_status "Services start कर रहे हैं..."
-    
+
     # Check if .env exists
     if [ ! -f ".env" ]; then
         print_error ".env file not found! Please run setup first."
         exit 1
     fi
-    
+
     # Start in development mode by default
     print_status "Starting n8n in local development mode..."
     docker-compose --env-file .env -f docker-compose.local.yml up -d
-    
+
     print_status "Services starting... Please wait 30 seconds..."
     sleep 30
-    
+
     # Check if services are running
     if docker-compose ps | grep -q "Up"; then
         print_status "✅ Services started successfully!"
@@ -247,26 +247,26 @@ start_services() {
 # Import workflows
 import_workflows() {
     print_status "Workflows import कर रहे हैं..."
-    
+
     # Wait for n8n to be fully ready
     sleep 60
-    
+
     # Check if n8n is responding
     if curl -f http://localhost:5678/healthz > /dev/null 2>&1; then
         print_status "✅ n8n is ready for workflow import"
-        
+
         # Import each workflow
         for workflow_file in workflows/*.json; do
             if [ -f "$workflow_file" ]; then
                 workflow_name=$(basename "$workflow_file" .json)
                 print_status "Importing $workflow_name workflow..."
-                
+
                 # Note: Actual import would require n8n API authentication
                 # This is a placeholder for the import process
                 print_status "✅ $workflow_name ready for manual import"
             fi
         done
-        
+
         print_status "✅ All workflows ready!"
         print_status "Please manually import workflows from the workflows/ directory"
     else
@@ -299,7 +299,7 @@ setup_complete() {
 # Main execution
 main() {
     print_header
-    
+
     # Check command line arguments
     case "${1:-install}" in
         "install")
@@ -350,7 +350,7 @@ main() {
             echo "Commands:"
             echo "  install  - Complete installation और setup"
             echo "  start    - Services start करें"
-            echo "  stop     - Services stop करें" 
+            echo "  stop     - Services stop करें"
             echo "  restart  - Services restart करें"
             echo "  logs     - Logs देखें"
             echo "  status   - Services status check करें"

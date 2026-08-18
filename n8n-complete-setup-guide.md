@@ -8,7 +8,7 @@
 - **n8n v1.108.1** Docker deployment with encryption
 - **Gluetun VPN** for geo-switching (देश बदलना)
 - **Ollama** for offline Local AI (Gemma/SHAKTI)
-- **Gmail/Docs OAuth** integration 
+- **Gmail/Docs OAuth** integration
 - **Error workflows** with email alerts
 - **Queue mode** for Pro-like performance
 
@@ -74,20 +74,20 @@ services:
       - DB_POSTGRESDB_DATABASE=n8n
       - DB_POSTGRESDB_USER=n8n
       - DB_POSTGRESDB_PASSWORD=n8n_secure_password
-      
+
       # Encryption (CRITICAL - Change this!)
       - N8N_ENCRYPTION_KEY=CHANGE_ME_TO_STRONG_32_CHAR_KEY
-      
+
       # Queue Mode for Pro Performance
       - N8N_EXECUTIONS_MODE=queue
       - N8N_QUEUE_BULL_REDIS_HOST=redis
-      
+
       # Basic Config
       - N8N_PROTOCOL=http
       - N8N_HOST=localhost
       - N8N_PORT=5678
       - N8N_GENERIC_TIMEZONE=Asia/Kolkata
-      
+
       # Performance
       - EXECUTIONS_DATA_PRUNE=true
       - EXECUTIONS_DATA_MAX_AGE=336  # 2 weeks
@@ -114,10 +114,10 @@ services:
       - DB_POSTGRESDB_DATABASE=n8n
       - DB_POSTGRESDB_USER=n8n
       - DB_POSTGRESDB_PASSWORD=n8n_secure_password
-      
+
       # Same encryption key
       - N8N_ENCRYPTION_KEY=CHANGE_ME_TO_STRONG_32_CHAR_KEY
-      
+
       # Worker specific
       - N8N_EXECUTIONS_MODE=queue
       - N8N_QUEUE_BULL_REDIS_HOST=redis

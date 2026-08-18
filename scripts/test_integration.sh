@@ -45,7 +45,7 @@ echo ""
 echo "🔒 Test 2: Checking script permissions..."
 scripts=(
     "scripts/quick_setup.sh"
-    "scripts/health_check.sh" 
+    "scripts/health_check.sh"
     "scripts/backup_restore.sh"
 )
 
@@ -166,7 +166,7 @@ services_to_check=("n8n" "ollama" "gluetun")
 for i in "${!ports_to_check[@]}"; do
     port="${ports_to_check[$i]}"
     service="${services_to_check[$i]}"
-    
+
     if grep -q "\"$port:$port\"" docker-compose.n8n.yml; then
         echo "✅ Port $port configured for $service"
     else

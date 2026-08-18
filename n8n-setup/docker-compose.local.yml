@@ -12,42 +12,42 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
-      
+
       # Domain & Security
       - N8N_HOST=${DOMAIN}
       - WEBHOOK_URL=${WEBHOOK_URL}
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
       - N8N_TRUST_PROXY=${N8N_TRUST_PROXY}
-      
+
       # Performance Settings
       - N8N_HIGH_PERFORMANCE=${N8N_HIGH_PERFORMANCE}
       - N8N_CACHE_ENABLED=${N8N_CACHE_ENABLED}
       - N8N_PARALLEL_EXECUTION=${N8N_PARALLEL_EXECUTION}
       - N8N_EXECUTION_TIMEOUT=${N8N_EXECUTION_TIMEOUT}
       - N8N_MAX_EXECUTION_TIMEOUT=${N8N_MAX_EXECUTION_TIMEOUT}
-      
+
       # Database
       - DB_TYPE=${DB_TYPE}
       - DB_SQLITE_DATABASE=${DB_SQLITE_DATABASE}
-      
+
       # Logging
       - N8N_LOG_LEVEL=${N8N_LOG_LEVEL}
       - N8N_LOG_FILE_ENABLED=${N8N_LOG_FILE_ENABLED}
       - N8N_LOG_FILE_LOCATION=${N8N_LOG_FILE_LOCATION}
-      
+
       # Metrics
       - N8N_METRICS=${N8N_METRICS}
       - N8N_METRICS_PREFIX=${N8N_METRICS_PREFIX}
-      
+
       # Features
       - N8N_TEMPLATES_ENABLED=${N8N_TEMPLATES_ENABLED}
       - N8N_ONBOARDING_FLOW_DISABLED=${N8N_ONBOARDING_FLOW_DISABLED}
       - N8N_PERSONALIZATION_ENABLED=${N8N_PERSONALIZATION_ENABLED}
-      
+
       # Timezone
       - TZ=${TZ}
-      
+
       # Custom Environment Variables for Integration
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
@@ -56,32 +56,32 @@ services:
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
       - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL}
-      
+
     volumes:
       # Main n8n data directory
       - n8n_data:/home/node/.n8n
-      
+
       # Workflow templates
       - ./workflows:/home/node/.n8n/workflows
-      
+
       # Custom nodes and scripts
       - ./scripts:/home/node/.n8n/scripts
-      
+
       # AI models for local processing
       - ./ai-models:/home/node/.n8n/ai-models
-      
+
       # Configuration files
       - ./configs:/home/node/.n8n/configs
-      
+
       # Logs directory
       - ./logs:/home/node/.n8n/logs
-      
+
       # Backups directory
       - ./backups:/home/node/.n8n/backups
-      
+
     networks:
       - n8n-network
-    
+
     # Resource limits for optimal performance
     deploy:
       resources:
@@ -91,7 +91,7 @@ services:
         reservations:
           cpus: '1.0'
           memory: 2G
-    
+
     # Health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]

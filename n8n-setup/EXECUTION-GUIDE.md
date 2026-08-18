@@ -506,6 +506,6 @@ docker-compose down -v
 
 **📧 Confirmation email भेजा जाएगा जब सभी workflows active हो जाएंगे।**
 
-*Last Updated: January 2024*  
-*Version: 1.0*  
+*Last Updated: January 2024*
+*Version: 1.0*
 *Status: Production Ready*

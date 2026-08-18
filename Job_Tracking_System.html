@@ -410,19 +410,19 @@
             .main-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .stats-overview {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .search-filter {
                 flex-direction: column;
             }
-            
+
             .applications-table {
                 font-size: 0.9rem;
             }
-            
+
             .applications-table th,
             .applications-table td {
                 padding: 8px;
@@ -483,7 +483,7 @@
                     <i class="fas fa-building"></i>
                     <h3>Top Pharmaceutical Companies in India</h3>
                 </div>
-                
+
                 <div class="search-filter">
                     <input type="text" id="companySearch" placeholder="Search companies..." onkeyup="filterCompanies()">
                     <select id="locationFilter" onchange="filterCompanies()">
@@ -502,7 +502,7 @@
                         <option value="Small">Small (<1,000)</option>
                     </select>
                 </div>
-                
+
                 <div class="companies-grid" id="companiesGrid">
                     <!-- Companies will be populated by JavaScript -->
                 </div>
@@ -517,22 +517,22 @@
                         <i class="fas fa-plus"></i>
                         <h3>Add New Application</h3>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Company Name:</label>
                         <input type="text" id="appCompany" placeholder="e.g., Sun Pharma">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Position Title:</label>
                         <input type="text" id="appPosition" placeholder="e.g., Bioinformatics Analyst">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Application Date:</label>
                         <input type="date" id="appDate">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Status:</label>
                         <select id="appStatus">
@@ -542,35 +542,35 @@
                             <option value="Offer">Job Offer</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Notes:</label>
                         <textarea id="appNotes" rows="3" placeholder="Additional notes about the application"></textarea>
                     </div>
-                    
+
                     <button class="btn" onclick="addApplication()">
                         <i class="fas fa-save"></i> Add Application
                     </button>
                 </div>
-                
+
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-chart-pie"></i>
                         <h3>Application Status Overview</h3>
                     </div>
-                    
+
                     <div style="text-align: center; margin: 20px 0;">
                         <canvas id="statusChart" width="300" height="300"></canvas>
                     </div>
                 </div>
             </div>
-            
+
             <div class="card full-width-card">
                 <div class="card-header">
                     <i class="fas fa-list"></i>
                     <h3>My Job Applications</h3>
                 </div>
-                
+
                 <table class="applications-table">
                     <thead>
                         <tr>
@@ -596,7 +596,7 @@
                     <i class="fas fa-brain"></i>
                     <h3>Interview Preparation Hub</h3>
                 </div>
-                
+
                 <div class="interview-prep">
                     <h4>🔬 Technical Questions - Bioinformatics</h4>
                     <div class="question-category">
@@ -609,7 +609,7 @@
                             <li>How do you validate statistical results in biological studies?</li>
                         </ul>
                     </div>
-                    
+
                     <div class="question-category">
                         <h5>Biology & Domain Knowledge</h5>
                         <ul class="question-list">
@@ -621,7 +621,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="interview-prep">
                     <h4>💼 Behavioral Questions</h4>
                     <div class="question-category">
@@ -635,7 +635,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="interview-prep">
                     <h4>🏢 Industry-Specific Questions</h4>
                     <div class="question-category">
@@ -649,7 +649,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="interview-prep">
                     <h4>❓ Questions to Ask the Interviewer</h4>
                     <div class="question-category">
@@ -676,7 +676,7 @@
                     </div>
                     <canvas id="trendsChart" width="400" height="200"></canvas>
                 </div>
-                
+
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-target"></i>
@@ -690,7 +690,7 @@
                             </div>
                             <small>65% of applications received response</small>
                         </div>
-                        
+
                         <div style="margin-bottom: 20px;">
                             <label>Interview Conversion</label>
                             <div style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden;">
@@ -698,7 +698,7 @@
                             </div>
                             <small>40% of responses led to interviews</small>
                         </div>
-                        
+
                         <div>
                             <label>Offer Rate</label>
                             <div style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden;">
@@ -709,24 +709,24 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card full-width-card">
                 <div class="card-header">
                     <i class="fas fa-lightbulb"></i>
                     <h3>Insights & Recommendations</h3>
                 </div>
-                
+
                 <div style="padding: 20px;">
                     <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                         <h5 style="color: #0066cc; margin-bottom: 10px;">💡 Top Performing Applications</h5>
                         <p>Applications to large pharma companies (Sun Pharma, Zydus) have 40% higher response rates. Focus on these targets.</p>
                     </div>
-                    
+
                     <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                         <h5 style="color: #f57c00; margin-bottom: 10px;">⚠️ Areas for Improvement</h5>
                         <p>Applications for "Data Scientist" roles have lower success rates. Consider targeting "Bioinformatics Analyst" positions instead.</p>
                     </div>
-                    
+
                     <div style="background: #e8f5e8; padding: 15px; border-radius: 8px;">
                         <h5 style="color: #388e3c; margin-bottom: 10px;">✅ Success Patterns</h5>
                         <p>Applications submitted on Tuesday-Thursday receive 30% more responses. Avoid Monday and Friday applications.</p>
@@ -851,7 +851,7 @@
             renderCompanies();
             renderApplications();
             updateStats();
-            
+
             // Set today's date as default
             document.getElementById('appDate').valueAsDate = new Date();
         });
@@ -860,7 +860,7 @@
             // Remove active class from all tabs and contents
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+
             // Add active class to clicked tab and corresponding content
             event.target.classList.add('active');
             document.getElementById(tabName).classList.add('active');
@@ -869,7 +869,7 @@
         function renderCompanies() {
             const grid = document.getElementById('companiesGrid');
             grid.innerHTML = '';
-            
+
             companies.forEach(company => {
                 const card = document.createElement('div');
                 card.className = 'company-card';
@@ -893,19 +893,19 @@
             const searchTerm = document.getElementById('companySearch').value.toLowerCase();
             const locationFilter = document.getElementById('locationFilter').value;
             const sizeFilter = document.getElementById('sizeFilter').value;
-            
+
             const filteredCompanies = companies.filter(company => {
-                const matchesSearch = company.name.toLowerCase().includes(searchTerm) || 
+                const matchesSearch = company.name.toLowerCase().includes(searchTerm) ||
                                     company.roles.toLowerCase().includes(searchTerm);
                 const matchesLocation = !locationFilter || company.location === locationFilter;
                 const matchesSize = !sizeFilter || company.size === sizeFilter;
-                
+
                 return matchesSearch && matchesLocation && matchesSize;
             });
-            
+
             const grid = document.getElementById('companiesGrid');
             grid.innerHTML = '';
-            
+
             filteredCompanies.forEach(company => {
                 const card = document.createElement('div');
                 card.className = 'company-card';
@@ -935,12 +935,12 @@
             const date = document.getElementById('appDate').value;
             const status = document.getElementById('appStatus').value;
             const notes = document.getElementById('appNotes').value;
-            
+
             if (!company || !position || !date) {
                 alert('कृपया सभी required fields भरें');
                 return;
             }
-            
+
             const newApplication = {
                 company,
                 position,
@@ -948,31 +948,31 @@
                 status,
                 notes
             };
-            
+
             applications.push(newApplication);
-            
+
             // Clear form
             document.getElementById('appCompany').value = '';
             document.getElementById('appPosition').value = '';
             document.getElementById('appDate').valueAsDate = new Date();
             document.getElementById('appStatus').value = 'Applied';
             document.getElementById('appNotes').value = '';
-            
+
             renderApplications();
             updateStats();
-            
+
             alert('Application added successfully!');
         }
 
         function renderApplications() {
             const tbody = document.getElementById('applicationsTable');
             tbody.innerHTML = '';
-            
+
             applications.forEach((app, index) => {
                 const row = document.createElement('tr');
                 const followUpDate = new Date(app.date);
                 followUpDate.setDate(followUpDate.getDate() + 7);
-                
+
                 row.innerHTML = `
                     <td>${app.company}</td>
                     <td>${app.position}</td>
@@ -1001,7 +1001,7 @@
             const totalApps = applications.length;
             const interviews = applications.filter(app => app.status === 'Interview').length;
             const offers = applications.filter(app => app.status === 'Offer').length;
-            
+
             document.getElementById('totalApplications').textContent = totalApps;
             document.getElementById('totalInterviews').textContent = interviews;
             document.getElementById('totalOffers').textContent = offers;
