@@ -40,6 +40,7 @@ module.exports = (env, argv) => {
               loader: 'ts-loader',
               options: {
                 configFile: path.resolve(__dirname, 'tsconfig.json'),
+                transpileOnly: true,
                 compilerOptions: {
                   module: 'es2020', // Enable tree shaking
                   moduleResolution: 'node'
