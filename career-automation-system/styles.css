@@ -461,47 +461,47 @@ body {
     .container {
         padding: 10px;
     }
-    
+
     .header-content h1 {
         font-size: 2rem;
     }
-    
+
     .nav-tabs {
         flex-direction: column;
         gap: 5px;
     }
-    
+
     .nav-tab {
         justify-content: center;
     }
-    
+
     .main-content {
         padding: 20px;
     }
-    
+
     .form-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .button-group {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .btn {
         width: 100%;
         max-width: 300px;
         justify-content: center;
     }
-    
+
     .prompts-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .job-filters {
         grid-template-columns: 1fr;
     }
@@ -511,13 +511,13 @@ body {
     .analytics-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .progress-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
-    
+
     .progress-item span:first-child {
         min-width: auto;
     }

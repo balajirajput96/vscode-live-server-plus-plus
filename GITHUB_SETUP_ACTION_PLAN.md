@@ -162,7 +162,7 @@ curl -s http://localhost:5678/rest/executions | jq '.data[] | select(.finished =
 # 1. Dependabot alerts review करें
 gh api repos/:owner/:repo/dependabot/alerts
 
-# 2. Secret scanning results check करें  
+# 2. Secret scanning results check करें
 gh api repos/:owner/:repo/secret-scanning/alerts
 
 # 3. Pull requests में sensitive data leak check करें
@@ -239,7 +239,7 @@ echo "=== Monthly Workflow Report $(date) ===" > reports/monthly_$(date +%Y%m).t
 
 # Success rate analysis:
 curl -s http://localhost:5678/rest/executions | jq '
-  .data | group_by(.finished) | 
+  .data | group_by(.finished) |
   map({status: .[0].finished, count: length})
 ' >> reports/monthly_$(date +%Y%m).txt
 ```

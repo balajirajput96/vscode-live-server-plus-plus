@@ -46,34 +46,34 @@ const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         // Get form data
         const formData = new FormData(this);
         const name = this.querySelector('input[type="text"]').value;
         const email = this.querySelector('input[type="email"]').value;
         const subject = this.querySelector('input[placeholder="Subject"]').value;
         const message = this.querySelector('textarea').value;
-        
+
         // Basic validation
         if (!name || !email || !message) {
             alert('Please fill in all required fields.');
             return;
         }
-        
+
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
             return;
         }
-        
+
         // Simulate form submission (replace with actual form handling)
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-        
+
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
-        
+
         // Simulate API call
         setTimeout(() => {
             alert('Thank you for your message! I will get back to you soon.');
@@ -102,7 +102,7 @@ const observer = new IntersectionObserver((entries) => {
 // Observe elements for animation
 document.addEventListener('DOMContentLoaded', () => {
     const animateElements = document.querySelectorAll('.skill-category, .project-card, .blog-card');
-    
+
     animateElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function typeWriter(element, text, speed = 100) {
     let i = 0;
     element.innerHTML = '';
-    
+
     function type() {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
@@ -123,7 +123,7 @@ function typeWriter(element, text, speed = 100) {
             setTimeout(type, speed);
         }
     }
-    
+
     type();
 }
 
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Project filter functionality (if needed)
 function filterProjects(category) {
     const projects = document.querySelectorAll('.project-card');
-    
+
     projects.forEach(project => {
         if (category === 'all' || project.dataset.category === category) {
             project.style.display = 'block';
@@ -160,7 +160,7 @@ style.textContent = `
     body:not(.loaded) {
         overflow: hidden;
     }
-    
+
     body:not(.loaded)::before {
         content: '';
         position: fixed;
@@ -174,7 +174,7 @@ style.textContent = `
         align-items: center;
         justify-content: center;
     }
-    
+
     body:not(.loaded)::after {
         content: 'Loading...';
         position: fixed;
@@ -235,12 +235,12 @@ scrollToTopBtn.addEventListener('click', () => {
 // Add hover effects for project cards
 document.addEventListener('DOMContentLoaded', () => {
     const projectCards = document.querySelectorAll('.project-card');
-    
+
     projectCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
             card.style.transform = 'translateY(-10px) scale(1.02)';
         });
-        
+
         card.addEventListener('mouseleave', () => {
             card.style.transform = 'translateY(0) scale(1)';
         });
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add skill progress animation
 function animateSkillProgress() {
     const skillCategories = document.querySelectorAll('.skill-category');
-    
+
     skillCategories.forEach((category, index) => {
         setTimeout(() => {
             category.style.transform = 'translateY(0)';
@@ -270,7 +270,7 @@ if (skillsSection) {
             }
         });
     }, { threshold: 0.3 });
-    
+
     skillsObserver.observe(skillsSection);
 }
 
@@ -286,12 +286,12 @@ function createParticle() {
         pointer-events: none;
         animation: float-particle 6s linear infinite;
     `;
-    
+
     particle.style.left = Math.random() * 100 + '%';
     particle.style.animationDelay = Math.random() * 6 + 's';
-    
+
     document.querySelector('.hero').appendChild(particle);
-    
+
     setTimeout(() => {
         particle.remove();
     }, 6000);
@@ -319,12 +319,12 @@ setInterval(createParticle, 3000);
 // Add counter animation for stats
 function animateCounters() {
     const counters = document.querySelectorAll('.stat h4');
-    
+
     counters.forEach(counter => {
         const target = parseInt(counter.textContent);
         const increment = target / 100;
         let current = 0;
-        
+
         const updateCounter = () => {
             if (current < target) {
                 current += increment;
@@ -334,7 +334,7 @@ function animateCounters() {
                 counter.textContent = target + '+';
             }
         };
-        
+
         updateCounter();
     });
 }
@@ -350,6 +350,6 @@ if (aboutSection) {
             }
         });
     }, { threshold: 0.5 });
-    
+
     aboutObserver.observe(aboutSection);
 }

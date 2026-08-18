@@ -33,7 +33,7 @@ Based on the Hindi problem statement requesting VPN software recommendations and
 
 #### Complete Docker-based Setup:
 - **Basic HTTP Setup**: `docker-compose.basic.yml`
-- **Production HTTPS**: `docker-compose.reverse-proxy.yml`  
+- **Production HTTPS**: `docker-compose.reverse-proxy.yml`
 - **Reverse Proxy**: `Caddyfile` with automatic SSL
 - **Database**: PostgreSQL with health checks
 - **Configuration**: `.env.template` with all settings

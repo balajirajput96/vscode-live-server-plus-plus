@@ -62,9 +62,9 @@ rownames(expression_data) <- gene_names
 sample_metadata <- data.frame(
   sample_id = sample_names,
   condition = c(rep("Normal", 100), rep("Tumor", 1000)),
-  subtype = c(rep("Normal", 100), 
-              sample(c("Luminal_A", "Luminal_B", "HER2", "Basal"), 
-                     size = 1000, replace = TRUE, 
+  subtype = c(rep("Normal", 100),
+              sample(c("Luminal_A", "Luminal_B", "HER2", "Basal"),
+                     size = 1000, replace = TRUE,
                      prob = c(0.4, 0.2, 0.15, 0.25))),
   stringsAsFactors = FALSE
 )
@@ -72,12 +72,12 @@ sample_metadata <- data.frame(
 # Add some realistic differential expression
 # Simulate upregulated genes in tumor samples
 upregulated_genes <- sample(1:20000, 500)
-expression_data[upregulated_genes, 101:1100] <- 
+expression_data[upregulated_genes, 101:1100] <-
   expression_data[upregulated_genes, 101:1100] + rnorm(length(upregulated_genes) * 1000, mean = 2, sd = 0.5)
 
 # Simulate downregulated genes in tumor samples
 downregulated_genes <- sample(setdiff(1:20000, upregulated_genes), 500)
-expression_data[downregulated_genes, 101:1100] <- 
+expression_data[downregulated_genes, 101:1100] <-
   expression_data[downregulated_genes, 101:1100] - rnorm(length(downregulated_genes) * 1000, mean = 2, sd = 0.5)
 
 # =============================================================================
@@ -91,7 +91,7 @@ gene_counts <- rowSums(expression_data)
 keep_genes <- gene_counts >= MIN_COUNT
 expression_data_filtered <- expression_data[keep_genes, ]
 
-cat(sprintf("Filtered %d genes (kept %d genes with >= %d counts)\n", 
+cat(sprintf("Filtered %d genes (kept %d genes with >= %d counts)\n",
             nrow(expression_data), nrow(expression_data_filtered), MIN_COUNT))
 
 # =============================================================================
@@ -135,8 +135,8 @@ cat("Creating visualizations...\n")
 
 # 1. Volcano Plot
 volcano_plot <- ggplot(res_df, aes(x = log2FoldChange, y = -log10(padj))) +
-  geom_point(aes(color = ifelse(padj < FDR_THRESHOLD & abs(log2FoldChange) > LOG2FC_THRESHOLD, 
-                                ifelse(log2FoldChange > 0, "Upregulated", "Downregulated"), "Not Significant")), 
+  geom_point(aes(color = ifelse(padj < FDR_THRESHOLD & abs(log2FoldChange) > LOG2FC_THRESHOLD,
+                                ifelse(log2FoldChange > 0, "Upregulated", "Downregulated"), "Not Significant")),
              alpha = 0.6, size = 0.8) +
   scale_color_manual(values = c("Downregulated" = "#2E86AB", "Not Significant" = "#A23B72", "Upregulated" = "#F18F01")) +
   geom_hline(yintercept = -log10(FDR_THRESHOLD), linetype = "dashed", color = "red") +
@@ -234,10 +234,10 @@ go_results <- tryCatch({
 if (!is.null(go_results)) {
   pathway_results <- as.data.frame(go_results)
   write.csv(pathway_results, "results/pathway_enrichment.csv", row.names = FALSE)
-  
+
   # Create pathway plot
   if (nrow(pathway_results) > 0) {
-    pathway_plot <- ggplot(head(pathway_results, 20), 
+    pathway_plot <- ggplot(head(pathway_results, 20),
                           aes(x = reorder(Description, -p.adjust), y = -log10(p.adjust))) +
       geom_bar(stat = "identity", fill = "#2E86AB") +
       coord_flip() +
@@ -246,7 +246,7 @@ if (!is.null(go_results)) {
            y = "-Log10 Adjusted P-value") +
       theme_minimal() +
       theme(axis.text.y = element_text(size = 8))
-    
+
     ggsave("results/pathway_plot.pdf", pathway_plot, width = 12, height = 10)
   }
 }
@@ -265,7 +265,7 @@ write.csv(significant_genes, "results/significant_genes.csv", row.names = FALSE)
 
 # Create summary statistics
 summary_stats <- data.frame(
-  Metric = c("Total Genes Analyzed", 
+  Metric = c("Total Genes Analyzed",
              "Significantly Differentially Expressed",
              "Upregulated Genes",
              "Downregulated Genes",
@@ -307,7 +307,7 @@ html_report <- paste0('
         <h1>Gene Expression Analysis Report</h1>
         <p>Breast Cancer: Tumor vs Normal Tissue</p>
     </div>
-    
+
     <div class="section">
         <h2>Analysis Summary</h2>
         <div class="metric"><strong>Total Genes:</strong> ', nrow(res_df), '</div>
@@ -315,7 +315,7 @@ html_report <- paste0('
         <div class="metric"><strong>Upregulated:</strong> ', sum(significant_genes$log2FoldChange > 0), '</div>
         <div class="metric"><strong>Downregulated:</strong> ', sum(significant_genes$log2FoldChange < 0), '</div>
     </div>
-    
+
     <div class="section">
         <h2>Top Upregulated Genes</h2>
         <table>
@@ -323,9 +323,9 @@ html_report <- paste0('
 ')
 
 # Add top upregulated genes
-top_up <- significant_genes %>% 
-  filter(log2FoldChange > 0) %>% 
-  arrange(desc(log2FoldChange)) %>% 
+top_up <- significant_genes %>%
+  filter(log2FoldChange > 0) %>%
+  arrange(desc(log2FoldChange)) %>%
   head(10)
 
 for (i in 1:nrow(top_up)) {
@@ -341,7 +341,7 @@ for (i in 1:nrow(top_up)) {
 html_report <- paste0(html_report, '
         </table>
     </div>
-    
+
     <div class="section">
         <h2>Top Downregulated Genes</h2>
         <table>
@@ -349,9 +349,9 @@ html_report <- paste0(html_report, '
 ')
 
 # Add top downregulated genes
-top_down <- significant_genes %>% 
-  filter(log2FoldChange < 0) %>% 
-  arrange(log2FoldChange) %>% 
+top_down <- significant_genes %>%
+  filter(log2FoldChange < 0) %>%
+  arrange(log2FoldChange) %>%
   head(10)
 
 for (i in 1:nrow(top_down)) {
@@ -367,7 +367,7 @@ for (i in 1:nrow(top_down)) {
 html_report <- paste0(html_report, '
         </table>
     </div>
-    
+
     <div class="section">
         <h2>Generated Files</h2>
         <ul>
@@ -379,7 +379,7 @@ html_report <- paste0(html_report, '
             <li>pathway_enrichment.csv - Enriched biological pathways</li>
         </ul>
     </div>
-    
+
     <div class="section">
         <h2>Analysis Parameters</h2>
         <ul>

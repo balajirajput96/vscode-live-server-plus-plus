@@ -48,13 +48,13 @@
                     <h2><i class="fas fa-briefcase"></i> Portfolio Builder</h2>
                     <p>अपने प्रोजेक्ट्स को प्रोफेशनल तरीके से प्रस्तुत करें</p>
                 </div>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="projectName">प्रोजेक्ट का नाम</label>
                         <input type="text" id="projectName" placeholder="जैसे: Gene Expression Analysis">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="projectType">प्रोजेक्ट का प्रकार</label>
                         <select id="projectType">
@@ -64,28 +64,28 @@
                             <option value="research">रिसर्च</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group full-width">
                         <label for="projectDescription">प्रोजेक्ट का विवरण</label>
                         <textarea id="projectDescription" rows="4" placeholder="प्रोजेक्ट के बारे में विस्तार से बताएं..."></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="toolsUsed">उपयोग किए गए टूल्स</label>
                         <input type="text" id="toolsUsed" placeholder="Python, Pandas, Matplotlib">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="datasetSource">डेटासेट स्रोत</label>
                         <input type="text" id="datasetSource" placeholder="जैसे: TCGA, Kaggle">
                     </div>
-                    
+
                     <div class="form-group full-width">
                         <label for="keyFindings">मुख्य निष्कर्ष</label>
                         <textarea id="keyFindings" rows="3" placeholder="प्रोजेक्ट के मुख्य निष्कर्ष..."></textarea>
                     </div>
                 </div>
-                
+
                 <div class="button-group">
                     <button class="btn btn-primary" onclick="generatePortfolioContent()">
                         <i class="fas fa-magic"></i> AI से कंटेंट जनरेट करें
@@ -94,7 +94,7 @@
                         <i class="fas fa-save"></i> प्रोजेक्ट सेव करें
                     </button>
                 </div>
-                
+
                 <div id="portfolioOutput" class="output-section" style="display: none;">
                     <h3>जनरेट किया गया कंटेंट</h3>
                     <div id="portfolioContent" class="content-preview"></div>
@@ -107,7 +107,7 @@
                     <h2><i class="fas fa-share-alt"></i> Social Media Generator</h2>
                     <p>LinkedIn और Facebook के लिए आकर्षक पोस्ट बनाएं</p>
                 </div>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="platform">प्लेटफॉर्म</label>
@@ -117,7 +117,7 @@
                             <option value="twitter">Twitter</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="postType">पोस्ट का प्रकार</label>
                         <select id="postType">
@@ -127,12 +127,12 @@
                             <option value="industry">इंडस्ट्री इनसाइट</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group full-width">
                         <label for="postContent">पोस्ट का विषय</label>
                         <textarea id="postContent" rows="4" placeholder="पोस्ट के बारे में बताएं..."></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="tone">टोन</label>
                         <select id="tone">
@@ -142,13 +142,13 @@
                             <option value="educational">शैक्षिक</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="hashtags">हैशटैग्स</label>
                         <input type="text" id="hashtags" placeholder="#Bioinformatics #DataAnalysis">
                     </div>
                 </div>
-                
+
                 <div class="button-group">
                     <button class="btn btn-primary" onclick="generateSocialPost()">
                         <i class="fas fa-magic"></i> पोस्ट जनरेट करें
@@ -157,7 +157,7 @@
                         <i class="fas fa-clock"></i> शेड्यूल करें
                     </button>
                 </div>
-                
+
                 <div id="socialOutput" class="output-section" style="display: none;">
                     <h3>जनरेट किया गया पोस्ट</h3>
                     <div id="socialContent" class="content-preview"></div>
@@ -170,7 +170,7 @@
                     <h2><i class="fas fa-file-alt"></i> Resume & LinkedIn Optimizer</h2>
                     <p>अपने प्रोफेशनल प्रोफाइल को optimize करें</p>
                 </div>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="optimizeType">क्या optimize करना है?</label>
@@ -181,23 +181,23 @@
                             <option value="skills">स्किल्स सेक्शन</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group full-width">
                         <label for="currentContent">वर्तमान कंटेंट</label>
                         <textarea id="currentContent" rows="6" placeholder="वर्तमान कंटेंट यहाँ पेस्ट करें..."></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="targetRole">लक्ष्य रोल</label>
                         <input type="text" id="targetRole" placeholder="जैसे: Bioinformatics Analyst">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="targetCompany">लक्ष्य कंपनी</label>
                         <input type="text" id="targetCompany" placeholder="जैसे: Sun Pharma">
                     </div>
                 </div>
-                
+
                 <div class="button-group">
                     <button class="btn btn-primary" onclick="optimizeContent()">
                         <i class="fas fa-magic"></i> AI से Optimize करें
@@ -206,7 +206,7 @@
                         <i class="fas fa-copy"></i> कई विकल्प जनरेट करें
                     </button>
                 </div>
-                
+
                 <div id="resumeOutput" class="output-section" style="display: none;">
                     <h3>Optimized कंटेंट</h3>
                     <div id="resumeContent" class="content-preview"></div>
@@ -219,7 +219,7 @@
                     <h2><i class="fas fa-search"></i> Job Tracker</h2>
                     <p>नौकरी के अवसरों को ट्रैक करें और प्रबंधित करें</p>
                 </div>
-                
+
                 <div class="job-tracker">
                     <div class="job-filters">
                         <div class="form-group">
@@ -238,7 +238,7 @@
                             <i class="fas fa-search"></i> नौकरी खोजें
                         </button>
                     </div>
-                    
+
                     <div class="job-list">
                         <div class="job-item">
                             <h4>Bioinformatics Analyst</h4>
@@ -250,7 +250,7 @@
                                 <button class="btn btn-sm btn-secondary">Save</button>
                             </div>
                         </div>
-                        
+
                         <div class="job-item">
                             <h4>Data Analyst - Clinical Research</h4>
                             <p class="company">Zydus Cadila</p>
@@ -271,7 +271,7 @@
                     <h2><i class="fas fa-magic"></i> AI Prompts Library</h2>
                     <p>सभी AI टूल्स के लिए ready-to-use प्रॉम्प्ट्स</p>
                 </div>
-                
+
                 <div class="prompts-grid">
                     <div class="prompt-card">
                         <h4><i class="fas fa-globe"></i> वेबसाइट बिल्डर</h4>
@@ -280,7 +280,7 @@
                             <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
                         </div>
                     </div>
-                    
+
                     <div class="prompt-card">
                         <h4><i class="fab fa-github"></i> GitHub README</h4>
                         <div class="prompt-content">
@@ -288,7 +288,7 @@
                             <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
                         </div>
                     </div>
-                    
+
                     <div class="prompt-card">
                         <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
                         <div class="prompt-content">
@@ -296,7 +296,7 @@
                             <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
                         </div>
                     </div>
-                    
+
                     <div class="prompt-card">
                         <h4><i class="fas fa-file-alt"></i> Resume Summary</h4>
                         <div class="prompt-content">
@@ -313,33 +313,33 @@
                     <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
                     <p>अपनी करियर प्रगति को ट्रैक करें</p>
                 </div>
-                
+
                 <div class="analytics-grid">
                     <div class="analytics-card">
                         <h4>प्रोजेक्ट्स</h4>
                         <div class="metric">12</div>
                         <p>कुल प्रोजेक्ट्स</p>
                     </div>
-                    
+
                     <div class="analytics-card">
                         <h4>LinkedIn पोस्ट्स</h4>
                         <div class="metric">45</div>
                         <p>इस महीने</p>
                     </div>
-                    
+
                     <div class="analytics-card">
                         <h4>जॉब अप्लिकेशन्स</h4>
                         <div class="metric">8</div>
                         <p>इस हफ्ते</p>
                     </div>
-                    
+
                     <div class="analytics-card">
                         <h4>नेटवर्क ग्रोथ</h4>
                         <div class="metric">+127</div>
                         <p>इस महीने</p>
                     </div>
                 </div>
-                
+
                 <div class="progress-section">
                     <h3>साप्ताहिक लक्ष्य</h3>
                     <div class="progress-item">
@@ -349,7 +349,7 @@
                         </div>
                         <span>3/4</span>
                     </div>
-                    
+
                     <div class="progress-item">
                         <span>जॉब अप्लाई</span>
                         <div class="progress-bar">
@@ -357,7 +357,7 @@
                         </div>
                         <span>3/5</span>
                     </div>
-                    
+
                     <div class="progress-item">
                         <span>नेटवर्किंग</span>
                         <div class="progress-bar">

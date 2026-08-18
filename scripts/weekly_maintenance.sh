@@ -60,7 +60,7 @@ if [ -d "backups" ]; then
     old_backups=$(find backups -type f -mtime +$BACKUP_RETENTION_DAYS 2>/dev/null | wc -l)
     find backups -type f -mtime +$BACKUP_RETENTION_DAYS -delete 2>/dev/null || true
     info "Removed $old_backups old backup files"
-    
+
     # Count remaining backups
     remaining_backups=$(find backups -type f 2>/dev/null | wc -l)
     info "Remaining backup files: $remaining_backups"
@@ -151,18 +151,18 @@ if [ -d ".git" ]; then
     git_report="$REPORT_DIR/weekly_git_$(date +%Y%m%d).txt"
     echo "=== Weekly Git Report $(date) ===" > "$git_report"
     echo "" >> "$git_report"
-    
+
     echo "Git Status:" >> "$git_report"
     git status --short >> "$git_report" 2>/dev/null || true
     echo "" >> "$git_report"
-    
+
     echo "Recent Commits (last 7 days):" >> "$git_report"
     git log --oneline --since="7 days ago" >> "$git_report" 2>/dev/null || true
     echo "" >> "$git_report"
-    
+
     echo "Branch Information:" >> "$git_report"
     git branch -v >> "$git_report" 2>/dev/null || true
-    
+
     info "Git status report saved"
 fi
 

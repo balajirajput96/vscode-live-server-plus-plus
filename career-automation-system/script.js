@@ -35,7 +35,7 @@ function switchTab(tabName) {
     // Add active class to selected tab and content
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
     document.getElementById(tabName).classList.add('active');
-    
+
     currentTab = tabName;
 }
 
@@ -62,14 +62,14 @@ function generatePortfolioContent() {
     // Simulate AI processing
     setTimeout(() => {
         const generatedContent = generatePortfolioText(projectName, projectType, description, tools, dataset, findings);
-        
+
         document.getElementById('portfolioContent').innerHTML = generatedContent;
         document.getElementById('portfolioOutput').style.display = 'block';
-        
+
         // Reset button
         button.innerHTML = originalText;
         button.disabled = false;
-        
+
         showMessage('कंटेंट सफलतापूर्वक जनरेट किया गया!', 'success');
     }, 2000);
 }
@@ -86,19 +86,19 @@ function generatePortfolioText(name, type, description, tools, dataset, findings
         <div class="portfolio-content">
             <h3>${name}</h3>
             <p><strong>प्रोजेक्ट प्रकार:</strong> ${typeLabels[type]}</p>
-            
+
             <h4>प्रोजेक्ट अवलोकन</h4>
             <p>${description}</p>
-            
+
             <h4>तकनीकी विवरण</h4>
             <ul>
                 <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'Python, Pandas, Matplotlib'}</li>
                 <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'Public Dataset'}</li>
             </ul>
-            
+
             <h4>मुख्य निष्कर्ष</h4>
             <p>${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण पैटर्न और insights प्राप्त किए गए।'}</p>
-            
+
             <h4>GitHub README.md</h4>
             <pre><code># ${name}
 
@@ -145,7 +145,7 @@ function saveProject() {
 
     projects.push(projectData);
     localStorage.setItem('projects', JSON.stringify(projects));
-    
+
     // Clear form
     clearPortfolioForm();
     showMessage('प्रोजेक्ट सफलतापूर्वक सेव किया गया!', 'success');
@@ -182,13 +182,13 @@ function generateSocialPost() {
 
     setTimeout(() => {
         const generatedPost = generateSocialContent(platform, postType, content, tone, hashtags);
-        
+
         document.getElementById('socialContent').innerHTML = generatedPost;
         document.getElementById('socialOutput').style.display = 'block';
-        
+
         button.innerHTML = originalText;
         button.disabled = false;
-        
+
         showMessage('सोशल मीडिया पोस्ट जनरेट किया गया!', 'success');
     }, 2000);
 }
@@ -215,14 +215,14 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
     };
 
     const defaultHashtags = '#Bioinformatics #DataAnalysis #Biotechnology #Python #Pharma #ClinicalResearch';
-    
+
     return `
         <div class="social-content">
             <h4>${platformNames[platform]} पोस्ट</h4>
             <div class="post-preview">
                 <p><strong>पोस्ट प्रकार:</strong> ${postTypes[postType]}</p>
                 <p><strong>टोन:</strong> ${tones[tone]}</p>
-                
+
                 <div class="post-text">
                     <p>🚀 <strong>${content}</strong></p>
                     <p>🔬 बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में काम करते हुए, मैंने यह महत्वपूर्ण सीख प्राप्त की है।</p>
@@ -232,7 +232,7 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
                     <p>${hashtags || defaultHashtags}</p>
                 </div>
             </div>
-            
+
             <div class="post-tips">
                 <h5>पोस्टिंग टिप्स:</h5>
                 <ul>
@@ -269,13 +269,13 @@ function optimizeContent() {
 
     setTimeout(() => {
         const optimizedContent = generateOptimizedContent(optimizeType, currentContent, targetRole, targetCompany);
-        
+
         document.getElementById('resumeContent').innerHTML = optimizedContent;
         document.getElementById('resumeOutput').style.display = 'block';
-        
+
         button.innerHTML = originalText;
         button.disabled = false;
-        
+
         showMessage('कंटेंट सफलतापूर्वक optimize किया गया!', 'success');
     }, 2000);
 }
@@ -298,9 +298,9 @@ function generateOptimizedContent(type, content, role, company) {
 
     const summaries = [
         `बायोटेक्नोलॉजी में डिप्लोमा के साथ, मैं बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में अपना करियर बनाने के लिए तैयार हूँ। मेरे पास Python, SQL, और वेब डिज़ाइन में मजबूत कौशल हैं, जो मुझे फार्मास्युटिकल और क्लिनिकल रिसर्च कंपनियों में मूल्यवान बनाते हैं।`,
-        
+
         `एक बायोटेक्नोलॉजी प्रोफेशनल के रूप में, मैं डेटा-संचालित निर्णय लेने की शक्ति में विश्वास रखता हूँ। मेरी बायोइन्फॉर्मेटिक्स में 1-महीने की इंटर्नशिप और Python, SQL में मजबूत कौशल मुझे फार्मा इंडस्ट्री में सफल करियर बनाने में मदद करेंगे।`,
-        
+
         `बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक का मेरा सफर मुझे डेटा एनालिसिस और क्लिनिकल रिसर्च के बीच की खाई को पाटने में मदद करता है। मेरे कौशल में Python प्रोग्रामिंग, डेटा विज़ुअलाइज़ेशन, और वेब डिज़ाइन शामिल हैं।`
     ];
 
@@ -314,7 +314,7 @@ function generateOptimizedContent(type, content, role, company) {
             });
             optimizedText += '</ul>';
             break;
-            
+
         case 'summary':
             optimizedText = `<h4>${typeLabels[type]} विकल्प:</h4><ul>`;
             summaries.forEach(summary => {
@@ -322,7 +322,7 @@ function generateOptimizedContent(type, content, role, company) {
             });
             optimizedText += '</ul>';
             break;
-            
+
         default:
             optimizedText = `
                 <h4>Optimized ${typeLabels[type]}:</h4>
@@ -347,7 +347,7 @@ function searchJobs() {
     const company = document.getElementById('jobCompany').value;
 
     showMessage(`नौकरी खोज रहा हूँ: ${role} in ${location} at ${company}`, 'success');
-    
+
     // Simulate job search
     setTimeout(() => {
         updateJobList();
@@ -409,7 +409,7 @@ function copyPrompt(button) {
         const originalText = button.textContent;
         button.textContent = 'Copied!';
         button.style.background = '#48bb78';
-        
+
         setTimeout(() => {
             button.textContent = originalText;
             button.style.background = '';
@@ -421,7 +421,7 @@ function copyPrompt(button) {
 function updateAnalytics() {
     const projectCount = projects.length;
     const socialCount = socialPosts.length;
-    
+
     // Update metrics
     document.querySelector('.analytics-card:nth-child(1) .metric').textContent = projectCount;
     document.querySelector('.analytics-card:nth-child(2) .metric').textContent = socialCount;
@@ -437,11 +437,11 @@ function showMessage(message, type) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
     messageDiv.textContent = message;
-    
+
     // Insert at top of main content
     const mainContent = document.querySelector('.main-content');
     mainContent.insertBefore(messageDiv, mainContent.firstChild);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         messageDiv.remove();
@@ -499,7 +499,7 @@ function exportData() {
         socialPosts: socialPosts,
         exportDate: new Date().toISOString()
     };
-    
+
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

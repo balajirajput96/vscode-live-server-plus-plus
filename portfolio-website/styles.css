@@ -503,19 +503,19 @@ body {
         grid-template-columns: 1fr;
         text-align: center;
     }
-    
+
     .hero-content h1 {
         font-size: 2.5rem;
     }
-    
+
     .about-content {
         grid-template-columns: 1fr;
     }
-    
+
     .contact-content {
         grid-template-columns: 1fr;
     }
-    
+
     .projects-grid {
         grid-template-columns: 1fr;
     }
