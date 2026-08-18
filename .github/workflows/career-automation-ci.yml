@@ -14,6 +14,12 @@ on:
       - 'portfolio-automation-system/**'
       - 'n8n-workflows/**'
   workflow_dispatch:
+    inputs:
+      execute_external_actions:
+        description: 'Acknowledge and run externally visible deployment or webhook steps.'
+        required: true
+        type: boolean
+        default: false
 
 env:
   NODE_VERSION: '20.x'
@@ -64,9 +70,9 @@ jobs:
 
     - name: Test webhook endpoints
       run: |
-        echo "Testing webhook connectivity..."
+        echo "Checking webhook configuration without making a network request..."
         if [ ! -z "${{ secrets.N8N_WEBHOOK_URL }}" ]; then
-          curl -f "${{ secrets.N8N_WEBHOOK_URL }}" || echo "⚠️ Webhook URL not accessible"
+          echo "N8N_WEBHOOK_URL is configured; CI deliberately does not invoke external webhooks."
         else
           echo "⚠️ N8N_WEBHOOK_URL secret not configured"
         fi
@@ -74,7 +80,7 @@ jobs:
   deploy-to-azure:
     needs: test-automation-system
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.execute_external_actions == true
     environment: production
     
     steps:
@@ -101,7 +107,7 @@ jobs:
   notify-webhook:
     needs: [test-automation-system, deploy-to-azure]
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.execute_external_actions == true
     
     steps:
     - name: Notify n8n webhook
@@ -140,7 +146,7 @@ jobs:
   update-portfolio:
     needs: deploy-to-azure
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.execute_external_actions == true
     
     steps:
     - name: Trigger portfolio automation
