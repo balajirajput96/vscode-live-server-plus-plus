@@ -2,6 +2,7 @@
 let currentTab = 'portfolio';
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+let scheduledPosts = JSON.parse(localStorage.getItem('scheduledPosts')) || [];
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -253,23 +254,18 @@ function schedulePost() {
         return;
     }
 
-    // Try to send to webhook if available
-    if (typeof sendToWebhook === 'function') {
-        const postData = {
-            type: 'social_media_post',
-            platform: document.getElementById('platform').value,
-            content: content,
-            timestamp: new Date().toISOString()
-        };
-        
-        sendToWebhook(postData).then(() => {
-            showMessage('पोस्ट webhook में भेज दिया गया!', 'success');
-        }).catch(() => {
-            showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'info');
-        });
-    } else {
-        showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
-    }
+    const postData = {
+        id: Date.now(),
+        type: 'social_media_post',
+        platform: document.getElementById('platform').value,
+        content,
+        status: 'draft_only',
+        timestamp: new Date().toISOString()
+    };
+
+    scheduledPosts.push(postData);
+    localStorage.setItem('scheduledPosts', JSON.stringify(scheduledPosts));
+    showMessage('पोस्ट केवल local draft queue में सेव हुआ है। Publish के लिए server-side approval आवश्यक है।', 'info');
 }
 
 // Resume Optimizer Functions
@@ -706,33 +702,8 @@ function copyToClipboard(text) {
 
 // Webhook Integration Functions
 async function sendToWebhook(data) {
-    const webhookUrl = getWebhookUrl();
-    if (!webhookUrl) {
-        throw new Error('Webhook URL not configured');
-    }
-
-    try {
-        const response = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                ...data,
-                source: 'career-automation-ui',
-                timestamp: new Date().toISOString()
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Webhook error:', error);
-        throw error;
-    }
+    void data;
+    throw new Error('Browser-side webhook sending is disabled. Use a server-side approval queue before any external action.');
 }
 
 function getWebhookUrl() {
@@ -745,7 +716,7 @@ function getWebhookUrl() {
 
 function setWebhookUrl(url) {
     localStorage.setItem('webhookUrl', url);
-    showMessage('Webhook URL सेट किया गया!', 'success');
+    showMessage('Webhook URL local settings में सेव है; browser से कोई external request नहीं भेजी जाएगी।', 'info');
 }
 
 // Enhanced save project function with webhook integration
@@ -772,20 +743,7 @@ async function saveProjectWithWebhook() {
     projects.push(projectData);
     localStorage.setItem('projects', JSON.stringify(projects));
 
-    // Try to send to webhook
-    try {
-        await sendToWebhook({
-            type: 'portfolio_update',
-            project_name: projectData.name,
-            description: projectData.description,
-            tools: projectData.tools.join(', '),
-            findings: projectData.findings
-        });
-        showMessage('प्रोजेक्ट सेव किया गया और webhook में भेजा गया!', 'success');
-    } catch (error) {
-        showMessage('प्रोजेक्ट सेव किया गया (webhook unavailable)', 'warning');
-        console.error('Webhook failed:', error);
-    }
+    showMessage('प्रोजेक्ट केवल local draft के रूप में सेव हुआ है। External handoff के लिए server-side approval आवश्यक है।', 'info');
 
     updateAnalytics();
 }
@@ -797,20 +755,11 @@ function showWebhookConfig() {
     
     if (newUrl && newUrl.trim()) {
         setWebhookUrl(newUrl.trim());
-        testWebhookConnection();
     }
 }
 
 async function testWebhookConnection() {
-    try {
-        await sendToWebhook({
-            type: 'test',
-            message: 'Webhook connectivity test from UI'
-        });
-        showMessage('✅ Webhook connection successful!', 'success');
-    } catch (error) {
-        showMessage('❌ Webhook connection failed', 'error');
-    }
+    showMessage('Browser-side webhook testing is disabled. Verify connectivity only through an approved server-side integration.', 'info');
 }
 
 // Auto-connect webhook on page load if URL is available
