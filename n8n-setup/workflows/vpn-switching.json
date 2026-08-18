@@ -96,7 +96,8 @@
           "string": [
             {
               "value1": "={{$json[\"country_code\"]}}",
-              "operation": "equal",\n              "value2": "={{$node[\"Select VPN Server\"].json[\"country\"].slice(0,2)}}"
+              "operation": "equal",
+              "value2": "={{$node[\"Select VPN Server\"].json[\"country\"].slice(0,2)}}"
             }
           ]
         }

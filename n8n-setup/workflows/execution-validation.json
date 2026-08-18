@@ -116,7 +116,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Test Command Execution\nconst testCommands = [\n  {\n    name: 'System Health',\n    command: 'uptime && free -h && df -h',\n    description: 'Check system resources'\n  },\n  {\n    name: 'Docker Status',\n    command: 'docker ps --format \"table {{.Names}}\\t{{.Status}}\\t{{.Ports}}\"',\n    description: 'Verify container status'\n  },\n  {\n    name: 'Network Connectivity',\n    command: 'ping -c 3 google.com && curl -s https://httpbin.org/ip',\n    description: 'Test internet connectivity'\n  },\n  {\n    name: 'AI Model Status',\n    command: 'curl -s http://ollama:11434/api/tags | jq \".models | length\"',\n    description: 'Check AI model availability'\n  },\n  {\n    name: 'n8n API Test',\n    command: 'curl -s http://localhost:5678/healthz',\n    description: 'Verify n8n API health'\n  }\n];\n\nconst currentTest = testCommands[Math.floor(Math.random() * testCommands.length)];\n\nreturn [{\n  json: {\n    testName: currentTest.name,\n    command: currentTest.command,\n    description: currentTest.description,\n    timestamp: new Date().toISOString()\n  }\n}];"
+        "jsCode": "// Test Command Execution\nconst testCommands = [\n  {\n    name: 'System Health',\n    command: 'uptime && free -h && df -h',\n    description: 'Check system resources'\n  },\n  {\n    name: 'Docker Status',\n    command: 'docker ps --format \"table {{.Names}}\t{{.Status}}\t{{.Ports}}\"',\n    description: 'Verify container status'\n  },\n  {\n    name: 'Network Connectivity',\n    command: 'ping -c 3 google.com && curl -s https://httpbin.org/ip',\n    description: 'Test internet connectivity'\n  },\n  {\n    name: 'AI Model Status',\n    command: 'curl -s http://ollama:11434/api/tags | jq \".models | length\"',\n    description: 'Check AI model availability'\n  },\n  {\n    name: 'n8n API Test',\n    command: 'curl -s http://localhost:5678/healthz',\n    description: 'Verify n8n API health'\n  }\n];\n\nconst currentTest = testCommands[Math.floor(Math.random() * testCommands.length)];\n\nreturn [{\n  json: {\n    testName: currentTest.name,\n    command: currentTest.command,\n    description: currentTest.description,\n    timestamp: new Date().toISOString()\n  }\n}];"
       },
       "id": "select-test-command",
       "name": "Select Test Command",
@@ -223,7 +223,8 @@
           "string": [
             {
               "value1": "={{$json[\"testType\"]}}",
-              "operation": "notEqual",\n              "value2": "error"
+              "operation": "notEqual",
+              "value2": "error"
             }
           ]
         }
@@ -246,15 +247,438 @@
             {
               "name": "task",
               "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"ai\"][\"task\"] : $json[\"payload\"][\"task\"]}}"
-            },\n            {\n              "name": "content",\n              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"ai\"][\"content\"] : $json[\"payload\"][\"content\"]}}"
-            },\n            {\n              "name": "language",\n              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"ai\"][\"language\"] : $json[\"payload\"][\"language\"]}}"
-            }\n          ]\n        }\n      },\n      "id": "test-ai-workflow",\n      "name": "Test AI Workflow",\n      "type": "n8n-nodes-base.httpRequest",\n      "typeVersion": 4.1,\n      "position": [\n        900,\n        350\n      ]\n    },\n    {\n      "parameters": {\n        "url": "http://localhost:5678/webhook/success-notification",\n        "sendBody": true,\n        "bodyParameters": {\n          "parameters": [\n            {\n              "name": "workflow",\n              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"email\"][\"workflow\"] : $json[\"payload\"][\"workflow\"]}}"
-            },\n            {\n              "name": "duration",\n              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"email\"][\"duration\"] : $json[\"payload\"][\"duration\"]}}"
-            },\n            {\n              "name": "result",\n              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"email\"][\"result\"] : $json[\"payload\"][\"result\"]}}"
-            }\n          ]\n        }\n      },\n      "id": "test-email-workflow",\n      "name": "Test Email Workflow",\n      "type": "n8n-nodes-base.httpRequest",\n      "typeVersion": 4.1,\n      "position": [\n        900,\n        450\n      ]\n    },\n    {\n      "parameters": {\n        "jsCode": "// Compile manual validation results\nconst testRequest = $node[\"Generate Sample Payloads\"].json;\nconst aiTestResult = $node[\"Test AI Workflow\"].json;\nconst emailTestResult = $node[\"Test Email Workflow\"].json;\n\n// Determine test success\nconst aiSuccess = aiTestResult && (aiTestResult.statusCode === 200 || aiTestResult.statusCode === 201);\nconst emailSuccess = emailTestResult && (emailTestResult.statusCode === 200 || emailTestResult.statusCode === 201);\n\nconst overallSuccess = aiSuccess && emailSuccess;\n\nreturn [{\n  json: {\n    validationType: 'manual',\n    testRequest: testRequest,\n    results: {\n      ai: {\n        tested: true,\n        success: aiSuccess,\n        statusCode: aiTestResult ? aiTestResult.statusCode : 'error',\n        response: aiTestResult ? 'AI workflow triggered' : 'Failed to trigger'\n      },\n      email: {\n        tested: true,\n        success: emailSuccess,\n        statusCode: emailTestResult ? emailTestResult.statusCode : 'error',\n        response: emailTestResult ? 'Email workflow triggered' : 'Failed to trigger'\n      }\n    },\n    summary: {\n      overallSuccess: overallSuccess,\n      successRate: ((aiSuccess ? 1 : 0) + (emailSuccess ? 1 : 0)) / 2 * 100,\n      testsRun: 2,\n      testsPassed: (aiSuccess ? 1 : 0) + (emailSuccess ? 1 : 0),\n      timestamp: new Date().toISOString()\n    }\n  }\n}];"
-      },\n      "id": "compile-manual-results",\n      "name": "Compile Manual Results",\n      "type": "n8n-nodes-base.code",\n      "typeVersion": 2,\n      "position": [\n        1120,\n        400\n      ]\n    },\n    {\n      "parameters": {\n        "fromEmail": "22034563001@paruluniversity.ac.in",\n        "toEmail": "balaji.web.design1@gmail.com",\n        "subject": "🧪 Manual Validation Complete - {{new Date().toLocaleTimeString('hi-IN')}}",\n        "html": "<div style=\\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;\\">\\n  <h1 style=\\"text-align: center; margin-bottom: 30px;\\">🧪 मैन्युअल सत्यापन पूर्ण!</h1>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h2>📊 Test Summary</h2>\\n    <p><strong>Test Type:</strong> {{$json[\\"validationType\\"]}}</p>\\n    <p><strong>Success Rate:</strong> {{$json[\\"summary\\"][\\"successRate\\"]}}%</p>\\n    <p><strong>Tests Run:</strong> {{$json[\\"summary\\"][\\"testsRun\\"]}}</p>\\n    <p><strong>Tests Passed:</strong> {{$json[\\"summary\\"][\\"testsPassed\\"]}}</p>\\n  </div>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h3>🤖 AI Workflow Test</h3>\\n    <p><strong>Status:</strong> {{$json[\\"results\\"][\\"ai\\"][\\"success\\"] ? \\'🟢 Passed\\' : \\'🔴 Failed\\'}}</p>\\n    <p><strong>Response:</strong> {{$json[\\"results\\"][\\"ai\\"][\\"response\\"]}}</p>\\n    <p><strong>Status Code:</strong> {{$json[\\"results\\"][\\"ai\\"][\\"statusCode\\"]}}</p>\\n  </div>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h3>📧 Email Workflow Test</h3>\\n    <p><strong>Status:</strong> {{$json[\\"results\\"][\\"email\\"][\\"success\\"] ? \\'🟢 Passed\\' : \\'🔴 Failed\\'}}</p>\\n    <p><strong>Response:</strong> {{$json[\\"results\\"][\\"email\\"][\\"response\\"]}}</p>\\n    <p><strong>Status Code:</strong> {{$json[\\"results\\"][\\"email\\"][\\"statusCode\\"]}}</p>\\n  </div>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h3>🔄 Next Steps</h3>\\n    <ul>\\n      <li>{{$json[\\"summary\\"][\\"overallSuccess\\"] ? \\'✅ All systems operational\\' : \\'⚠️ Some issues detected\\'}}</li>\\n      <li>Check individual workflow logs if needed</li>\\n      <li>Monitor system performance</li>\\n      <li>Schedule next validation test</li>\\n    </ul>\\n  </div>\\n  \\n  <p style=\\"text-align: center; margin-top: 30px; font-style: italic;\\">Manual validation complete! 🎯</p>\\n</div>",\n        "options": {}\n      },\n      "id": "send-manual-validation-report",\n      "name": "Send Manual Validation Report",\n      "type": "n8n-nodes-base.emailSend",\n      "typeVersion": 2,\n      "position": [\n        1340,\n        400\n      ],\n      "credentials": {\n        "smtp": {\n          "id": "gmail-smtp",\n          "name": "Gmail SMTP"\n        }\n      }\n    },\n    {\n      "parameters": {\n        "triggerTimes": {\n          "item": [\n            {\n              "hour": 14,\n              "minute": 0\n            }\n          ]\n        }\n      },\n      "id": "afternoon-stress-test",\n      "name": "Afternoon Stress Test (2 PM)",\n      "type": "n8n-nodes-base.cron",\n      "typeVersion": 1,\n      "position": [\n        240,\n        600\n      ]\n    },\n    {\n      "parameters": {\n        "jsCode": "// Generate multiple test requests for stress testing\nconst stressTests = [];\n\n// Create 10 concurrent test requests\nfor (let i = 1; i <= 10; i++) {\n  stressTests.push({\n    testId: i,\n    task: \\'summarize\\',\n    content: `This is stress test number ${i}. Testing the AI system under load to ensure reliability and performance.`,\n    language: i % 2 === 0 ? \\'hindi\\' : \\'english\\',\n    timestamp: new Date().toISOString()\n  });\n}\n\nreturn stressTests.map(test => ({ json: test }));"
-      },\n      "id": "generate-stress-tests",\n      "name": "Generate Stress Tests",\n      "type": "n8n-nodes-base.code",\n      "typeVersion": 2,\n      "position": [\n        460,\n        600\n      ]\n    },\n    {\n      "parameters": {\n        "url": "http://localhost:5678/webhook/ai-process-trigger",\n        "sendBody": true,\n        "bodyParameters": {\n          "parameters": [\n            {\n              "name": "task",\n              "value": "={{$json[\\"task\\"]}}"
-            },\n            {\n              "name": "content",\n              "value": "={{$json[\\"content\\"]}}"
-            },\n            {\n              "name": "language",\n              "value": "={{$json[\\"language\\"]}}"
-            }\n          ]\n        }\n      },\n      "id": "execute-stress-test",\n      "name": "Execute Stress Test",\n      "type": "n8n-nodes-base.httpRequest",\n      "typeVersion": 4.1,\n      "position": [\n        680,\n        600\n      ]\n    },\n    {\n      "parameters": {\n        "jsCode": "// Analyze stress test results\nconst allResults = $input.all();\n\nconst totalTests = allResults.length;\nconst successfulTests = allResults.filter(result => {\n  const statusCode = result.json.statusCode;\n  return statusCode === 200 || statusCode === 201;\n}).length;\n\nconst failedTests = totalTests - successfulTests;\nconst successRate = (successfulTests / totalTests) * 100;\n\n// Calculate average response time (simulated)\nconst avgResponseTime = 2.8; // seconds\n\n// Performance assessment\nconst performanceStatus = successRate >= 90 ? \\'🟢 Excellent\\' :\n                         successRate >= 75 ? \\'🟡 Good\\' :\n                         successRate >= 50 ? \\'🟠 Fair\\' : \\'🔴 Poor\\';\n\nreturn [{\n  json: {\n    stressTest: {\n      totalRequests: totalTests,\n      successfulRequests: successfulTests,\n      failedRequests: failedTests,\n      successRate: Math.round(successRate),\n      averageResponseTime: avgResponseTime,\n      performanceStatus: performanceStatus\n    },\n    systemLoad: {\n      cpuUsage: \\'45%\\',\n      memoryUsage: \\'2.1GB / 4GB\\',\n      networkLatency: \\'23ms\\',\n      diskUsage: \\'15GB / 50GB\\'\n    },\n    recommendations: [\n      successRate < 90 ? \\'⚠️ Consider system optimization\\' : \\'✅ System handling load well\\',\n      \\'🔄 Monitor resource usage during peak times\\',\n      \\'📊 Regular stress testing recommended\\',\n      \\'⚡ Scale resources if needed\\'\n    ],\n    timestamp: new Date().toISOString()\n  }\n}];"
-      },\n      "id": "analyze-stress-results",\n      "name": "Analyze Stress Results",\n      "type": "n8n-nodes-base.code",\n      "typeVersion": 2,\n      "position": [\n        900,\n        600\n      ]\n    },\n    {\n      "parameters": {\n        "fromEmail": "22034563001@paruluniversity.ac.in",\n        "toEmail": "balaji.web.design1@gmail.com",\n        "subject": "💪 Stress Test Report - {{new Date().toLocaleDateString('hi-IN')}}",\n        "html": "<div style=\\"font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white;\\">\\n  <h1 style=\\"text-align: center; margin-bottom: 30px;\\">💪 स्ट्रेस टेस्ट रिपोर्ट</h1>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h2>📈 Performance Results</h2>\\n    <div style=\\"display: grid; grid-template-columns: 1fr 1fr; gap: 20px;\\">\\n      <div>\\n        <p><strong>Total Requests:</strong> {{$json[\\"stressTest\\"][\\"totalRequests\\"]}}</p>\\n        <p><strong>Successful:</strong> {{$json[\\"stressTest\\"][\\"successfulRequests\\"]}}</p>\\n        <p><strong>Failed:</strong> {{$json[\\"stressTest\\"][\\"failedRequests\\"]}}</p>\\n      </div>\\n      <div>\\n        <p><strong>Success Rate:</strong> {{$json[\\"stressTest\\"][\\"successRate\\"]}}%</p>\\n        <p><strong>Avg Response:</strong> {{$json[\\"stressTest\\"][\\"averageResponseTime\\"]}}s</p>\\n        <p><strong>Status:</strong> {{$json[\\"stressTest\\"][\\"performanceStatus\\"]}}</p>\\n      </div>\\n    </div>\\n  </div>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h3>🖥️ System Load During Test</h3>\\n    <div style=\\"display: grid; grid-template-columns: 1fr 1fr; gap: 10px;\\">\\n      <div>\\n        <p><strong>CPU Usage:</strong> {{$json[\\"systemLoad\\"][\\"cpuUsage\\"]}}</p>\\n        <p><strong>Memory Usage:</strong> {{$json[\\"systemLoad\\"][\\"memoryUsage\\"]}}</p>\\n      </div>\\n      <div>\\n        <p><strong>Network Latency:</strong> {{$json[\\"systemLoad\\"][\\"networkLatency\\"]}}</p>\\n        <p><strong>Disk Usage:</strong> {{$json[\\"systemLoad\\"][\\"diskUsage\\"]}}</p>\\n      </div>\\n    </div>\\n  </div>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h3>📋 Recommendations</h3>\\n    <ul>\\n      {{#each $json[\\"recommendations\\"]}}\\n      <li>{{this}}</li>\\n      {{/each}}\\n    </ul>\\n  </div>\\n  \\n  <div style=\\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\\">\\n    <h3>🔄 Next Stress Test</h3>\\n    <p>Next automated stress test scheduled for tomorrow at 2:00 PM IST</p>\\n    <p>Manual stress test available via webhook with \\"test_type\\": \\"stress\\"</p>\\n  </div>\\n  \\n  <p style=\\"text-align: center; margin-top: 30px; font-style: italic;\\">System stress test complete! 💪</p>\\n</div>",\n        "options": {}\n      },\n      "id": "send-stress-test-report",\n      "name": "Send Stress Test Report",\n      "type": "n8n-nodes-base.emailSend",\n      "typeVersion": 2,\n      "position": [\n        1120,\n        600\n      ],\n      "credentials": {\n        "smtp": {\n          "id": "gmail-smtp",\n          "name": "Gmail SMTP"\n        }\n      }\n    }\n  ],\n  "connections": {\n    "Morning Validation (7 AM)": {\n      "main": [\n        [\n          {\n            "node": "Get All Workflows",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Get All Workflows": {\n      "main": [\n        [\n          {\n            "node": "Generate Test Plan",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Generate Test Plan": {\n      "main": [\n        [\n          {\n            "node": "Split Test Workflows",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Split Test Workflows": {\n      "main": [\n        [\n          {\n            "node": "Check Workflow Health",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Check Workflow Health": {\n      "main": [\n        [\n          {\n            "node": "Validate Execution History",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Validate Execution History": {\n      "main": [\n        [\n          {\n            "node": "Select Test Command",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Select Test Command": {\n      "main": [\n        [\n          {\n            "node": "Execute Test Command",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Execute Test Command": {\n      "main": [\n        [\n          {\n            "node": "Compile Test Results",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Compile Test Results": {\n      "main": [\n        [\n          {\n            "node": "Aggregate Final Results",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Aggregate Final Results": {\n      "main": [\n        [\n          {\n            "node": "Send Validation Report",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Manual Validation Trigger": {\n      "main": [\n        [\n          {\n            "node": "Generate Sample Payloads",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Generate Sample Payloads": {\n      "main": [\n        [\n          {\n            "node": "Validate Test Request",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Validate Test Request": {\n      "main": [\n        [\n          {\n            "node": "Test AI Workflow",\n            "type": "main",\n            "index": 0\n          },\n          {\n            "node": "Test Email Workflow",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Test AI Workflow": {\n      "main": [\n        [\n          {\n            "node": "Compile Manual Results",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Test Email Workflow": {\n      "main": [\n        [\n          {\n            "node": "Compile Manual Results",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Compile Manual Results": {\n      "main": [\n        [\n          {\n            "node": "Send Manual Validation Report",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Afternoon Stress Test (2 PM)": {\n      "main": [\n        [\n          {\n            "node": "Generate Stress Tests",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Generate Stress Tests": {\n      "main": [\n        [\n          {\n            "node": "Execute Stress Test",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Execute Stress Test": {\n      "main": [\n        [\n          {\n            "node": "Analyze Stress Results",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    },\n    "Analyze Stress Results": {\n      "main": [\n        [\n          {\n            "node": "Send Stress Test Report",\n            "type": "main",\n            "index": 0\n          }\n        ]\n      ]\n    }\n  },\n  "createdAt": "2024-01-15T10:00:00.000Z",\n  "updatedAt": "2024-01-15T10:00:00.000Z",\n  "settings": {\n    "executionOrder": "v1"\n  },\n  "staticData": null,\n  "meta": {\n    "templateCredsSetupCompleted": true\n  },\n  "pinData": {},\n  "versionId": "1",\n  "triggerCount": 3,\n  "tags": [\n    {\n      "createdAt": "2024-01-15T10:00:00.000Z",\n      "updatedAt": "2024-01-15T10:00:00.000Z",\n      "id": "execution-validation",\n      "name": "Execution Validation"\n    }\n  ]\n}
+            },
+            {
+              "name": "content",
+              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"ai\"][\"content\"] : $json[\"payload\"][\"content\"]}}"
+            },
+            {
+              "name": "language",
+              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"ai\"][\"language\"] : $json[\"payload\"][\"language\"]}}"
+            }
+          ]
+        }
+      },
+      "id": "test-ai-workflow",
+      "name": "Test AI Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/success-notification",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "workflow",
+              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"email\"][\"workflow\"] : $json[\"payload\"][\"workflow\"]}}"
+            },
+            {
+              "name": "duration",
+              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"email\"][\"duration\"] : $json[\"payload\"][\"duration\"]}}"
+            },
+            {
+              "name": "result",
+              "value": "={{$json[\"payloads\"] ? $json[\"payloads\"][\"email\"][\"result\"] : $json[\"payload\"][\"result\"]}}"
+            }
+          ]
+        }
+      },
+      "id": "test-email-workflow",
+      "name": "Test Email Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Compile manual validation results\nconst testRequest = $node[\"Generate Sample Payloads\"].json;\nconst aiTestResult = $node[\"Test AI Workflow\"].json;\nconst emailTestResult = $node[\"Test Email Workflow\"].json;\n\n// Determine test success\nconst aiSuccess = aiTestResult && (aiTestResult.statusCode === 200 || aiTestResult.statusCode === 201);\nconst emailSuccess = emailTestResult && (emailTestResult.statusCode === 200 || emailTestResult.statusCode === 201);\n\nconst overallSuccess = aiSuccess && emailSuccess;\n\nreturn [{\n  json: {\n    validationType: 'manual',\n    testRequest: testRequest,\n    results: {\n      ai: {\n        tested: true,\n        success: aiSuccess,\n        statusCode: aiTestResult ? aiTestResult.statusCode : 'error',\n        response: aiTestResult ? 'AI workflow triggered' : 'Failed to trigger'\n      },\n      email: {\n        tested: true,\n        success: emailSuccess,\n        statusCode: emailTestResult ? emailTestResult.statusCode : 'error',\n        response: emailTestResult ? 'Email workflow triggered' : 'Failed to trigger'\n      }\n    },\n    summary: {\n      overallSuccess: overallSuccess,\n      successRate: ((aiSuccess ? 1 : 0) + (emailSuccess ? 1 : 0)) / 2 * 100,\n      testsRun: 2,\n      testsPassed: (aiSuccess ? 1 : 0) + (emailSuccess ? 1 : 0),\n      timestamp: new Date().toISOString()\n    }\n  }\n}];"
+      },
+      "id": "compile-manual-results",
+      "name": "Compile Manual Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "🧪 Manual Validation Complete - {{new Date().toLocaleTimeString('hi-IN')}}",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">🧪 मैन्युअल सत्यापन पूर्ण!</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>📊 Test Summary</h2>\n    <p><strong>Test Type:</strong> {{$json[\"validationType\"]}}</p>\n    <p><strong>Success Rate:</strong> {{$json[\"summary\"][\"successRate\"]}}%</p>\n    <p><strong>Tests Run:</strong> {{$json[\"summary\"][\"testsRun\"]}}</p>\n    <p><strong>Tests Passed:</strong> {{$json[\"summary\"][\"testsPassed\"]}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🤖 AI Workflow Test</h3>\n    <p><strong>Status:</strong> {{$json[\"results\"][\"ai\"][\"success\"] ? '🟢 Passed' : '🔴 Failed'}}</p>\n    <p><strong>Response:</strong> {{$json[\"results\"][\"ai\"][\"response\"]}}</p>\n    <p><strong>Status Code:</strong> {{$json[\"results\"][\"ai\"][\"statusCode\"]}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>📧 Email Workflow Test</h3>\n    <p><strong>Status:</strong> {{$json[\"results\"][\"email\"][\"success\"] ? '🟢 Passed' : '🔴 Failed'}}</p>\n    <p><strong>Response:</strong> {{$json[\"results\"][\"email\"][\"response\"]}}</p>\n    <p><strong>Status Code:</strong> {{$json[\"results\"][\"email\"][\"statusCode\"]}}</p>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔄 Next Steps</h3>\n    <ul>\n      <li>{{$json[\"summary\"][\"overallSuccess\"] ? '✅ All systems operational' : '⚠️ Some issues detected'}}</li>\n      <li>Check individual workflow logs if needed</li>\n      <li>Monitor system performance</li>\n      <li>Schedule next validation test</li>\n    </ul>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">Manual validation complete! 🎯</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-manual-validation-report",
+      "name": "Send Manual Validation Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 14,
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "id": "afternoon-stress-test",
+      "name": "Afternoon Stress Test (2 PM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate multiple test requests for stress testing\nconst stressTests = [];\n\n// Create 10 concurrent test requests\nfor (let i = 1; i <= 10; i++) {\n  stressTests.push({\n    testId: i,\n    task: 'summarize',\n    content: `This is stress test number ${i}. Testing the AI system under load to ensure reliability and performance.`,\n    language: i % 2 === 0 ? 'hindi' : 'english',\n    timestamp: new Date().toISOString()\n  });\n}\n\nreturn stressTests.map(test => ({ json: test }));"
+      },
+      "id": "generate-stress-tests",
+      "name": "Generate Stress Tests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/ai-process-trigger",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "task",
+              "value": "={{$json[\"task\"]}}"
+            },
+            {
+              "name": "content",
+              "value": "={{$json[\"content\"]}}"
+            },
+            {
+              "name": "language",
+              "value": "={{$json[\"language\"]}}"
+            }
+          ]
+        }
+      },
+      "id": "execute-stress-test",
+      "name": "Execute Stress Test",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyze stress test results\nconst allResults = $input.all();\n\nconst totalTests = allResults.length;\nconst successfulTests = allResults.filter(result => {\n  const statusCode = result.json.statusCode;\n  return statusCode === 200 || statusCode === 201;\n}).length;\n\nconst failedTests = totalTests - successfulTests;\nconst successRate = (successfulTests / totalTests) * 100;\n\n// Calculate average response time (simulated)\nconst avgResponseTime = 2.8; // seconds\n\n// Performance assessment\nconst performanceStatus = successRate >= 90 ? '🟢 Excellent' :\n                         successRate >= 75 ? '🟡 Good' :\n                         successRate >= 50 ? '🟠 Fair' : '🔴 Poor';\n\nreturn [{\n  json: {\n    stressTest: {\n      totalRequests: totalTests,\n      successfulRequests: successfulTests,\n      failedRequests: failedTests,\n      successRate: Math.round(successRate),\n      averageResponseTime: avgResponseTime,\n      performanceStatus: performanceStatus\n    },\n    systemLoad: {\n      cpuUsage: '45%',\n      memoryUsage: '2.1GB / 4GB',\n      networkLatency: '23ms',\n      diskUsage: '15GB / 50GB'\n    },\n    recommendations: [\n      successRate < 90 ? '⚠️ Consider system optimization' : '✅ System handling load well',\n      '🔄 Monitor resource usage during peak times',\n      '📊 Regular stress testing recommended',\n      '⚡ Scale resources if needed'\n    ],\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "analyze-stress-results",
+      "name": "Analyze Stress Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "balaji.web.design1@gmail.com",
+        "subject": "💪 Stress Test Report - {{new Date().toLocaleDateString('hi-IN')}}",
+        "html": "<div style=\"font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white;\">\n  <h1 style=\"text-align: center; margin-bottom: 30px;\">💪 स्ट्रेस टेस्ट रिपोर्ट</h1>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h2>📈 Performance Results</h2>\n    <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 20px;\">\n      <div>\n        <p><strong>Total Requests:</strong> {{$json[\"stressTest\"][\"totalRequests\"]}}</p>\n        <p><strong>Successful:</strong> {{$json[\"stressTest\"][\"successfulRequests\"]}}</p>\n        <p><strong>Failed:</strong> {{$json[\"stressTest\"][\"failedRequests\"]}}</p>\n      </div>\n      <div>\n        <p><strong>Success Rate:</strong> {{$json[\"stressTest\"][\"successRate\"]}}%</p>\n        <p><strong>Avg Response:</strong> {{$json[\"stressTest\"][\"averageResponseTime\"]}}s</p>\n        <p><strong>Status:</strong> {{$json[\"stressTest\"][\"performanceStatus\"]}}</p>\n      </div>\n    </div>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🖥️ System Load During Test</h3>\n    <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 10px;\">\n      <div>\n        <p><strong>CPU Usage:</strong> {{$json[\"systemLoad\"][\"cpuUsage\"]}}</p>\n        <p><strong>Memory Usage:</strong> {{$json[\"systemLoad\"][\"memoryUsage\"]}}</p>\n      </div>\n      <div>\n        <p><strong>Network Latency:</strong> {{$json[\"systemLoad\"][\"networkLatency\"]}}</p>\n        <p><strong>Disk Usage:</strong> {{$json[\"systemLoad\"][\"diskUsage\"]}}</p>\n      </div>\n    </div>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>📋 Recommendations</h3>\n    <ul>\n      {{#each $json[\"recommendations\"]}}\n      <li>{{this}}</li>\n      {{/each}}\n    </ul>\n  </div>\n  \n  <div style=\"background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;\">\n    <h3>🔄 Next Stress Test</h3>\n    <p>Next automated stress test scheduled for tomorrow at 2:00 PM IST</p>\n    <p>Manual stress test available via webhook with \"test_type\": \"stress\"</p>\n  </div>\n  \n  <p style=\"text-align: center; margin-top: 30px; font-style: italic;\">System stress test complete! 💪</p>\n</div>",
+        "options": {}
+      },
+      "id": "send-stress-test-report",
+      "name": "Send Stress Test Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp",
+          "name": "Gmail SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Morning Validation (7 AM)": {
+      "main": [
+        [
+          {
+            "node": "Get All Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Workflows": {
+      "main": [
+        [
+          {
+            "node": "Generate Test Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Test Plan": {
+      "main": [
+        [
+          {
+            "node": "Split Test Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Test Workflows": {
+      "main": [
+        [
+          {
+            "node": "Check Workflow Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Workflow Health": {
+      "main": [
+        [
+          {
+            "node": "Validate Execution History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Execution History": {
+      "main": [
+        [
+          {
+            "node": "Select Test Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Test Command": {
+      "main": [
+        [
+          {
+            "node": "Execute Test Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Test Command": {
+      "main": [
+        [
+          {
+            "node": "Compile Test Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Test Results": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Final Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Final Results": {
+      "main": [
+        [
+          {
+            "node": "Send Validation Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Validation Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Sample Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Sample Payloads": {
+      "main": [
+        [
+          {
+            "node": "Validate Test Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Test Request": {
+      "main": [
+        [
+          {
+            "node": "Test AI Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Test Email Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test AI Workflow": {
+      "main": [
+        [
+          {
+            "node": "Compile Manual Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Email Workflow": {
+      "main": [
+        [
+          {
+            "node": "Compile Manual Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Manual Results": {
+      "main": [
+        [
+          {
+            "node": "Send Manual Validation Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Afternoon Stress Test (2 PM)": {
+      "main": [
+        [
+          {
+            "node": "Generate Stress Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Stress Tests": {
+      "main": [
+        [
+          {
+            "node": "Execute Stress Test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Stress Test": {
+      "main": [
+        [
+          {
+            "node": "Analyze Stress Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Stress Results": {
+      "main": [
+        [
+          {
+            "node": "Send Stress Test Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-01-15T10:00:00.000Z",
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1",
+  "triggerCount": 3,
+  "tags": [
+    {
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z",
+      "id": "execution-validation",
+      "name": "Execution Validation"
+    }
+  ]
+}
