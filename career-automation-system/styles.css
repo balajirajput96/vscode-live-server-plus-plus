@@ -46,6 +46,32 @@ body {
     font-size: 1.1rem;
     color: #718096;
     font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
 }
 
 /* Navigation Tabs */

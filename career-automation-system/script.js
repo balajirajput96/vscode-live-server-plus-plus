@@ -2,6 +2,7 @@
 let currentTab = 'portfolio';
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+let scheduledPosts = JSON.parse(localStorage.getItem('scheduledPosts')) || [];
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -92,12 +93,13 @@ function generatePortfolioText(name, type, description, tools, dataset, findings
             
             <h4>तकनीकी विवरण</h4>
             <ul>
-                <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'Python, Pandas, Matplotlib'}</li>
-                <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'Public Dataset'}</li>
+                <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'केवल अपने verified tools जोड़ें'}</li>
+                <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}</li>
             </ul>
             
             <h4>मुख्य निष्कर्ष</h4>
-            <p>${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण पैटर्न और insights प्राप्त किए गए।'}</p>
+            <p>${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}</p>
+            <p><em>Draft template: publish या portfolio में जोड़ने से पहले हर claim को अपने records से verify करें।</em></p>
             
             <h4>GitHub README.md</h4>
             <pre><code># ${name}
@@ -106,13 +108,13 @@ function generatePortfolioText(name, type, description, tools, dataset, findings
 ${description}
 
 ## तकनीकी स्टैक
-- ${tools || 'Python, Pandas, Matplotlib, Seaborn'}
+            - ${tools || 'केवल verified tools जोड़ें'}
 
 ## डेटा स्रोत
-${dataset || 'Public Dataset from Kaggle/NCBI'}
+            ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}
 
 ## मुख्य निष्कर्ष
-${findings || 'डेटा एनालिसिस के माध्यम से महत्वपूर्ण insights प्राप्त किए गए।'}
+            ${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}
 
 ## इंस्टॉलेशन और उपयोग
 \`\`\`bash
@@ -214,7 +216,7 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
         'educational': 'शैक्षिक'
     };
 
-    const defaultHashtags = '#Bioinformatics #DataAnalysis #Biotechnology #Python #Pharma #ClinicalResearch';
+    const defaultHashtags = '#Draft #ReviewBeforePublishing';
     
     return `
         <div class="social-content">
@@ -224,11 +226,10 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
                 <p><strong>टोन:</strong> ${tones[tone]}</p>
                 
                 <div class="post-text">
-                    <p>🚀 <strong>${content}</strong></p>
-                    <p>🔬 बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में काम करते हुए, मैंने यह महत्वपूर्ण सीख प्राप्त की है।</p>
-                    <p>💡 यह प्रोजेक्ट मेरे करियर में एक महत्वपूर्ण मील का पत्थर है।</p>
-                    <p>📊 डेटा-संचालित निर्णय लेने की शक्ति को समझना आज के समय में बहुत महत्वपूर्ण है।</p>
-                    <p>🔗 पूरा केस स्टडी देखने के लिए मेरी पोर्टफोलियो वेबसाइट पर जाएँ।</p>
+                    <p><strong>Draft topic:</strong> ${content}</p>
+                    <p>[अपनी verified सीख या finding यहाँ जोड़ें।]</p>
+                    <p>[सिर्फ verified project details, source link, और allowed media reference जोड़ें।]</p>
+                    <p><em>यह local draft है; approval के बिना publish नहीं किया जाएगा।</em></p>
                     <p>${hashtags || defaultHashtags}</p>
                 </div>
             </div>
@@ -247,7 +248,24 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
 }
 
 function schedulePost() {
-    showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
+    const content = document.querySelector('#socialContent .post-text')?.textContent;
+    if (!content) {
+        showMessage('पहले पोस्ट generate करें!', 'error');
+        return;
+    }
+
+    const postData = {
+        id: Date.now(),
+        type: 'social_media_post',
+        platform: document.getElementById('platform').value,
+        content,
+        status: 'draft_only',
+        timestamp: new Date().toISOString()
+    };
+
+    scheduledPosts.push(postData);
+    localStorage.setItem('scheduledPosts', JSON.stringify(scheduledPosts));
+    showMessage('पोस्ट केवल local draft queue में सेव हुआ है। Publish के लिए server-side approval आवश्यक है।', 'info');
 }
 
 // Resume Optimizer Functions
@@ -289,19 +307,12 @@ function generateOptimizedContent(type, content, role, company) {
     };
 
     const headlines = [
-        `🔬 बायोटेक्नोलॉजी प्रोफेशनल | बायोइन्फॉर्मेटिक्स में रुचि | Python & Data Analysis`,
-        `📊 बायोइन्फॉर्मेटिक्स एनालिस्ट | डेटा-संचालित रिसर्च | फार्मा इंडस्ट्री में करियर`,
-        `🧬 बायोटेक्नोलॉजी डिप्लोमा | बायोइन्फॉर्मेटिक्स में विशेषज्ञता | AI & ML में अनुभव`,
-        `💻 बायोडेटा एनालिस्ट | क्लिनिकल रिसर्च | Python, SQL, Web Development`,
-        `🔬 बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक | डेटा एनालिसिस में पैशन | फार्मा करियर`
+        '[Verified qualification] | [Verified role focus] | [Verified skill or domain]',
+        '[Verified current role] | [Verified industry experience] | [Verified career objective]'
     ];
 
     const summaries = [
-        `बायोटेक्नोलॉजी में डिप्लोमा के साथ, मैं बायोइन्फॉर्मेटिक्स और डेटा एनालिसिस के क्षेत्र में अपना करियर बनाने के लिए तैयार हूँ। मेरे पास Python, SQL, और वेब डिज़ाइन में मजबूत कौशल हैं, जो मुझे फार्मास्युटिकल और क्लिनिकल रिसर्च कंपनियों में मूल्यवान बनाते हैं।`,
-        
-        `एक बायोटेक्नोलॉजी प्रोफेशनल के रूप में, मैं डेटा-संचालित निर्णय लेने की शक्ति में विश्वास रखता हूँ। मेरी बायोइन्फॉर्मेटिक्स में 1-महीने की इंटर्नशिप और Python, SQL में मजबूत कौशल मुझे फार्मा इंडस्ट्री में सफल करियर बनाने में मदद करेंगे।`,
-        
-        `बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक का मेरा सफर मुझे डेटा एनालिसिस और क्लिनिकल रिसर्च के बीच की खाई को पाटने में मदद करता है। मेरे कौशल में Python प्रोग्रामिंग, डेटा विज़ुअलाइज़ेशन, और वेब डिज़ाइन शामिल हैं।`
+        'Draft template: replace every bracketed field with facts present in your resume, portfolio, or supporting records. Do not add degrees, skills, tools, dates, metrics, employers, or achievements that cannot be verified.'
     ];
 
     let optimizedText = '';
@@ -328,8 +339,8 @@ function generateOptimizedContent(type, content, role, company) {
                 <h4>Optimized ${typeLabels[type]}:</h4>
                 <p><strong>मूल कंटेंट:</strong></p>
                 <p>${content}</p>
-                <p><strong>Optimized कंटेंट:</strong></p>
-                <p>${content.replace(/मैंने/g, 'मैंने सफलतापूर्वक').replace(/किया/g, 'पूरा किया')}</p>
+                <p><strong>Review cue:</strong></p>
+                <p>इस text को केवल clarity के लिए edit करें। कोई नया degree, skill, employer, metric, certification, responsibility, या achievement न जोड़ें।</p>
             `;
     }
 
@@ -346,7 +357,7 @@ function searchJobs() {
     const location = document.getElementById('jobLocation').value;
     const company = document.getElementById('jobCompany').value;
 
-    showMessage(`नौकरी खोज रहा हूँ: ${role} in ${location} at ${company}`, 'success');
+    showMessage(`Local UI draft results तैयार हो रहे हैं: ${role} in ${location} at ${company}. ये verified job listings नहीं हैं।`, 'info');
     
     // Simulate job search
     setTimeout(() => {
@@ -358,22 +369,22 @@ function updateJobList() {
     const jobList = document.querySelector('.job-list');
     const newJobs = [
         {
-            title: 'Bioinformatics Analyst',
-            company: 'Sun Pharma',
-            location: 'Mumbai, Maharashtra',
-            description: 'Looking for a skilled bioinformatics analyst with Python experience in drug discovery and clinical data analysis.'
+            title: 'Example role — verify official source',
+            company: 'Example employer',
+            location: 'Add verified location',
+            description: 'Illustrative UI record only. Add an official source URL and verify requirements before drafting any application.'
         },
         {
-            title: 'Data Analyst - Clinical Research',
-            company: 'Zydus Cadila',
-            location: 'Ahmedabad, Gujarat',
-            description: 'Join our clinical research team to analyze patient data and contribute to drug development process.'
+            title: 'Example role — verify official source',
+            company: 'Example employer',
+            location: 'Add verified location',
+            description: 'Illustrative UI record only. No employer has been contacted and no application is created.'
         },
         {
-            title: 'Research Associate - Bioinformatics',
-            company: 'Alembic Pharmaceuticals',
-            location: 'Vadodara, Gujarat',
-            description: 'Work on genomic data analysis and contribute to our precision medicine initiatives.'
+            title: 'Example role — verify official source',
+            company: 'Example employer',
+            location: 'Add verified location',
+            description: 'Illustrative UI record only. Use an official listing and a truthful candidate profile before any draft handoff.'
         }
     ];
 
@@ -386,7 +397,7 @@ function updateJobList() {
                 <p class="location">${job.location}</p>
                 <p class="description">${job.description}</p>
                 <div class="job-actions">
-                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Apply</button>
+                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Prepare draft</button>
                     <button class="btn btn-sm btn-secondary" onclick="saveJob('${job.title}', '${job.company}')">Save</button>
                 </div>
             </div>
@@ -395,11 +406,11 @@ function updateJobList() {
 }
 
 function applyForJob(title, company) {
-    showMessage(`${company} में ${title} के लिए आवेदन किया गया!`, 'success');
+    showMessage(`${company} में ${title} के लिए local draft prepared है। कोई application submit नहीं हुआ।`, 'info');
 }
 
 function saveJob(title, company) {
-    showMessage(`${company} में ${title} सेव किया गया!`, 'success');
+    showMessage(`${company} में ${title} local review के लिए saved है।`, 'info');
 }
 
 // AI Prompts Functions
@@ -534,82 +545,40 @@ document.addEventListener('DOMContentLoaded', initializeHelp);
 function generateCopilotProject(projectType) {
     const templates = {
         'lab-automation': {
-            name: 'Intelligent Lab Report Automation',
-            description: 'Microsoft 365 Copilot integration for automated lab workflows',
-            linkedinPost: `🤖 Excited to share my latest Microsoft Copilot integration project!
+            name: 'Lab automation draft template',
+            description: 'Draft only — replace with a verified project, source, and permitted tools.',
+            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
 
-Just completed an intelligent lab automation system that's transforming how we handle biotech research workflows:
+Project topic: lab workflow improvement.
 
-🔬 **Challenge:** Manual lab reports were taking 3+ hours and prone to errors
-🚀 **Solution:** Built Microsoft 365 Copilot integration for automated workflows
+Replace this template with verified information only:
+- the actual problem and project scope
+- tools that were actually used
+- a measured result with its source and measurement method, if applicable
+- any review or compliance status only when documented
 
-**Key Achievements:**
-✅ 70% reduction in report generation time
-✅ 100% GMP compliance maintained
-✅ AI-powered statistical analysis
-✅ Automated Teams collaboration
-
-**Technology Stack:**
-• Microsoft 365 Copilot
-• Word/Excel Copilot integration
-• Power Automate workflows
-• SharePoint data management
-• Python API connections
-
-🔗 Full technical documentation: [GitHub Repository]
-📊 Live demo: [Portfolio Website]
-
-How is your organization leveraging Microsoft Copilot for research automation?
-
-#MicrosoftCopilot #BiotechAI #LabAutomation #M365 #Innovation #Research`,
-            resumeBullet: 'Developed Microsoft 365 Copilot integration reducing laboratory report generation time by 70% while maintaining 100% GMP compliance through automated Word templates, Excel analytics, and SharePoint workflows'
+Do not state that a system was completed, deployed, compliant, integrated, or faster unless those facts are supported by records.`,
+            resumeBullet: '[DRAFT] Describe only a verified contribution, verified tools, and a documented outcome. Remove this line until all facts are supported.'
         },
         'clinical-dashboard': {
-            name: 'Clinical Data Dashboard with Power BI Copilot',
-            description: 'AI-powered clinical trial data analysis and visualization',
-            linkedinPost: `📊 Proud to showcase my Clinical Data Dashboard powered by Microsoft Copilot!
+            name: 'Clinical dashboard draft template',
+            description: 'Draft only — do not represent this as a deployed clinical system.',
+            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
 
-Just deployed an AI-driven clinical trial analysis system that's revolutionizing how we handle patient data:
+Project topic: clinical dashboard concept.
 
-🎯 **The Challenge:** Complex clinical data analysis was slowing down research timelines
-💡 **The Solution:** Power BI Copilot integration with intelligent automation
-
-**Game-Changing Features:**
-✅ Natural language queries for data insights
-✅ Automated statistical significance testing  
-✅ Real-time compliance monitoring
-✅ AI-generated clinical summaries
-
-**Real Impact:**
-🚀 60% faster data analysis
-📈 Improved accuracy in clinical insights
-🔐 Enhanced data security and compliance
-
-#ClinicalResearch #PowerBI #MicrosoftCopilot #HealthcareAI #DataAnalysis`,
-            resumeBullet: 'Built intelligent clinical data dashboard using Power BI Copilot, achieving 60% faster analysis of patient data with automated statistical testing and HIPAA-compliant collaboration features'
+Before using this copy, add only verified, permissioned details. Never claim use of patient data, a clinical deployment, a compliance status, accuracy improvement, or a performance result without documentary evidence and required authorization.`,
+            resumeBullet: '[DRAFT] Add a factual, source-supported description only after the project, data permissions, tools, and outcome are verified.'
         },
         'api-pipeline': {
-            name: 'Bioinformatics Pipeline with Copilot API',
-            description: 'Custom automated sequence analysis using Copilot API',
-            linkedinPost: `🧬 Breaking barriers in bioinformatics with Microsoft Copilot API!
+            name: 'Bioinformatics pipeline draft template',
+            description: 'Draft only — replace with a verified, reproducible project description.',
+            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
 
-Just built a custom genomics analysis pipeline that's pushing the boundaries of what's possible with AI-assisted research:
+Project topic: bioinformatics workflow concept.
 
-🎯 **The Vision:** Accelerate drug discovery through intelligent automation
-⚡ **The Reality:** 5x faster sequence analysis with unprecedented accuracy
-
-**Pipeline Capabilities:**
-🤖 **Copilot API Integration:** Custom models for genomic analysis
-🔬 **Automated Workflows:** From raw data to clinical insights
-📊 **Smart Visualizations:** AI-generated research summaries
-
-**Breakthrough Results:**
-⚡ 500% improvement in analysis speed
-🎯 Enhanced variant calling accuracy
-🔍 Automated literature correlation
-
-#BioinformaticsAI #CopilotAPI #DrugDiscovery #GenomicsAutomation`,
-            resumeBullet: 'Engineered custom bioinformatics pipeline using Microsoft Copilot API, accelerating genomic sequence analysis by 500% through automated workflow integration and intelligent data processing algorithms'
+Add verified inputs, reproducible methods, permitted data sources, and documented findings before sharing. Do not claim an API integration, a clinical use, accuracy improvement, speed improvement, or drug-discovery impact without evidence.`,
+            resumeBullet: '[DRAFT] Add a verified contribution and documented result only after independent review of the project evidence.'
         }
     };
 
@@ -619,7 +588,7 @@ Just built a custom genomics analysis pipeline that's pushing the boundaries of 
         return;
     }
 
-    // Show success message with LinkedIn and Resume content
+    // Show a local, fact-review template only.
     showCopilotProjectResult(template);
 }
 
@@ -630,11 +599,12 @@ function showCopilotProjectResult(template) {
     modal.innerHTML = `
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fab fa-microsoft"></i> Copilot Project Generated!</h3>
+                <h3><i class="fab fa-microsoft"></i> Copilot Project Draft Template</h3>
                 <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
             </div>
             <div class="modal-body">
                 <div class="project-result">
+                    <p><strong>Fact-review required:</strong> This local template contains no verified achievement claim. Do not publish or add it to a resume until every statement is supported.</p>
                     <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
                     <div class="content-box">
                         <p>${template.linkedinPost}</p>
@@ -659,18 +629,8 @@ function showCopilotProjectResult(template) {
 }
 
 function viewCopilotDemo(projectType) {
-    const demos = {
-        'lab-automation': 'https://example.com/lab-automation-demo',
-        'clinical-dashboard': 'https://example.com/clinical-dashboard-demo', 
-        'api-pipeline': 'https://example.com/api-pipeline-demo'
-    };
-    
-    const url = demos[projectType];
-    if (url) {
-        window.open(url, '_blank');
-    } else {
-        showMessage('Demo link not available', 'info');
-    }
+    void projectType;
+    showMessage('Demo links are not configured. Attach only a verified, authorized project link after review.', 'info');
 }
 
 function copyToClipboard(text) {
@@ -681,3 +641,73 @@ function copyToClipboard(text) {
         showMessage('Failed to copy to clipboard', 'error');
     });
 }
+
+// Webhook Integration Functions
+async function sendToWebhook(data) {
+    void data;
+    throw new Error('Browser-side webhook sending is disabled. Use a server-side approval queue before any external action.');
+}
+
+function getWebhookUrl() {
+    // Try to get webhook URL from various sources
+    return localStorage.getItem('webhookUrl') || 
+           window.WEBHOOK_URL || 
+           (typeof process !== 'undefined' && process?.env?.N8N_WEBHOOK_URL) ||
+           null;
+}
+
+function setWebhookUrl(url) {
+    localStorage.setItem('webhookUrl', url);
+    showMessage('Webhook URL local settings में सेव है; browser से कोई external request नहीं भेजी जाएगी।', 'info');
+}
+
+// Enhanced save project function with webhook integration
+async function saveProjectWithWebhook() {
+    const projectName = document.getElementById('projectName').value;
+    const description = document.getElementById('projectDescription').value;
+    const tools = document.getElementById('toolsUsed').value;
+    const findings = document.getElementById('keyFindings').value;
+
+    if (!projectName || !description) {
+        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
+        return;
+    }
+
+    const projectData = {
+        name: projectName,
+        description: description,
+        tools: tools.split(',').map(t => t.trim()),
+        findings: findings,
+        timestamp: new Date().toISOString()
+    };
+
+    // Save locally
+    projects.push(projectData);
+    localStorage.setItem('projects', JSON.stringify(projects));
+
+    showMessage('प्रोजेक्ट केवल local draft के रूप में सेव हुआ है। External handoff के लिए server-side approval आवश्यक है।', 'info');
+
+    updateAnalytics();
+}
+
+// Webhook configuration UI
+function showWebhookConfig() {
+    const currentUrl = getWebhookUrl() || '';
+    const newUrl = prompt('n8n Webhook URL enter करें:', currentUrl);
+    
+    if (newUrl && newUrl.trim()) {
+        setWebhookUrl(newUrl.trim());
+    }
+}
+
+async function testWebhookConnection() {
+    showMessage('Browser-side webhook testing is disabled. Verify connectivity only through an approved server-side integration.', 'info');
+}
+
+// Auto-connect webhook on page load if URL is available
+document.addEventListener('DOMContentLoaded', function() {
+    const webhookUrl = getWebhookUrl();
+    if (webhookUrl) {
+        console.log('Webhook URL configured:', webhookUrl.substring(0, 30) + '...');
+    }
+});
