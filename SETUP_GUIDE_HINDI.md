@@ -115,7 +115,7 @@ WEBHOOK_URL=http://localhost:5678/
 # Database password generate करें
 openssl rand -base64 16
 
-# n8n password generate करें  
+# n8n password generate करें
 openssl rand -base64 12
 
 # Encryption key generate करें
@@ -225,7 +225,7 @@ https://your-domain.com
 
 ### 5.2 First Time Setup:
 1. **Login करें** username/password से (.env file में जो set किया था)
-2. **Owner account** बनाएं 
+2. **Owner account** बनाएं
 3. **Test workflow** create करें
 
 ### 5.3 Basic Test Workflow:
@@ -565,7 +565,7 @@ docker compose logs --tail=200
 
 ### Next Steps:
 1. ✅ Daily health checks करते रहें
-2. ✅ Regular backups verify करें  
+2. ✅ Regular backups verify करें
 3. ✅ New workflows create करें
 4. ✅ Performance monitor करें
 5. ✅ Security updates रखें

@@ -22,7 +22,7 @@
 #### Step 1: Wix AI Website Builder
 **Platform**: [Wix AI Website Builder](https://www.wix.com/ai-website-builder)
 
-**Action**: 
+**Action**:
 1. Wix पर जाएं और "Create with AI" चुनें
 2. नीचे का प्रॉम्प्ट कॉपी-पेस्ट करें:
 
@@ -77,7 +77,7 @@ Seeking opportunities in pharmaceutical and clinical research companies where I 
 ```
 
 #### Step 2: Repository Organization
-**Action**: 
+**Action**:
 1. Create repositories for each project
 2. Add detailed README files
 3. Include requirements.txt and documentation
@@ -274,7 +274,7 @@ Create a Facebook post about my biotechnology project that's engaging for both t
 3. Weekly posts schedule करें
 
 #### Step 2: Content Batching
-**Action**: 
+**Action**:
 1. 2 weeks का content advance में तैयार करें
 2. Posts को schedule करें
 3. Analytics track करें
@@ -363,7 +363,7 @@ Write a compelling cover letter for [POSITION] at [COMPANY]. Include:
 5. Track in spreadsheet
 
 #### Step 2: Networking Strategy
-**Action**: 
+**Action**:
 1. Connect with company employees on LinkedIn
 2. Send personalized messages
 3. Attend industry events
@@ -396,7 +396,7 @@ Action 3: Update analytics
 ```
 
 #### Step 2: Google Sheets Automation
-**Action**: 
+**Action**:
 1. Create job tracking sheet
 2. Set up automated reminders
 3. Create analytics dashboard

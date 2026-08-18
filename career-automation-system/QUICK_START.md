@@ -19,7 +19,7 @@ Dataset: TCGA Breast Cancer Dataset
 Findings: 3 key gene markers identified जो tumor size से correlate करते हैं
 ```
 
-**Action**: 
+**Action**:
 1. Form भरें
 2. "AI से कंटेंट जनरेट करें" क्लिक करें
 3. Generated content को review करें
@@ -167,7 +167,7 @@ Date: _______________
 ## 🚨 Common Issues & Solutions
 
 ### Problem: Content Not Generating
-**Solution**: 
+**Solution**:
 1. सभी required fields भरें
 2. Browser refresh करें
 3. Internet connection check करें

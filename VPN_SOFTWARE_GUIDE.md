@@ -14,11 +14,11 @@
 - **Global Server Network**: 3000+ servers in 94 countries
 - **Fast Speed**: Up to 1 Gbps connection speed
 - **Strong Security**: AES-256 encryption + kill switch
-- **Developer Friendly**: 
+- **Developer Friendly**:
   - API access for automation
   - Multiple protocol support (OpenVPN, IKEv2, Lightway)
   - Linux CLI tools
-- **Cloud Integration**: 
+- **Cloud Integration**:
   - AWS, Google Cloud, Azure compatibility
   - Docker container support
   - Kubernetes deployment options
@@ -49,7 +49,7 @@ expressvpn disconnect
 
 #### Features:
 - **Massive Network**: 5400+ servers in 59 countries
-- **Advanced Security**: 
+- **Advanced Security**:
   - Double VPN encryption
   - Onion over VPN
   - CyberSec malware protection
@@ -168,7 +168,7 @@ services:
       - USER=${NORD_USER}
       - PASS=${NORD_PASS}
       - CONNECT=india
-  
+
   n8n:
     image: n8nio/n8n
     depends_on:
@@ -304,7 +304,7 @@ docker-compose up -d
 - **API Documentation**: expressvpn.com/api
 
 ### NordVPN:
-- **24/7 Chat Support**: Available  
+- **24/7 Chat Support**: Available
 - **Knowledge Base**: nordvpn.com/blog
 - **Developer Resources**: nordvpn.com/developers
 

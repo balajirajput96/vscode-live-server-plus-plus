@@ -69,10 +69,10 @@ log "Creating compressed backup archive..."
 if [ -f "$BACKUP_DIR/workflows_$DATE.json" ] || [ -f "$BACKUP_DIR/database_$DATE.sqlite" ]; then
     tar -czf "$BACKUP_DIR/n8n_backup_$DATE.tar.gz" -C "$BACKUP_DIR" \
         $(ls "$BACKUP_DIR" | grep "$DATE" | tr '\n' ' ') 2>/dev/null || true
-    
+
     # Clean up individual files
     rm -f "$BACKUP_DIR"/*_"$DATE".json "$BACKUP_DIR"/*_"$DATE".sqlite 2>/dev/null || true
-    
+
     info "Backup archive created: n8n_backup_$DATE.tar.gz"
 else
     warn "No backup files to archive"

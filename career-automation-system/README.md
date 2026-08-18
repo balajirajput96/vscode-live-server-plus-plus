@@ -342,7 +342,7 @@ career-automation-system/
 #### Content Not Generating
 ```
 Problem: AI content generation में error
-Solution: 
+Solution:
 1. सभी required fields भरें
 2. Internet connection check करें
 3. Browser refresh करें
