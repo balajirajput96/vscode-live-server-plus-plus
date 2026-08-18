@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 import { isSupportedFile } from './utils/index';
 
 // Stream version
-export const readFileStream = (filePath: string, encoding?: string) => {
+export const readFileStream = (filePath: string, encoding?: BufferEncoding) => {
   const dirtyFile = getDirtyFileFromVscode(filePath);
 
   if (dirtyFile) {

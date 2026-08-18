@@ -20,7 +20,7 @@ export const fileSelector = (req: ILSPPIncomingMessage, res: ServerResponse) => 
 };
 
 function getReqFileUrl(req: ILSPPIncomingMessage): string {
-  const { pathname = '/' } = url.parse(req.url || '/');
+  const pathname = url.parse(req.url || '/').pathname || '/';
 
   if (!path.extname(pathname)) {
     //TODO: THIS NEED TO FIX. WE HAVE TO LOOK INTO DISK
