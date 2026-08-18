@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as http from 'http';
 import WebSocketType = require('ws');
 import * as path from 'path';
+import { Socket } from 'net';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
 import { INJECTED_TEXT, isInjectableFile } from './utils';
@@ -91,7 +92,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
       this.registerOnChangeReload();
       this.goLiveEvent.fire({ LSPP: this });
     } catch (error) {
-      if (error.code === 'EADDRINUSE') {
+      const serverError = error as NodeJS.ErrnoException;
+      if (serverError.code === 'EADDRINUSE') {
         return this.serverErrorEvent.fire({
           LSPP: this,
           code: 'portAlreadyInUse',
@@ -101,8 +103,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
       return this.serverErrorEvent.fire({
         LSPP: this,
-        code: error.code,
-        message: error.message
+        code: 'serverError',
+        message: serverError.message
       });
     }
   }
@@ -178,8 +180,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     return 'reload';
   }
 
-  private listenServer() {
-    return new Promise((resolve, reject) => {
+  private listenServer(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       if (!this.cwd) {
         const error = new LSPPError('CWD is not defined', 'cwdUndefined');
         return reject(error);
@@ -198,8 +200,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  private closeServer() {
-    return new Promise((resolve, reject) => {
+  private closeServer(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       this.server!.close(err => {
         return err ? reject(err) : resolve();
       });
@@ -207,8 +209,8 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  private closeWs() {
-    return new Promise((resolve, reject) => {
+  private closeWs(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       if (!this.ws) return resolve();
       this.ws.close(err => (err ? reject(err) : resolve()));
     });
@@ -285,7 +287,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
     this.server.on('upgrade', (request, socket, head) => {
       if (request.url === '/_ws_lspp') {
-        this.ws!.handleUpgrade(request, socket, head, ws => {
+        this.ws!.handleUpgrade(request, socket as Socket, head, ws => {
           this.ws!.emit('connection', ws, request);
         });
       } else {
@@ -333,7 +335,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
       fileStream.pipe(res);
     });
 
-    fileStream.on('error', err => {
+    fileStream.on('error', (err: NodeJS.ErrnoException) => {
       console.error('ERROR ', err);
       res.statusCode = err.code === 'ENOENT' ? 404 : 500;
       return res.end(null);

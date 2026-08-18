@@ -5,7 +5,8 @@ export type LSPPServerErrorCodes =
   | 'serverIsAlreadyRunning'
   | 'portAlreadyInUse'
   | 'serverIsNotRunning'
-  | 'cwdUndefined';
+  | 'cwdUndefined'
+  | 'serverError';
 
 export interface ILiveServerPlusPlus {
   readonly onDidGoLive: Event<GoLiveEvent>;
