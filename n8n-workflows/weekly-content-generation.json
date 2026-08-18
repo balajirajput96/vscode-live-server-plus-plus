@@ -1,0 +1,135 @@
+{
+  "name": "Weekly Content Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Every Monday 9 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "generate",
+        "prompt": "Generate 5 professional LinkedIn post ideas for a biotechnology student focused on career development, AI tools, and industry insights. Include relevant hashtags."
+      },
+      "id": "generate-ideas", 
+      "name": "Generate Weekly Post Ideas",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "content": "={{$node['Generate Weekly Post Ideas'].json['choices'][0]['text']}}",
+        "platform": "linkedin"
+      },
+      "id": "create-posts",
+      "name": "Create Social Media Posts", 
+      "type": "n8n-nodes-base.socialMediaScheduler",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "schedule",
+        "scheduledTime": "={{DateTime.now().plus({days: 1}).toISO()}}",
+        "content": "={{$node['Create Social Media Posts'].json['content']}}"
+      },
+      "id": "schedule-posts",
+      "name": "Schedule Posts",
+      "type": "n8n-nodes-base.buffer",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendEmail",
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "22034563001@paruluniversity.ac.in",
+        "subject": "Weekly Content Generated - Review Required",
+        "text": "Your weekly content has been generated and scheduled. Please review:\n\n={{$node['Create Social Media Posts'].json['content']}}"
+      },
+      "id": "send-reminder",
+      "name": "Send Reminder Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Every Monday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Generate Weekly Post Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Weekly Post Ideas": {
+      "main": [
+        [
+          {
+            "node": "Create Social Media Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Social Media Posts": {
+      "main": [
+        [
+          {
+            "node": "Schedule Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Posts": {
+      "main": [
+        [
+          {
+            "node": "Send Reminder Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "timezone": "Asia/Kolkata"
+  },
+  "createdAt": "2024-08-25T16:00:00.000Z",
+  "updatedAt": "2024-08-25T16:00:00.000Z",
+  "tags": [
+    {
+      "name": "automation",
+      "id": "1"
+    },
+    {
+      "name": "content-generation",
+      "id": "2"
+    }
+  ]
+}

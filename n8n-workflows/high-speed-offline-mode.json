@@ -1,0 +1,251 @@
+{
+  "name": "High-Speed Offline Mode Setup",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 */6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "sync-trigger",
+      "name": "Every 6 Hours Sync",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeCommand",
+        "command": "echo 'Checking network connectivity...'; ping -c 1 google.com"
+      },
+      "id": "check-network",
+      "name": "Check Network Status",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json['stdout']}}",
+              "operation": "contains",
+              "value2": "1 packets transmitted, 1 received"
+            }
+          ]
+        }
+      },
+      "id": "network-check",
+      "name": "Network Available?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "url": "https://api.github.com/repos/balajirajput96/vscode-live-server-plus-plus/contents/career-automation-system",
+        "headers": {
+          "Accept": "application/vnd.github.v3+json"
+        }
+      },
+      "id": "sync-data",
+      "name": "Sync Latest Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "operation": "writeFile",
+        "fileName": "/tmp/offline-cache/{{DateTime.now().toFormat('yyyy-MM-dd-HH')}}.json",
+        "data": "={{JSON.stringify($json)}}"
+      },
+      "id": "cache-data",
+      "name": "Cache Data Locally",
+      "type": "n8n-nodes-base.writeFile",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "operation": "enableOfflineMode",
+        "cacheLocation": "/tmp/offline-cache",
+        "highSpeedMode": true,
+        "compressionEnabled": true
+      },
+      "id": "enable-offline",
+      "name": "Enable High-Speed Offline Mode",
+      "type": "n8n-nodes-base.systemSettings",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "operation": "readFromCache",
+        "cacheLocation": "/tmp/offline-cache"
+      },
+      "id": "use-cache",
+      "name": "Use Cached Data",
+      "type": "n8n-nodes-base.readCache",
+      "typeVersion": 1,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "operation": "optimizePerformance",
+        "settings": {
+          "maxConcurrentExecutions": 10,
+          "cacheEnabled": true,
+          "priorityMode": "high-speed",
+          "memoryOptimization": true
+        }
+      },
+      "id": "optimize-performance",
+      "name": "Optimize for High Speed",
+      "type": "n8n-nodes-base.performanceOptimizer",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "operation": "sendEmail",
+        "fromEmail": "22034563001@paruluniversity.ac.in",
+        "toEmail": "22034563001@paruluniversity.ac.in",
+        "subject": "n8n System Status: {{$json['mode']}} Mode Active",
+        "text": "System Status Update:\n\n🔄 Mode: {{$json['mode']}}\n⚡ High-Speed: {{$json['highSpeed'] ? 'Enabled' : 'Disabled'}}\n📡 Network: {{$json['networkStatus']}}\n💾 Cache: {{$json['cacheSize']}} MB\n⏰ Last Update: {{DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss')}}\n\nAll systems optimized for maximum performance! 🚀"
+      },
+      "id": "status-notification",
+      "name": "Send Status Update",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [900, 400]
+    }
+  ],
+  "connections": {
+    "Every 6 Hours Sync": {
+      "main": [
+        [
+          {
+            "node": "Check Network Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Network Status": {
+      "main": [
+        [
+          {
+            "node": "Network Available?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Network Available?": {
+      "main": [
+        [
+          {
+            "node": "Sync Latest Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Use Cached Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sync Latest Data": {
+      "main": [
+        [
+          {
+            "node": "Cache Data Locally",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cache Data Locally": {
+      "main": [
+        [
+          {
+            "node": "Enable High-Speed Offline Mode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Cached Data": {
+      "main": [
+        [
+          {
+            "node": "Optimize for High Speed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimize for High Speed": {
+      "main": [
+        [
+          {
+            "node": "Send Status Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enable High-Speed Offline Mode": {
+      "main": [
+        [
+          {
+            "node": "Send Status Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "timezone": "Asia/Kolkata",
+    "executionOrder": "v1"
+  },
+  "createdAt": "2024-08-25T16:00:00.000Z",
+  "updatedAt": "2024-08-25T16:00:00.000Z",
+  "tags": [
+    {
+      "name": "performance",
+      "id": "4"
+    },
+    {
+      "name": "offline-mode",
+      "id": "5"
+    },
+    {
+      "name": "high-speed",
+      "id": "6"
+    }
+  ]
+}
