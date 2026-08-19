@@ -16,6 +16,17 @@
 - [ ] Regular rotation schedule (monthly recommended)
 - [ ] Access logs monitored
 
+Use the provider’s official management page when creating or rotating credentials; never paste a live key into this repository:
+
+- [OpenAI API keys](https://platform.openai.com/api-keys)
+- [Google AI Studio API keys](https://aistudio.google.com/app/apikey)
+- [Google Cloud API credentials](https://console.cloud.google.com/apis/credentials)
+- [Google Account security and app access](https://myaccount.google.com/security)
+- [GitHub personal access tokens](https://github.com/settings/personal-access-tokens)
+- [GitHub repository Actions secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+- [n8n credentials](https://docs.n8n.io/credentials/)
+- [Perplexity API keys](https://www.perplexity.ai/settings/api)
+
 ### ✅ Network Security
 - [ ] HTTPS enabled for all public endpoints
 - [ ] Basic authentication for n8n instance
@@ -185,6 +196,7 @@ security_settings:
 ```bash
 # GitHub Secrets configuration (via web interface)
 # Repository → Settings → Secrets → Actions
+# Management guide: https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
 
 # Required secrets for automation:
 OPENAI_API_KEY=sk-...        # OpenAI API access

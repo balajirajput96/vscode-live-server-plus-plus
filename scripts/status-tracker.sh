@@ -3,7 +3,10 @@
 # 📊 Automation Setup Status Tracker
 # Usage: ./status-tracker.sh [update|check|report]
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." && pwd)
 
 # Colors for output
 RED='\033[0;31m'
@@ -13,7 +16,9 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Status file
-STATUS_FILE="automation-status.json"
+STATUS_FILE="${STATUS_FILE:-$REPO_ROOT/automation-status.json}"
+HEALTH_CHECK_LOG="${HEALTH_CHECK_LOG:-$REPO_ROOT/automation-health.log}"
+export HEALTH_CHECK_LOG
 
 # Initialize status tracking
 init_status() {
@@ -91,13 +96,26 @@ update_status() {
         init_status
     fi
     
-    # Update using jq (install if not available)
-    if command -v jq >/dev/null; then
-        jq ".components.$component.$field = \"$value\" | .last_updated = \"$(date -Iseconds)\"" "$STATUS_FILE" > temp.json && mv temp.json "$STATUS_FILE"
-        echo -e "${GREEN}✅ Updated $component.$field = $value${NC}"
-    else
+    if ! command -v jq >/dev/null; then
         echo -e "${YELLOW}⚠️ jq not installed. Manual update required${NC}"
+        return 1
     fi
+
+    local temp_file
+    temp_file=$(mktemp "${STATUS_FILE}.XXXXXX")
+    if [[ "$value" == "true" || "$value" == "false" || "$value" =~ ^-?[0-9]+$ ]]; then
+        jq --arg component "$component" --arg field "$field" --argjson value "$value" \
+            --arg updated "$(date -Iseconds)" \
+            '.components[$component][$field] = $value | .last_updated = $updated' \
+            "$STATUS_FILE" > "$temp_file"
+    else
+        jq --arg component "$component" --arg field "$field" --arg value "$value" \
+            --arg updated "$(date -Iseconds)" \
+            '.components[$component][$field] = $value | .last_updated = $updated' \
+            "$STATUS_FILE" > "$temp_file"
+    fi
+    mv -- "$temp_file" "$STATUS_FILE"
+    echo -e "${GREEN}✅ Updated $component.$field = $value${NC}"
 }
 
 # Check overall status
@@ -136,7 +154,9 @@ check_status() {
         # API Keys
         local api_status=$(jq -r '.components.api_keys.status' "$STATUS_FILE")
         local openai_configured=$(jq -r '.components.api_keys.openai_configured' "$STATUS_FILE")
-        echo -e "🔑 API Keys: $(format_status $api_status) (OpenAI: $openai_configured)"
+        local gmail_configured=$(jq -r '.components.api_keys.gmail_configured' "$STATUS_FILE")
+        local drive_configured=$(jq -r '.components.api_keys.drive_configured' "$STATUS_FILE")
+        echo -e "🔑 API Keys: $(format_status "$api_status") (OpenAI: $openai_configured, Gmail: $gmail_configured, Drive: $drive_configured)"
         
         # Security
         local security_status=$(jq -r '.components.security.status' "$STATUS_FILE")
@@ -182,13 +202,15 @@ generate_report() {
     echo ""
     
     # Overall progress calculation
-    local total_components=7
-    local completed_count=0
-    
     if command -v jq >/dev/null; then
-        # Count completed components
+        local total_components
+        local completed_count
+        total_components=$(jq '.components | length' "$STATUS_FILE")
         completed_count=$(jq '[.components[] | select(.status == "completed")] | length' "$STATUS_FILE")
-        local progress=$((completed_count * 100 / total_components))
+        local progress=0
+        if (( total_components > 0 )); then
+            progress=$((completed_count * 100 / total_components))
+        fi
         
         echo -e "📊 Overall Progress: ${YELLOW}$progress%${NC} ($completed_count/$total_components completed)"
         echo ""
@@ -222,7 +244,7 @@ generate_report() {
         elif jq -e '.components.github_actions.status == "pending"' "$STATUS_FILE" >/dev/null; then
             echo "  1. Configure GitHub repository secrets"
         elif jq -e '.components.api_keys.status == "pending"' "$STATUS_FILE" >/dev/null; then
-            echo "  1. Set up API keys for OpenAI, Gmail, and Google Drive"
+            echo "  1. Configure the required credentials using the management links in docs/SECURITY_GUIDE.md"
         elif jq -e '.components.security.status == "pending"' "$STATUS_FILE" >/dev/null; then
             echo "  1. Enable 2FA on all accounts and implement security measures"
         elif jq -e '.components.google_play.status == "pending"' "$STATUS_FILE" >/dev/null; then
@@ -243,7 +265,7 @@ run_health_checks() {
     # Check if webhook is configured
     if [ -n "$N8N_WEBHOOK_URL" ]; then
         echo -e "\n${YELLOW}Testing n8n webhook...${NC}"
-        if ./scripts/health-checks/webhook-health-check.sh; then
+        if "$SCRIPT_DIR/health-checks/webhook-health-check.sh"; then
             update_status "n8n_webhook" "status" "completed"
         else
             update_status "n8n_webhook" "status" "blocked"
@@ -253,8 +275,12 @@ run_health_checks() {
     # Check if OpenAI API key is configured
     if [ -n "$OPENAI_API_KEY" ]; then
         echo -e "\n${YELLOW}Testing OpenAI API...${NC}"
-        if ./scripts/health-checks/openai-health-check.sh; then
+        if "$SCRIPT_DIR/health-checks/openai-health-check.sh"; then
             update_status "api_keys" "openai_configured" "true"
+            update_status "api_keys" "status" "in_progress"
+        else
+            update_status "api_keys" "openai_configured" "false"
+            update_status "api_keys" "status" "blocked"
         fi
     fi
     
@@ -262,6 +288,7 @@ run_health_checks() {
     if [ -d ".github/workflows" ]; then
         echo -e "\n${GREEN}✅ GitHub Actions workflows found${NC}"
         update_status "github_actions" "progress" "50"
+        update_status "github_actions" "workflow_running" "true"
     fi
 }
 

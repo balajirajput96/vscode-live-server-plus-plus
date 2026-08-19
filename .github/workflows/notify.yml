@@ -1,33 +1,51 @@
 name: Notify n8n on push
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+
+permissions:
+  contents: read
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
     steps:
-      - name: Send to n8n
-        run: |
-          curl -X POST "$N8N_WEBHOOK_URL" \
-            -H "Content-Type: application/json" \
-            -d '{"query":"Repo updated","email":"2203456300001@paruluniversity.ac.in","type":"github_update","branch":"${{ github.ref_name }}","commit":"${{ github.sha }}"}'
-        env:
-          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
-        continue-on-error: true
+      - name: Skip notification when n8n is not configured
+        if: ${{ env.N8N_WEBHOOK_URL == '' }}
+        run: echo 'N8N_WEBHOOK_URL is not configured; skipping n8n notification.'
 
-      - name: Health Check n8n
-        run: |
-          if [ -n "$N8N_WEBHOOK_URL" ]; then
-            curl -X POST "$N8N_WEBHOOK_URL" \
-              -H "Content-Type: application/json" \
-              -d '{"type":"health","query":"ping","email":"2203456300001@paruluniversity.ac.in"}' \
-              --max-time 10
-          else
-            echo "N8N_WEBHOOK_URL not configured"
-          fi
+      - name: Send repository event to n8n
+        if: ${{ env.N8N_WEBHOOK_URL != '' }}
         env:
-          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
-        continue-on-error: true
+          EVENT_BRANCH: ${{ github.ref_name }}
+          EVENT_SHA: ${{ github.sha }}
+          EVENT_TYPE: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          payload=$(jq -n \
+            --arg type "$EVENT_TYPE" \
+            --arg branch "$EVENT_BRANCH" \
+            --arg commit "$EVENT_SHA" \
+            '{type: "github_update", query: "Repo updated", event: $type, branch: $branch, commit: $commit}')
+          curl --fail-with-body --silent --show-error \
+            --connect-timeout 5 --max-time 15 \
+            --request POST "$N8N_WEBHOOK_URL" \
+            --header 'Content-Type: application/json' \
+            --data "$payload"
+
+      - name: Health check n8n
+        if: ${{ env.N8N_WEBHOOK_URL != '' }}
+        run: |
+          set -euo pipefail
+          payload='{"type":"health","query":"ping"}'
+          curl --fail-with-body --silent --show-error \
+            --connect-timeout 5 --max-time 15 \
+            --request POST "$N8N_WEBHOOK_URL" \
+            --header 'Content-Type: application/json' \
+            --data "$payload"

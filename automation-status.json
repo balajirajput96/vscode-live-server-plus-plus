@@ -17,11 +17,11 @@
       "notes": ""
     },
     "github_actions": {
-      "status": "completed",
+      "status": "pending",
       "progress": 0,
-      "secrets_configured": "true",
+      "secrets_configured": false,
       "workflow_running": false,
-      "notes": ""
+      "notes": "Configure N8N_WEBHOOK_URL in repository Actions secrets before enabling notifications."
     },
     "api_keys": {
       "status": "pending",
