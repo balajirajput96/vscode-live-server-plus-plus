@@ -18,13 +18,13 @@ export class StatusbarService implements ILiveServerPlusPlusService, vscode.Disp
 
   register() {
     this.init();
-    this.liveServerPlusPlus.onDidGoLive(this.showOfflineStatusbar.bind(this));
-    this.liveServerPlusPlus.onDidGoOffline(this.showLiveStatusbar.bind(this));
+    this.liveServerPlusPlus.onDidGoLive(this.showLiveStatusbar.bind(this));
+    this.liveServerPlusPlus.onDidGoOffline(this.showOfflineStatusbar.bind(this));
   }
 
   private init() {
     this.placeStatusbar();
-    this.showLiveStatusbar();
+    this.showOfflineStatusbar();
   }
 
   private placeStatusbar(workingMsg: string = 'loading...') {
@@ -35,13 +35,13 @@ export class StatusbarService implements ILiveServerPlusPlusService, vscode.Disp
     this.statusbar.show();
   }
 
-  private showLiveStatusbar(event?: GoOfflineEvent) {
+  private showOfflineStatusbar(event?: GoOfflineEvent) {
     this.statusbar.text = '$(radio-tower) Go Live++';
     this.statusbar.command = 'extension.live-server++.open';
     this.statusbar.tooltip = 'Click to run live server++';
   }
 
-  private showOfflineStatusbar(event: GoLiveEvent) {
+  private showLiveStatusbar(event: GoLiveEvent) {
     this.statusbar.text = `$(x) Port : ${event.LSPP.port}`;
     this.statusbar.command = 'extension.live-server++.close';
     this.statusbar.tooltip = 'Click to close server++';
