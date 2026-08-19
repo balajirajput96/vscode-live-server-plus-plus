@@ -11,17 +11,17 @@ export const workspaceUtils = {
     return null;
   },
 
-  getActiveDoc({ relativeToWorkSpace = true } = {}) {
+  getActiveDoc({ returnRelativePath = true } = {}) {
     const { activeTextEditor } = vscode.window;
     if (!this.activeWorkspace || !activeTextEditor) return null;
 
     const activeDocUrl = activeTextEditor.document.uri.fsPath;
     const workspaceUrl = this.activeWorkspace.uri.fsPath;
-    const isParentPath = isParent(workspaceUrl).of(activeDocUrl);
+    const isParentPath = createPathChecker(workspaceUrl).of(activeDocUrl);
 
     if (!isParentPath) return null;
 
-    return relativeToWorkSpace ? activeDocUrl.replace(this.cwd!, '') : activeDocUrl;
+    return returnRelativePath ? activeDocUrl.replace(this.cwd!, '') : activeDocUrl;
   },
 
   get cwd() {
@@ -33,7 +33,7 @@ export const workspaceUtils = {
   }
 };
 
-function isParent(parentPath: string) {
+function createPathChecker(parentPath: string) {
   return {
     of: (childPath: string) => {
       return childPath.startsWith(parentPath);
