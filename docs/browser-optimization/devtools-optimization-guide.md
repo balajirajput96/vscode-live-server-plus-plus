@@ -6,7 +6,7 @@
 Navigate to `chrome://flags` and enable:
 
 1. **WebGPU developer features** → Enable → Relaunch
-2. **WebAssembly developer features** → Enable → Relaunch  
+2. **WebAssembly developer features** → Enable → Relaunch
 3. **Developer Tools experiments** → Enable → Relaunch
 
 ### Performance Audit Workflow
@@ -51,13 +51,13 @@ const networkOptimization = {
   // 2. Implement resource hints
   addResourceHints: () => {
     const head = document.head;
-    
+
     // DNS prefetch for external domains
     const dnsPrefetch = document.createElement('link');
     dnsPrefetch.rel = 'dns-prefetch';
     dnsPrefetch.href = '//api.example.com';
     head.appendChild(dnsPrefetch);
-    
+
     // Preconnect for critical third-party origins
     const preconnect = document.createElement('link');
     preconnect.rel = 'preconnect';
@@ -65,7 +65,7 @@ const networkOptimization = {
     preconnect.crossOrigin = '';
     head.appendChild(preconnect);
   },
-  
+
   // 3. Implement service worker for caching
   registerServiceWorker: async () => {
     if ('serviceWorker' in navigator) {
@@ -97,7 +97,7 @@ const edgeCopilotWorkflow = {
   // 1. Open DevTools (F12)
   // 2. Navigate to Copilot tab
   // 3. Ask performance questions:
-  
+
   commonQueries: [
     "Why is LCP slow?",
     "How to improve First Input Delay?",
@@ -105,12 +105,12 @@ const edgeCopilotWorkflow = {
     "Reduce Time to Interactive",
     "Fix render-blocking resources"
   ],
-  
+
   // 4. Apply AI-suggested optimizations
   applyAISuggestions: () => {
     // Copilot will provide specific code suggestions
     // Example responses and implementations:
-    
+
     // For slow LCP - optimize largest contentful paint
     const optimizeLCP = () => {
       // Preload LCP image
@@ -123,7 +123,7 @@ const edgeCopilotWorkflow = {
         document.head.appendChild(preloadLink);
       }
     };
-    
+
     // For high CLS - prevent layout shifts
     const reduceCLS = () => {
       // Add dimensions to images and embeds
@@ -145,7 +145,7 @@ const performanceMonitoring = {
   analyzeMemory: () => {
     // DevTools → Memory tab → Take heap snapshot
     // Ask Copilot: "Analyze memory leaks in this heap snapshot"
-    
+
     if (performance.memory) {
       const memoryInfo = {
         used: Math.round(performance.memory.usedJSHeapSize / 1048576),
@@ -153,14 +153,14 @@ const performanceMonitoring = {
         limit: Math.round(performance.memory.jsHeapSizeLimit / 1048576)
       };
       console.table(memoryInfo);
-      
+
       // Set memory warning threshold
       if (memoryInfo.used > memoryInfo.limit * 0.8) {
         console.warn('High memory usage detected');
       }
     }
   },
-  
+
   // Performance observer for Core Web Vitals
   observeCoreWebVitals: () => {
     // LCP - Largest Contentful Paint
@@ -169,14 +169,14 @@ const performanceMonitoring = {
         console.log('LCP:', entry.startTime);
       }
     }).observe({ entryTypes: ['largest-contentful-paint'] });
-    
+
     // FID - First Input Delay
     new PerformanceObserver((entryList) => {
       for (const entry of entryList.getEntries()) {
         console.log('FID:', entry.processingStart - entry.startTime);
       }
     }).observe({ entryTypes: ['first-input'] });
-    
+
     // CLS - Cumulative Layout Shift
     new PerformanceObserver((entryList) => {
       let cls = 0;
@@ -231,14 +231,14 @@ const performanceBudget = {
     'script-byte-weight': 400,
     'style-byte-weight': 100,
     'image-byte-weight': 1000,
-    
+
     // Timing budgets (in ms)
     'first-contentful-paint': 2000,
     'largest-contentful-paint': 2500,
     'speed-index': 3000,
     'interactive': 5000,
   },
-  
+
   // Check if current page meets budget
   checkBudget: async () => {
     const observer = new PerformanceObserver((list) => {
@@ -246,15 +246,15 @@ const performanceBudget = {
         console.log(`${entry.name}: ${entry.duration}ms`);
       }
     });
-    
+
     observer.observe({ entryTypes: ['navigation', 'paint'] });
-    
+
     // Resource size analysis
     const resources = performance.getEntriesByType('resource');
     const totalSize = resources.reduce((total, resource) => {
       return total + (resource.transferSize || 0);
     }, 0);
-    
+
     console.log(`Total resource size: ${(totalSize / 1024).toFixed(2)} KB`);
     return totalSize / 1024 < this.budgets['total-byte-weight'];
   }
@@ -297,7 +297,7 @@ vitals.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
 ### Performance Audit Checklist
 - [ ] Lighthouse performance score > 90
 - [ ] LCP < 2.5s
-- [ ] FID < 100ms  
+- [ ] FID < 100ms
 - [ ] CLS < 0.1
 - [ ] Images optimized and lazy-loaded
 - [ ] Critical CSS inlined

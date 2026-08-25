@@ -96,7 +96,7 @@ Components:
 ```
 🔐 n8n Credentials Needed:
 • OpenAI API: API key authentication
-• Gmail: OAuth2 authentication  
+• Gmail: OAuth2 authentication
 • Google Drive: OAuth2 authentication
 • Custom webhook auth (optional)
 ```

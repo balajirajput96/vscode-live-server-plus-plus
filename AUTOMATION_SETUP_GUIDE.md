@@ -217,7 +217,7 @@ When completing each step, update status:
 
 ### Status Indicators
 - ✅ **Completed**
-- 🔄 **In Progress**  
+- 🔄 **In Progress**
 - ⏳ **Waiting/Pending**
 - ❌ **Failed/Blocked**
 - 📝 **Documentation Ready**
@@ -227,7 +227,7 @@ Format for requesting next steps:
 ```
 Current Status:
 - Webhook: ✅ Ready
-- Credentials: ✅ Configured  
+- Credentials: ✅ Configured
 - GitHub Actions: 🔄 Testing
 - D-U-N-S: ⏳ Submitted
 

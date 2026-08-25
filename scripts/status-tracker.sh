@@ -35,7 +35,7 @@ init_status() {
       "notes": ""
     },
     "n8n_workflow": {
-      "status": "pending", 
+      "status": "pending",
       "progress": 0,
       "credentials_configured": false,
       "workflow_active": false,
@@ -91,11 +91,11 @@ update_status() {
     local component="$1"
     local field="$2"
     local value="$3"
-    
+
     if [ ! -f "$STATUS_FILE" ]; then
         init_status
     fi
-    
+
     if ! command -v jq >/dev/null; then
         echo -e "${YELLOW}⚠️ jq not installed. Manual update required${NC}"
         return 1
@@ -124,55 +124,55 @@ check_status() {
         echo -e "${RED}❌ Status file not found. Run: $0 init${NC}"
         return 1
     fi
-    
+
     echo -e "${BLUE}📊 Current Automation Setup Status${NC}"
     echo "=================================="
-    
+
     # Parse and display status
     if command -v jq >/dev/null; then
         local last_updated=$(jq -r '.last_updated' "$STATUS_FILE")
         echo -e "Last Updated: ${YELLOW}$last_updated${NC}\n"
-        
+
         # Check each component
         echo -e "${BLUE}Component Status:${NC}"
-        
+
         # n8n Webhook
         local webhook_status=$(jq -r '.components.n8n_webhook.status' "$STATUS_FILE")
         local webhook_url=$(jq -r '.components.n8n_webhook.url' "$STATUS_FILE")
         echo -e "🔗 n8n Webhook: $(format_status $webhook_status) $webhook_url"
-        
-        # n8n Workflow  
+
+        # n8n Workflow
         local workflow_status=$(jq -r '.components.n8n_workflow.status' "$STATUS_FILE")
         local workflow_active=$(jq -r '.components.n8n_workflow.workflow_active' "$STATUS_FILE")
         echo -e "⚡ n8n Workflow: $(format_status $workflow_status) (Active: $workflow_active)"
-        
+
         # GitHub Actions
         local github_status=$(jq -r '.components.github_actions.status' "$STATUS_FILE")
         local secrets_configured=$(jq -r '.components.github_actions.secrets_configured' "$STATUS_FILE")
         echo -e "🔄 GitHub Actions: $(format_status $github_status) (Secrets: $secrets_configured)"
-        
+
         # API Keys
         local api_status=$(jq -r '.components.api_keys.status' "$STATUS_FILE")
         local openai_configured=$(jq -r '.components.api_keys.openai_configured' "$STATUS_FILE")
         local gmail_configured=$(jq -r '.components.api_keys.gmail_configured' "$STATUS_FILE")
         local drive_configured=$(jq -r '.components.api_keys.drive_configured' "$STATUS_FILE")
         echo -e "🔑 API Keys: $(format_status "$api_status") (OpenAI: $openai_configured, Gmail: $gmail_configured, Drive: $drive_configured)"
-        
+
         # Security
         local security_status=$(jq -r '.components.security.status' "$STATUS_FILE")
         local two_factor=$(jq -r '.components.security.two_factor_enabled' "$STATUS_FILE")
         echo -e "🔐 Security: $(format_status $security_status) (2FA: $two_factor)"
-        
+
         # Google Play Console
         local play_status=$(jq -r '.components.google_play.status' "$STATUS_FILE")
         local duns_approved=$(jq -r '.components.google_play.duns_approved' "$STATUS_FILE")
         echo -e "📱 Google Play: $(format_status $play_status) (D-U-N-S: $duns_approved)"
-        
+
         # Browser Optimization
         local browser_status=$(jq -r '.components.browser_optimization.status' "$STATUS_FILE")
         local chrome_configured=$(jq -r '.components.browser_optimization.chrome_configured' "$STATUS_FILE")
         echo -e "🌐 Browser Optimization: $(format_status $browser_status) (Chrome: $chrome_configured)"
-        
+
     else
         cat "$STATUS_FILE"
     fi
@@ -196,11 +196,11 @@ generate_report() {
         echo -e "${RED}❌ Status file not found${NC}"
         return 1
     fi
-    
+
     echo -e "${BLUE}📋 Automation Setup Progress Report${NC}"
     echo "===================================="
     echo ""
-    
+
     # Overall progress calculation
     if command -v jq >/dev/null; then
         local total_components
@@ -211,32 +211,32 @@ generate_report() {
         if (( total_components > 0 )); then
             progress=$((completed_count * 100 / total_components))
         fi
-        
+
         echo -e "📊 Overall Progress: ${YELLOW}$progress%${NC} ($completed_count/$total_components completed)"
         echo ""
-        
+
         # Detailed component status
         echo -e "${BLUE}Detailed Status:${NC}"
-        
+
         # Ready components
         echo -e "\n${GREEN}✅ Ready Components:${NC}"
         jq -r '.components | to_entries[] | select(.value.status == "completed") | "  - " + .key' "$STATUS_FILE" | sed 's/_/ /g'
-        
-        # In progress components  
+
+        # In progress components
         echo -e "\n${YELLOW}🔄 In Progress:${NC}"
         jq -r '.components | to_entries[] | select(.value.status == "in_progress") | "  - " + .key' "$STATUS_FILE" | sed 's/_/ /g'
-        
+
         # Pending components
         echo -e "\n${RED}⏳ Pending:${NC}"
         jq -r '.components | to_entries[] | select(.value.status == "pending") | "  - " + .key' "$STATUS_FILE" | sed 's/_/ /g'
-        
+
         # Blocked components
         echo -e "\n${RED}❌ Blocked:${NC}"
         jq -r '.components | to_entries[] | select(.value.status == "blocked") | "  - " + .key' "$STATUS_FILE" | sed 's/_/ /g'
-        
+
         # Next steps recommendations
         echo -e "\n${BLUE}🎯 Recommended Next Steps:${NC}"
-        
+
         if jq -e '.components.n8n_webhook.status == "pending"' "$STATUS_FILE" >/dev/null; then
             echo "  1. Set up n8n webhook and test connectivity"
         elif jq -e '.components.n8n_workflow.status == "pending"' "$STATUS_FILE" >/dev/null; then
@@ -252,7 +252,7 @@ generate_report() {
         else
             echo "  1. All major components completed! Focus on optimization and monitoring"
         fi
-        
+
     else
         echo -e "${YELLOW}⚠️ jq not installed. Install for detailed reporting${NC}"
     fi
@@ -261,7 +261,7 @@ generate_report() {
 # Health check integration
 run_health_checks() {
     echo -e "${BLUE}🔍 Running Health Checks${NC}"
-    
+
     # Check if webhook is configured
     if [ -n "$N8N_WEBHOOK_URL" ]; then
         echo -e "\n${YELLOW}Testing n8n webhook...${NC}"
@@ -271,7 +271,7 @@ run_health_checks() {
             update_status "n8n_webhook" "status" "blocked"
         fi
     fi
-    
+
     # Check if OpenAI API key is configured
     if [ -n "$OPENAI_API_KEY" ]; then
         echo -e "\n${YELLOW}Testing OpenAI API...${NC}"
@@ -283,7 +283,7 @@ run_health_checks() {
             update_status "api_keys" "status" "blocked"
         fi
     fi
-    
+
     # Check GitHub Actions
     if [ -d ".github/workflows" ]; then
         echo -e "\n${GREEN}✅ GitHub Actions workflows found${NC}"
