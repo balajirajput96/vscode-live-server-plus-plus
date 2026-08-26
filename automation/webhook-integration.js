@@ -174,7 +174,7 @@ class CareerAutomationWebhook {
     /**
      * Generate configuration template for environment variables
      */
-    generateConfigTemplate() {
+    generateConfigTemplate(outputPath) {
         const template = `# Career Automation System Environment Variables
 # Add these secrets to your GitHub repository: Settings → Secrets → Actions
 
@@ -196,7 +196,7 @@ PORTFOLIO_WEBHOOK_URL=https://your-portfolio-webhook.com
 # Configuration Template Generated: ${new Date().toISOString()}
 `;
 
-        const configPath = path.join(__dirname, '../.env.automation.template');
+        const configPath = outputPath || path.join(__dirname, '../.env.automation.template');
         fs.writeFileSync(configPath, template);
         console.log(`✅ Configuration template created: ${configPath}`);
         return configPath;
