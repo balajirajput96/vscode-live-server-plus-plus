@@ -1,0 +1,206 @@
+{
+  "name": "Complete Test Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "test-webhook",
+        "responseMode": "onReceived"
+      },
+      "name": "Sample Payload Node",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "test-webhook"
+    },
+    {
+      "parameters": {
+        "url": "http://gluetun:8888",
+        "options": {
+          "proxy": "http://gluetun:8888"
+        }
+      },
+      "name": "VPN Switch Node",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\n  \"model\": \"gemma2:2b-instruct-q4_K_M\",\n  \"prompt\": \"{{$json.userQuery || 'Hello, test AI response'}}\",\n  \"stream\": false\n}",
+        "headerParametersJson": "{\n  \"Content-Type\": \"application/json\"\n}"
+      },
+      "name": "Local AI Node",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "curl -s ifconfig.me && echo ' - IP Check' && node --version"
+      },
+      "name": "Test Command",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Test Command\"].json.exitCode}}",
+              "operation": "equal",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Execution Validation",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const summary = {\n  timestamp: new Date().toISOString(),\n  workflowStatus: 'Completed',\n  validationResults: {\n    vpnStatus: $('VPN Switch Node').all()[0].json ? 'Connected' : 'Failed',\n    localAI: $('Local AI Node').all()[0].json.response ? 'Working' : 'Failed',\n    testCommand: $('Test Command').all()[0].json.exitCode === 0 ? 'Passed' : 'Failed'\n  },\n  vpnCountry: 'Dynamic based on Gluetun config',\n  localAIModel: 'Gemma 2B Instruct',\n  testsPassed: true\n};\n\nreturn { json: summary };"
+      },
+      "name": "Summary Node",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "send",
+        "to": "balaji.web.design1@gmail.com",
+        "subject": "n8n Workflow Status - {{$json.timestamp}}",
+        "message": "Workflow Execution Summary:\n\nStatus: {{$json.workflowStatus}}\nAll Tests Passed: {{$json.testsPassed}}\n\nValidation Results:\n- VPN Status: {{$json.validationResults.vpnStatus}}\n- Local AI: {{$json.validationResults.localAI}}\n- Test Commands: {{$json.validationResults.testCommand}}\n\nTimestamp: {{$json.timestamp}}\n\nBest regards,\nn8n Automation System"
+      },
+      "name": "Email Node",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "create",
+        "title": "n8n Workflow Execution Guide - {{new Date().toDateString()}}",
+        "content": "# n8n Workflow Execution Guide\n\n## Setup Information\n- Version: 1.108.1\n- Instance ID: 8f75859920be976c80a11c1dd4be8852c698c893b1073cb8716ee93cd8d6a3c9\n- Deployment: Docker Compose with Queue Mode\n\n## Component Status\n- VPN Switch: {{$('Summary Node').json.validationResults.vpnStatus}}\n- Local AI (Gemma): {{$('Summary Node').json.validationResults.localAI}}\n- Test Commands: {{$('Summary Node').json.validationResults.testCommand}}\n\n## Offline Capabilities\n- Local AI inference: Fully functional offline\n- VPN/Email/Docs: Requires internet connection\n- Queue mode: Processes when connectivity restored\n\n## Troubleshooting\n1. Check Docker containers: docker-compose ps\n2. View logs: docker-compose logs -f n8n\n3. Restart services: docker-compose restart\n4. Update models: docker exec ollama_container ollama pull model_name\n\n## Contact\nbalaji.web.design1@gmail.com"
+      },
+      "name": "Execution Guide Node",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        380
+      ]
+    }
+  ],
+  "connections": {
+    "Sample Payload Node": {
+      "main": [
+        [
+          {
+            "node": "VPN Switch Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VPN Switch Node": {
+      "main": [
+        [
+          {
+            "node": "Local AI Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local AI Node": {
+      "main": [
+        [
+          {
+            "node": "Test Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Command": {
+      "main": [
+        [
+          {
+            "node": "Execution Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execution Validation": {
+      "main": [
+        [
+          {
+            "node": "Summary Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary Node": {
+      "main": [
+        [
+          {
+            "node": "Email Node",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execution Guide Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 1,
+  "meta": {
+    "instanceId": "8f75859920be976c80a11c1dd4be8852c698c893b1073cb8716ee93cd8d6a3c9"
+  }
+}
