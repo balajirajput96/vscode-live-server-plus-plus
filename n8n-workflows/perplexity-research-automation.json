@@ -1,0 +1,319 @@
+{
+  "name": "Perplexity AI Research Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "value": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Weekly Research Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "research_topics",
+              "value": "Pharmaceutical data analysis,Bioinformatics job market,Biotechnology trends,Clinical research innovations"
+            },
+            {
+              "name": "email",
+              "value": "balaji.web.design1@gmail.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-research-data",
+      "name": "Set Research Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "jsonBody": "{\n  \"model\": \"llama-3.1-sonar-large-128k-online\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a research specialist for biotechnology and pharmaceutical industries. Provide detailed, data-driven insights with specific examples and actionable recommendations.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Research the latest developments in: {{ $json.research_topics }}. For each topic, provide: 1) Current trends and statistics, 2) Key companies and opportunities, 3) Skill requirements and certifications, 4) Market outlook for 2024-2025. Focus on the Indian market and international remote opportunities.\"\n    }\n  ],\n  \"max_tokens\": 2000,\n  \"temperature\": 0.2,\n  \"return_citations\": true,\n  \"return_images\": false\n}",
+        "options": {}
+      },
+      "id": "perplexity-research",
+      "name": "Perplexity AI Research",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "perplexity-auth",
+          "name": "Perplexity API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.all()[0].json;\nconst content = response.choices[0].message.content;\nconst citations = response.citations || [];\n\n// Format the research data\nconst formattedData = {\n  research_date: new Date().toISOString().split('T')[0],\n  content: content,\n  citations: citations,\n  word_count: content.split(' ').length,\n  topics_researched: $('Set Research Data').item.json.research_topics,\n  summary: content.substring(0, 500) + '...',\n  email: $('Set Research Data').item.json.email\n};\n\nreturn { json: formattedData };"
+      },
+      "id": "format-research",
+      "name": "Format Research Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "your_google_sheet_id",
+          "mode": "list",
+          "cachedResultName": "Research Database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columnToMatchOn": "research_date",
+        "valueToMatchOn": "={{ $json.research_date }}",
+        "valueInputMode": "defineBelow",
+        "fieldsToMatchOn": [
+          {
+            "column": "research_date",
+            "fieldValue": "={{ $json.research_date }}"
+          },
+          {
+            "column": "topics",
+            "fieldValue": "={{ $json.topics_researched }}"
+          },
+          {
+            "column": "summary",
+            "fieldValue": "={{ $json.summary }}"
+          },
+          {
+            "column": "word_count",
+            "fieldValue": "={{ $json.word_count }}"
+          },
+          {
+            "column": "citations_count",
+            "fieldValue": "={{ $json.citations.length }}"
+          },
+          {
+            "column": "full_content",
+            "fieldValue": "={{ $json.content }}"
+          }
+        ],
+        "options": {}
+      },
+      "id": "save-to-sheets",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.3,
+      "position": [
+        1120,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-auth",
+          "name": "Google Sheets API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "{{ $json.email }}",
+        "toEmail": "{{ $json.email }}",
+        "subject": "📊 Weekly Industry Research Report - {{ $json.research_date }}",
+        "emailFormat": "html",
+        "message": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Weekly Research Report</title>\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }\n        .content { padding: 20px; }\n        .section { margin-bottom: 30px; }\n        .highlight { background: #e8f4fd; padding: 15px; border-left: 4px solid #3498db; }\n        .citations { background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 15px; }\n        .footer { background: #34495e; color: white; padding: 15px; text-align: center; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>🤖 AI-Powered Industry Research Report</h1>\n        <p>Automated Research for {{ $json.research_date }}</p>\n    </div>\n    \n    <div class=\"content\">\n        <div class=\"section\">\n            <h2>📋 Research Summary</h2>\n            <div class=\"highlight\">\n                <strong>Topics Covered:</strong> {{ $json.topics_researched }}<br>\n                <strong>Research Date:</strong> {{ $json.research_date }}<br>\n                <strong>Content Length:</strong> {{ $json.word_count }} words<br>\n                <strong>Sources:</strong> {{ $json.citations.length }} citations\n            </div>\n        </div>\n        \n        <div class=\"section\">\n            <h2>🔍 Key Findings</h2>\n            <div style=\"white-space: pre-wrap;\">{{ $json.content }}</div>\n        </div>\n        \n        <div class=\"citations\">\n            <h3>📚 Sources & Citations</h3>\n            <ul>\n                {{#each $json.citations}}\n                <li><a href=\"{{this.url}}\">{{this.title}}</a></li>\n                {{/each}}\n            </ul>\n        </div>\n    </div>\n    \n    <div class=\"footer\">\n        <p>Generated by n8n + Perplexity AI Pro | Next report: Next Monday</p>\n        <p>For questions, contact: balaji.web.design1@gmail.com</p>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "send-email-report",
+      "name": "Send Email Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "email-smtp",
+          "name": "SMTP Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "jsonBody": "{\n  \"model\": \"llama-3.1-sonar-large-128k-online\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a professional LinkedIn content creator specializing in biotechnology and bioinformatics. Create engaging, professional content that demonstrates expertise and attracts career opportunities.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Based on this research: {{ $('Format Research Data').item.json.summary }}, create 3 LinkedIn post ideas for a bioinformatics professional. Each post should: 1) Be 150-200 words, 2) Include relevant hashtags, 3) Have a compelling hook, 4) Provide value to the audience, 5) Include a call-to-action. Format as JSON with posts array.\"\n    }\n  ],\n  \"max_tokens\": 1500,\n  \"temperature\": 0.3,\n  \"return_citations\": false\n}",
+        "options": {}
+      },
+      "id": "generate-linkedin-content",
+      "name": "Generate LinkedIn Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        500
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "perplexity-auth",
+          "name": "Perplexity API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.all()[0].json;\nconst content = response.choices[0].message.content;\n\n// Try to parse JSON content, fallback to plain text\nlet posts;\ntry {\n  const parsed = JSON.parse(content);\n  posts = parsed.posts || [content];\n} catch (e) {\n  // If not JSON, treat as single post\n  posts = [content];\n}\n\nreturn posts.map((post, index) => ({\n  json: {\n    post_id: `post_${Date.now()}_${index}`,\n    content: post,\n    platform: 'linkedin',\n    created_date: new Date().toISOString(),\n    status: 'draft',\n    research_source: $('Format Research Data').item.json.research_date\n  }\n}));"
+      },
+      "id": "format-linkedin-posts",
+      "name": "Format LinkedIn Posts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Weekly Research Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Research Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Research Data": {
+      "main": [
+        [
+          {
+            "node": "Perplexity AI Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity AI Research": {
+      "main": [
+        [
+          {
+            "node": "Format Research Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Research Data": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate LinkedIn Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate LinkedIn Content": {
+      "main": [
+        [
+          {
+            "node": "Format LinkedIn Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "perplexity-automation",
+      "name": "Perplexity Automation"
+    },
+    {
+      "id": "research",
+      "name": "Research"
+    },
+    {
+      "id": "content-generation",
+      "name": "Content Generation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T00:00:00.000Z",
+  "versionId": "1"
+}

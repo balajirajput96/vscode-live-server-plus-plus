@@ -5,7 +5,7 @@ import * as path from 'path';
 import { Socket } from 'net';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
-import { INJECTED_TEXT, isInjectableFile } from './utils';
+import { getInjectedText, isInjectableFile } from './utils';
 import {
   ILiveServerPlusPlus,
   GoOfflineEvent,
@@ -331,7 +331,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
 
     fileStream.on('open', () => {
       // TOOD: MAY BE, WE SHOULD INJECT IT INSIDE <head> TAG (although browser are not smart enought)
-      if (isInjectableFile(filePath)) res.write(INJECTED_TEXT);
+      if (isInjectableFile(filePath)) res.write(getInjectedText());
       fileStream.pipe(res);
     });
 

@@ -40,7 +40,7 @@
     "copy-assets:watch": "npm run copy-assets -- --w",
     "compile": "tsc -p ./ && npm run copy-assets",
     "watch": "npm run copy-assets  && tsc -watch -p ./",
-    "test": "npm run compile && node ./out/test/runTest.js"
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "main": "./out/extension/index.js",
   "contributes": {
@@ -114,10 +114,11 @@
     "@types/open": "^6.1.0",
     "@types/vscode": "^1.33.0",
     "@types/ws": "^6.0.1",
-    "@vscode/test-electron": "^3.1.0",
-    "cpx2": "^9.0.0",
+    "cpx": "^1.5.0",
     "puppeteer": "^24.37.2",
-    "typescript": "^5.9.3"
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.37"
   },
   "dependencies": {
     "mime-types": "^2.1.22",
