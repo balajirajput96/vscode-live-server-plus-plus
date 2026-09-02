@@ -1,8 +1,34 @@
 # 🎯 START HERE - Complete Deployment Guide
 
+## 🎉 Deployment Status: READY!
+
+**✅ All files are ready for deployment!**
+
+**Quick Action:** Enable GitHub Pages → See [ENABLE-GITHUB-PAGES.md](./ENABLE-GITHUB-PAGES.md)
+
+---
+
 ## 🚀 Deploy in 3 Steps
 
-### Quick Cloud Deployment (Fastest - 30 seconds)
+### Option 1: GitHub Pages (Recommended - 2 minutes) 🌐
+**Perfect for static website deployment - FREE!**
+
+1. **Enable GitHub Pages:**
+   - Go to [Settings → Pages](https://github.com/balajirajput96/vscode-live-server-plus-plus/settings/pages)
+   - Source: "GitHub Actions" or "Deploy from branch"
+   - Save
+
+2. **Access Your Site:**
+   ```
+   https://balajirajput96.github.io/vscode-live-server-plus-plus/
+   ```
+
+3. **Complete Guide:**
+   - See [ENABLE-GITHUB-PAGES.md](./ENABLE-GITHUB-PAGES.md)
+
+---
+
+### Option 2: Quick Cloud Deployment (30 seconds) ☁️
 ```bash
 # One-click deployment to Railway, Render, Vercel, or Netlify
 ./deploy-to-cloud.sh
