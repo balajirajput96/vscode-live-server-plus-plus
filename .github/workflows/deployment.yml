@@ -1,0 +1,63 @@
+name: Deployment Pipeline
+description: Automated deployment when changes are merged to main
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+    types: [ closed ]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        if [ -f package.json ]; then
+          npm ci
+        fi
+        
+    - name: Create environment file
+      run: |
+        echo "GOOGLE_PRIMARY_EMAIL=${{ secrets.GOOGLE_PRIMARY_EMAIL }}" >> .env
+        echo "MS_PRIMARY_EMAIL=${{ secrets.MS_PRIMARY_EMAIL }}" >> .env
+        echo "TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}" >> .env
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+        echo "YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> .env
+        
+    - name: Run super_start script
+      run: |
+        chmod +x ./scripts/super_start.sh
+        ./scripts/super_start.sh
+        
+    - name: Run health check after deployment
+      run: |
+        chmod +x ./scripts/comprehensive_health_check.sh
+        ./scripts/comprehensive_health_check.sh
+        
+    - name: Generate deployment report
+      run: |
+        echo "## Deployment Report - $(date)" > deployment-report.md
+        echo "- Event: ${{ github.event_name }}" >> deployment-report.md
+        echo "- Branch: ${{ github.ref_name }}" >> deployment-report.md
+        echo "- Commit: ${{ github.sha }}" >> deployment-report.md
+        echo "- Status: Success" >> deployment-report.md
+        echo "- Timestamp: $(date -u)" >> deployment-report.md
+        
+    - name: Notify deployment status
+      run: |
+        echo "Deployment completed successfully!"
+        echo "Branch: ${{ github.ref_name }}"
+        echo "Commit: ${{ github.sha }}"

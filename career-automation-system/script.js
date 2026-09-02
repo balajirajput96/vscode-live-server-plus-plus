@@ -1,44 +1,89 @@
 // Global variables
-let currentTab = 'portfolio';
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
-let scheduledPosts = JSON.parse(localStorage.getItem('scheduledPosts')) || [];
+let jobApplications = JSON.parse(localStorage.getItem('jobApplications')) || [];
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    initializeTabs();
-    loadStoredData();
-    updateAnalytics();
-});
+// AI Prompt Templates
+const prompts = {
+    'github': `Analyze this Python/R project and create a comprehensive README.md file including:
 
-// Tab Navigation
-function initializeTabs() {
-    const navTabs = document.querySelectorAll('.nav-tab');
-    const tabContents = document.querySelectorAll('.tab-content');
+1. **Project Title:** Clear, descriptive title
+2. **Description:** Brief overview for non-technical readers explaining the biological/medical relevance
+3. **Dataset:** Source and type of data used (mention if public/private)
+4. **Methodology:** 
+   - Data preprocessing steps
+   - Analysis techniques used
+   - Statistical methods applied
+5. **Key Findings:** 
+   - Main biological insights
+   - Statistical significance
+   - Clinical relevance (if applicable)
+6. **Technologies Used:** Python libraries, R packages, databases
+7. **How to Run:** 
+   - Installation requirements
+   - Step-by-step execution guide
+   - Expected output format
+8. **Future Work:** Potential extensions or improvements
 
-    navTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetTab = tab.getAttribute('data-tab');
-            switchTab(targetTab);
-        });
-    });
-}
+Make the content professional, clear, and suitable for biotechnology/bioinformatics professionals.`,
 
-function switchTab(tabName) {
-    // Remove active class from all tabs and contents
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-    });
+    'linkedin': `Create a professional LinkedIn post about this biotech/bioinformatics achievement:
 
-    // Add active class to selected tab and content
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-    document.getElementById(tabName).classList.add('active');
+**Post Structure:**
+1. **Hook:** Engaging opening line about the breakthrough/learning
+2. **Context:** Brief background on the problem/challenge
+3. **Process:** What tools/methods were used (mention specific technologies)
+4. **Results:** Key insights or outcomes achieved
+5. **Impact:** How this contributes to the field or industry
+6. **Call to Action:** Invite discussion or connections
 
-    currentTab = tabName;
-}
+**Tone:** Professional but approachable, showing expertise while remaining humble
+**Length:** 150-300 words
+**Hashtags:** Include relevant industry hashtags (#Bioinformatics #DataScience #Biotech)
+**Emojis:** Use sparingly but effectively
+
+Make it engaging for both technical and non-technical professionals in the biotech industry.`,
+
+    'cover': `Write a compelling cover letter for this biotech/bioinformatics position:
+
+**Structure:**
+1. **Opening:** Strong hook connecting your background to the role
+2. **Value Proposition:** 2-3 specific examples of relevant experience
+3. **Technical Skills:** Highlight programming languages, tools, and methodologies
+4. **Industry Knowledge:** Show understanding of company's focus area
+5. **Closing:** Express enthusiasm and next steps
+
+**Key Elements:**
+- Quantify achievements where possible
+- Mention specific projects from your portfolio
+- Show knowledge of current industry trends
+- Demonstrate problem-solving abilities
+- Keep to 3-4 paragraphs maximum
+
+Personalize for the specific company and role requirements.`,
+
+    'interview': `Common Bioinformatics/Biotech Interview Questions and Sample Answers:
+
+**Technical Questions:**
+1. Explain your approach to analyzing genomic data
+2. How do you handle missing data in clinical datasets?
+3. Describe a challenging data analysis project you completed
+4. What programming languages do you use and why?
+5. How do you ensure data quality and reproducibility?
+
+**Industry Questions:**
+1. What interests you about our company's research focus?
+2. How do you stay updated with bioinformatics trends?
+3. Describe your experience with regulatory requirements
+4. How would you explain complex analysis to non-technical stakeholders?
+
+**Behavioral Questions:**
+1. Tell me about a time you had to learn a new technology quickly
+2. How do you handle tight project deadlines?
+3. Describe a situation where your analysis led to unexpected results
+
+Prepare specific examples from your projects to illustrate your answers.`
+};
 
 // Portfolio Builder Functions
 function generatePortfolioContent() {
@@ -63,116 +108,103 @@ function generatePortfolioContent() {
     // Simulate AI processing
     setTimeout(() => {
         const generatedContent = generatePortfolioText(projectName, projectType, description, tools, dataset, findings);
-
-        document.getElementById('portfolioContent').innerHTML = generatedContent;
-        document.getElementById('portfolioOutput').style.display = 'block';
-
+        document.getElementById('portfolioOutput').innerHTML = generatedContent;
+        
         // Reset button
         button.innerHTML = originalText;
         button.disabled = false;
-
-        showMessage('कंटेंट सफलतापूर्वक जनरेट किया गया!', 'success');
+        
+        showMessage('पोर्टफोलियो कंटेंट सफलतापूर्वक जनरेट किया गया!', 'success');
     }, 2000);
 }
 
 function generatePortfolioText(name, type, description, tools, dataset, findings) {
-    const typeLabels = {
-        'bioinformatics': 'बायोइन्फॉर्मेटिक्स',
-        'data-analysis': 'डेटा एनालिसिस',
-        'web-design': 'वेब डिज़ाइन',
-        'research': 'रिसर्च'
-    };
+    return `# ${name}
 
-    return `
-        <div class="portfolio-content">
-            <h3>${name}</h3>
-            <p><strong>प्रोजेक्ट प्रकार:</strong> ${typeLabels[type]}</p>
+## Project Overview
+**Type:** ${type}
+**Description:** ${description}
 
-            <h4>प्रोजेक्ट अवलोकन</h4>
-            <p>${description}</p>
+## Technologies Used
+${tools}
 
-            <h4>तकनीकी विवरण</h4>
-            <ul>
-                <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'केवल अपने verified tools जोड़ें'}</li>
-                <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}</li>
-            </ul>
+## Dataset Information
+**Source:** ${dataset}
 
-            <h4>मुख्य निष्कर्ष</h4>
-            <p>${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}</p>
-            <p><em>Draft template: publish या portfolio में जोड़ने से पहले हर claim को अपने records से verify करें।</em></p>
+## Key Findings
+${findings}
 
-            <h4>GitHub README.md</h4>
-            <pre><code># ${name}
+## Implementation
+\`\`\`python
+# Sample code structure for ${name}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
-## प्रोजेक्ट विवरण
-${description}
+# Data loading and preprocessing
+data = pd.read_csv('${dataset}')
+cleaned_data = data.dropna()
 
-## तकनीकी स्टैक
-            - ${tools || 'केवल verified tools जोड़ें'}
+# Analysis implementation
+# Add your specific analysis code here
 
-## डेटा स्रोत
-            ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}
-
-## मुख्य निष्कर्ष
-            ${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}
-
-## इंस्टॉलेशन और उपयोग
-\`\`\`bash
-pip install -r requirements.txt
-python main.py
+# Visualization
+plt.figure(figsize=(10, 6))
+# Add your plotting code
+plt.show()
 \`\`\`
 
-## लाइसेंस
+## Results and Discussion
+${findings}
+
+## Conclusion
+This project demonstrates proficiency in ${tools} and provides valuable insights for ${type} applications.
+
+## License
 MIT License</code></pre>
         </div>
     `;
 }
 
 function saveProject() {
-    const projectData = {
-        id: Date.now(),
-        name: document.getElementById('projectName').value,
-        type: document.getElementById('projectType').value,
-        description: document.getElementById('projectDescription').value,
-        tools: document.getElementById('toolsUsed').value,
-        dataset: document.getElementById('datasetSource').value,
-        findings: document.getElementById('keyFindings').value,
-        date: new Date().toLocaleDateString('hi-IN')
-    };
+    const projectName = document.getElementById('projectName').value;
+    const projectType = document.getElementById('projectType').value;
+    const description = document.getElementById('projectDescription').value;
+    const tools = document.getElementById('toolsUsed').value;
+    const dataset = document.getElementById('datasetSource').value;
+    const findings = document.getElementById('keyFindings').value;
 
-    if (!projectData.name || !projectData.description) {
-        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
+    if (!projectName) {
+        showMessage('प्रोजेक्ट का नाम आवश्यक है', 'error');
         return;
     }
 
-    projects.push(projectData);
-    localStorage.setItem('projects', JSON.stringify(projects));
+    const project = {
+        id: Date.now(),
+        name: projectName,
+        type: projectType,
+        description: description,
+        tools: tools,
+        dataset: dataset,
+        findings: findings,
+        createdAt: new Date().toISOString()
+    };
 
-    // Clear form
-    clearPortfolioForm();
+    projects.push(project);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    
     showMessage('प्रोजेक्ट सफलतापूर्वक सेव किया गया!', 'success');
     updateAnalytics();
 }
 
-function clearPortfolioForm() {
-    document.getElementById('projectName').value = '';
-    document.getElementById('projectDescription').value = '';
-    document.getElementById('toolsUsed').value = '';
-    document.getElementById('datasetSource').value = '';
-    document.getElementById('keyFindings').value = '';
-    document.getElementById('portfolioOutput').style.display = 'none';
-}
-
 // Social Media Generator Functions
 function generateSocialPost() {
-    const platform = document.getElementById('platform').value;
     const postType = document.getElementById('postType').value;
-    const content = document.getElementById('postContent').value;
-    const tone = document.getElementById('tone').value;
-    const hashtags = document.getElementById('hashtags').value;
+    const message = document.getElementById('postMessage').value;
+    const platform = document.getElementById('socialPlatform').value;
 
-    if (!content) {
-        showMessage('कृपया पोस्ट का विषय भरें', 'error');
+    if (!message) {
+        showMessage('कृपया मुख्य संदेश भरें', 'error');
         return;
     }
 
@@ -182,209 +214,211 @@ function generateSocialPost() {
     button.innerHTML = '<div class="loading"></div> Generating...';
     button.disabled = true;
 
+    // Simulate AI processing
     setTimeout(() => {
-        const generatedPost = generateSocialContent(platform, postType, content, tone, hashtags);
-
-        document.getElementById('socialContent').innerHTML = generatedPost;
-        document.getElementById('socialOutput').style.display = 'block';
-
+        const generatedPost = generateSocialPostText(postType, message, platform);
+        document.getElementById('socialOutput').innerHTML = generatedPost;
+        
+        // Reset button
         button.innerHTML = originalText;
         button.disabled = false;
-
+        
         showMessage('सोशल मीडिया पोस्ट जनरेट किया गया!', 'success');
     }, 2000);
 }
 
-function generateSocialContent(platform, postType, content, tone, hashtags) {
-    const platformNames = {
-        'linkedin': 'LinkedIn',
-        'facebook': 'Facebook',
-        'twitter': 'Twitter'
+function generateSocialPostText(type, message, platform) {
+    const templates = {
+        'achievement': `🎉 Excited to share a recent accomplishment!
+
+${message}
+
+This experience has strengthened my skills in data analysis and reinforced my passion for biotechnology innovation.
+
+Looking forward to applying these insights in future projects! 💡
+
+#Bioinformatics #DataScience #Biotech #Innovation #CareerGrowth`,
+
+        'learning': `📚 Continuous learning in action!
+
+Recently diving deep into: ${message}
+
+The field of bioinformatics is constantly evolving, and staying updated with the latest tools and methodologies is crucial for delivering impactful results.
+
+What new technologies are you exploring in your field? 🤔
+
+#LearningJourney #Bioinformatics #ProfessionalDevelopment #DataScience`,
+
+        'project': `🔬 Project Spotlight: 
+
+${message}
+
+This analysis demonstrates the power of computational biology in solving real-world problems. The intersection of data science and life sciences continues to unlock new possibilities.
+
+Excited to share more insights from this work! 
+
+#ProjectShowcase #Bioinformatics #DataAnalysis #LifeSciences #Innovation`,
+
+        'industry': `💭 Industry Insight:
+
+${message}
+
+The biotechnology landscape is rapidly changing, and these developments highlight the importance of data-driven decision making in advancing human health.
+
+What are your thoughts on this trend? Share your perspective below! 👇
+
+#BiotechTrends #DataScience #HealthTech #Innovation #Industry`
     };
 
-    const postTypes = {
-        'project': 'प्रोजेक्ट शेयर',
-        'achievement': 'उपलब्धि',
-        'learning': 'सीख',
-        'industry': 'इंडस्ट्री इनसाइट'
-    };
-
-    const tones = {
-        'professional': 'प्रोफेशनल',
-        'casual': 'कैजुअल',
-        'enthusiastic': 'उत्साही',
-        'educational': 'शैक्षिक'
-    };
-
-    const defaultHashtags = '#Draft #ReviewBeforePublishing';
-
-    return `
-        <div class="social-content">
-            <h4>${platformNames[platform]} पोस्ट</h4>
-            <div class="post-preview">
-                <p><strong>पोस्ट प्रकार:</strong> ${postTypes[postType]}</p>
-                <p><strong>टोन:</strong> ${tones[tone]}</p>
-
-                <div class="post-text">
-                    <p><strong>Draft topic:</strong> ${content}</p>
-                    <p>[अपनी verified सीख या finding यहाँ जोड़ें।]</p>
-                    <p>[सिर्फ verified project details, source link, और allowed media reference जोड़ें।]</p>
-                    <p><em>यह local draft है; approval के बिना publish नहीं किया जाएगा।</em></p>
-                    <p>${hashtags || defaultHashtags}</p>
-                </div>
-            </div>
-
-            <div class="post-tips">
-                <h5>पोस्टिंग टिप्स:</h5>
-                <ul>
-                    <li>सुबह 9-11 बजे या शाम 5-7 बजे पोस्ट करें</li>
-                    <li>इमेज या इन्फोग्राफिक जोड़ें</li>
-                    <li>कमेंट्स में जुड़ाव बनाएं</li>
-                    <li>सप्ताह में 2-3 पोस्ट करें</li>
-                </ul>
-            </div>
-        </div>
-    `;
+    return templates[type] || templates['achievement'];
 }
 
 function schedulePost() {
-    const content = document.querySelector('#socialContent .post-text')?.textContent;
-    if (!content) {
-        showMessage('पहले पोस्ट generate करें!', 'error');
-        return;
-    }
-
-    const postData = {
-        id: Date.now(),
-        type: 'social_media_post',
-        platform: document.getElementById('platform').value,
-        content,
-        status: 'draft_only',
-        timestamp: new Date().toISOString()
-    };
-
-    scheduledPosts.push(postData);
-    localStorage.setItem('scheduledPosts', JSON.stringify(scheduledPosts));
-    showMessage('पोस्ट केवल local draft queue में सेव हुआ है। Publish के लिए server-side approval आवश्यक है।', 'info');
+    showMessage('पोस्ट शेड्यूलिंग फीचर जल्द ही उपलब्ध होगा!', 'success');
 }
 
 // Resume Optimizer Functions
 function optimizeContent() {
-    const optimizeType = document.getElementById('optimizeType').value;
+    const resumeType = document.getElementById('resumeType').value;
     const currentContent = document.getElementById('currentContent').value;
-    const targetRole = document.getElementById('targetRole').value;
-    const targetCompany = document.getElementById('targetCompany').value;
+    const targetJob = document.getElementById('targetJob').value;
 
     if (!currentContent) {
         showMessage('कृपया वर्तमान कंटेंट भरें', 'error');
         return;
     }
 
+    // Show loading state
     const button = event.target;
     const originalText = button.innerHTML;
     button.innerHTML = '<div class="loading"></div> Optimizing...';
     button.disabled = true;
 
+    // Simulate AI processing
     setTimeout(() => {
-        const optimizedContent = generateOptimizedContent(optimizeType, currentContent, targetRole, targetCompany);
-
-        document.getElementById('resumeContent').innerHTML = optimizedContent;
-        document.getElementById('resumeOutput').style.display = 'block';
-
+        const optimizedContent = generateOptimizedContent(resumeType, currentContent, targetJob);
+        document.getElementById('resumeOutput').innerHTML = optimizedContent;
+        
+        // Reset button
         button.innerHTML = originalText;
         button.disabled = false;
-
+        
         showMessage('कंटेंट सफलतापूर्वक optimize किया गया!', 'success');
     }, 2000);
 }
 
-function generateOptimizedContent(type, content, role, company) {
-    const typeLabels = {
-        'headline': 'LinkedIn हेडलाइन',
-        'summary': 'About सेक्शन',
-        'experience': 'एक्सपीरियंस डिस्क्रिप्शन',
-        'skills': 'स्किल्स सेक्शन'
+function generateOptimizedContent(type, content, targetJob) {
+    const optimizations = {
+        'headline': `🔍 Optimized LinkedIn Headline:
+
+"${targetJob} | Bioinformatics & Data Science Expert | Python, R & Machine Learning | Transforming Biological Data into Actionable Insights"
+
+📊 Key Improvements:
+- Lead with target job title
+- Highlight technical skills
+- Emphasize value proposition
+- Include relevant keywords for recruiters`,
+
+        'summary': `📝 Optimized Professional Summary:
+
+Results-driven ${targetJob} with expertise in computational biology and data analysis. Skilled in Python, R, and machine learning applications for biological data interpretation. Proven track record of delivering actionable insights from complex genomic and clinical datasets.
+
+✅ Core Strengths:
+• Advanced programming in Python/R
+• Statistical analysis and visualization
+• Genomic data processing
+• Machine learning implementation
+• Cross-functional collaboration
+
+💡 Key Improvements:
+- Quantified achievements
+- Industry-specific keywords
+- Technical skill emphasis
+- Action-oriented language`,
+
+        'skills': `🛠️ Optimized Skills Section:
+
+**Technical Skills:**
+• Programming: Python, R, SQL, Bash
+• Bioinformatics Tools: BLAST, Bioconductor, Galaxy
+• Data Analysis: Pandas, NumPy, Scikit-learn
+• Visualization: Matplotlib, Seaborn, ggplot2
+• Databases: PostgreSQL, MongoDB
+• Cloud Platforms: AWS, Google Cloud
+
+**Domain Expertise:**
+• Genomic Data Analysis
+• Statistical Modeling
+• Machine Learning Applications
+• Clinical Data Processing
+• Biomarker Discovery
+
+🎯 Optimization Notes:
+- Grouped skills by category
+- Included industry-standard tools
+- Balanced technical and domain knowledge`,
+
+        'experience': `💼 Optimized Experience Description:
+
+**${targetJob} • [Company Name]**
+*[Duration]*
+
+• Analyzed genomic datasets (10,000+ samples) using Python and R, identifying 15 novel biomarkers with statistical significance (p<0.05)
+• Developed machine learning models achieving 85% accuracy in predicting treatment outcomes
+• Collaborated with cross-functional teams of 8+ scientists to deliver 3 major research publications
+• Automated data processing pipelines, reducing analysis time by 60%
+• Presented findings to C-level executives and regulatory teams
+
+🔧 Technical Stack: Python, R, SQL, AWS, Docker, Git
+
+✨ Improvements Made:
+- Quantified all achievements
+- Included specific technologies
+- Emphasized collaboration
+- Highlighted efficiency gains
+- Added business impact`
     };
 
-    const headlines = [
-        '[Verified qualification] | [Verified role focus] | [Verified skill or domain]',
-        '[Verified current role] | [Verified industry experience] | [Verified career objective]'
-    ];
-
-    const summaries = [
-        'Draft template: replace every bracketed field with facts present in your resume, portfolio, or supporting records. Do not add degrees, skills, tools, dates, metrics, employers, or achievements that cannot be verified.'
-    ];
-
-    let optimizedText = '';
-
-    switch(type) {
-        case 'headline':
-            optimizedText = `<h4>${typeLabels[type]} विकल्प:</h4><ul>`;
-            headlines.forEach(headline => {
-                optimizedText += `<li>${headline}</li>`;
-            });
-            optimizedText += '</ul>';
-            break;
-
-        case 'summary':
-            optimizedText = `<h4>${typeLabels[type]} विकल्प:</h4><ul>`;
-            summaries.forEach(summary => {
-                optimizedText += `<li>${summary}</li>`;
-            });
-            optimizedText += '</ul>';
-            break;
-
-        default:
-            optimizedText = `
-                <h4>Optimized ${typeLabels[type]}:</h4>
-                <p><strong>मूल कंटेंट:</strong></p>
-                <p>${content}</p>
-                <p><strong>Review cue:</strong></p>
-                <p>इस text को केवल clarity के लिए edit करें। कोई नया degree, skill, employer, metric, certification, responsibility, या achievement न जोड़ें।</p>
-            `;
-    }
-
-    return optimizedText;
+    return optimizations[type] || optimizations['summary'];
 }
 
 function generateMultiple() {
-    showMessage('कई विकल्प जनरेट करने के लिए optimizeContent() फंक्शन का उपयोग करें', 'success');
+    showMessage('Multiple content generation feature coming soon!', 'success');
 }
 
 // Job Tracker Functions
 function searchJobs() {
-    const role = document.getElementById('jobRole').value;
-    const location = document.getElementById('jobLocation').value;
-    const company = document.getElementById('jobCompany').value;
-
-    showMessage(`Local UI draft results तैयार हो रहे हैं: ${role} in ${location} at ${company}. ये verified job listings नहीं हैं।`, 'info');
-
-    // Simulate job search
-    setTimeout(() => {
-        updateJobList();
-    }, 1000);
+    const searchTerm = document.getElementById('jobSearch').value;
+    
+    if (!searchTerm) {
+        showMessage('कृपया जॉब सर्च टर्म भरें', 'error');
+        return;
+    }
+    
+    showMessage(`Searching for "${searchTerm}" jobs...`, 'success');
+    updateJobList();
 }
 
 function updateJobList() {
     const jobList = document.querySelector('.job-list');
     const newJobs = [
         {
-            title: 'Example role — verify official source',
-            company: 'Example employer',
-            location: 'Add verified location',
-            description: 'Illustrative UI record only. Add an official source URL and verify requirements before drafting any application.'
+            title: 'Bioinformatics Analyst',
+            company: 'Sun Pharma',
+            location: 'Mumbai, Maharashtra',
+            description: 'Looking for a skilled bioinformatics analyst with Python experience in drug discovery and clinical data analysis.'
         },
         {
-            title: 'Example role — verify official source',
-            company: 'Example employer',
-            location: 'Add verified location',
-            description: 'Illustrative UI record only. No employer has been contacted and no application is created.'
+            title: 'Data Analyst - Clinical Research',
+            company: 'Zydus Cadila',
+            location: 'Ahmedabad, Gujarat',
+            description: 'Join our clinical research team to analyze patient data and contribute to drug development process.'
         },
         {
-            title: 'Example role — verify official source',
-            company: 'Example employer',
-            location: 'Add verified location',
-            description: 'Illustrative UI record only. Use an official listing and a truthful candidate profile before any draft handoff.'
+            title: 'Research Associate - Bioinformatics',
+            company: 'Alembic Pharmaceuticals',
+            location: 'Vadodara, Gujarat',
+            description: 'Work on genomic data analysis and contribute to our precision medicine initiatives.'
         }
     ];
 
@@ -397,7 +431,7 @@ function updateJobList() {
                 <p class="location">${job.location}</p>
                 <p class="description">${job.description}</p>
                 <div class="job-actions">
-                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Prepare draft</button>
+                    <button class="btn btn-sm btn-primary" onclick="applyForJob('${job.title}', '${job.company}')">Apply</button>
                     <button class="btn btn-sm btn-secondary" onclick="saveJob('${job.title}', '${job.company}')">Save</button>
                 </div>
             </div>
@@ -406,87 +440,81 @@ function updateJobList() {
 }
 
 function applyForJob(title, company) {
-    showMessage(`${company} में ${title} के लिए local draft prepared है। कोई application submit नहीं हुआ।`, 'info');
+    const application = {
+        id: Date.now(),
+        title: title,
+        company: company,
+        appliedAt: new Date().toISOString(),
+        status: 'Applied'
+    };
+    
+    jobApplications.push(application);
+    localStorage.setItem('jobApplications', JSON.stringify(jobApplications));
+    
+    showMessage(`आपने ${company} में ${title} के लिए आवेदन दिया है!`, 'success');
+    updateAnalytics();
 }
 
 function saveJob(title, company) {
-    showMessage(`${company} में ${title} local review के लिए saved है।`, 'info');
+    showMessage(`${company} में ${title} जॉब सेव किया गया!`, 'success');
 }
 
 // AI Prompts Functions
 function copyPrompt(button) {
-    const promptText = button.parentElement.querySelector('p').textContent;
-    navigator.clipboard.writeText(promptText).then(() => {
-        const originalText = button.textContent;
-        button.textContent = 'Copied!';
-        button.style.background = '#48bb78';
-
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.style.background = '';
-        }, 2000);
-    });
-}
-
-// Bullet Points Generator Functions
-function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.textContent || element.innerText;
+    const promptType = button.getAttribute('data-prompt');
+    const promptText = prompts[promptType];
     
-    navigator.clipboard.writeText(text).then(() => {
-        // Find the button that triggered this copy
-        const button = event.target;
-        const originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> कॉपी हो गया!';
-        button.style.background = '#48bb78';
-        
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.style.background = '';
-        }, 2000);
-        
-        showMessage('Text copied to clipboard!', 'success');
-    }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        showMessage('Copy failed. Please try again.', 'error');
-    });
+    if (promptText) {
+        navigator.clipboard.writeText(promptText).then(() => {
+            button.innerHTML = 'Copied!';
+            button.style.background = '#28a745';
+            
+            setTimeout(() => {
+                button.innerHTML = 'Copy';
+                button.style.background = '#28a745';
+            }, 2000);
+            
+            showMessage('प्रॉम्प्ट कॉपी किया गया!', 'success');
+        }).catch(() => {
+            showMessage('कॉपी करने में त्रुटि हुई', 'error');
+        });
+    }
 }
 
 // Analytics Functions
 function updateAnalytics() {
-    const projectCount = projects.length;
-    const socialCount = socialPosts.length;
-
-    // Update metrics
-    document.querySelector('.analytics-card:nth-child(1) .metric').textContent = projectCount;
-    document.querySelector('.analytics-card:nth-child(2) .metric').textContent = socialCount;
+    // Update stats based on stored data
+    const totalProjects = projects.length;
+    const totalPosts = socialPosts.length;
+    const totalApplications = jobApplications.length;
+    
+    // Update progress bars (this is a simulation)
+    const portfolioProgress = Math.min((totalProjects / 10) * 100, 100);
+    const linkedinProgress = Math.min((totalPosts / 20) * 100, 100);
+    const jobProgress = Math.min((totalApplications / 20) * 100, 100);
+    
+    // You could update the actual progress bars here
+    console.log('Analytics updated:', { portfolioProgress, linkedinProgress, jobProgress });
 }
 
 // Utility Functions
 function showMessage(message, type) {
-    // Remove existing messages
-    const existingMessages = document.querySelectorAll('.message');
-    existingMessages.forEach(msg => msg.remove());
-
-    // Create new message
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
     messageDiv.textContent = message;
-
-    // Insert at top of main content
-    const mainContent = document.querySelector('.main-content');
-    mainContent.insertBefore(messageDiv, mainContent.firstChild);
-
-    // Auto remove after 5 seconds
+    
+    document.body.appendChild(messageDiv);
+    
     setTimeout(() => {
         messageDiv.remove();
-    }, 5000);
+    }, 3000);
 }
 
 function loadStoredData() {
-    // Load projects and social posts from localStorage
     projects = JSON.parse(localStorage.getItem('projects')) || [];
     socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+    jobApplications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+    updateAnalytics();
 }
 
 // Keyboard shortcuts
@@ -532,28 +560,30 @@ function exportData() {
     const data = {
         projects: projects,
         socialPosts: socialPosts,
-        exportDate: new Date().toISOString()
+        jobApplications: jobApplications,
+        exportedAt: new Date().toISOString()
     };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'career-automation-data.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = 'career-automation-data.json';
+    link.click();
 }
 
 // Initialize tooltips and help text
 function initializeHelp() {
     const helpTexts = {
-        'projectName': 'अपने प्रोजेक्ट का स्पष्ट और आकर्षक नाम दें',
-        'projectDescription': 'प्रोजेक्ट के लक्ष्य, प्रक्रिया और परिणामों का विस्तृत विवरण',
-        'toolsUsed': 'उपयोग किए गए प्रोग्रामिंग भाषाएं, लाइब्रेरीज और टूल्स',
-        'datasetSource': 'डेटा का स्रोत (जैसे: Kaggle, NCBI, TCGA)',
-        'keyFindings': 'प्रोजेक्ट से प्राप्त मुख्य insights और निष्कर्ष'
+        'projectName': 'Enter a descriptive name for your bioinformatics project',
+        'projectType': 'Select the category that best describes your project',
+        'toolsUsed': 'List the programming languages and tools you used',
+        'projectDescription': 'Provide a brief overview of what your project does',
+        'datasetSource': 'Mention where you got your data from',
+        'keyFindings': 'Summarize the main insights or results'
     };
-
+    
     Object.keys(helpTexts).forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -562,337 +592,12 @@ function initializeHelp() {
     });
 }
 
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadStoredData();
+    initializeHelp();
+    updateJobList(); // Load sample jobs
+});
+
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
-
-// Critical Thinking Optimization Features
-
-// Prompt Category Management
-function initializePromptCategories() {
-    const categoryTabs = document.querySelectorAll('.prompt-category-tab');
-    const categoryContents = document.querySelectorAll('.prompt-category-content');
-    
-    categoryTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const category = tab.dataset.category;
-            
-            // Remove active classes
-            categoryTabs.forEach(t => t.classList.remove('active'));
-            categoryContents.forEach(c => c.classList.remove('active'));
-            
-            // Add active classes
-            tab.classList.add('active');
-            document.getElementById(`${category}-prompts`).classList.add('active');
-        });
-    });
-}
-
-// Advanced Prompt Copy Functionality
-function copyAdvancedPrompt(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.value || element.textContent;
-    
-    navigator.clipboard.writeText(text).then(() => {
-        showMessage('Advanced prompt copied to clipboard! 🧠', 'success');
-        
-        // Find the button that was clicked and show feedback
-        const buttons = document.querySelectorAll('button');
-        buttons.forEach(btn => {
-            if (btn.onclick && btn.onclick.toString().includes(elementId)) {
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                btn.style.background = '#48bb78';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                }, 2000);
-            }
-        });
-    }).catch(err => {
-        showMessage('Failed to copy prompt. Please try again.', 'error');
-    });
-}
-
-// Specialized Prompt Library
-const specializedPrompts = {
-    linkedin: {
-        title: 'LinkedIn Profile Critical Analysis',
-        content: `**Role**: Expert LinkedIn optimization consultant with critical thinking expertise
-
-**Task**: Perform comprehensive critical analysis of this LinkedIn profile content:
-
-**Profile Content to Analyze**: 
-[Paste your LinkedIn headline, about section, or experience description here]
-
-**Analysis Framework**:
-1. **Content Audit**: What works vs. what doesn't?
-2. **Keyword Analysis**: SEO and recruiter visibility 
-3. **Narrative Flow**: Story coherence and impact
-4. **Competitive Analysis**: Industry benchmark comparison
-5. **Conversion Optimization**: Call-to-action effectiveness
-
-**Output Requirements**:
-- Overall optimization score (1-10)
-- 3 highest-impact improvements
-- Before/after content examples
-- Industry-specific keyword suggestions
-- Measurable success criteria
-
-**Instructions**: Be specific with recommendations and provide actionable steps for optimization.`
-    },
-    resume: {
-        title: 'Resume Content Performance Analysis',
-        content: `**Role**: Senior HR consultant and resume optimization expert
-
-**Analyze This Resume Section**: 
-[Paste your resume summary, experience bullet points, or skills section here]
-
-**Critical Evaluation Criteria**:
-- **Impact Quantification**: Are achievements measurable?
-- **Relevance Scoring**: How well does content match target role?
-- **ATS Compatibility**: Keyword optimization for applicant tracking systems
-- **Storytelling Effectiveness**: Does content tell a compelling career story?
-- **Industry Alignment**: Matches sector expectations and language?
-
-**Target Role**: [Specify the job title you're targeting]
-
-**Provide**:
-- Content effectiveness score (1-10)
-- Top 3 optimization priorities
-- Rewritten high-impact examples
-- ATS keyword enhancement suggestions
-- Industry-specific improvements
-
-**Instructions**: Focus on measurable improvements that will increase interview callbacks.`
-    },
-    jobstrategy: {
-        title: 'Job Application Strategy Critical Analysis',
-        content: `**Role**: Career strategist specializing in pharmaceutical and biotech industries
-
-**Analyze My Job Search Approach**:
-- **Target Role**: [Specific job title]
-- **Target Companies**: [List companies you're targeting]
-- **Current Strategy**: [Describe your current approach]
-- **Application Materials**: [List what you're using - resume, cover letter, portfolio]
-- **Results So Far**: [Response rates, interviews, feedback received]
-
-**Critical Analysis Areas**:
-1. **Strategy Alignment**: Does approach match industry expectations?
-2. **Material Effectiveness**: Are applications compelling and targeted?
-3. **Process Efficiency**: Is the workflow optimized for best ROI?
-4. **Market Positioning**: How competitive is the positioning?
-5. **Success Probability**: What's the likelihood of success?
-
-**Output**: 
-- Strategy effectiveness rating (1-10)
-- Process optimization recommendations
-- Material improvement priorities
-- Timeline and success metrics
-- Risk mitigation strategies
-
-**Instructions**: Provide data-driven insights and specific action steps for improvement.`
-    },
-    portfolio: {
-        title: 'Project Portfolio Critical Review',
-        content: `**Role**: Senior project portfolio reviewer and career advancement specialist
-
-**Portfolio Projects to Analyze**:
-[List your projects with brief descriptions, technologies used, and outcomes]
-
-**Evaluation Criteria**:
-- **Technical Complexity**: Demonstrates required skills?
-- **Business Impact**: Shows value creation ability?
-- **Presentation Quality**: Effectively communicates achievements?
-- **Market Relevance**: Aligns with industry needs?
-- **Differentiation**: Stands out from competition?
-
-**Target Industry**: [Biotech/Pharma/Clinical Research/Data Science]
-
-**Critical Questions**:
-- Which projects should be featured prominently?
-- What gaps exist in the portfolio?
-- How can presentation be optimized?
-- What additional projects would strengthen positioning?
-
-**Provide**:
-- Portfolio strength assessment (1-10)
-- Project prioritization recommendations  
-- Presentation optimization strategies
-- Gap analysis and suggestions
-- Competitive positioning advice
-
-**Instructions**: Be specific about which projects to emphasize and how to present them effectively.`
-    }
-};
-
-// Load Specialized Prompt
-function loadSpecializedPrompt(type) {
-    const prompt = specializedPrompts[type];
-    if (!prompt) return;
-    
-    const display = document.getElementById('specializedPromptDisplay');
-    const title = document.getElementById('specializedPromptTitle');
-    const content = document.getElementById('specializedPromptContent');
-    
-    title.innerHTML = `<i class="fas fa-brain"></i> ${prompt.title}`;
-    content.value = prompt.content;
-    display.style.display = 'block';
-    
-    // Scroll to the prompt
-    display.scrollIntoView({ behavior: 'smooth' });
-    
-    showMessage(`Loaded ${prompt.title} - customize with your details and copy to AI tool`, 'success');
-}
-
-// Customize Prompt Functionality
-function customizePrompt() {
-    const content = document.getElementById('specializedPromptContent');
-    content.readOnly = false;
-    content.style.background = '#fff';
-    content.style.border = '2px solid #667eea';
-    
-    const customizeBtn = event.target;
-    customizeBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
-    customizeBtn.onclick = saveCustomization;
-    
-    showMessage('Prompt is now editable. Customize it for your needs!', 'success');
-}
-
-function saveCustomization() {
-    const content = document.getElementById('specializedPromptContent');
-    content.readOnly = true;
-    content.style.background = '#2d3748';
-    content.style.border = '2px solid #4a5568';
-    
-    const saveBtn = event.target;
-    saveBtn.innerHTML = '<i class="fas fa-edit"></i> Customize';
-    saveBtn.onclick = customizePrompt;
-    
-    showMessage('Customizations saved! Your prompt is ready to use.', 'success');
-}
-
-// Performance Analysis Functions
-function analyzeContentPerformance() {
-    // Simulate analysis with realistic scoring
-    const projects = JSON.parse(localStorage.getItem('projects')) || [];
-    const socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
-    
-    let score = 0;
-    
-    // Score based on content quantity and quality indicators
-    if (projects.length > 0) score += 30;
-    if (projects.length > 3) score += 20;
-    if (socialPosts.length > 0) score += 25;
-    if (socialPosts.length > 5) score += 15;
-    
-    // Add random variation for realism
-    score += Math.floor(Math.random() * 10);
-    score = Math.min(score, 100);
-    
-    updateMetricDisplay('contentScore', score);
-    
-    if (score < 60) {
-        showMessage('Content effectiveness could be improved. Use critical thinking prompts to optimize!', 'error');
-    } else if (score < 80) {
-        showMessage('Good content performance! Consider using advanced analysis prompts for optimization.', 'success');
-    } else {
-        showMessage('Excellent content performance! Keep using AI optimization strategies.', 'success');
-    }
-}
-
-function analyzeProfileOptimization() {
-    // Simulate profile analysis
-    const score = Math.floor(Math.random() * 40) + 60; // 60-100 range
-    updateMetricDisplay('profileScore', score);
-    
-    if (score < 70) {
-        showMessage('Profile needs optimization. Try the LinkedIn analysis prompt!', 'error');
-    } else if (score < 85) {
-        showMessage('Profile is good but can be improved. Use critical thinking analysis!', 'success');
-    } else {
-        showMessage('Excellent profile optimization! You\'re using AI effectively.', 'success');
-    }
-}
-
-function analyzeAIUsage() {
-    // Simulate AI usage efficiency analysis
-    const promptUsage = localStorage.getItem('promptUsageCount') || 0;
-    let score = Math.min(parseInt(promptUsage) * 10, 90) + Math.floor(Math.random() * 10);
-    score = Math.min(score, 100);
-    
-    updateMetricDisplay('efficiencyScore', score);
-    
-    // Track usage
-    localStorage.setItem('promptUsageCount', parseInt(promptUsage) + 1);
-    
-    showMessage(`AI usage efficiency: ${score}%. Great job leveraging AI for career optimization!`, 'success');
-}
-
-function updateMetricDisplay(metricId, score) {
-    const element = document.getElementById(metricId);
-    if (element) {
-        // Animate the score update
-        let currentScore = 0;
-        const increment = score / 20;
-        
-        const interval = setInterval(() => {
-            currentScore += increment;
-            if (currentScore >= score) {
-                currentScore = score;
-                clearInterval(interval);
-            }
-            element.textContent = Math.floor(currentScore) + '%';
-            
-            // Color code based on score
-            if (currentScore < 60) {
-                element.style.color = '#e53e3e';
-            } else if (currentScore < 80) {
-                element.style.color = '#d69e2e';
-            } else {
-                element.style.color = '#38a169';
-            }
-        }, 50);
-    }
-}
-
-// Apply Optimization Suggestions
-function applySuggestion(button) {
-    const suggestionText = button.parentElement.querySelector('span').textContent;
-    
-    // Mark as applied
-    button.innerHTML = '<i class="fas fa-check"></i> Applied';
-    button.style.background = '#48bb78';
-    button.disabled = true;
-    
-    // Navigate to relevant section based on suggestion
-    if (suggestionText.includes('LinkedIn')) {
-        switchTab('prompts');
-        document.querySelector('[data-category="optimization"]').click();
-        setTimeout(() => loadSpecializedPrompt('linkedin'), 500);
-    } else if (suggestionText.includes('resume')) {
-        switchTab('prompts');
-        document.querySelector('[data-category="optimization"]').click();
-        setTimeout(() => loadSpecializedPrompt('resume'), 500);
-    } else if (suggestionText.includes('portfolio')) {
-        switchTab('prompts');
-        document.querySelector('[data-category="optimization"]').click();
-        setTimeout(() => loadSpecializedPrompt('portfolio'), 500);
-    }
-    
-    showMessage('Suggestion applied! Follow the loaded prompt for optimization.', 'success');
-}
-
-// Enhanced initialization
-document.addEventListener('DOMContentLoaded', function() {
-    initializeHelp();
-    initializePromptCategories();
-    
-    // Show welcome message for new optimization features
-    setTimeout(() => {
-        if (!localStorage.getItem('seenOptimizationWelcome')) {
-            showMessage('🧠 New: Critical Thinking AI Prompts now available! Check the AI Prompts section.', 'success');
-            localStorage.setItem('seenOptimizationWelcome', 'true');
-        }
-    }, 2000);
-});

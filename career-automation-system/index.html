@@ -3,1012 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Career Automation System - बायोटेक्नोलॉजी प्रोफेशनल</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>🚀 AI Career Automation System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
-            <div class="header-content">
-                <h1><i class="fas fa-robot"></i> AI Career Automation System</h1>
-                <p>बायोटेक्नोलॉजी से बायोइन्फॉर्मेटिक्स तक - आपका पूर्ण करियर डैशबोर्ड</p>
-                <div class="header-actions">
-                    <button class="btn btn-sm btn-outline" onclick="showWebhookConfig()" title="Webhook Configuration">
-                        <i class="fas fa-cog"></i> Webhook Setup
-                    </button>
-                    <button class="btn btn-sm btn-outline" onclick="testWebhookConnection()" title="Test Connection">
-                        <i class="fas fa-plug"></i> Test
-                    </button>
-                </div>
-            </div>
+            <h1>🚀 AI-Powered Career Automation System</h1>
+            <p>आपका Complete Biotech & Bioinformatics Career Success System</p>
         </header>
 
-        <!-- Navigation -->
-        <nav class="nav-tabs">
-            <button class="nav-tab active" data-tab="portfolio">
-                <i class="fas fa-briefcase"></i> Portfolio Builder
-            </button>
-            <button class="nav-tab" data-tab="social">
-                <i class="fas fa-share-alt"></i> Social Media Generator
-            </button>
-            <button class="nav-tab" data-tab="resume">
-                <i class="fas fa-file-alt"></i> Resume Optimizer
-            </button>
-            <button class="nav-tab" data-tab="jobs">
-                <i class="fas fa-search"></i> Job Tracker
-            </button>
-            <button class="nav-tab" data-tab="bullets">
-                <i class="fas fa-list"></i> Bullet Points Generator
-            </button>
-            <button class="nav-tab" data-tab="prompts">
-                <i class="fas fa-magic"></i> AI Prompts
-            </button>
-            <button class="nav-tab" data-tab="analytics">
-                <i class="fas fa-chart-line"></i> Analytics
-            </button>
-            <button class="nav-tab" data-tab="voice">
-                <i class="fas fa-microphone"></i> Voice AI
-            </button>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="main-content">
+        <div class="dashboard-grid">
             <!-- Portfolio Builder Section -->
-            <section id="portfolio" class="tab-content active">
-                <div class="section-header">
-                    <h2><i class="fas fa-briefcase"></i> Portfolio Builder</h2>
-                    <p>अपने प्रोजेक्ट्स को प्रोफेशनल तरीके से प्रस्तुत करें</p>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>🔬 Portfolio Builder</h3>
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="projectName">प्रोजेक्ट का नाम</label>
-                        <input type="text" id="projectName" placeholder="जैसे: Gene Expression Analysis">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="projectType">प्रोजेक्ट का प्रकार</label>
-                        <select id="projectType">
-                            <option value="bioinformatics">बायोइन्फॉर्मेटिक्स</option>
-                            <option value="data-analysis">डेटा एनालिसिस</option>
-                            <option value="web-design">वेब डिज़ाइन</option>
-                            <option value="research">रिसर्च</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="projectDescription">प्रोजेक्ट का विवरण</label>
-                        <textarea id="projectDescription" rows="4" placeholder="प्रोजेक्ट के बारे में विस्तार से बताएं..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="toolsUsed">उपयोग किए गए टूल्स</label>
-                        <input type="text" id="toolsUsed" placeholder="Python, Pandas, Matplotlib">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="datasetSource">डेटासेट स्रोत</label>
-                        <input type="text" id="datasetSource" placeholder="जैसे: TCGA, Kaggle">
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="keyFindings">मुख्य निष्कर्ष</label>
-                        <textarea id="keyFindings" rows="3" placeholder="प्रोजेक्ट के मुख्य निष्कर्ष..."></textarea>
-                    </div>
+                <div class="form-group">
+                    <label>Project Name:</label>
+                    <input type="text" id="projectName" placeholder="e.g., DNA Sequence Analysis">
                 </div>
                 
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="generatePortfolioContent()">
-                        <i class="fas fa-magic"></i> AI से कंटेंट जनरेट करें
-                    </button>
-                    <button class="btn btn-secondary" onclick="saveProjectWithWebhook()">
-                        <i class="fas fa-save"></i> प्रोजेक्ट सेव करें
-                    </button>
+                <div class="form-group">
+                    <label>Project Type:</label>
+                    <select id="projectType">
+                        <option value="data-analysis">Data Analysis</option>
+                        <option value="bioinformatics">Bioinformatics</option>
+                        <option value="drug-discovery">Drug Discovery</option>
+                        <option value="genomics">Genomics</option>
+                    </select>
                 </div>
                 
-                <div id="portfolioOutput" class="output-section" style="display: none;">
-                    <h3>जनरेट किया गया कंटेंट</h3>
-                    <div id="portfolioContent" class="content-preview"></div>
+                <div class="form-group">
+                    <label>Tools Used:</label>
+                    <input type="text" id="toolsUsed" placeholder="e.g., Python, Pandas, Matplotlib">
                 </div>
-            </section>
+                
+                <div class="form-group">
+                    <label>Project Description:</label>
+                    <textarea id="projectDescription" rows="3" placeholder="Brief description of your project"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dataset Source:</label>
+                    <input type="text" id="datasetSource" placeholder="e.g., NCBI, Kaggle, Company Data">
+                </div>
+                
+                <div class="form-group">
+                    <label>Key Findings:</label>
+                    <textarea id="keyFindings" rows="3" placeholder="Main insights or results from your analysis"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Platform:</label>
+                    <select id="targetPlatform">
+                        <option value="github">GitHub</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="portfolio">Portfolio Site</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generatePortfolioContent()">
+                    <i class="fas fa-magic"></i> Generate AI Content
+                </button>
+                
+                <div id="portfolioOutput" class="output-area"></div>
+                
+                <button class="btn btn-secondary" onclick="saveProject()" style="margin-top: 10px;">
+                    <i class="fas fa-save"></i> Save Project
+                </button>
+            </div>
 
-            <!-- Social Media Generator Section -->
-            <section id="social" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-share-alt"></i> Social Media Generator</h2>
-                    <p>LinkedIn और Facebook के लिए आकर्षक पोस्ट बनाएं</p>
+            <!-- Social Media Generator -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-share-alt"></i>
+                    <h3>📱 Social Media Generator</h3>
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="platform">प्लेटफॉर्म</label>
-                        <select id="platform">
-                            <option value="linkedin">LinkedIn</option>
-                            <option value="facebook">Facebook</option>
-                            <option value="twitter">Twitter</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postType">पोस्ट का प्रकार</label>
-                        <select id="postType">
-                            <option value="project">प्रोजेक्ट शेयर</option>
-                            <option value="achievement">उपलब्धि</option>
-                            <option value="learning">सीख</option>
-                            <option value="industry">इंडस्ट्री इनसाइट</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="postContent">पोस्ट का विषय</label>
-                        <textarea id="postContent" rows="4" placeholder="पोस्ट के बारे में बताएं..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tone">टोन</label>
-                        <select id="tone">
-                            <option value="professional">प्रोफेशनल</option>
-                            <option value="casual">कैजुअल</option>
-                            <option value="enthusiastic">उत्साही</option>
-                            <option value="educational">शैक्षिक</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="hashtags">हैशटैग्स</label>
-                        <input type="text" id="hashtags" placeholder="#Bioinformatics #DataAnalysis">
-                    </div>
+                <div class="form-group">
+                    <label>Post Type:</label>
+                    <select id="postType">
+                        <option value="achievement">Achievement Post</option>
+                        <option value="learning">Learning Update</option>
+                        <option value="project">Project Showcase</option>
+                        <option value="industry">Industry Insight</option>
+                    </select>
                 </div>
                 
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="generateSocialPost()">
-                        <i class="fas fa-magic"></i> पोस्ट जनरेट करें
-                    </button>
-                    <button class="btn btn-secondary" onclick="schedulePost()">
-                        <i class="fas fa-clock"></i> शेड्यूल करें
-                    </button>
+                <div class="form-group">
+                    <label>Key Message:</label>
+                    <textarea id="postMessage" rows="3" placeholder="Main message you want to share"></textarea>
                 </div>
                 
-                <div id="socialOutput" class="output-section" style="display: none;">
-                    <h3>जनरेट किया गया पोस्ट</h3>
-                    <div id="socialContent" class="content-preview"></div>
+                <div class="form-group">
+                    <label>Platform:</label>
+                    <select id="socialPlatform">
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="facebook">Facebook</option>
+                    </select>
                 </div>
-            </section>
+                
+                <button class="btn btn-primary" onclick="generateSocialPost()">
+                    <i class="fas fa-bullhorn"></i> Generate Post
+                </button>
+                
+                <div id="socialOutput" class="output-area"></div>
+                
+                <button class="btn btn-secondary" onclick="schedulePost()" style="margin-top: 10px;">
+                    <i class="fas fa-clock"></i> Schedule Post
+                </button>
+            </div>
 
-            <!-- Resume Optimizer Section -->
-            <section id="resume" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-file-alt"></i> Resume & LinkedIn Optimizer</h2>
-                    <p>अपने प्रोफेशनल प्रोफाइल को optimize करें</p>
+            <!-- Resume Optimizer -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>📄 Resume Optimizer</h3>
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="optimizeType">क्या optimize करना है?</label>
-                        <select id="optimizeType">
-                            <option value="headline">LinkedIn हेडलाइन</option>
-                            <option value="summary">About सेक्शन</option>
-                            <option value="experience">एक्सपीरियंस डिस्क्रिप्शन</option>
-                            <option value="skills">स्किल्स सेक्शन</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="currentContent">वर्तमान कंटेंट</label>
-                        <textarea id="currentContent" rows="6" placeholder="वर्तमान कंटेंट यहाँ पेस्ट करें..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="targetRole">लक्ष्य रोल</label>
-                        <input type="text" id="targetRole" placeholder="जैसे: Bioinformatics Analyst">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="targetCompany">लक्ष्य कंपनी</label>
-                        <input type="text" id="targetCompany" placeholder="जैसे: Sun Pharma">
-                    </div>
+                <div class="form-group">
+                    <label>Content Type:</label>
+                    <select id="resumeType">
+                        <option value="headline">LinkedIn Headline</option>
+                        <option value="summary">Professional Summary</option>
+                        <option value="skills">Skills Section</option>
+                        <option value="experience">Experience Description</option>
+                    </select>
                 </div>
                 
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="optimizeContent()">
-                        <i class="fas fa-magic"></i> AI से Optimize करें
-                    </button>
-                    <button class="btn btn-secondary" onclick="generateMultiple()">
-                        <i class="fas fa-copy"></i> कई विकल्प जनरेट करें
-                    </button>
+                <div class="form-group">
+                    <label>Current Content:</label>
+                    <textarea id="currentContent" rows="4" placeholder="Paste your current content here"></textarea>
                 </div>
                 
-                <div id="resumeOutput" class="output-section" style="display: none;">
-                    <h3>Optimized कंटेंट</h3>
-                    <div id="resumeContent" class="content-preview"></div>
+                <div class="form-group">
+                    <label>Target Job Type:</label>
+                    <input type="text" id="targetJob" placeholder="e.g., Bioinformatics Analyst">
                 </div>
-            </section>
+                
+                <button class="btn btn-primary" onclick="optimizeContent()">
+                    <i class="fas fa-rocket"></i> Optimize Content
+                </button>
+                
+                <div id="resumeOutput" class="output-area"></div>
+            </div>
 
-            <!-- Job Tracker Section -->
-            <section id="jobs" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-search"></i> Job Tracker</h2>
-                    <p>नौकरी के अवसरों को ट्रैक करें और प्रबंधित करें</p>
+            <!-- Job Tracker -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-search"></i>
+                    <h3>💼 Job Tracker</h3>
                 </div>
                 
-                <div class="job-tracker">
-                    <div class="job-filters">
-                        <div class="form-group">
-                            <label for="jobRole">रोल</label>
-                            <input type="text" id="jobRole" placeholder="Bioinformatics Analyst">
-                        </div>
-                        <div class="form-group">
-                            <label for="jobLocation">लोकेशन</label>
-                            <input type="text" id="jobLocation" placeholder="Mumbai, Pune">
-                        </div>
-                        <div class="form-group">
-                            <label for="jobCompany">कंपनी</label>
-                            <input type="text" id="jobCompany" placeholder="Sun Pharma, Zydus">
-                        </div>
-                        <button class="btn btn-primary" onclick="searchJobs()">
-                            <i class="fas fa-search"></i> नौकरी खोजें
-                        </button>
-                    </div>
-                    
-                    <div class="job-list">
-                        <div class="job-item">
-                            <h4>Bioinformatics Analyst</h4>
-                            <p class="company">Sun Pharma</p>
-                            <p class="location">Mumbai, Maharashtra</p>
-                            <p class="description">Looking for a skilled bioinformatics analyst with Python experience...</p>
-                            <div class="job-actions">
-                                <button class="btn btn-sm btn-primary">Apply</button>
-                                <button class="btn btn-sm btn-secondary">Save</button>
-                            </div>
-                        </div>
-                        
-                        <div class="job-item">
-                            <h4>Data Analyst - Clinical Research</h4>
-                            <p class="company">Zydus Cadila</p>
-                            <p class="location">Ahmedabad, Gujarat</p>
-                            <p class="description">Join our clinical research team to analyze patient data...</p>
-                            <div class="job-actions">
-                                <button class="btn btn-sm btn-primary">Apply</button>
-                                <button class="btn btn-sm btn-secondary">Save</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>Search Jobs:</label>
+                    <input type="text" id="jobSearch" placeholder="e.g., Bioinformatics, Data Analyst">
                 </div>
-            </section>
+                
+                <button class="btn btn-primary" onclick="searchJobs()">
+                    <i class="fas fa-search"></i> Search Jobs
+                </button>
+                
+                <div class="job-list" id="jobList">
+                    <!-- Jobs will be populated here -->
+                </div>
+            </div>
 
-            <!-- Bullet Points Generator Section -->
-            <section id="bullets" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-list"></i> Bullet Points Generator</h2>
-                    <p>जल्दी और साफ़ प्रमुख बिंदु लिखने के लिए तेज़ टूल्स</p>
+            <!-- AI Prompts Library -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-brain"></i>
+                    <h3>🤖 AI Prompts Library</h3>
                 </div>
                 
-                <div class="quick-links-grid">
-                    <div class="tool-card">
-                        <h4><i class="fas fa-brain"></i> Notion AI</h4>
-                        <p>सबसे आसान "प्रमुख बिंदु" जेनरेट करना</p>
-                        <a href="https://notion.so" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
-                        </a>
-                        <div class="usage-tip">
-                            <small>Usage: "/" टाइप करके "Summarize into bullet points"</small>
-                        </div>
+                <div class="prompts-grid">
+                    <div class="prompt-item">
+                        <h4>GitHub README</h4>
+                        <p>Professional project documentation</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="github">Copy</button>
                     </div>
                     
-                    <div class="tool-card">
-                        <h4><i class="fab fa-google"></i> Google Gemini</h4>
-                        <p>हिंदी में क्लियर bullets, तेज़ और मुफ्त</p>
-                        <a href="https://gemini.google.com" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
-                        </a>
-                        <div class="usage-tip">
-                            <small>Usage: "इसे 5-7 प्रमुख बिंदुओं में लिखो"</small>
-                        </div>
+                    <div class="prompt-item">
+                        <h4>LinkedIn Post</h4>
+                        <p>Engaging professional content</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="linkedin">Copy</button>
                     </div>
                     
-                    <div class="tool-card">
-                        <h4><i class="fas fa-robot"></i> ChatGPT</h4>
-                        <p>तेज़ bullets और टोन कंट्रोल</p>
-                        <a href="https://chat.openai.com" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
-                        </a>
-                        <div class="usage-tip">
-                            <small>Usage: "5 मुख्य बिंदुओं में, 1-लाइन प्रत्येक"</small>
-                        </div>
+                    <div class="prompt-item">
+                        <h4>Cover Letter</h4>
+                        <p>Personalized job applications</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="cover">Copy</button>
                     </div>
                     
-                    <div class="tool-card">
-                        <h4><i class="fab fa-microsoft"></i> Microsoft Copilot</h4>
-                        <p>Office/Edge के साथ बेहतरीन integration</p>
-                        <a href="https://copilot.microsoft.com" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
-                        </a>
-                        <div class="usage-tip">
-                            <small>Usage: "Clear bullet points 5-7"</small>
-                        </div>
+                    <div class="prompt-item">
+                        <h4>Interview Preparation</h4>
+                        <p>Common biotech interview questions</p>
+                        <button class="copy-btn" onclick="copyPrompt(this)" data-prompt="interview">Copy</button>
                     </div>
-                    
-                    <div class="tool-card">
-                        <h4><i class="fas fa-feather-alt"></i> QuillBot</h4>
-                        <p>सीधे "Key points" summarizer</p>
-                        <a href="https://quillbot.com/summarize" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
-                        </a>
-                        <div class="usage-tip">
-                            <small>Usage: Text paste करें → "Key Sentences"</small>
-                        </div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>📊 Analytics Dashboard</h3>
+                </div>
+                
+                <h4 style="color: #667eea; margin-bottom: 15px;">Career Progress</h4>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Portfolio Completion</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
                     </div>
-                    
-                    <div class="tool-card">
-                        <h4><i class="fas fa-microphone"></i> Notta.ai</h4>
-                        <p>ऑडियो से bullet summary</p>
-                        <a href="https://notta.ai" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> तुरंत खोलें
-                        </a>
-                        <div class="usage-tip">
-                            <small>Usage: ऑडियो अपलोड → "Key takeaways" बटन</small>
-                        </div>
+                    <small>75% Complete</small>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>LinkedIn Optimization</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                    <small>60% Complete</small>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Job Applications</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%"></div>
+                    </div>
+                    <small>8 Applications Sent</small>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>5</h3>
+                        <p>Projects Created</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>12</h3>
+                        <p>Posts Generated</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>3</h3>
+                        <p>Interviews Scheduled</p>
                     </div>
                 </div>
                 
-                <div class="prompt-generator">
-                    <h3><i class="fas fa-magic"></i> Ready-to-Use Prompt</h3>
-                    <div class="prompt-box">
-                        <p><strong>किसी भी AI टूल में copy-paste करें:</strong></p>
-                        <div class="prompt-text" id="bulletPrompt">
-नीचे दिए गए विषय पर 5‑7 स्पष्ट और संक्षिप्त 'प्रमुख बिंदु' लिखो। हर बिंदु 1 लाइन में हो, बिना फालतू शब्दों के, सरल हिंदी में। यदि सूची लंबी हो रही है तो सबसे ज़रूरी बातें पहले दो।
-
-विषय: [यहाँ विषय/टेक्स्ट पेस्ट करें]
-                        </div>
-                        <button class="btn btn-secondary" onclick="copyToClipboard('bulletPrompt')">
-                            <i class="fas fa-copy"></i> प्रॉम्प्ट कॉपी करें
-                        </button>
+                <div class="weekly-schedule">
+                    <h4>This Week's Plan</h4>
+                    <div class="schedule-item">
+                        <strong>Monday:</strong> Portfolio content generation और LinkedIn posts
                     </div>
-                    
-                    <div class="prompt-box">
-                        <p><strong>English Version:</strong></p>
-                        <div class="prompt-text" id="bulletPromptEn">
-Create 5-7 clear and concise bullet points on the topic below. Each point should be one line, without unnecessary words, in simple language. If the list is getting long, prioritize the most important points first.
-
-Topic: [Paste your topic/text here]
-                        </div>
-                        <button class="btn btn-secondary" onclick="copyToClipboard('bulletPromptEn')">
-                            <i class="fas fa-copy"></i> Copy Prompt
-                        </button>
+                    <div class="schedule-item">
+                        <strong>Tuesday:</strong> Job search और application tracking
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Wednesday:</strong> GitHub projects और documentation
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Thursday:</strong> Social media content और networking
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Friday:</strong> Resume optimization और interview prep
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Saturday:</strong> Learning resources और skill development
+                    </div>
+                    <div class="schedule-item">
+                        <strong>Sunday:</strong> Weekly progress review और planning
                     </div>
                 </div>
-                
-                <div class="workflow-section">
-                    <h3><i class="fas fa-bolt"></i> सबसे तेज़ वर्कफ़्लो (30 सेकंड में)</h3>
-                    <div class="workflow-grid">
-                        <div class="workflow-card">
-                            <h4><i class="fas fa-mobile-alt"></i> मोबाइल पर</h4>
-                            <ol>
-                                <li>Google Keep में माइक से बोलें</li>
-                                <li>Text कॉपी करें</li>
-                                <li>Gemini में prompt paste करें</li>
-                                <li>साफ़ bullets मिल जाएं</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="workflow-card">
-                            <h4><i class="fas fa-desktop"></i> डेस्कटॉप पर</h4>
-                            <ol>
-                                <li>ChatGPT खोलें</li>
-                                <li>ऊपर का prompt paste करें</li>
-                                <li>अपना content add करें</li>
-                                <li>Perfect bullets तैयार</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="workflow-card">
-                            <h4><i class="fas fa-microphone"></i> ऑडियो से</h4>
-                            <ol>
-                                <li>Notta.ai खोलें</li>
-                                <li>ऑडियो/video upload करें</li>
-                                <li>"Key takeaways" दबाएं</li>
-                                <li>Direct bullets मिल जाएं</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="templates-section">
-                    <h3><i class="fas fa-clipboard-list"></i> Pre-Made Templates</h3>
-                    <div class="template-grid">
-                        <div class="template-card">
-                            <h4>📊 प्रोजेक्ट सारांश</h4>
-                            <div class="template-text" id="projectTemplate">
-🎯 [प्रोजेक्ट नाम] - मुख्य बिंदु:
-
-• उद्देश्य: [एक लाइन में लक्ष्य]
-• समस्या: [क्या हल किया]
-• समाधान: [कैसे हल किया]
-• परिणाम: [क्या मिला]
-• सीख: [क्या सीखा]
-                            </div>
-                            <button class="btn btn-sm btn-outline" onclick="copyToClipboard('projectTemplate')">
-                                <i class="fas fa-copy"></i> कॉपी करें
-                            </button>
-                        </div>
-                        
-                        <div class="template-card">
-                            <h4>💼 मीटिंग नोट्स</h4>
-                            <div class="template-text" id="meetingTemplate">
-📅 [तारीख] - [मीटिंग का नाम]
-
-• मुख्य चर्चा: [विषय]
-• निर्णय: [क्या तय हुआ]
-• एक्शन आइटम: [किसे क्या करना है]
-• अगला कदम: [अगली मीटिंग/काम]
-• डेडलाइन: [कब तक]
-                            </div>
-                            <button class="btn btn-sm btn-outline" onclick="copyToClipboard('meetingTemplate')">
-                                <i class="fas fa-copy"></i> कॉपी करें
-                            </button>
-                        </div>
-                        
-                        <div class="template-card">
-                            <h4>📚 स्टडी नोट्स</h4>
-                            <div class="template-text" id="studyTemplate">
-📖 [विषय/अध्याय] - प्रमुख बिंदु:
-
-• परिभाषा: [मुख्य कॉन्सेप्ट]
-• विशेषताएं: [खासियतें]
-• उदाहरण: [रियल-लाइफ एक्जाम्पल]
-• अनुप्रयोग: [कहाँ इस्तेमाल होता है]
-• महत्व: [क्यों जरूरी है]
-                            </div>
-                            <button class="btn btn-sm btn-outline" onclick="copyToClipboard('studyTemplate')">
-                                <i class="fas fa-copy"></i> कॉपी करें
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tips-section">
-                    <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
-                    <div class="tips-grid">
-                        <div class="tip-card success">
-                            <h4>✅ करें</h4>
-                            <ul>
-                                <li>Specific keywords दें ("5 actionable steps")</li>
-                                <li>"1 line each" जरूर mention करें</li>
-                                <li>Context दें - "For presentation" etc.</li>
-                                <li>2-3 iterations करें better results के लिए</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="tip-card warning">
-                            <h4>❌ न करें</h4>
-                            <ul>
-                                <li>Generic prompts न दें ("summarize this")</li>
-                                <li>बहुत लंबा text एक साथ न दें</li>
-                                <li>First draft को final न मानें</li>
-                                <li>Format specify करना न भूलें</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- AI Prompts Section -->
-            <section id="prompts" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-magic"></i> AI Prompts Library</h2>
-                    <p>सभी AI टूल्स के लिए ready-to-use प्रॉम्प्ट्स और critical thinking optimization</p>
-                </div>
-                
-                <!-- Prompt Categories Tabs -->
-                <div class="prompt-categories">
-                    <button class="prompt-category-tab active" data-category="basic">
-                        <i class="fas fa-rocket"></i> Basic Prompts
-                    </button>
-                    <button class="prompt-category-tab" data-category="optimization">
-                        <i class="fas fa-brain"></i> Critical Thinking
-                    </button>
-                    <button class="prompt-category-tab" data-category="analysis">
-                        <i class="fas fa-chart-line"></i> Performance Analysis
-                    </button>
-                </div>
-                
-                <!-- Basic Prompts -->
-                <div id="basic-prompts" class="prompt-category-content active">
-                    <div class="prompts-grid">
-                        <div class="prompt-card">
-                            <h4><i class="fas fa-globe"></i> वेबसाइट बिल्डर</h4>
-                            <div class="prompt-content">
-                                <p>Create a professional portfolio website for a biotechnology professional transitioning into bioinformatics and data analysis...</p>
-                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
-                            </div>
-                        </div>
-                        
-                        <div class="prompt-card">
-                            <h4><i class="fab fa-github"></i> GitHub README</h4>
-                            <div class="prompt-content">
-                                <p>Analyze the provided Python script. Generate a comprehensive README.md file...</p>
-                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
-                            </div>
-                        </div>
-                        
-                        <div class="prompt-card">
-                            <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
-                            <div class="prompt-content">
-                                <p>Act as a social media marketing expert for the biotech industry...</p>
-                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
-                            </div>
-                        </div>
-                        
-                        <div class="prompt-card">
-                            <h4><i class="fas fa-file-alt"></i> Resume Summary</h4>
-                            <div class="prompt-content">
-                                <p>Act as a professional resume writer. Write a compelling summary...</p>
-                                <button class="btn btn-sm btn-primary" onclick="copyPrompt(this)">Copy</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Critical Thinking Optimization Prompts -->
-                <div id="optimization-prompts" class="prompt-category-content">
-                    <div class="optimization-tools">
-                        <div class="tool-section">
-                            <h3><i class="fas fa-brain"></i> Master Critical Thinking Template</h3>
-                            <p>Universal framework for analytical career optimization</p>
-                            
-                            <div class="prompt-card advanced">
-                                <h4><i class="fas fa-cogs"></i> Universal Analysis Framework</h4>
-                                <div class="prompt-content">
-                                    <div class="framework-steps">
-                                        <div class="step">
-                                            <span class="step-number">1</span>
-                                            <div class="step-content">
-                                                <strong>Understanding:</strong> Core facts and objectives
-                                            </div>
-                                        </div>
-                                        <div class="step">
-                                            <span class="step-number">2</span>
-                                            <div class="step-content">
-                                                <strong>Analysis:</strong> Component breakdown and patterns
-                                            </div>
-                                        </div>
-                                        <div class="step">
-                                            <span class="step-number">3</span>
-                                            <div class="step-content">
-                                                <strong>Evaluation:</strong> Compare options and assess strengths
-                                            </div>
-                                        </div>
-                                        <div class="step">
-                                            <span class="step-number">4</span>
-                                            <div class="step-content">
-                                                <strong>Synthesis:</strong> Actionable recommendations
-                                            </div>
-                                        </div>
-                                        <div class="step">
-                                            <span class="step-number">5</span>
-                                            <div class="step-content">
-                                                <strong>Review:</strong> Validate and identify gaps
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <textarea id="masterPrompt" rows="8" readonly>**Role**: You are a critical thinking expert and career optimization specialist who uses systematic analysis to provide the most accurate and actionable solutions.
-
-**Objective**: Analyze the provided career/content data using critical thinking methodology and provide optimized recommendations with clear reasoning.
-
-**Critical Thinking Process**:
-1️⃣ **Understanding Phase**: What are the core facts and objectives?
-2️⃣ **Analysis Phase**: Break down components and identify patterns
-3️⃣ **Evaluation Phase**: Compare options and assess strengths/weaknesses  
-4️⃣ **Synthesis Phase**: Combine insights into actionable recommendations
-5️⃣ **Review Phase**: Validate recommendations and identify potential gaps
-
-**Required Output Format**:
-- **Summary**: Key findings in 2-3 bullet points
-- **Analysis**: Detailed breakdown with reasoning steps
-- **Recommendations**: Specific, actionable solutions prioritized by impact
-- **Optimization Score**: Rate effectiveness (1-10) with justification
-- **Next Steps**: Clear action items with timeline
-
-**Context**: [User provides their specific career situation, content, or problem]
-**Question**: [User's specific question or optimization goal]</textarea>
-                                    <button class="btn btn-sm btn-primary" onclick="copyAdvancedPrompt('masterPrompt')">
-                                        <i class="fas fa-copy"></i> Copy Master Template
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="tool-section">
-                            <h3><i class="fas fa-search"></i> Specialized Analysis Tools</h3>
-                            <div class="analysis-tools-grid">
-                                <div class="analysis-tool">
-                                    <h4><i class="fab fa-linkedin"></i> LinkedIn Profile Analysis</h4>
-                                    <p>Critical evaluation of LinkedIn profile effectiveness</p>
-                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('linkedin')">Load Prompt</button>
-                                </div>
-                                
-                                <div class="analysis-tool">
-                                    <h4><i class="fas fa-file-alt"></i> Resume Optimization</h4>
-                                    <p>Performance analysis for resume content</p>
-                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('resume')">Load Prompt</button>
-                                </div>
-                                
-                                <div class="analysis-tool">
-                                    <h4><i class="fas fa-briefcase"></i> Job Strategy Analysis</h4>
-                                    <p>Critical evaluation of job search approach</p>
-                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('jobstrategy')">Load Prompt</button>
-                                </div>
-                                
-                                <div class="analysis-tool">
-                                    <h4><i class="fas fa-chart-bar"></i> Portfolio Review</h4>
-                                    <p>Comprehensive project portfolio assessment</p>
-                                    <button class="btn btn-sm btn-secondary" onclick="loadSpecializedPrompt('portfolio')">Load Prompt</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="specializedPromptDisplay" class="specialized-prompt" style="display: none;">
-                        <h4 id="specializedPromptTitle"></h4>
-                        <textarea id="specializedPromptContent" rows="12" readonly></textarea>
-                        <div class="prompt-actions">
-                            <button class="btn btn-primary" onclick="copyAdvancedPrompt('specializedPromptContent')">
-                                <i class="fas fa-copy"></i> Copy Prompt
-                            </button>
-                            <button class="btn btn-secondary" onclick="customizePrompt()">
-                                <i class="fas fa-edit"></i> Customize
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Performance Analysis -->
-                <div id="analysis-prompts" class="prompt-category-content">
-                    <div class="analysis-dashboard">
-                        <h3><i class="fas fa-tachometer-alt"></i> Performance Optimization Dashboard</h3>
-                        
-                        <div class="performance-metrics">
-                            <div class="metric-card">
-                                <h4>Content Effectiveness</h4>
-                                <div class="metric-value" id="contentScore">-</div>
-                                <p>Based on recent AI-generated content</p>
-                                <button class="btn btn-sm btn-primary" onclick="analyzeContentPerformance()">Analyze</button>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <h4>Profile Optimization</h4>
-                                <div class="metric-value" id="profileScore">-</div>
-                                <p>LinkedIn and resume optimization level</p>
-                                <button class="btn btn-sm btn-primary" onclick="analyzeProfileOptimization()">Check Score</button>
-                            </div>
-                            
-                            <div class="metric-card">
-                                <h4>AI Usage Efficiency</h4>
-                                <div class="metric-value" id="efficiencyScore">-</div>
-                                <p>How effectively you're using AI tools</p>
-                                <button class="btn btn-sm btn-primary" onclick="analyzeAIUsage()">Measure</button>
-                            </div>
-                        </div>
-                        
-                        <div class="optimization-suggestions">
-                            <h4><i class="fas fa-lightbulb"></i> Smart Optimization Suggestions</h4>
-                            <div id="optimizationSuggestions" class="suggestions-list">
-                                <div class="suggestion-item">
-                                    <i class="fas fa-arrow-up text-success"></i>
-                                    <span>Use critical thinking prompts to analyze your LinkedIn posts for better engagement</span>
-                                    <button class="btn btn-xs btn-outline" onclick="applySuggestion(this)">Apply</button>
-                                </div>
-                                <div class="suggestion-item">
-                                    <i class="fas fa-arrow-up text-warning"></i>
-                                    <span>Optimize your resume using performance analysis prompts</span>
-                                    <button class="btn btn-xs btn-outline" onclick="applySuggestion(this)">Apply</button>
-                                </div>
-                                <div class="suggestion-item">
-                                    <i class="fas fa-arrow-up text-info"></i>
-                                    <span>Run portfolio review analysis for better project presentation</span>
-                                    <button class="btn btn-xs btn-outline" onclick="applySuggestion(this)">Apply</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Analytics Section -->
-            <section id="analytics" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
-                    <p>अपनी करियर प्रगति को ट्रैक करें</p>
-                </div>
-                
-                <div class="analytics-grid">
-                    <div class="analytics-card">
-                        <h4>प्रोजेक्ट्स</h4>
-                        <div class="metric">12</div>
-                        <p>कुल प्रोजेक्ट्स</p>
-                    </div>
-                    
-                    <div class="analytics-card">
-                        <h4>LinkedIn पोस्ट्स</h4>
-                        <div class="metric">45</div>
-                        <p>इस महीने</p>
-                    </div>
-                    
-                    <div class="analytics-card">
-                        <h4>जॉब अप्लिकेशन्स</h4>
-                        <div class="metric">8</div>
-                        <p>इस हफ्ते</p>
-                    </div>
-                    
-                    <div class="analytics-card">
-                        <h4>नेटवर्क ग्रोथ</h4>
-                        <div class="metric">+127</div>
-                        <p>इस महीने</p>
-                    </div>
-
-                    <!-- New Career Progression Metrics -->
-                    <div class="metric-card career-milestone">
-                        <div class="metric-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3>Courses Completed</h3>
-                            <p class="metric-value">4/12</p>
-                            <p class="metric-change positive">Python & SQL Done</p>
-                        </div>
-                    </div>
-                    
-                    <div class="metric-card career-milestone">
-                        <div class="metric-icon">
-                            <i class="fas fa-rupee-sign"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3>Monthly Income</h3>
-                            <p class="metric-value">₹18,500</p>
-                            <p class="metric-change positive">Apprenticeship Active</p>
-                        </div>
-                    </div>
-                    
-                    <div class="metric-card career-milestone">
-                        <div class="metric-icon">
-                            <i class="fas fa-road"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3>Career Phase</h3>
-                            <p class="metric-value">Phase 2</p>
-                            <p class="metric-change positive">Skills Building</p>
-                        </div>
-                    </div>
-                    
-                    <div class="metric-card career-milestone">
-                        <div class="metric-icon">
-                            <i class="fas fa-target"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h3>Goal Progress</h3>
-                            <p class="metric-value">65%</p>
-                            <p class="metric-change positive">On Track for 18-month goal</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Career Progression Timeline -->
-                <div class="career-timeline-section">
-                    <h3><i class="fas fa-clock"></i> Career Transition Timeline</h3>
-                    <div class="timeline-progress">
-                        <div class="timeline-phase completed">
-                            <div class="phase-marker">✓</div>
-                            <div class="phase-content">
-                                <h4>Phase 1: Foundation (0-3 months)</h4>
-                                <p>Job secured, basic setup complete</p>
-                                <div class="phase-status">Completed</div>
-                            </div>
-                        </div>
-                        <div class="timeline-phase active">
-                            <div class="phase-marker">2</div>
-                            <div class="phase-content">
-                                <h4>Phase 2: Skill Building (3-9 months)</h4>
-                                <p>Python, SQL, Bioinformatics courses</p>
-                                <div class="phase-status">In Progress (65%)</div>
-                            </div>
-                        </div>
-                        <div class="timeline-phase pending">
-                            <div class="phase-marker">3</div>
-                            <div class="phase-content">
-                                <h4>Phase 3: Portfolio & Projects (9-15 months)</h4>
-                                <p>Advanced projects, GitHub portfolio</p>
-                                <div class="phase-status">Upcoming</div>
-                            </div>
-                        </div>
-                        <div class="timeline-phase pending">
-                            <div class="phase-marker">4</div>
-                            <div class="phase-content">
-                                <h4>Phase 4: Transition (15-18 months)</h4>
-                                <p>Bioinformatics job applications</p>
-                                <div class="phase-status">Future</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Financial Tracking -->
-                <div class="financial-tracking">
-                    <h3><i class="fas fa-chart-pie"></i> Financial Progress</h3>
-                    <div class="financial-summary">
-                        <div class="financial-item income">
-                            <h4>Monthly Income</h4>
-                            <div class="amount">₹18,500</div>
-                            <div class="breakdown">
-                                <span>Apprenticeship: ₹15,000</span>
-                                <span>Freelance: ₹3,500</span>
-                            </div>
-                        </div>
-                        <div class="financial-item investment">
-                            <h4>Skill Investment</h4>
-                            <div class="amount">₹8,500</div>
-                            <div class="breakdown">
-                                <span>Total Budget: ₹25,000</span>
-                                <span>Remaining: ₹16,500</span>
-                            </div>
-                        </div>
-                        <div class="financial-item roi">
-                            <h4>Projected ROI</h4>
-                            <div class="amount">250%</div>
-                            <div class="breakdown">
-                                <span>18-month target: ₹45,000/month</span>
-                                <span>Career growth on track</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="progress-section">
-                    <h3>साप्ताहिक लक्ष्य</h3>
-                    <div class="progress-item">
-                        <span>प्रोजेक्ट पोस्ट</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 75%"></div>
-                        </div>
-                        <span>3/4</span>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <span>जॉब अप्लाई</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 60%"></div>
-                        </div>
-                        <span>3/5</span>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <span>नेटवर्किंग</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 90%"></div>
-                        </div>
-                        <span>9/10</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Voice AI Section -->
-            <section id="voice" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-microphone"></i> Voice AI Agent</h2>
-                    <p>आवाज़ से करियर को आगे बढ़ाएं - बोलिए और काम हो जाए!</p>
-                </div>
-
-                <div class="voice-ai-container">
-                    <!-- Voice Controls -->
-                    <div class="voice-controls-section">
-                        <div class="voice-controls">
-                            <button id="voiceMicButton" class="voice-mic-button" title="Voice Commands शुरू करें">
-                                <i class="fas fa-microphone"></i>
-                            </button>
-                            <div class="voice-status" id="voiceStatus">
-                                Voice AI Agent तैयार है। माइक बटन दबाकर बोलना शुरू करें।
-                            </div>
-                        </div>
-
-                        <!-- Current Transcription -->
-                        <div class="voice-transcription">
-                            <h4><i class="fas fa-comment"></i> वर्तमान बातचीत</h4>
-                            <div id="voiceCurrentTranscription" class="transcription-text">
-                                यहाँ आपकी बात दिखेगी...
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Configuration Section -->
-                    <div class="voice-config-section">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
-                        <div class="config-grid">
-                            <div class="config-group">
-                                <label for="voiceOpenaiKey">OpenAI API Key:</label>
-                                <input type="password" id="voiceOpenaiKey" placeholder="sk-..." class="form-input">
-                            </div>
-                            <div class="config-group">
-                                <label for="voiceLanguage">Language:</label>
-                                <select id="voiceLanguage" class="form-select">
-                                    <option value="hi-IN">Hindi (हिंदी)</option>
-                                    <option value="en-US">English (US)</option>
-                                    <option value="en-IN">English (India)</option>
-                                </select>
-                            </div>
-                            <div class="config-group">
-                                <label for="voiceN8nWebhook">n8n Webhook URL:</label>
-                                <input type="url" id="voiceN8nWebhook" placeholder="https://your-n8n.com/webhook/voice" class="form-input">
-                            </div>
-                            <div class="config-group">
-                                <button id="testN8nBtn" class="btn btn-secondary">
-                                    <i class="fas fa-link"></i> Test n8n Connection
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Voice Commands Examples -->
-                    <div class="voice-examples-section">
-                        <h3><i class="fas fa-list"></i> Example Voice Commands</h3>
-                        <div class="examples-grid">
-                            <div class="example-card">
-                                <h4><i class="fas fa-linkedin"></i> LinkedIn Posts</h4>
-                                <ul>
-                                    <li>"मेरे लिए Python project के बारे में LinkedIn post बनाओ"</li>
-                                    <li>"Bioinformatics career growth के बारे में professional post बनाओ"</li>
-                                </ul>
-                            </div>
-                            <div class="example-card">
-                                <h4><i class="fas fa-briefcase"></i> Job Applications</h4>
-                                <ul>
-                                    <li>"Sun Pharma में Data Analyst position के लिए applied status add करो"</li>
-                                    <li>"Biocon में interview scheduled status update करो"</li>
-                                </ul>
-                            </div>
-                            <div class="example-card">
-                                <h4><i class="fas fa-file-alt"></i> Resume Optimization</h4>
-                                <ul>
-                                    <li>"मेरे resume को Data Scientist role के लिए optimize करो"</li>
-                                    <li>"Pharma industry के लिए resume improve करो"</li>
-                                </ul>
-                            </div>
-                            <div class="example-card">
-                                <h4><i class="fas fa-robot"></i> Automation</h4>
-                                <ul>
-                                    <li>"Weekly content generation workflow start करो"</li>
-                                    <li>"Job application tracking workflow trigger करो"</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Conversation History -->
-                    <div class="voice-history-section">
-                        <h3><i class="fas fa-history"></i> Conversation History</h3>
-                        <div id="voiceConversationHistory" class="conversation-history">
-                            <!-- Conversation will appear here -->
-                        </div>
-                        <button id="clearVoiceHistoryBtn" class="btn btn-secondary">
-                            <i class="fas fa-trash"></i> Clear History
-                        </button>
-                    </div>
-
-                    <!-- System Logs -->
-                    <div class="voice-logs-section">
-                        <h3><i class="fas fa-terminal"></i> System Logs</h3>
-                        <div id="voiceSystemLogs" class="system-logs">
-                            Voice AI Agent initialized successfully...
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
 
-    <!-- GitHub API Integration -->
-    <script src="github-api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,393 +1,389 @@
 #!/usr/bin/env python3
 """
-🚀 GitHub Documentation Generator
-Automated README.md and documentation generation for bioinformatics projects
-
-Features:
-- Auto-generate README.md from Python scripts
-- Extract function documentation
-- Generate requirements.txt
-- Create project structure
-- Update existing documentation
+GitHub Documentation Generator for Bioinformatics Projects
+Automated documentation generator for biotech/bioinformatics projects
 """
 
 import os
-import re
+import sys
+import argparse
 import ast
 import json
-import argparse
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Any, Optional
+from datetime import datetime
 
 class GitHubDocumentationGenerator:
     """Automated GitHub documentation generator for bioinformatics projects"""
     
     def __init__(self, project_path: str):
         self.project_path = Path(project_path)
-        self.config = self.load_config()
+        self.project_name = self.project_path.name
+        self.analysis_results = {}
         
-    def load_config(self) -> Dict:
-        """Load configuration from config file"""
-        config_path = self.project_path / "config" / "documentation_config.json"
-        if config_path.exists():
-            with open(config_path, 'r') as f:
-                return json.load(f)
-        else:
-            return self.get_default_config()
-    
-    def get_default_config(self) -> Dict:
-        """Get default configuration for bioinformatics projects"""
-        return {
-            "project_type": "bioinformatics",
-            "target_audience": ["researchers", "data_scientists", "pharmaceutical_professionals"],
-            "keywords": ["biotechnology", "bioinformatics", "data_analysis", "python", "pharmaceutical"],
-            "sections": [
-                "project_overview",
-                "features",
-                "installation",
-                "usage",
-                "requirements",
-                "contributing",
-                "license"
-            ],
-            "templates": {
-                "readme": "templates/readme_template.md",
-                "requirements": "templates/requirements_template.txt",
-                "setup": "templates/setup_template.py"
-            }
-        }
-    
-    def analyze_python_file(self, file_path: Path) -> Dict:
-        """Analyze Python file and extract information"""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        try:
-            tree = ast.parse(content)
-        except SyntaxError:
-            return {"error": f"Syntax error in {file_path.name}"}
+    def analyze_python_files(self) -> Dict[str, Any]:
+        """Analyze Python files in the project directory"""
+        python_files = list(self.project_path.glob("**/*.py"))
         
         analysis = {
-            "filename": file_path.name,
-            "functions": [],
-            "classes": [],
-            "imports": [],
-            "docstring": "",
-            "lines_of_code": len(content.split('\n'))
+            'files': [],
+            'total_functions': 0,
+            'total_classes': 0,
+            'imports': set(),
+            'docstrings': []
         }
         
-        # Extract imports
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    analysis["imports"].append(alias.name)
-            elif isinstance(node, ast.ImportFrom):
-                module = node.module or ""
-                for alias in node.names:
-                    analysis["imports"].append(f"{module}.{alias.name}")
-        
-        # Extract functions and classes
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                func_info = {
-                    "name": node.name,
-                    "docstring": ast.get_docstring(node) or "",
-                    "args": [arg.arg for arg in node.args.args],
-                    "returns": ast.get_docstring(node) or ""
-                }
-                analysis["functions"].append(func_info)
-            elif isinstance(node, ast.ClassDef):
-                class_info = {
-                    "name": node.name,
-                    "docstring": ast.get_docstring(node) or "",
-                    "methods": []
-                }
-                for child in node.body:
-                    if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                        method_info = {
-                            "name": child.name,
-                            "docstring": ast.get_docstring(child) or ""
-                        }
-                        class_info["methods"].append(method_info)
-                analysis["classes"].append(class_info)
-        
-        # Extract module docstring
-        if tree.body and isinstance(tree.body[0], ast.Expr) and isinstance(tree.body[0].value, ast.Str):
-            analysis["docstring"] = tree.body[0].value.s
-        
+        for py_file in python_files:
+            try:
+                with open(py_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    
+                tree = ast.parse(content)
+                file_analysis = self._analyze_ast(tree, py_file)
+                analysis['files'].append(file_analysis)
+                analysis['total_functions'] += file_analysis['functions']
+                analysis['total_classes'] += file_analysis['classes']
+                analysis['imports'].update(file_analysis['imports'])
+                
+            except Exception as e:
+                print(f"Warning: Could not analyze {py_file}: {e}")
+                
+        analysis['imports'] = list(analysis['imports'])
         return analysis
     
-    def generate_requirements_txt(self, python_files: List[Path]) -> str:
-        """Generate requirements.txt from Python imports"""
-        all_imports = set()
-        
-        for file_path in python_files:
-            analysis = self.analyze_python_file(file_path)
-            if "imports" in analysis:
-                all_imports.update(analysis["imports"])
-        
-        # Common bioinformatics packages with versions
-        package_versions = {
-            "pandas": ">=1.3.0",
-            "numpy": ">=1.21.0",
-            "matplotlib": ">=3.4.0",
-            "seaborn": ">=0.11.0",
-            "scikit-learn": ">=1.0.0",
-            "biopython": ">=1.79",
-            "plotly": ">=5.0.0",
-            "jupyter": ">=1.0.0",
-            "requests": ">=2.25.0",
-            "beautifulsoup4": ">=4.9.0"
+    def _analyze_ast(self, tree: ast.AST, file_path: Path) -> Dict[str, Any]:
+        """Analyze AST for functions, classes, and imports"""
+        analysis = {
+            'file': str(file_path.relative_to(self.project_path)),
+            'functions': 0,
+            'classes': 0,
+            'imports': set(),
+            'docstring': None
         }
         
-        requirements = []
-        for import_name in all_imports:
-            # Extract base package name
-            base_package = import_name.split('.')[0]
-            if base_package in package_versions:
-                requirements.append(f"{base_package}{package_versions[base_package]}")
-            elif base_package not in ['os', 'sys', 'json', 'datetime', 'pathlib', 'typing', 're', 'ast']:
-                requirements.append(base_package)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                analysis['functions'] += 1
+            elif isinstance(node, ast.ClassDef):
+                analysis['classes'] += 1
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                for alias in node.names:
+                    if hasattr(node, 'module') and node.module:
+                        analysis['imports'].add(node.module)
+                    else:
+                        analysis['imports'].add(alias.name)
         
-        return "\n".join(sorted(set(requirements)))
+        # Get module docstring
+        if (isinstance(tree.body[0], ast.Expr) and 
+            isinstance(tree.body[0].value, ast.Str)):
+            analysis['docstring'] = tree.body[0].value.s
+        
+        analysis['imports'] = list(analysis['imports'])
+        return analysis
     
-    def generate_readme_content(self, project_name: str, analysis_results: List[Dict]) -> str:
-        """Generate README.md content"""
-        
-        # Extract project information
-        main_file = None
-        total_functions = 0
-        total_classes = 0
-        
-        for analysis in analysis_results:
-            if "error" not in analysis:
-                total_functions += len(analysis.get("functions", []))
-                total_classes += len(analysis.get("classes", []))
-                if not main_file and analysis.get("docstring"):
-                    main_file = analysis
-        
-        # Generate README content
-        readme_content = f"""# {project_name.replace('_', ' ').title()}
+    def generate_readme(self, output_path: Path) -> str:
+        """Generate comprehensive README.md file"""
+        readme_content = f"""# {self.project_name}
 
-## 📋 Project Overview
+## 🔬 Project Overview
 
-{main_file.get('docstring', 'A bioinformatics project for data analysis and visualization.') if main_file else 'A bioinformatics project for data analysis and visualization.'}
+This bioinformatics project demonstrates advanced computational analysis techniques for biological data processing and interpretation. The implementation showcases industry-standard practices in data science and bioinformatics.
 
-## 🚀 Features
+## 📊 Dataset Information
 
-- **Data Analysis**: Comprehensive data processing and analysis capabilities
-- **Visualization**: Advanced plotting and charting features
-- **Bioinformatics Tools**: Specialized functions for biological data
-- **Modular Design**: Well-organized, reusable code structure
+**Data Source**: [Specify your data source]
+**Data Type**: [Genomic/Proteomic/Clinical/etc.]
+**Sample Size**: [Number of samples/observations]
+**Format**: [FASTA/CSV/JSON/etc.]
 
-## 📊 Project Statistics
+## 🛠️ Technologies Used
 
-- **Total Functions**: {total_functions}
-- **Total Classes**: {total_classes}
-- **Python Files**: {len(analysis_results)}
+### Programming Languages
+- Python 3.8+
+- R (optional)
+- SQL (if applicable)
 
-## 🛠️ Installation
+### Key Libraries
+{self._generate_requirements_section()}
+
+### Development Tools
+- Jupyter Notebook
+- Git version control
+- Docker (containerization)
+- pytest (testing)
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+```bash
+# Ensure Python 3.8+ is installed
+python --version
+
+# Install pip if not available
+python -m ensurepip --upgrade
+```
+
+### Installation Steps
+```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/{self.project_name.lower()}.git
+cd {self.project_name.lower()}
+
+# 2. Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run setup script (if available)
+python setup.py install
+```
+
+## 📈 Usage Guide
+
+### Basic Analysis
+```python
+# Import main modules
+from src.analysis import DataProcessor, BioinformaticsAnalyzer
+from src.visualization import PlotGenerator
+
+# Initialize the analyzer
+processor = DataProcessor('data/input.csv')
+analyzer = BioinformaticsAnalyzer(processor.cleaned_data)
+
+# Perform analysis
+results = analyzer.run_analysis()
+
+# Generate visualizations
+plotter = PlotGenerator(results)
+plotter.create_summary_plots()
+```
+
+### Advanced Features
+```python
+# Custom analysis pipeline
+pipeline = analyzer.create_pipeline([
+    'quality_control',
+    'normalization', 
+    'differential_analysis',
+    'pathway_enrichment'
+])
+
+# Execute pipeline
+final_results = pipeline.execute()
+```
+
+## 📋 Project Structure
+
+```
+{self.project_name}/
+├── data/                   # Raw and processed data files
+│   ├── raw/               # Original datasets
+│   ├── processed/         # Cleaned and normalized data
+│   └── results/           # Analysis outputs
+├── src/                   # Source code
+│   ├── analysis/          # Core analysis modules
+│   ├── visualization/     # Plotting and visualization
+│   ├── utils/            # Utility functions
+│   └── tests/            # Unit tests
+├── notebooks/            # Jupyter notebooks
+├── docs/                 # Documentation
+├── requirements.txt      # Python dependencies
+├── setup.py             # Installation script
+└── README.md           # This file
+```
+
+## 🔍 Key Features
+
+### Data Processing
+- Automated quality control and validation
+- Missing data imputation strategies
+- Normalization and scaling techniques
+- Outlier detection and handling
+
+### Statistical Analysis
+- Descriptive statistics generation
+- Hypothesis testing frameworks
+- Multiple testing correction
+- Effect size calculations
+
+### Visualization
+- Interactive plotting with Plotly
+- Publication-ready figures
+- Statistical plots and heatmaps
+- Pathway visualization networks
+
+### Reproducibility
+- Parameterized analysis workflows
+- Automated report generation
+- Version-controlled datasets
+- Containerized execution environment
+
+## 📊 Results Summary
+
+### Key Findings
+[Describe your main biological/clinical findings here]
+
+### Statistical Significance
+[Report p-values, effect sizes, confidence intervals]
+
+### Biological Relevance
+[Explain the biological meaning of your results]
+
+### Clinical Implications
+[Discuss potential clinical applications if applicable]
+
+## 🧪 Testing
+
+Run the test suite to ensure everything works correctly:
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/{project_name}.git
-cd {project_name}
+# Run all tests
+pytest tests/
 
-# Install dependencies
-pip install -r requirements.txt
+# Run with coverage report
+pytest --cov=src tests/
+
+# Run specific test module
+pytest tests/test_analysis.py -v
 ```
 
-## 📖 Usage
+## 📚 Documentation
 
-```python
-# Example usage
-from {project_name} import main_function
+Detailed documentation is available in the `docs/` directory:
 
-# Run analysis
-results = main_function(data)
-```
+- [API Reference](docs/api.md)
+- [Tutorial Notebooks](notebooks/)
+- [Methodology](docs/methodology.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
-## 📋 Requirements
-
-- Python 3.8+
-- See `requirements.txt` for package dependencies
-
-## 🔬 Key Functions
-
-"""
-        
-        # Add function documentation
-        for analysis in analysis_results:
-            if "error" not in analysis:
-                for func in analysis.get("functions", []):
-                    if func.get("docstring"):
-                        readme_content += f"""
-### {func['name']}
-
-{func['docstring']}
-
-**Parameters:**
-- {', '.join(func['args']) if func['args'] else 'None'}
-
-"""
-        
-        readme_content += f"""
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
+```bash
+# Clone for development
+git clone https://github.com/yourusername/{self.project_name.lower()}.git
+cd {self.project_name.lower()}
+
+# Install in development mode
+pip install -e .[dev]
+
+# Install pre-commit hooks
+pre-commit install
+```
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Contact
+## 📞 Contact & Support
 
+- **Author**: [Your Name]
+- **Email**: [your.email@domain.com]
+- **GitHub**: [@yourusername](https://github.com/yourusername)
 - **LinkedIn**: [Your LinkedIn Profile]
-- **Portfolio**: [Your Portfolio Website]
-- **Email**: [your.email@example.com]
+
+## 🙏 Acknowledgments
+
+- [Dataset Provider/Institution]
+- [Relevant research papers or methodologies]
+- [Collaborators or advisors]
+- [Funding sources if applicable]
+
+## 🔄 Version History
+
+### v1.0.0 (Current)
+- Initial release with core analysis pipeline
+- Comprehensive visualization suite
+- Automated report generation
+- Full test coverage
+
+### Planned Features
+- [ ] Integration with additional databases
+- [ ] Machine learning model implementations
+- [ ] Real-time data processing capabilities
+- [ ] Web interface for non-technical users
 
 ---
 
-**Built with ❤️ for the Bioinformatics Community**
+**Generated by GitHub Documentation Generator v1.0**
+*Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}*
 """
-        
-        return readme_content
-    
-    def generate_setup_py(self, project_name: str, requirements: str) -> str:
-        """Generate setup.py file"""
-        setup_content = f"""#!/usr/bin/env python3
-\"\"\"
-Setup script for {project_name}
-\"\"\"
 
-from setuptools import setup, find_packages
-
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
-
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements_list = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
-
-setup(
-    name="{project_name}",
-    version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
-    description="A bioinformatics project for data analysis and visualization",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url=f"https://github.com/yourusername/{project_name}",
-    packages=find_packages(),
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Science/Research",
-        "Topic :: Scientific/Engineering :: Bio-Informatics",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-    ],
-    python_requires=">=3.8",
-    install_requires=requirements_list,
-    extras_require={{
-        "dev": [
-            "pytest>=6.0",
-            "black>=21.0",
-            "flake8>=3.8",
-        ],
-    }},
-)
-"""
-        return setup_content
-    
-    def create_project_structure(self) -> None:
-        """Create recommended project structure"""
-        directories = [
-            "data",
-            "docs",
-            "tests",
-            "examples",
-            "config",
-            "templates"
-        ]
-        
-        for directory in directories:
-            dir_path = self.project_path / directory
-            dir_path.mkdir(exist_ok=True)
-            
-            # Create .gitkeep files for empty directories
-            if not any(dir_path.iterdir()):
-                (dir_path / ".gitkeep").touch()
-    
-    def generate_documentation(self, output_dir: Optional[str] = None) -> Dict:
-        """Generate complete documentation for the project"""
-        if output_dir is None:
-            output_dir = self.project_path
-        
-        output_path = Path(output_dir)
-        output_path.mkdir(exist_ok=True)
-        
-        # Find all Python files
-        python_files = list(self.project_path.rglob("*.py"))
-        python_files = [f for f in python_files if "venv" not in str(f) and "env" not in str(f)]
-        
-        if not python_files:
-            return {"error": "No Python files found in the project"}
-        
-        # Analyze all Python files
-        analysis_results = []
-        for file_path in python_files:
-            analysis = self.analyze_python_file(file_path)
-            analysis_results.append(analysis)
-        
-        # Generate project name from directory
-        project_name = self.project_path.name
-        
-        # Generate requirements.txt
-        requirements_content = self.generate_requirements_txt(python_files)
-        requirements_path = output_path / "requirements.txt"
-        with open(requirements_path, 'w') as f:
-            f.write(requirements_content)
-        
-        # Generate README.md
-        readme_content = self.generate_readme_content(project_name, analysis_results)
         readme_path = output_path / "README.md"
-        with open(readme_path, 'w') as f:
+        with open(readme_path, 'w', encoding='utf-8') as f:
             f.write(readme_content)
-        
-        # Generate setup.py
-        setup_content = self.generate_setup_py(project_name, requirements_content)
-        setup_path = output_path / "setup.py"
-        with open(setup_path, 'w') as f:
-            f.write(setup_content)
-        
-        # Create project structure
-        self.create_project_structure()
-        
-        # Generate additional files
-        self.generate_additional_files(output_path, project_name)
-        
-        return {
-            "success": True,
-            "files_generated": [
-                str(requirements_path),
-                str(readme_path),
-                str(setup_path)
-            ],
-            "project_name": project_name,
-            "python_files_analyzed": len(python_files),
-            "total_functions": sum(len(analysis.get("functions", [])) for analysis in analysis_results if "error" not in analysis),
-            "total_classes": sum(len(analysis.get("classes", [])) for analysis in analysis_results if "error" not in analysis)
+            
+        return str(readme_path)
+    
+    def _generate_requirements_section(self) -> str:
+        """Generate requirements section based on detected imports"""
+        common_bioinfo_packages = {
+            'pandas': 'pandas>=1.3.0',
+            'numpy': 'numpy>=1.21.0', 
+            'matplotlib': 'matplotlib>=3.4.0',
+            'seaborn': 'seaborn>=0.11.0',
+            'scipy': 'scipy>=1.7.0',
+            'sklearn': 'scikit-learn>=1.0.0',
+            'plotly': 'plotly>=5.0.0',
+            'biopython': 'biopython>=1.79',
+            'pysam': 'pysam>=0.16.0',
+            'requests': 'requests>=2.25.0'
         }
+        
+        requirements = []
+        for imp in self.analysis_results.get('imports', []):
+            if imp in common_bioinfo_packages:
+                requirements.append(f"- {common_bioinfo_packages[imp]}")
+        
+        if not requirements:
+            requirements = [
+                "- pandas>=1.3.0",
+                "- numpy>=1.21.0", 
+                "- matplotlib>=3.4.0",
+                "- scipy>=1.7.0"
+            ]
+            
+        return '\n'.join(requirements)
     
     def generate_additional_files(self, output_path: Path, project_name: str) -> None:
         """Generate additional project files"""
+        
+        # Generate requirements.txt
+        requirements_content = """# Core data science libraries
+pandas>=1.3.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+scipy>=1.7.0
+
+# Bioinformatics specific
+biopython>=1.79
+pysam>=0.16.0
+
+# Machine learning
+scikit-learn>=1.0.0
+
+# Visualization
+plotly>=5.0.0
+
+# Development tools
+pytest>=6.0.0
+pytest-cov>=2.12.0
+black>=21.0.0
+flake8>=3.9.0
+
+# Documentation
+sphinx>=4.0.0
+sphinx-rtd-theme>=0.5.0
+"""
+        
+        requirements_path = output_path / "requirements.txt"
+        with open(requirements_path, 'w') as f:
+            f.write(requirements_content)
         
         # Generate .gitignore
         gitignore_content = """# Byte-compiled / optimized / DLL files
@@ -412,6 +408,8 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -428,12 +426,14 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.nox/
 .coverage
 .coverage.*
 .cache
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
 .hypothesis/
 .pytest_cache/
 
@@ -505,101 +505,111 @@ dmypy.json
 .DS_Store
 Thumbs.db
 
-# Project specific
-data/raw/
-data/processed/
+# Data files (add your specific data extensions)
 *.csv
+*.tsv
 *.xlsx
-*.json
-*.pkl
 *.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Large result files
+results/
+output/
+plots/
+figures/
 """
         
         gitignore_path = output_path / ".gitignore"
         with open(gitignore_path, 'w') as f:
             f.write(gitignore_content)
         
-        # Generate LICENSE
-        license_content = """MIT License
-
-Copyright (c) 2024 [Your Name]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-        
-        license_path = output_path / "LICENSE"
-        with open(license_path, 'w') as f:
-            f.write(license_content)
-        
         # Generate CONTRIBUTING.md
         contributing_content = f"""# Contributing to {project_name}
 
-We love your input! We want to make contributing to {project_name} as easy and transparent as possible, whether it's:
+Thank you for your interest in contributing to this bioinformatics project!
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+## Development Setup
 
-## We Develop with Github
-We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
+1. Fork the repository
+2. Clone your fork: `git clone https://github.com/yourusername/{project_name.lower()}.git`
+3. Create a virtual environment: `python -m venv venv`
+4. Activate it: `source venv/bin/activate` (or `venv\\Scripts\\activate` on Windows)
+5. Install dependencies: `pip install -r requirements.txt`
+6. Install pre-commit hooks: `pre-commit install`
 
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html)
-We use GitHub Flow. So all code changes happen through Pull Requests.
+## Code Standards
 
-## Pull Requests
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+- Follow PEP 8 style guidelines
+- Use type hints where appropriate
+- Write comprehensive docstrings
+- Include unit tests for new functionality
+- Ensure all tests pass before submitting
 
-## Any contributions you make will be under the MIT Software License
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+## Submitting Changes
 
-## Report bugs using Github's [issue tracker](https://github.com/yourusername/{project_name}/issues)
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/yourusername/{project_name}/issues/new); it's that easy!
+1. Create a feature branch: `git checkout -b feature-name`
+2. Make your changes
+3. Run tests: `pytest`
+4. Run linting: `flake8 src/`
+5. Commit: `git commit -m "Description of changes"`
+6. Push: `git push origin feature-name`
+7. Create a Pull Request
 
-## Write bug reports with detail, background, and sample code
+## Reporting Issues
 
-**Great Bug Reports** tend to have:
-
-- A quick summary and/or background
+Please use the GitHub issue tracker to report bugs or request features.
+Include:
+- Clear description of the problem
 - Steps to reproduce
-  - Be specific!
-  - Give sample code if you can.
-- What you expected would happen
-- What actually happens
-- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
-
-## License
-By contributing, you agree that your contributions will be licensed under its MIT License.
-
-## References
-This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md).
+- Expected behavior
+- Your environment details
 """
         
         contributing_path = output_path / "CONTRIBUTING.md"
         with open(contributing_path, 'w') as f:
             f.write(contributing_content)
+    
+    def generate_documentation(self, output_dir: Optional[str] = None) -> Dict[str, Any]:
+        """Generate complete GitHub documentation"""
+        try:
+            # Set output directory
+            if output_dir:
+                output_path = Path(output_dir)
+            else:
+                output_path = self.project_path
+            
+            output_path.mkdir(exist_ok=True)
+            
+            # Analyze the project
+            self.analysis_results = self.analyze_python_files()
+            
+            # Generate files
+            files_generated = []
+            
+            # Generate README.md
+            readme_path = self.generate_readme(output_path)
+            files_generated.append(readme_path)
+            
+            # Generate additional files
+            self.generate_additional_files(output_path, self.project_name)
+            files_generated.extend([
+                str(output_path / "requirements.txt"),
+                str(output_path / ".gitignore"),
+                str(output_path / "CONTRIBUTING.md")
+            ])
+            
+            return {
+                'project_name': self.project_name,
+                'files_generated': files_generated,
+                'python_files_analyzed': len(self.analysis_results['files']),
+                'total_functions': self.analysis_results['total_functions'],
+                'total_classes': self.analysis_results['total_classes']
+            }
+            
+        except Exception as e:
+            return {'error': str(e)}
 
 def main():
     """Main function to run the documentation generator"""
@@ -641,4 +651,4 @@ def main():
         return 1
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

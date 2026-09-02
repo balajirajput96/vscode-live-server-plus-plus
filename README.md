@@ -1,622 +1,266 @@
-# 🚀 AI-Powered Career Automation System
-**Complete Biotech & Bioinformatics Career Success Platform**
+# Live Server++ 
+## A truly live server for VS Code with advanced reloading strategies
 
----
-
-## 🎉 **DEPLOYMENT STATUS: 100% COMPLETE** ✅
-
-**🌟 सभी components तैयार हैं! Everything is ready to deploy!**
-
-[![Deployment Status](https://img.shields.io/badge/Deployment-100%25_Complete-success?style=for-the-badge&logo=github)](./DEPLOYMENT-COMPLETE-STATUS.md)
-[![Documentation](https://img.shields.io/badge/Docs-9_Guides-blue?style=for-the-badge&logo=markdown)](./START-HERE.md)
-[![Scripts Ready](https://img.shields.io/badge/Scripts-Ready-brightgreen?style=for-the-badge&logo=linux)](./deploy-complete.sh)
-[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Ready-orange?style=for-the-badge&logo=github)](https://pages.github.com/)
-
-📖 **[VIEW COMPLETE DEPLOYMENT STATUS →](./DEPLOYMENT-COMPLETE-STATUS.md)**
-
----
-
-## ⚡ DEPLOY NOW - One Command Setup
-
-```bash
-./deploy-complete.sh
-
-# OR enable GitHub Pages (Settings → Pages)
-```
-
-**📚 New to deployment?** 
-- 🚀 [DEPLOY-NOW.md](./DEPLOY-NOW.md) - One-page quick start ⭐
-- 🌟 [DEPLOYMENT-SUCCESS.md](./DEPLOYMENT-SUCCESS.md) - Hindi/English guide ⭐  
-- 📖 [START-HERE.md](./START-HERE.md) - Complete getting started
-- ☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud platforms
-
-### Complete Deployment System Included
-- ✅ **One-command deployment** with interactive setup
-- ✅ **Automated verification** of all components
-- ✅ **Comprehensive documentation** for every scenario
-- ✅ **Status tracking** and progress monitoring
-- ✅ **GitHub Pages auto-deployment** for web components
-- ✅ **n8n automation platform** with Docker
-- ✅ **Pre-flight checklist** to ensure smooth setup
-- ✅ **Multiple deployment modes** (local/production/custom)
-
-### Quick Links
-🚀 **[DEPLOY-NOW.md](./DEPLOY-NOW.md)** - **One-Page Deploy Guide** ⭐ NEW!
-🎉 **[DEPLOYMENT-COMPLETE-STATUS.md](./DEPLOYMENT-COMPLETE-STATUS.md)** - **100% Complete Status** ⭐
-🌟 **[DEPLOYMENT-SUCCESS.md](./DEPLOYMENT-SUCCESS.md)** - **Hindi/English Guide** ⭐
-📖 [START-HERE.md](./START-HERE.md) - Begin deployment
-🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
-📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress
-✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks
-🗺️ [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md) - Visual guide
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/ritwickdey.vscode-live-server-plus-plus)]()
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/ritwickdey.vscode-live-server-plus-plus)]()
+[![GitHub](https://img.shields.io/github/license/balajirajput96/vscode-live-server-plus-plus)](./LICENCE)
 
 ---
 
 ## 📋 Overview
 
-यह एक comprehensive AI-powered career automation system है जो biotech और bioinformatics professionals के लिए specially designed किया गया है। यह system आपको job search से लेकर interview preparation तक, हर step में AI की power का use करके successful career बनाने में help करता है।
+Live Server++ is an advanced VS Code extension that provides a truly live development server for your static HTML, CSS, and JavaScript projects. Unlike traditional live servers that only reload the entire page, Live Server++ offers intelligent reloading strategies including hot reloading, partial DOM updates, and CSS injection without page refresh.
 
-## 🎯 Key Features
-
-### 🎉 NEW: ML Deployment Platform ⭐
-- **Complete ML model deployment solution**
-- FastAPI backend with auto-generated API docs
-- Interactive web dashboard for model management
-- Single & batch prediction endpoints
-- Real-time monitoring and analytics
-- Multi-platform deployment (Railway, Render, Heroku, Docker)
-- **[📘 View Complete Guide →](./ml-deployment-platform/README.md)**
-
-### 1. 🔬 AI-Powered Portfolio Builder
-- Project documentation generator
-- GitHub README automation
-- LinkedIn project posts
-- Portfolio website content
-
-### 2. 🤖 **NEW: Perplexity AI Integration**
-- Real-time AI career guidance
-- Biotech industry-specific insights
-- Streaming and standard API responses
-- Smart query templates and presets
-
-### 3. 📱 Social Media Automation
-- LinkedIn professional posts
-- Facebook personal updates
-- Twitter quick updates
-- Content calendar management
-
-### 4. 📄 Resume & LinkedIn Optimizer
-- AI-generated headlines
-- Professional summaries
-- Skill-based content
-- Company-targeted messaging
-
-### 5. 💼 Job Application Tracker
-- Pharma companies database
-- Application status tracking
-- Interview scheduling
-- Success analytics
-
-### 6. 🤖 AI Prompt Library
-- Ready-to-use prompts for all tools
-- Copy-paste templates
-- Industry-specific content
-- Multi-platform compatibility
-- **Microsoft Copilot specialized prompts** ⭐ **NEW**
-
-### 6. 🔍 Sonar API Integration
-- Complete Perplexity API documentation (Hindi)
-- Step-by-step implementation guide
-- Code examples in multiple languages
-- Real-time AI search and responses
-- [सोनार एपीआई त्वरित प्रारंभ गाइड](./Sonar_API_Quick_Start.md)
-
-### 6. 🔄 AI Agent Automation Pack
-- **N8N Workflows**: Complete weekly social posting automation
-- **HTTP-only variant**: Uses standard nodes for broader compatibility
-- **Google Sheets Integration**: Pull topics and track posted content
-- **Multi-platform posting**: LinkedIn, Facebook via Buffer API
-- **AI-generated images**: Predis.ai integration for professional visuals
-- **Ready-to-import**: JSON workflows with setup documentation
-
-📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
-
-### 6. 🔄 AI Agent Automation Pack
-- **N8N Workflows**: Complete weekly social posting automation
-- **HTTP-only variant**: Uses standard nodes for broader compatibility
-- **Google Sheets Integration**: Pull topics and track posted content
-- **Multi-platform posting**: LinkedIn, Facebook via Buffer API
-- **AI-generated images**: Predis.ai integration for professional visuals
-- **Ready-to-import**: JSON workflows with setup documentation
-
-📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
+Perfect for front-end developers who want instant feedback while coding without losing their browser state or form data.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🌟 Key Features
 
-### Step 1: Choose Your Setup Path
+### 🔥 Advanced Reloading Strategies
+- **Hot Reload**: In-place DOM updates without page refresh (experimental)
+- **Partial Reload**: Reload DOM content without losing browser state
+- **Full Reload**: Traditional page refresh when needed
+- **CSS Injection**: Live CSS updates without page refresh
 
-#### Option A: Manual Career Tools (Original)
-```bash
-# Open the main dashboard in your browser
-open index.html
-```
+### ⚡ Real-time Development
+- Instant file change detection with configurable debounce timeout
+- WebSocket-based communication for minimal latency
+- Smart file watching that targets only the files you're working on
+- No manual save required - updates happen as you type
 
-#### Option B: Unified API System (Automated)
-```bash
-# Quick setup with automated API integration
-./setup-unified-api.sh complete
-```
+### 🛠️ Highly Configurable
+- **Custom Port**: Use any port (0 for random port assignment)
+- **Root Directory**: Serve from any subfolder in your workspace
+- **Index File**: Configurable default file (default: index.html)
+- **Browser Choice**: Support for Chrome, Firefox, Edge, or system default
+- **Timeout Settings**: Configurable debounce timeout for file changes
 
-### Step 2: Set Up AI Tools
-Register for these free/premium AI tools:
-- **Perplexity AI** (Free tier available, Pro $20/month) - **NEW: Integrated!**
-- **ChatGPT** (Free/Plus $20/month)
-- **Ollama** (100% Free - Local LLMs) ⭐ **NEW** - [Setup Guide](./OLLAMA-DOCKER-SETUP.md)
-- **Perplexity (Sonar API)** (Free/Pro $20/month)
-- **Wix AI** (Free/Premium $16/month) 
-- **Predis.ai** (Free/Pro $32/month)
-- **Buffer** (Free/Pro $6/month)
-
-### Step 3: Use Ready-Made Prompts & Templates
-1. Copy prompts from the AI Prompt Library
-2. **NEW**: Access Microsoft Copilot integration templates
-3. Paste into your chosen AI tool
-4. Customize with your specific details
-5. Generate professional content
-6. **NEW**: Use Copilot project generators for instant LinkedIn posts and resume bullets
-
-### Step 4: Showcase Microsoft Copilot Expertise ⭐ **NEW**
-- **Monday**: Create Copilot integration project showcase
-- **Wednesday**: Generate LinkedIn posts highlighting M365 expertise  
-- **Friday**: Update resume with Copilot achievements
-- **Sunday**: Plan next Copilot implementation project
-
-### Step 5: Monitor & Scale
-- GitHub Actions for health checks
-- Real-time Telegram notifications
-- Google Sheets analytics
-- Automated error reporting
+### 🎯 Developer Experience
+- Simple command-based operation
+- Status bar integration showing server status
+- Automatic browser opening when server starts
+- Graceful error handling and user notifications
 
 ---
 
-## 📁 File Structure
+## 🚀 Quick Start
 
-```
-📦 AI-Career-Automation-System
-├── 📄 index.html                    # Main Dashboard
-├── 📄 Job_Tracking_System.html      # Job Application Tracker
-├── 📄 AI_Career_Automation_Guide.md # Complete Guide
-├── 📄 Social_Media_Templates.md     # Content Templates
-├── 📄 GitHub-Setup-Guide.md         # GitHub Setup Guide
-└── 📄 README.md                     # This File
+### Installation
+1. Open VS Code
+2. Go to Extensions (Ctrl+Shift+X)
+3. Search for "Live Server++"
+4. Click Install
+
+### Basic Usage
+1. **Start Server**: 
+   - Open Command Palette (Ctrl+Shift+P)
+   - Type "Live Server++ : Open Server"
+   - Or use the status bar button
+
+2. **Stop Server**:
+   - Open Command Palette (Ctrl+Shift+P)
+   - Type "Live Server++ : Close Server"
+   - Or use the status bar button
+
+### First Project
+1. Create a new HTML file or open an existing project
+2. Start Live Server++ 
+3. Your default browser will open showing your project
+4. Start editing your files and see instant updates!
+
+📚 **[Complete Getting Started Guide](./docs/getting-started.md)** - Detailed setup instructions with examples
+
+---
+
+## ⚙️ Configuration
+
+Live Server++ can be configured through VS Code settings. Go to File > Preferences > Settings and search for "Live Server++".
+
+### Available Settings
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `liveServer++.port` | number | 5555 | Port number for the server (use 0 for random port) |
+| `liveServer++.browser` | string | "default" | Browser to open: "default", "chrome", "firefox", "microsoft-edge", or null |
+| `liveServer++.root` | string | "./" | Root directory to serve files from |
+| `liveServer++.timeout` | number | 300 | Debounce timeout in milliseconds |
+| `liveServer++.indexFile` | string | "index.html" | Default index file |
+| `liveServer++.reloadingStrategy` | string | "hot" | Reloading strategy: "hot", "partial-reload", or "reload" |
+
+### Example Configuration
+```json
+{
+  "liveServer++.port": 3000,
+  "liveServer++.browser": "chrome",
+  "liveServer++.root": "./dist",
+  "liveServer++.timeout": 500,
+  "liveServer++.reloadingStrategy": "partial-reload"
+}
 ```
 
 ---
 
-## 🔧 System Components
+## 🔄 Reloading Strategies Explained
 
-### 1. Main Dashboard (`index.html`)
-**Features:**
-- Portfolio content generator
-- Social media post creator
-- Resume & LinkedIn optimizer
-- **NEW: Perplexity AI Assistant** - Real-time career guidance
-- AI prompt library
-- Analytics dashboard
+### Hot Reload (Experimental)
+- Updates DOM elements in-place without page refresh
+- Preserves form data, scroll position, and JavaScript state
+- Best for: Development with forms, single-page applications
+- Note: Still experimental, may not work with all content types
 
-**How to Use:**
-1. Fill in your project details
-2. Select target platform (GitHub/LinkedIn/Portfolio)
-3. Click "Generate AI Content"
-4. **NEW: Ask real-time questions** using the AI Assistant
-5. Copy the generated content
-6. Use in your applications
+### Partial Reload
+- Reloads page content without full browser refresh
+- Faster than full reload, preserves some browser state
+- Best for: General development when hot reload isn't suitable
 
-### 📋 **NEW: Complete Personal Automation Guide**
-**🎓 [GitHub Student Pack से Complete Personal Automation Setup](Complete_Personal_Automation_Guide.md)**
+### Full Reload
+- Traditional page refresh
+- Most compatible but slower
+- Best for: Complex applications or when other methods fail
 
-**जो इस guide में मिलेगा:**
-- **$200,000+ worth tools** बिल्कुल मुफ्त
-- **n8n, Google Apps Script, Make.com** complete setup
-- **YouTube automation** workflows
-- **Personal assistant** AI agents
-- **Step-by-step instructions** with verified links
-- **Social media automation** templates
-- **GitHub Student Pack** benefits aur access methods
-
-**🚀 क्यों जरूरी है?**
-- Time save करें: 2-3 hours daily
-- Automate करें: 50+ daily tasks
-- Professional automation: YouTube से social media तक
-- Free tools का maximum use
-
-### 2. Job Tracking System (`Job_Tracking_System.html`)
-**Features:**
-- 10+ top pharma companies database
-- Application status tracking
-- Interview preparation questions
-- Success metrics and analytics
-
-**How to Use:**
-1. Browse companies database
-2. Add job applications
-3. Track status updates
-4. Prepare for interviews
-5. Analyze success patterns
-
-### 4. Automation Guide (`AI_Career_Automation_Guide.md`)
-**Contents:**
-- Step-by-step setup instructions
-- AI tools comparison
-- Weekly workflow automation
-- Copy-paste prompts
-- Troubleshooting tips
-
-### 5. Social Media Templates (`Social_Media_Templates.md`)
-**Contents:**
-- 25+ LinkedIn post templates
-- Facebook personal updates
-- Twitter quick posts
-- Project showcase formats
-- Industry commentary templates
-- **Microsoft Copilot integration showcases** ⭐ **NEW**
-- **M365 transformation stories** ⭐ **NEW**
-
-### 5. Microsoft Copilot Templates (`Microsoft_Copilot_Templates.md`) ⭐ **NEW**
-**Contents:**
-- Lab automation project examples
-- Clinical data dashboard templates
-- Copilot API integration guides
-- LinkedIn showcase templates
-- Resume enhancement examples
-- Technical documentation samples
-- Implementation best practices
-
-### 6. Copilot-Specific AI Prompts (`ai-prompts/copilot-specific-prompts.md`) ⭐ **NEW**
-**Contents:**
-- LinkedIn content creation prompts
-- Resume enhancement prompts
-- Technical documentation prompts
-- Interview preparation prompts
-- Portfolio building prompts
-- Microsoft ecosystem integration guides
-
-### 5. GitHub Setup Guide (`GitHub-Setup-Guide.md`)
-**Contents:**
-- Post-GitHub setup configuration steps
-- Secrets and environment variables setup
-- GitHub Actions workflow testing
-- Development to deployment process
-- Live system cutover and monitoring
-
-### 5. GitHub Setup Guide (`GitHub-Setup-Guide.md`)
-**Contents:**
-- Post-GitHub setup configuration steps
-- Secrets and environment variables setup
-- GitHub Actions workflow testing
-- Development to deployment process
-- Live system cutover and monitoring
+### CSS Injection
+- Automatically applied for .css files regardless of strategy
+- Updates styles without any page refresh
+- Preserves all application state
 
 ---
 
-## 🎯 Target Companies Database
+## 📁 Project Structure
 
-### Large Pharmaceutical Companies
-| Company | Location | Focus Area |
-|---------|----------|------------|
-| **Sun Pharma** | Mumbai | Drug Discovery |
-| **Zydus Cadila** | Ahmedabad | R&D Innovation |
-| **Dr. Reddy's** | Hyderabad | Computational Biology |
-| **Lupin** | Mumbai | Biosimilars |
-| **Cipla** | Mumbai | Respiratory & Oncology |
+Live Server++ works with any static web project:
 
-### Biotech Companies
-| Company | Location | Specialization |
-|---------|----------|----------------|
-| **Biocon** | Bangalore | Diabetes & Oncology |
-| **Glenmark** | Mumbai | Novel Drug Discovery |
-| **Aurobindo** | Hyderabad | Generic Pharmaceuticals |
-
----
-
-## 🤖 AI Prompts Quick Reference
-
-### Portfolio Generation
 ```
-Create professional documentation for my bioinformatics project:
-- Project: [Your Project Name]
-- Tools: Python, Pandas, Matplotlib
-- Goal: [Analysis objective]
-- Results: [Key findings]
-
-Generate README.md, LinkedIn post, and portfolio description.
-```
-
-### LinkedIn Headline
-```
-Act as a career coach. Create 5 LinkedIn headlines for a biotech professional with Python, data analysis skills, seeking bioinformatics roles in pharmaceutical companies.
-```
-
-### Job Application
-```
-Write a compelling cover letter for [Company Name] [Position].
-My background: Biotechnology education, Python/SQL skills, bioinformatics passion.
-Company research: [Brief company info]
+your-project/
+├── index.html
+├── styles/
+│   ├── main.css
+│   └── components.css
+├── scripts/
+│   ├── app.js
+│   └── utils.js
+├── images/
+│   └── logo.png
+└── pages/
+    ├── about.html
+    └── contact.html
 ```
 
 ---
 
-## 📊 Success Metrics
+## 🎯 Use Cases
 
-### Expected Results (After 3 Months)
-- **Applications**: 60-75 quality applications
-- **Response Rate**: 15-20%
-- **Interview Rate**: 30-40% of responses  
-- **LinkedIn Connections**: 150+ new connections
-- **Portfolio Views**: 300+ monthly visitors
+### Front-end Development
+- HTML/CSS/JavaScript projects
+- Static site development
+- Prototyping and mockups
+- CSS framework testing
 
-### Key Performance Indicators
-- Profile optimization score: 85%+
-- Content engagement rate: 5%+
-- Application success rate: 25%+
-- Network growth: 50+ connections/month
+### Learning and Education
+- Web development tutorials
+- Code examples and demos
+- Student projects
+- Workshop materials
 
----
-
-## 🔄 Weekly Automation Workflow
-
-### Monday (45 minutes)
-- Generate LinkedIn post using dashboard
-- **NEW: Ask AI for trending topics** in biotech
-- Schedule content for the week
-- Update portfolio with new projects
-
-### Wednesday (60 minutes)  
-- Update GitHub documentation
-- **NEW: Use AI for project descriptions**
-- Create new repository
-- Improve existing project READMEs
-
-### Friday (90 minutes)
-- Search and apply to 3-5 jobs
-- **NEW: Research companies using AI Assistant**
-- Network with 5 new professionals
-- Follow up on previous applications
-
-### Sunday (30 minutes)
-- Review analytics and metrics
-- **NEW: Get AI insights on market trends**
-- Plan content for next week
-- Update job tracking system
+### Testing and Debugging
+- Cross-browser testing
+- Responsive design testing
+- Performance optimization
+- User experience testing
 
 ---
 
-## 🛠️ Technical Requirements
+## 🔧 Advanced Usage
 
-### Browser Compatibility
-- Chrome 90+ (Recommended)
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+### Custom Root Directory
+Serve files from a specific subdirectory:
+```json
+{
+  "liveServer++.root": "./build"
+}
+```
 
-### Internet Connection
-- Stable internet for AI tool access
-- Minimum 5 Mbps for optimal performance
+### Multiple Projects
+Use different ports for different projects:
+```json
+{
+  "liveServer++.port": 0  // Automatic port assignment
+}
+```
 
-### Accounts Needed
-- LinkedIn (Free/Premium)
-- GitHub (Free)
-- AI tools (ChatGPT, Wix, etc.)
-- Email for applications
-
----
-
-## 📱 Mobile Usage
-
-### Mobile-Friendly Features
-- Responsive dashboard design
-- Touch-optimized interface
-- Mobile social media posting
-- On-the-go job applications
-
-### Mobile Workflow
-1. Check job alerts on phone
-2. Use dashboard to generate content
-3. Post directly to social media
-4. Track applications on mobile
+### Browser-specific Development
+Target specific browsers for testing:
+```json
+{
+  "liveServer++.browser": "firefox"
+}
+```
 
 ---
 
-## 🎓 Learning Resources
-
-### Recommended Courses
-- **Coursera**: Bioinformatics Specialization
-- **edX**: Data Science for Healthcare  
-- **Udemy**: Python for Bioinformatics
-- **YouTube**: Free tutorials and webinars
-
-### Industry Publications
-- Nature Biotechnology
-- Bioinformatics Journal
-- Drug Discovery Today
-- Pharmaceutical Research
-
----
-
-## 🔧 Troubleshooting
+## 🐛 Troubleshooting
 
 ### Common Issues
 
-**Issue**: AI content sounds generic
-**Solution**: Add personal experiences and specific project details
+**Server won't start**
+- Check if the port is already in use
+- Try using port 0 for automatic assignment
+- Verify workspace has appropriate permissions
 
-**Issue**: Low social media engagement  
-**Solution**: Post at optimal times (9 AM, 2 PM IST), use relevant hashtags
+**Files not updating**
+- Check if file is being saved (auto-save should be enabled)
+- Verify the file is within the configured root directory
+- Check if file type is supported for hot reload
 
-**Issue**: Not getting interview calls
-**Solution**: Optimize LinkedIn with keywords, apply directly to companies
+**Browser not opening**
+- Verify browser setting is correct
+- Check if default browser is set in your system
+- Try setting `liveServer++.browser` to null to disable auto-open
 
-**Issue**: AI prompts not working well
-**Solution**: Be more specific, provide more context, iterate based on results
-
----
-
-## 🚀 Advanced Features
-
-### Automation Integrations
-- **Zapier**: Connect different platforms
-- **IFTTT**: Create automated workflows  
-- **Buffer API**: Schedule social posts
-- **LinkedIn API**: Automate networking
-
-### Analytics Tracking
-- Google Analytics for portfolio
-- LinkedIn analytics for posts
-- Application response tracking
-- ROI measurement tools
+**Performance Issues**
+- Increase the timeout setting for slower systems
+- Use "reload" strategy instead of "hot" for better compatibility
+- Exclude large directories from workspace if possible
 
 ---
 
-## 🎯 Success Stories Template
+## 🤝 Contributing
 
-### Before Using System:
-- Random job applications
-- Inconsistent social media
-- Generic portfolio
-- Low response rates
+We welcome contributions! Please feel free to:
+- Report bugs through GitHub issues
+- Suggest new features
+- Submit pull requests
+- Improve documentation
 
-### After Using System:
-- Targeted applications to right companies
-- Professional social media presence
-- Optimized portfolio with AI content
-- 3x higher response rates
+### Development Setup
+```bash
+# Clone the repository
+git clone https://github.com/balajirajput96/vscode-live-server-plus-plus.git
 
----
+# Install dependencies
+npm install
 
-## 📞 Support & Updates
+# Compile the extension
+npm run compile
 
-### Getting Help
-1. Check troubleshooting section
-2. Review automation guide
-3. Use community resources
-4. Contact system maintainer
-
-### System Updates
-- Regular prompt library updates
-- New AI tool integrations
-- Enhanced templates
-- Industry trend adaptations
+# Run tests
+npm test
+```
 
 ---
 
-## 🎉 Next Steps
+## 📄 License
 
-### Week 1: Foundation
-- [ ] Set up all AI tool accounts
-- [ ] Complete dashboard walkthrough
-- [ ] Create first portfolio content
-- [ ] Optimize LinkedIn profile
-
-### Week 2: Content Creation
-- [ ] Generate 5 LinkedIn posts
-- [ ] Document 3 GitHub projects  
-- [ ] Write first blog post
-- [ ] Create content calendar
-
-### Week 3: Job Search
-- [ ] Research 20 target companies
-- [ ] Apply to 5 positions
-- [ ] Start networking activities
-- [ ] Set up tracking system
-
-### Week 4: Optimization
-- [ ] Analyze performance metrics
-- [ ] Refine content strategy  
-- [ ] Update portfolio based on feedback
-- [ ] Plan next month's goals
+This project is licensed under the MIT License - see the [LICENCE](./LICENCE) file for details.
 
 ---
 
-## ⚡ Pro Tips for Maximum Success
+## 🙏 Acknowledgments
 
-1. **Consistency is Key**: Use the system daily, even for 15 minutes
-2. **Personalize Everything**: Never use AI content without customization
-3. **Network Actively**: Engage with others before promoting yourself
-4. **Track Everything**: Measure what matters and optimize continuously
-5. **Stay Updated**: Keep learning new tools and industry trends
+- Inspired by the original Live Server extension
+- Built with TypeScript and VS Code Extension API
+- Uses WebSocket for real-time communication
 
 ---
 
-## 🏆 Success Guarantee
-
-**Follow this system consistently for 90 days, and you will see:**
-- ✅ Professional online presence
-- ✅ Higher application response rates  
-- ✅ Expanded professional network
-- ✅ Better interview opportunities
-- ✅ Clear career progression path
-
----
-
-## 📄 License & Usage
-
-This system is designed for personal career development use. Feel free to:
-- Customize templates for your needs
-- Share prompts with fellow professionals  
-- Adapt workflows to your schedule
-- Build upon the foundation provided
-
----
-
----
-
-## 🤖 Microsoft Copilot Integration Highlights ⭐ **NEW FEATURE**
-
-### What Makes This Special
-This system now includes comprehensive **Microsoft Copilot integration templates** specifically designed for biotechnology professionals, making it the first career automation platform to focus on showcasing M365 Copilot expertise in scientific careers.
-
-### Ready-to-Use Copilot Showcases
-- **Lab Automation Project**: 70% efficiency improvement templates
-- **Clinical Data Dashboard**: Power BI Copilot integration examples  
-- **Bioinformatics Pipeline**: Custom Copilot API implementations
-- **Teams Collaboration**: Research workflow automation examples
-
-### Instant Content Generation
-Click "Generate Template" and instantly get:
-✅ **LinkedIn Posts**: Professional Copilot project showcases
-✅ **Resume Bullets**: Quantified achievements and technical skills
-✅ **Technical Documentation**: Complete implementation guides
-✅ **Interview Prep**: Copilot-specific behavioral questions
-
-### Industry Impact
-Pharmaceutical companies are rapidly adopting Microsoft 365 Copilot. Professionals who can demonstrate hands-on Copilot integration experience in biotech contexts will be in **extremely high demand**.
-
-### Getting Started with Copilot Features
-1. Open the main dashboard (`career-automation-system/index.html`)
-2. Click the **"Copilot Integration"** tab
-3. Choose from 3 professional project templates
-4. Click **"Generate Template"** for instant LinkedIn posts and resume content
-5. Use the **"Copy Prompt"** feature for AI-powered content creation
-
----
-
-*Last Updated: January 2024*
-*Version: 1.0*
-*Compatibility: All modern browsers*
-
-
-## 🤖 Automated Updates
-**Last automated update:** 2025-08-21T18:41:04.773Z  
-**System status:** ✅ Active  
-**Next scheduled run:** 2025-08-22T09:00:00.000Z
-
-### Recent Automation Activities
-- ✅ Portfolio content refreshed
-- ✅ Social media templates updated
-- ✅ Job tracking optimized
-- ✅ AI prompts enhanced
-
----
-*Powered by AI Career Automation System*
+**Ready to supercharge your web development workflow? Install Live Server++ and experience truly live development!**

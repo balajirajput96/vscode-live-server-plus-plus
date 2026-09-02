@@ -1,0 +1,14 @@
+{
+  "system_status": "ready",
+  "last_started": "2025-08-19T17:25:20+00:00",
+  "uptime_start": "2025-08-19T17:25:20+00:00",
+  "services": {
+    "career_automation": "active",
+    "portfolio_automation": "active",
+    "documentation_generator": "ready"
+  },
+  "stats": {
+    "total_startups": 1,
+    "last_health_check": "2025-08-19T17:25:20+00:00"
+  }
+}

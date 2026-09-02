@@ -53,12 +53,11 @@
       }
     }
 
-    setupEventHandlers() {
-      this.socket.onopen = this.handleOpen.bind(this);
-      this.socket.onmessage = this.handleMessage.bind(this);
-      this.socket.onclose = this.handleClose.bind(this);
-      this.socket.onerror = this.handleError.bind(this);
-    }
+    socket.onerror = event => {
+      log(event);
+      console.log(`Live Server++: Oops! Cannot connect to the server.`);
+    };
+  });
 
     handleOpen(event) {
       log('Connected!');
