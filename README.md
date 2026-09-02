@@ -291,6 +291,14 @@ Register for these free/premium AI tools:
 - Development to deployment process
 - Live system cutover and monitoring
 
+### 5. GitHub Setup Guide (`GitHub-Setup-Guide.md`)
+**Contents:**
+- Post-GitHub setup configuration steps
+- Secrets and environment variables setup
+- GitHub Actions workflow testing
+- Development to deployment process
+- Live system cutover and monitoring
+
 ---
 
 ## 🎯 Target Companies Database
