@@ -78,26 +78,23 @@
 - LinkedIn project posts
 - Portfolio website content
 
-### 2. 📱 Social Media Automation
+### 2. 🤖 **NEW: Perplexity AI Integration**
+- Real-time AI career guidance
+- Biotech industry-specific insights
+- Streaming and standard API responses
+- Smart query templates and presets
+
+### 3. 📱 Social Media Automation
 - LinkedIn professional posts
 - Facebook personal updates
 - Twitter quick updates
 - Content calendar management
 
-### 3. 📄 Resume & LinkedIn Optimizer
+### 4. 📄 Resume & LinkedIn Optimizer
 - AI-generated headlines
 - Professional summaries
 - Skill-based content
 - Company-targeted messaging
-
-### 4. 🤖 Microsoft Copilot Integration ⭐ **NEW**
-- M365 Copilot project templates
-- Teams collaboration automation
-- Lab workflow optimization
-- Clinical data dashboard examples
-- Copilot API integration guides
-- Ready-to-use LinkedIn showcases
-- Resume enhancement templates
 
 ### 5. 💼 Job Application Tracker
 - Pharma companies database
@@ -149,6 +146,7 @@ open index.html
 
 ### Step 2: Set Up AI Tools
 Register for these free/premium AI tools:
+- **Perplexity AI** (Free tier available, Pro $20/month) - **NEW: Integrated!**
 - **ChatGPT** (Free/Plus $20/month)
 - **Ollama** (100% Free - Local LLMs) ⭐ **NEW** - [Setup Guide](./OLLAMA-DOCKER-SETUP.md)
 - **Perplexity (Sonar API)** (Free/Pro $20/month)
@@ -182,12 +180,12 @@ Register for these free/premium AI tools:
 
 ```
 📦 AI-Career-Automation-System
-├── 📄 index.html                    # Main Dashboard
-├── 📄 Job_Tracking_System.html      # Job Application Tracker
-├── 📄 AI_Career_Automation_Guide.md # Complete Guide
-├── 📄 Social_Media_Templates.md     # Content Templates
-├── 📄 Sonar_API_Quick_Start.md      # Sonar API Documentation (Hindi)
-└── 📄 README.md                     # This File
+├── 📄 index.html                         # Main Dashboard (Enhanced with Perplexity AI)
+├── 📄 Job_Tracking_System.html           # Job Application Tracker
+├── 📄 AI_Career_Automation_Guide.md      # Complete Guide
+├── 📄 Social_Media_Templates.md          # Content Templates
+├── 📄 PERPLEXITY_API_INTEGRATION.md      # NEW: API Integration Guide
+└── 📄 README.md                          # This File
 ```
 
 ---
@@ -199,6 +197,7 @@ Register for these free/premium AI tools:
 - Portfolio content generator
 - Social media post creator
 - Resume & LinkedIn optimizer
+- **NEW: Perplexity AI Assistant** - Real-time career guidance
 - AI prompt library
 - Analytics dashboard
 
@@ -206,8 +205,9 @@ Register for these free/premium AI tools:
 1. Fill in your project details
 2. Select target platform (GitHub/LinkedIn/Portfolio)
 3. Click "Generate AI Content"
-4. Copy the generated content
-5. Use in your applications
+4. **NEW: Ask real-time questions** using the AI Assistant
+5. Copy the generated content
+6. Use in your applications
 
 ### 📋 **NEW: Complete Personal Automation Guide**
 **🎓 [GitHub Student Pack से Complete Personal Automation Setup](Complete_Personal_Automation_Guide.md)**
@@ -348,21 +348,25 @@ Company research: [Brief company info]
 
 ### Monday (45 minutes)
 - Generate LinkedIn post using dashboard
+- **NEW: Ask AI for trending topics** in biotech
 - Schedule content for the week
 - Update portfolio with new projects
 
 ### Wednesday (60 minutes)  
 - Update GitHub documentation
+- **NEW: Use AI for project descriptions**
 - Create new repository
 - Improve existing project READMEs
 
 ### Friday (90 minutes)
 - Search and apply to 3-5 jobs
+- **NEW: Research companies using AI Assistant**
 - Network with 5 new professionals
 - Follow up on previous applications
 
 ### Sunday (30 minutes)
 - Review analytics and metrics
+- **NEW: Get AI insights on market trends**
 - Plan content for next week
 - Update job tracking system
 
