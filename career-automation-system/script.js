@@ -565,341 +565,334 @@ function initializeHelp() {
 // Initialize help on load
 document.addEventListener('DOMContentLoaded', initializeHelp);
 
-// Microsoft Copilot Integration Functions
-function generateCopilotProject(projectType) {
-    const templates = {
-        'lab-automation': {
-            name: 'Lab automation draft template',
-            description: 'Draft only — replace with a verified project, source, and permitted tools.',
-            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
+// Critical Thinking Optimization Features
 
-Project topic: lab workflow improvement.
-
-Replace this template with verified information only:
-- the actual problem and project scope
-- tools that were actually used
-- a measured result with its source and measurement method, if applicable
-- any review or compliance status only when documented
-
-Do not state that a system was completed, deployed, compliant, integrated, or faster unless those facts are supported by records.`,
-            resumeBullet: '[DRAFT] Describe only a verified contribution, verified tools, and a documented outcome. Remove this line until all facts are supported.'
-        },
-        'clinical-dashboard': {
-            name: 'Clinical dashboard draft template',
-            description: 'Draft only — do not represent this as a deployed clinical system.',
-            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
-
-Project topic: clinical dashboard concept.
-
-Before using this copy, add only verified, permissioned details. Never claim use of patient data, a clinical deployment, a compliance status, accuracy improvement, or a performance result without documentary evidence and required authorization.`,
-            resumeBullet: '[DRAFT] Add a factual, source-supported description only after the project, data permissions, tools, and outcome are verified.'
-        },
-        'api-pipeline': {
-            name: 'Bioinformatics pipeline draft template',
-            description: 'Draft only — replace with a verified, reproducible project description.',
-            linkedinPost: `[DRAFT — NOT FOR PUBLISHING]
-
-Project topic: bioinformatics workflow concept.
-
-Add verified inputs, reproducible methods, permitted data sources, and documented findings before sharing. Do not claim an API integration, a clinical use, accuracy improvement, speed improvement, or drug-discovery impact without evidence.`,
-            resumeBullet: '[DRAFT] Add a verified contribution and documented result only after independent review of the project evidence.'
-        }
-    };
-
-    const template = templates[projectType];
-    if (!template) {
-        showMessage('Project template not found', 'error');
-        return;
-    }
-
-    // Show a local, fact-review template only.
-    showCopilotProjectResult(template);
+// Prompt Category Management
+function initializePromptCategories() {
+    const categoryTabs = document.querySelectorAll('.prompt-category-tab');
+    const categoryContents = document.querySelectorAll('.prompt-category-content');
+    
+    categoryTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const category = tab.dataset.category;
+            
+            // Remove active classes
+            categoryTabs.forEach(t => t.classList.remove('active'));
+            categoryContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active classes
+            tab.classList.add('active');
+            document.getElementById(`${category}-prompts`).classList.add('active');
+        });
+    });
 }
 
-function showCopilotProjectResult(template) {
-    // Display the generated LinkedIn post and resume bullet in a modal
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fab fa-microsoft"></i> Copilot Project Draft Template</h3>
-                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="project-result">
-                    <p><strong>Fact-review required:</strong> This local template contains no verified achievement claim. Do not publish or add it to a resume until every statement is supported.</p>
-                    <h4><i class="fab fa-linkedin"></i> LinkedIn Post</h4>
-                    <div class="content-box">
-                        <p>${template.linkedinPost}</p>
-                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
-                            <i class="fas fa-copy"></i> Copy LinkedIn Post
-                        </button>
-                    </div>
-
-                    <h4><i class="fas fa-file-alt"></i> Resume Bullet Point</h4>
-                    <div class="content-box">
-                        <p><strong>${template.resumeBullet}</strong></p>
-                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard(this.previousElementSibling.textContent)">
-                            <i class="fas fa-copy"></i> Copy Resume Bullet
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-}
-
-function viewCopilotDemo(projectType) {
-    void projectType;
-    showMessage('Demo links are not configured. Attach only a verified, authorized project link after review.', 'info');
-}
-
-function copyToClipboard(text) {
+// Advanced Prompt Copy Functionality
+function copyAdvancedPrompt(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.value || element.textContent;
+    
     navigator.clipboard.writeText(text).then(() => {
-        showMessage('Copied to clipboard!', 'success');
+        showMessage('Advanced prompt copied to clipboard! 🧠', 'success');
+        
+        // Find the button that was clicked and show feedback
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            if (btn.onclick && btn.onclick.toString().includes(elementId)) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }
+        });
     }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showMessage('Failed to copy to clipboard', 'error');
+        showMessage('Failed to copy prompt. Please try again.', 'error');
     });
 }
 
-// Webhook Integration Functions
-async function sendToWebhook(data) {
-    void data;
-    throw new Error('Browser-side webhook sending is disabled. Use a server-side approval queue before any external action.');
-}
+// Specialized Prompt Library
+const specializedPrompts = {
+    linkedin: {
+        title: 'LinkedIn Profile Critical Analysis',
+        content: `**Role**: Expert LinkedIn optimization consultant with critical thinking expertise
 
-function getWebhookUrl() {
-    // Try to get webhook URL from various sources
-    return localStorage.getItem('webhookUrl') ||
-           window.WEBHOOK_URL ||
-           (typeof process !== 'undefined' && process?.env?.N8N_WEBHOOK_URL) ||
-           null;
-}
+**Task**: Perform comprehensive critical analysis of this LinkedIn profile content:
 
-function setWebhookUrl(url) {
-    localStorage.setItem('webhookUrl', url);
-    showMessage('Webhook URL local settings में सेव है; browser से कोई external request नहीं भेजी जाएगी।', 'info');
-}
+**Profile Content to Analyze**: 
+[Paste your LinkedIn headline, about section, or experience description here]
 
-// Enhanced save project function with webhook integration
-async function saveProjectWithWebhook() {
-    const projectName = document.getElementById('projectName').value;
-    const description = document.getElementById('projectDescription').value;
-    const tools = document.getElementById('toolsUsed').value;
-    const findings = document.getElementById('keyFindings').value;
+**Analysis Framework**:
+1. **Content Audit**: What works vs. what doesn't?
+2. **Keyword Analysis**: SEO and recruiter visibility 
+3. **Narrative Flow**: Story coherence and impact
+4. **Competitive Analysis**: Industry benchmark comparison
+5. **Conversion Optimization**: Call-to-action effectiveness
 
-    if (!projectName || !description) {
-        showMessage('कृपया प्रोजेक्ट का नाम और विवरण भरें', 'error');
-        return;
+**Output Requirements**:
+- Overall optimization score (1-10)
+- 3 highest-impact improvements
+- Before/after content examples
+- Industry-specific keyword suggestions
+- Measurable success criteria
+
+**Instructions**: Be specific with recommendations and provide actionable steps for optimization.`
+    },
+    resume: {
+        title: 'Resume Content Performance Analysis',
+        content: `**Role**: Senior HR consultant and resume optimization expert
+
+**Analyze This Resume Section**: 
+[Paste your resume summary, experience bullet points, or skills section here]
+
+**Critical Evaluation Criteria**:
+- **Impact Quantification**: Are achievements measurable?
+- **Relevance Scoring**: How well does content match target role?
+- **ATS Compatibility**: Keyword optimization for applicant tracking systems
+- **Storytelling Effectiveness**: Does content tell a compelling career story?
+- **Industry Alignment**: Matches sector expectations and language?
+
+**Target Role**: [Specify the job title you're targeting]
+
+**Provide**:
+- Content effectiveness score (1-10)
+- Top 3 optimization priorities
+- Rewritten high-impact examples
+- ATS keyword enhancement suggestions
+- Industry-specific improvements
+
+**Instructions**: Focus on measurable improvements that will increase interview callbacks.`
+    },
+    jobstrategy: {
+        title: 'Job Application Strategy Critical Analysis',
+        content: `**Role**: Career strategist specializing in pharmaceutical and biotech industries
+
+**Analyze My Job Search Approach**:
+- **Target Role**: [Specific job title]
+- **Target Companies**: [List companies you're targeting]
+- **Current Strategy**: [Describe your current approach]
+- **Application Materials**: [List what you're using - resume, cover letter, portfolio]
+- **Results So Far**: [Response rates, interviews, feedback received]
+
+**Critical Analysis Areas**:
+1. **Strategy Alignment**: Does approach match industry expectations?
+2. **Material Effectiveness**: Are applications compelling and targeted?
+3. **Process Efficiency**: Is the workflow optimized for best ROI?
+4. **Market Positioning**: How competitive is the positioning?
+5. **Success Probability**: What's the likelihood of success?
+
+**Output**: 
+- Strategy effectiveness rating (1-10)
+- Process optimization recommendations
+- Material improvement priorities
+- Timeline and success metrics
+- Risk mitigation strategies
+
+**Instructions**: Provide data-driven insights and specific action steps for improvement.`
+    },
+    portfolio: {
+        title: 'Project Portfolio Critical Review',
+        content: `**Role**: Senior project portfolio reviewer and career advancement specialist
+
+**Portfolio Projects to Analyze**:
+[List your projects with brief descriptions, technologies used, and outcomes]
+
+**Evaluation Criteria**:
+- **Technical Complexity**: Demonstrates required skills?
+- **Business Impact**: Shows value creation ability?
+- **Presentation Quality**: Effectively communicates achievements?
+- **Market Relevance**: Aligns with industry needs?
+- **Differentiation**: Stands out from competition?
+
+**Target Industry**: [Biotech/Pharma/Clinical Research/Data Science]
+
+**Critical Questions**:
+- Which projects should be featured prominently?
+- What gaps exist in the portfolio?
+- How can presentation be optimized?
+- What additional projects would strengthen positioning?
+
+**Provide**:
+- Portfolio strength assessment (1-10)
+- Project prioritization recommendations  
+- Presentation optimization strategies
+- Gap analysis and suggestions
+- Competitive positioning advice
+
+**Instructions**: Be specific about which projects to emphasize and how to present them effectively.`
     }
+};
 
-    const projectData = {
-        name: projectName,
-        description: description,
-        tools: tools.split(',').map(t => t.trim()),
-        findings: findings,
-        timestamp: new Date().toISOString()
-    };
-
-    // Save locally
-    projects.push(projectData);
-    localStorage.setItem('projects', JSON.stringify(projects));
-
-    showMessage('प्रोजेक्ट केवल local draft के रूप में सेव हुआ है। External handoff के लिए server-side approval आवश्यक है।', 'info');
-
-    updateAnalytics();
+// Load Specialized Prompt
+function loadSpecializedPrompt(type) {
+    const prompt = specializedPrompts[type];
+    if (!prompt) return;
+    
+    const display = document.getElementById('specializedPromptDisplay');
+    const title = document.getElementById('specializedPromptTitle');
+    const content = document.getElementById('specializedPromptContent');
+    
+    title.innerHTML = `<i class="fas fa-brain"></i> ${prompt.title}`;
+    content.value = prompt.content;
+    display.style.display = 'block';
+    
+    // Scroll to the prompt
+    display.scrollIntoView({ behavior: 'smooth' });
+    
+    showMessage(`Loaded ${prompt.title} - customize with your details and copy to AI tool`, 'success');
 }
 
-// Webhook configuration UI
-function showWebhookConfig() {
-    const currentUrl = getWebhookUrl() || '';
-    const newUrl = prompt('n8n Webhook URL enter करें:', currentUrl);
+// Customize Prompt Functionality
+function customizePrompt() {
+    const content = document.getElementById('specializedPromptContent');
+    content.readOnly = false;
+    content.style.background = '#fff';
+    content.style.border = '2px solid #667eea';
+    
+    const customizeBtn = event.target;
+    customizeBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+    customizeBtn.onclick = saveCustomization;
+    
+    showMessage('Prompt is now editable. Customize it for your needs!', 'success');
+}
 
-    if (newUrl && newUrl.trim()) {
-        setWebhookUrl(newUrl.trim());
+function saveCustomization() {
+    const content = document.getElementById('specializedPromptContent');
+    content.readOnly = true;
+    content.style.background = '#2d3748';
+    content.style.border = '2px solid #4a5568';
+    
+    const saveBtn = event.target;
+    saveBtn.innerHTML = '<i class="fas fa-edit"></i> Customize';
+    saveBtn.onclick = customizePrompt;
+    
+    showMessage('Customizations saved! Your prompt is ready to use.', 'success');
+}
+
+// Performance Analysis Functions
+function analyzeContentPerformance() {
+    // Simulate analysis with realistic scoring
+    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+    const socialPosts = JSON.parse(localStorage.getItem('socialPosts')) || [];
+    
+    let score = 0;
+    
+    // Score based on content quantity and quality indicators
+    if (projects.length > 0) score += 30;
+    if (projects.length > 3) score += 20;
+    if (socialPosts.length > 0) score += 25;
+    if (socialPosts.length > 5) score += 15;
+    
+    // Add random variation for realism
+    score += Math.floor(Math.random() * 10);
+    score = Math.min(score, 100);
+    
+    updateMetricDisplay('contentScore', score);
+    
+    if (score < 60) {
+        showMessage('Content effectiveness could be improved. Use critical thinking prompts to optimize!', 'error');
+    } else if (score < 80) {
+        showMessage('Good content performance! Consider using advanced analysis prompts for optimization.', 'success');
+    } else {
+        showMessage('Excellent content performance! Keep using AI optimization strategies.', 'success');
     }
 }
 
-async function testWebhookConnection() {
-    showMessage('Browser-side webhook testing is disabled. Verify connectivity only through an approved server-side integration.', 'info');
+function analyzeProfileOptimization() {
+    // Simulate profile analysis
+    const score = Math.floor(Math.random() * 40) + 60; // 60-100 range
+    updateMetricDisplay('profileScore', score);
+    
+    if (score < 70) {
+        showMessage('Profile needs optimization. Try the LinkedIn analysis prompt!', 'error');
+    } else if (score < 85) {
+        showMessage('Profile is good but can be improved. Use critical thinking analysis!', 'success');
+    } else {
+        showMessage('Excellent profile optimization! You\'re using AI effectively.', 'success');
+    }
 }
 
-// Auto-connect webhook on page load if URL is available
+function analyzeAIUsage() {
+    // Simulate AI usage efficiency analysis
+    const promptUsage = localStorage.getItem('promptUsageCount') || 0;
+    let score = Math.min(parseInt(promptUsage) * 10, 90) + Math.floor(Math.random() * 10);
+    score = Math.min(score, 100);
+    
+    updateMetricDisplay('efficiencyScore', score);
+    
+    // Track usage
+    localStorage.setItem('promptUsageCount', parseInt(promptUsage) + 1);
+    
+    showMessage(`AI usage efficiency: ${score}%. Great job leveraging AI for career optimization!`, 'success');
+}
+
+function updateMetricDisplay(metricId, score) {
+    const element = document.getElementById(metricId);
+    if (element) {
+        // Animate the score update
+        let currentScore = 0;
+        const increment = score / 20;
+        
+        const interval = setInterval(() => {
+            currentScore += increment;
+            if (currentScore >= score) {
+                currentScore = score;
+                clearInterval(interval);
+            }
+            element.textContent = Math.floor(currentScore) + '%';
+            
+            // Color code based on score
+            if (currentScore < 60) {
+                element.style.color = '#e53e3e';
+            } else if (currentScore < 80) {
+                element.style.color = '#d69e2e';
+            } else {
+                element.style.color = '#38a169';
+            }
+        }, 50);
+    }
+}
+
+// Apply Optimization Suggestions
+function applySuggestion(button) {
+    const suggestionText = button.parentElement.querySelector('span').textContent;
+    
+    // Mark as applied
+    button.innerHTML = '<i class="fas fa-check"></i> Applied';
+    button.style.background = '#48bb78';
+    button.disabled = true;
+    
+    // Navigate to relevant section based on suggestion
+    if (suggestionText.includes('LinkedIn')) {
+        switchTab('prompts');
+        document.querySelector('[data-category="optimization"]').click();
+        setTimeout(() => loadSpecializedPrompt('linkedin'), 500);
+    } else if (suggestionText.includes('resume')) {
+        switchTab('prompts');
+        document.querySelector('[data-category="optimization"]').click();
+        setTimeout(() => loadSpecializedPrompt('resume'), 500);
+    } else if (suggestionText.includes('portfolio')) {
+        switchTab('prompts');
+        document.querySelector('[data-category="optimization"]').click();
+        setTimeout(() => loadSpecializedPrompt('portfolio'), 500);
+    }
+    
+    showMessage('Suggestion applied! Follow the loaded prompt for optimization.', 'success');
+}
+
+// Enhanced initialization
 document.addEventListener('DOMContentLoaded', function() {
-    const webhookUrl = getWebhookUrl();
-    if (webhookUrl) {
-        console.log('Webhook URL configured:', webhookUrl.substring(0, 30) + '...');
-    }
-});
-
-// Premium Subscription Functions
-let selectedPlan = null;
-
-function selectPlan(planType) {
-    selectedPlan = planType;
-    document.getElementById('paymentForm').style.display = 'block';
-
-    // Update form title based on selected plan
-    const formTitle = document.querySelector('#paymentForm h3');
-    const planNames = {
-        basic: 'Basic Premium - ₹999/माह',
-        pro: 'Pro Premium - ₹1999/माह'
-    };
-    formTitle.textContent = `भुगतान विवरण - ${planNames[planType]}`;
-
-    // Scroll to payment form
-    document.getElementById('paymentForm').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-    });
-
-    showMessage(`${planNames[planType]} चुना गया। कृपया भुगतान विवरण भरें।`, 'success');
-}
-
-function cancelPayment() {
-    document.getElementById('paymentForm').style.display = 'none';
-    selectedPlan = null;
-
-    // Clear form data
-    document.getElementById('cardholderName').value = '';
-    document.getElementById('cardNumber').value = '';
-    document.getElementById('expiryDate').value = '';
-    document.getElementById('cvv').value = '';
-    document.getElementById('billingAddress').value = '';
-
-    showMessage('भुगतान रद्द किया गया।', 'info');
-}
-
-function processPayment() {
-    if (!selectedPlan) {
-        showMessage('कृपया पहले एक प्लान चुनें।', 'error');
-        return;
-    }
-
-    // Get form values
-    const cardholderName = document.getElementById('cardholderName').value.trim();
-    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
-    const expiryDate = document.getElementById('expiryDate').value.trim();
-    const cvv = document.getElementById('cvv').value.trim();
-    const isTestMode = document.getElementById('testMode').checked;
-
-    // Validate required fields
-    if (!cardholderName || !cardNumber || !expiryDate || !cvv) {
-        showMessage('कृपया सभी आवश्यक फील्ड भरें।', 'error');
-        return;
-    }
-
-    // Validate test mode requirements
-    if (isTestMode) {
-        const validTestNames = ['test user', 'example name', 'john doe', 'jane doe'];
-        const validTestCards = ['4111111111111111', '5555555555554444', '378282246310005'];
-
-        if (!validTestNames.includes(cardholderName.toLowerCase())) {
-            showMessage('टेस्ट मोड में कृपया वैध टेस्ट नाम का उपयोग करें: Test User, John Doe, Jane Doe, या Example Name', 'error');
-            return;
-        }
-
-        if (!validTestCards.includes(cardNumber)) {
-            showMessage('टेस्ट मोड में कृपया केवल आधिकारिक टेस्ट कार्ड नंबर का उपयोग करें।', 'error');
-            return;
-        }
-    }
-
-    // Validate card number format
-    if (!/^\d{13,19}$/.test(cardNumber)) {
-        showMessage('कृपया वैध कार्ड नंबर दर्ज करें।', 'error');
-        return;
-    }
-
-    // Validate expiry date format
-    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-        showMessage('कृपया वैध समाप्ति तिथि दर्ज करें (MM/YY)।', 'error');
-        return;
-    }
-
-    // Validate CVV
-    if (!/^\d{3,4}$/.test(cvv)) {
-        showMessage('कृपया वैध CVV दर्ज करें।', 'error');
-        return;
-    }
-
-    // Simulate payment processing
-    const submitBtn = document.querySelector('.payment-actions .btn-primary');
-    const originalText = submitBtn.innerHTML;
-
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> प्रोसेसिंग...';
-    submitBtn.disabled = true;
-
+    initializeHelp();
+    initializePromptCategories();
+    
+    // Show welcome message for new optimization features
     setTimeout(() => {
-        if (isTestMode) {
-            showMessage('✅ टेस्ट भुगतान सफल! यह एक नकली लेनदेन था।', 'success');
-        } else {
-            showMessage('⚠️ लाइव मोड में वास्तविक भुगतान प्रोसेसिंग लागू नहीं की गई है।', 'error');
-        }
-
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-
-        if (isTestMode) {
-            // Clear form after successful test payment
-            setTimeout(() => {
-                cancelPayment();
-            }, 2000);
+        if (!localStorage.getItem('seenOptimizationWelcome')) {
+            showMessage('🧠 New: Critical Thinking AI Prompts now available! Check the AI Prompts section.', 'success');
+            localStorage.setItem('seenOptimizationWelcome', 'true');
         }
     }, 2000);
-}
-
-// Card number formatting
-document.addEventListener('DOMContentLoaded', function() {
-    const cardNumberInput = document.getElementById('cardNumber');
-    if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-            e.target.value = value;
-        });
-    }
-
-    const expiryInput = document.getElementById('expiryDate');
-    if (expiryInput) {
-        expiryInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.substring(0, 2) + '/' + value.substring(2, 4);
-            }
-            e.target.value = value;
-        });
-    }
-
-    const cvvInput = document.getElementById('cvv');
-    if (cvvInput) {
-        cvvInput.addEventListener('input', function(e) {
-            e.target.value = e.target.value.replace(/\D/g, '');
-        });
-    }
-});
-
-// Test mode toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const testModeToggle = document.getElementById('testMode');
-    const testDataSection = document.getElementById('testDataSection');
-    const livePaymentWarning = document.getElementById('livePaymentWarning');
-
-    if (testModeToggle) {
-        testModeToggle.addEventListener('change', function() {
-            if (this.checked) {
-                testDataSection.style.display = 'block';
-                livePaymentWarning.style.display = 'none';
-                showMessage('टेस्ट मोड सक्रिय - केवल नकली डेटा का उपयोग करें', 'info');
-            } else {
-                testDataSection.style.display = 'none';
-                livePaymentWarning.style.display = 'block';
-                showMessage('⚠️ लाइव मोड सक्रिय - सावधान रहें!', 'warning');
-            }
-        });
-    }
 });

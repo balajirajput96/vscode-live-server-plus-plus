@@ -5,7 +5,7 @@ import * as path from 'path';
 import { Socket } from 'net';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
-import { getInjectedText, isInjectableFile } from './utils';
+import { getInjectedText, isInjectableFile, isSupportedFile } from './utils';
 import {
   ILiveServerPlusPlus,
   GoOfflineEvent,
@@ -225,12 +225,18 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     const WebSocket = getWebSocket();
     let clients: WebSocketType[] = this.ws.clients as any;
 
-    //TODO: WE SHOULD WATCH ALL FILE. FOR NOW, THE LIB WORKS ONLY FOR HTML
-    if (isInjectableFile(data.fileName)) {
+    // Improved file watching: check if file is in watching list for any supported file type
+    // Not just injectable files (HTML), but also CSS, JS, and other supported files
+    const isInWatchingPath = this.wsWatcherList.some(({ watchingPaths }) => 
+      this.isInWatchingList(data.fileName, watchingPaths)
+    );
+
+    if (isInWatchingPath || isSupportedFile(data.fileName)) {
       clients = this.wsWatcherList.reduce(
         (allClients, { client, watchingPaths }) => {
-          if (this.isInWatchingList(data.fileName, watchingPaths))
+          if (this.isInWatchingList(data.fileName, watchingPaths)) {
             allClients.push(client);
+          }
           return allClients;
         },
         [] as WebSocketType[]
@@ -248,9 +254,17 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     for (let i = 0; i < dirList.length; i++) {
       let dir = dirList[i];
 
-      //TODO: THIS IS NOT THE BEST WAY. IF FOLDER CONTANTS `.`, this will not work
-      if (!path.extname(dir)) {
-        dir = urlJoin(dir, this.indexFile);
+      // Improved logic: check if dir is actually a directory path or file path
+      // Don't just rely on extension presence, as folders can contain dots
+      const hasExtension = path.extname(dir) !== '';
+      const endsWithSlash = dir.endsWith('/');
+      
+      // If it appears to be a directory (no extension and possibly ends with /)
+      // or explicitly ends with slash, append index file
+      if (!hasExtension || endsWithSlash) {
+        // Remove trailing slash if present before joining
+        const cleanDir = dir.endsWith('/') ? dir.slice(0, -1) : dir;
+        dir = urlJoin(cleanDir, this.indexFile);
       }
 
       if (target.startsWith('/')) target = target.substr(1);
