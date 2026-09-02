@@ -5,7 +5,7 @@ import * as path from 'path';
 import { Socket } from 'net';
 import { IncomingMessage, ServerResponse } from 'http';
 import { readFileStream } from './FileSystem';
-import { getInjectedText, isInjectableFile, isSupportedFile } from './utils';
+import { getInjectedText, isInjectableFile } from './utils';
 import {
   ILiveServerPlusPlus,
   GoOfflineEvent,
