@@ -10,7 +10,7 @@ This guide extends the existing automation system with production-ready n8n work
 ├── 🔗 n8n-workflows/
 │   └── parul-auto-response-workflow.json    # Production workflow
 ├── ⚙️ .github/workflows/
-│   └── notify-n8n.yml                       # GitHub → n8n integration
+│   └── notify.yml                       # GitHub → n8n integration
 ├── 🩺 scripts/health-checks/
 │   ├── webhook-health-check.sh              # Webhook monitoring
 │   └── openai-health-check.sh               # API connectivity tests
@@ -96,7 +96,7 @@ Components:
 ```
 🔐 n8n Credentials Needed:
 • OpenAI API: API key authentication
-• Gmail: OAuth2 authentication  
+• Gmail: OAuth2 authentication
 • Google Drive: OAuth2 authentication
 • Custom webhook auth (optional)
 ```
