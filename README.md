@@ -99,6 +99,16 @@
 
 📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
 
+### 6. 🔄 AI Agent Automation Pack
+- **N8N Workflows**: Complete weekly social posting automation
+- **HTTP-only variant**: Uses standard nodes for broader compatibility
+- **Google Sheets Integration**: Pull topics and track posted content
+- **Multi-platform posting**: LinkedIn, Facebook via Buffer API
+- **AI-generated images**: Predis.ai integration for professional visuals
+- **Ready-to-import**: JSON workflows with setup documentation
+
+📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
+
 ---
 
 ## 🚀 Quick Start Guide
@@ -153,12 +163,12 @@ Register for these free/premium AI tools:
 
 ```
 📦 AI-Career-Automation-System
-├── 📄 index.html                         # Main Dashboard (Enhanced with Perplexity AI)
-├── 📄 Job_Tracking_System.html           # Job Application Tracker
-├── 📄 AI_Career_Automation_Guide.md      # Complete Guide
-├── 📄 Social_Media_Templates.md          # Content Templates
-├── 📄 PERPLEXITY_API_INTEGRATION.md      # NEW: API Integration Guide
-└── 📄 README.md                          # This File
+├── 📄 index.html                    # Main Dashboard
+├── 📄 Job_Tracking_System.html      # Job Application Tracker
+├── 📄 AI_Career_Automation_Guide.md # Complete Guide
+├── 📄 Social_Media_Templates.md     # Content Templates
+├── 📄 GitHub-Setup-Guide.md         # GitHub Setup Guide
+└── 📄 README.md                     # This File
 ```
 
 ---
@@ -250,6 +260,14 @@ Register for these free/premium AI tools:
 - Interview preparation prompts
 - Portfolio building prompts
 - Microsoft ecosystem integration guides
+
+### 5. GitHub Setup Guide (`GitHub-Setup-Guide.md`)
+**Contents:**
+- Post-GitHub setup configuration steps
+- Secrets and environment variables setup
+- GitHub Actions workflow testing
+- Development to deployment process
+- Live system cutover and monitoring
 
 ---
 
