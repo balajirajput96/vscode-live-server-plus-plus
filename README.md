@@ -112,6 +112,12 @@
 
 📁 **Location**: `ai-agent-automation-pack/` - [Full Documentation](./ai-agent-automation-pack/README.md)
 
+### 6. 🔌 Sonar API Integration
+- Advanced AI capabilities with Sonar API
+- Real-time content generation
+- Streaming and batch processing
+- Multi-language support (Hindi/English)
+
 ---
 
 ## 🤖 NEW: Complete Automation Setup
@@ -189,7 +195,8 @@ Register for these free/premium AI tools:
 ├── 📄 Job_Tracking_System.html      # Job Application Tracker
 ├── 📄 AI_Career_Automation_Guide.md # Complete Guide
 ├── 📄 Social_Media_Templates.md     # Content Templates
-├── 📄 Sonar_API_Quick_Start.md      # Sonar API Documentation (Hindi)
+├── 📄 Sonar_API_Quick_Start.md      # Sonar API Guide (Hindi)
+├── 📄 SONAR_API_QUICK_START_EN.md   # Sonar API Guide (English)
 └── 📄 README.md                     # This File
 ```
 
@@ -280,6 +287,14 @@ Register for these free/premium AI tools:
 - Interview preparation prompts
 - Portfolio building prompts
 - Microsoft ecosystem integration guides
+
+### 5. Sonar API Integration (`SONAR_API_QUICK_START.md` / `SONAR_API_QUICK_START_EN.md`)
+**Contents:**
+- Complete API integration guide
+- Code examples in Python, TypeScript, and cURL
+- Streaming and non-streaming implementations
+- Integration with career automation features
+- Multilingual support (Hindi & English)
 
 ---
 
