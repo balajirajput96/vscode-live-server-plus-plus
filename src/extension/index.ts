@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 // Note: Avoid type-only import for TS 3.3 compatibility and to prevent eager require
 // import type { LiveServerPlusPlus } from '../core/LiveServerPlusPlus';
 import { NotificationService } from './services/NotificationService';
+import { GitHubApiService } from './services/GitHubApiService';
+import { MessagingService } from './services/MessagingService';
 import { fileSelector, setMIME } from './middlewares';
 import { ILiveServerPlusPlusConfig } from '../core/types';
 import { extensionConfig } from './utils/extensionConfig';
@@ -21,21 +23,8 @@ interface LiveServerPlusPlusLike {
 export function activate(context: vscode.ExtensionContext) {
   let liveServerPlusPlus: LiveServerPlusPlusLike | undefined;
 
-  async function ensureServer() {
-    if (!liveServerPlusPlus) {
-      const module = await import('../core/LiveServerPlusPlus');
-      const LiveServerPlusPlusCtor = module.LiveServerPlusPlus as {
-        new (config: ILiveServerPlusPlusConfig): LiveServerPlusPlusLike;
-      };
-      liveServerPlusPlus = new LiveServerPlusPlusCtor(getLSPPConfig());
-      liveServerPlusPlus.useMiddleware(fileSelector, setMIME);
-      liveServerPlusPlus.useService(
-        NotificationService,
-        BrowserService,
-        StatusbarService
-      );
-    }
-  }
+  liveServerPlusPlus.useMiddleware(fileSelector, setMIME);
+  liveServerPlusPlus.useService(NotificationService, BrowserService, StatusbarService, GitHubApiService, MessagingService);
 
   const openServer = vscode.commands.registerCommand(
     getCmdWithPrefix('open'),

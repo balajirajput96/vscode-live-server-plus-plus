@@ -1,139 +1,324 @@
-# n8n Automation Setup (Docker) + Perplexity AI Pro Integration
+# n8n Automation Setup (Docker)
 
-## 🚀 Quick Start
+## 🚀 Overview
 
-### 1) Prepare .env
-Copy `.env.example` to `.env` and set:
-- DOMAIN, EMAIL (now configured for balaji.web.design1@gmail.com), WEBHOOK_URL (e.g., https://n8n.example.com/)
-- N8N_ENCRYPTION_KEY (generate one: `openssl rand -base64 32`)
-- PERPLEXITY_API_KEY (get from your Perplexity AI Pro account)
-- For local dev without HTTPS: set `N8N_SECURE_COOKIE=false`, `WEBHOOK_URL=` blank or http URL.
+This setup provides a complete n8n automation system integrated with the AI Career Automation features of Live Server++. It includes VPN capabilities, local AI processing, and high-performance queue-based execution.
 
-### 2) Local/dev (no HTTPS)
+## 🎯 System Components
+
+- **Gluetun VPN**: Geo-switching capabilities for automated job applications
+- **PostgreSQL**: Robust database for workflow and execution data
+- **Redis**: High-performance queue system for scalable automation
+- **Ollama**: Local AI server for privacy-focused AI operations
+- **n8n**: Main automation platform with worker scaling
+
+## 1️⃣ Prerequisites
+
+### System Requirements
+- Docker & Docker Compose installed
+- At least 4GB RAM available
+- 10GB free disk space
+- Internet connection for initial setup
+
+### VPN Account (Optional but Recommended)
+- Surfshark account (or other supported VPN provider)
+- VPN credentials for geo-switching features
+
+## 2️⃣ Quick Start
+
+### Step 1: Prepare Environment
 ```bash
-docker compose --env-file .env -f docker-compose.basic.yml up -d
-```
-Open http://localhost:5678
+# Copy environment template
+cp .env.example .env
 
-### 3) With HTTPS + Caddy
-Point your DNS A/AAAA to this host, then:
+# Edit configuration
+nano .env
+```
+
+### Step 2: Configure .env File
+Set the following critical variables:
 ```bash
-docker compose --env-file .env -f docker-compose.reverse-proxy.yml up -d
+# Generate encryption key
+N8N_ENCRYPTION_KEY=$(openssl rand -base64 32)
+
+# VPN credentials (optional)
+SURFSHARK_USER=your_username
+SURFSHARK_PASSWORD=your_password
+
+# Database password
+POSTGRES_PASSWORD=secure_random_password
 ```
-Open https://$DOMAIN
 
-## 🔧 Production Webhook Setup
-
-### Step 1: Create Webhook Endpoint
-1. **Workflows** → **+ New** → **Webhook node**
-   - Path: `balaji-automation`
-   - Method: `POST`
-   - Response: `On received`
-2. **Save** → Copy production URL
-
-### Step 2: Test Webhook
+### Step 3: Start the System
 ```bash
-# Test basic connectivity (mobile/PC Terminal or Postman)
-curl -X POST "YOUR_WEBHOOK_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"Scholarship info","email":"2203456300001@paruluniversity.ac.in"}'
+# Start all services
+docker compose up -d
+
+# Check status
+docker compose ps
+
+# View logs
+docker compose logs -f n8n
 ```
 
-### Step 3: Import Full Workflow
-- **Workflows** → **Import from JSON** 
-- Use workflow file: `n8n-workflows/parul-auto-response-workflow.json`
-- Configure credentials:
-  - OpenAI API key
-  - Gmail OAuth  
-  - Google Drive OAuth
-  - Drive folder ID
+### Step 4: Access n8n
+Open your browser and navigate to:
+- **n8n Interface**: http://localhost:5678
+- **Ollama API**: http://localhost:11434
 
-## 🔗 GitHub Integration
+## 3️⃣ Configuration Options
 
-### Required Secrets
-Add to **Repository Settings** → **Secrets** → **Actions**:
-```
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxx
-N8N_WEBHOOK_URL=https://your-webhook-url
-GEMINI_API_KEY=xxxxxxxxxxxxxxx (optional)
-AZURE_PUBLISH_PROFILE=<profile> (if using Azure)
-```
-
-### Automated Notifications
-- GitHub Actions automatically notify n8n on code pushes
-- Workflow file: `.github/workflows/notify-n8n.yml`
-- Includes health checks and error reporting
-
-## 🩺 Health Monitoring
-
-### Webhook Health Check
+### Local Development (No HTTPS)
 ```bash
-# Run health check script
-./scripts/health-checks/webhook-health-check.sh YOUR_WEBHOOK_URL
-
-# Quick test command
-curl -X POST "$N8N_WEBHOOK_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"type":"health","query":"ping","email":"2203456300001@paruluniversity.ac.in"}'
+# Basic setup for local development
+docker compose up -d
 ```
 
-### OpenAI API Health Check
+### Production Setup with HTTPS
+For production deployment, update your .env:
 ```bash
-# Test OpenAI connectivity
-./scripts/health-checks/openai-health-check.sh
-
-# Manual test
-curl https://api.openai.com/v1/chat/completions \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"Say hi in Hinglish"}]}'
+DOMAIN=your-domain.com
+EMAIL=your-email@domain.com
+WEBHOOK_URL=https://your-domain.com/
+N8N_SECURE_COOKIE=true
+N8N_TRUST_PROXY=true
 ```
 
-## 📚 Additional Setup Guides
+### VPN Configuration
+Currently configured for Surfshark, but supports:
+- Surfshark
+- NordVPN
+- ExpressVPN
+- Custom OpenVPN configurations
 
-- **🔐 Security Configuration**: `docs/setup-guides/security-configuration.md`
-- **📱 Google Play Console**: `docs/setup-guides/google-play-console-setup.md`  
-- **🚀 DevTools Optimization**: `docs/setup-guides/devtools-optimization.md`
-- **📊 Status Update Templates**: `docs/setup-guides/status-update-templates.md`
+## 4️⃣ Career Automation Workflows
 
-## 📊 Status Update Format
+### Pre-built Workflows Available
+1. **LinkedIn Content Generation**
+   - Auto-generate posts based on projects
+   - Schedule content publication
+   - Track engagement metrics
 
-When completing setup steps, report progress using this format:
+2. **Job Application Automation**
+   - Monitor job boards
+   - Auto-apply with customized applications
+   - Track application status
+
+3. **Portfolio Sync**
+   - Auto-update GitHub repositories
+   - Generate project documentation
+   - Sync portfolio website content
+
+4. **Social Media Management**
+   - Cross-platform posting
+   - Hashtag optimization
+   - Engagement tracking
+
+### Importing Workflows
+```bash
+# Place workflow files in ./workflows directory
+mkdir -p workflows
+# Copy your .json workflow files here
+# They will be available in n8n for import
 ```
-- Webhook: Ready ✅ (URL: https://your-url)
-- Credentials: OpenAI + Gmail + Drive added ✅
-- GitHub: Secrets added, Action running ✅
-- D-U-N-S: Submitted ⏳ / Approved ✅
+
+## 5️⃣ AI Integration
+
+### Ollama Setup
+The system includes Ollama for local AI processing:
+
+```bash
+# Connect to Ollama container
+docker compose exec ollama ollama pull llama2
+
+# Available models for career automation
+docker compose exec ollama ollama pull codellama
+docker compose exec ollama ollama pull mistral
 ```
 
-## 🔧 Technical Notes
-- WEBHOOK_URL should be your final public URL (esp. behind proxy/tunnel).
-- Keep `N8N_TRUST_PROXY=true` when behind Caddy/Nginx/Traefik.
-- For Execute Command node extra tools, build and use `n8n-extended` image, or run commands on a separate worker host.
+### AI Model Usage in Workflows
+- **Text Generation**: Resume summaries, cover letters
+- **Code Analysis**: GitHub project documentation
+- **Content Creation**: Social media posts, LinkedIn articles
 
-## 5) Perplexity AI Pro Integration
-After n8n is running:
+## 6️⃣ Scaling and Performance
 
-1. **Get Perplexity API Key**:
-   - Login to [perplexity.ai](https://perplexity.ai) with balaji.web.design1@gmail.com
-   - Navigate to API settings and generate an API key
-   - Add to your `.env` file: `PERPLEXITY_API_KEY=your_api_key_here`
+### Worker Scaling
+Adjust worker count in docker-compose.yml:
+```yaml
+n8n-worker:
+  deploy:
+    replicas: 4  # Increase for more concurrent executions
+```
 
-2. **Import Workflows**:
-   ```bash
-   # Import the provided workflow templates
-   cp n8n-workflows/*.json /path/to/your/n8n/data/workflows/
-   ```
+### Resource Optimization
+```bash
+# Monitor resource usage
+docker stats
 
-3. **Configure Credentials**:
-   - In n8n web interface, go to Settings → Credentials
-   - Add "HTTP Header Auth" credential for Perplexity API
-   - Header Name: `Authorization`
-   - Header Value: `Bearer YOUR_PERPLEXITY_API_KEY`
+# Adjust memory limits if needed
+docker compose config
+```
 
-4. **Test Integration**:
-   - Import `perplexity-content-generator.json` workflow
-   - Test with webhook: `POST /webhook/generate-content`
-   - Payload: `{"topic": "Bioinformatics trends", "content_type": "linkedin_post"}`
+## 7️⃣ Monitoring and Maintenance
 
-See `n8n-perplexity-integration.md` for detailed setup instructions and workflow examples.
+### Health Checks
+```bash
+# Check all services
+docker compose ps
+
+# Check n8n logs
+docker compose logs -f n8n
+
+# Check database health
+docker compose exec postgres pg_isready
+```
+
+### Backup and Recovery
+```bash
+# Backup all data
+docker compose down
+docker run --rm -v n8n_postgres_data:/data -v $(pwd):/backup alpine tar czf /backup/backup.tar.gz /data
+
+# Restore from backup
+docker run --rm -v n8n_postgres_data:/data -v $(pwd):/backup alpine tar xzf /backup/backup.tar.gz -C /
+```
+
+## 8️⃣ Security Best Practices
+
+### Essential Security Steps
+1. **Change default passwords** in .env file
+2. **Generate strong encryption key** for n8n
+3. **Use VPN** for geo-sensitive operations
+4. **Regular backups** of workflow data
+5. **Network isolation** using Docker networks
+
+### Network Security
+```bash
+# Check network isolation
+docker network ls
+docker network inspect vscode-live-server-plus-plus_n8n-stack
+```
+
+## 9️⃣ Troubleshooting
+
+### Common Issues
+
+**Issue**: n8n not starting
+```bash
+# Check logs
+docker compose logs n8n
+
+# Common fixes
+docker compose down && docker compose up -d
+```
+
+**Issue**: Database connection errors
+```bash
+# Check PostgreSQL status
+docker compose exec postgres pg_isready
+
+# Reset database if needed
+docker compose down -v postgres
+docker compose up -d postgres
+```
+
+**Issue**: VPN connection problems
+```bash
+# Check Gluetun logs
+docker compose logs gluetun
+
+# Verify VPN credentials in .env
+```
+
+**Issue**: Worker not processing jobs
+```bash
+# Check worker logs
+docker compose logs n8n-worker
+
+# Restart workers
+docker compose restart n8n-worker
+```
+
+### Performance Issues
+```bash
+# Monitor resource usage
+docker stats
+
+# Increase worker concurrency
+# Edit docker-compose.yml worker command:
+command: ["n8n", "worker", "--concurrency=5"]
+```
+
+## 🔧 Advanced Configuration
+
+### Custom Workflows Directory
+Mount your own workflows directory:
+```yaml
+volumes:
+  - ./my-workflows:/data/workflows:ro
+```
+
+### Environment-specific Overrides
+Create environment-specific compose files:
+```bash
+# Development
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+# Production
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+## 📊 Integration with VS Code Live Server++
+
+This n8n setup integrates seamlessly with the VS Code Live Server++ extension:
+
+1. **Automatic Workflow Sync**: Workflows sync with your portfolio projects
+2. **Real-time Updates**: Career automation reflects in your Live Server++ dashboard
+3. **AI-Powered Content**: Generated content appears in your portfolio automatically
+
+## 🆘 Support and Resources
+
+### Documentation Links
+- [n8n Official Documentation](https://docs.n8n.io/)
+- [Docker Compose Reference](https://docs.docker.com/compose/)
+- [Ollama Documentation](https://ollama.ai/docs)
+
+### Community and Support
+- [n8n Community Forum](https://community.n8n.io/)
+- [Live Server++ GitHub Issues](https://github.com/balajirajput96/vscode-live-server-plus-plus/issues)
+
+---
+
+## 🚀 Quick Commands Reference
+
+```bash
+# Start system
+docker compose up -d
+
+# Stop system
+docker compose down
+
+# Update to latest versions
+docker compose pull && docker compose up -d
+
+# View all logs
+docker compose logs -f
+
+# Access n8n
+open http://localhost:5678
+
+# Backup data
+docker compose exec postgres pg_dump -U n8n n8n > backup.sql
+
+# Reset everything (CAUTION: Deletes all data)
+docker compose down -v && docker compose up -d
+```
+
+---
+
+**Built with ❤️ for AI-Powered Career Automation**
+
+*Last Updated: January 2024*
+*Version: 1.0*
+*Compatibility: Docker Compose v3.8+*

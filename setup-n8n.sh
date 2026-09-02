@@ -1,154 +1,114 @@
 #!/bin/bash
 
-# Balaji's n8n Complete Setup Script
-# This script sets up the complete n8n automation system
+# 🚀 n8n Career Automation Setup Script
+# This script helps you quickly set up the n8n automation system
 
-echo "🚀 Starting Balaji's n8n Complete Setup..."
-echo "📧 Primary Email: balaji.web.design1@gmail.com"
-echo "🎓 University Email: 22034563001@paruluniversity.ac.in"
-echo "🆔 Instance ID: 8f75859920be976c80a11c1dd4be8852c698c893b1073cb8716ee93cd8d6a3c9"
+set -e
+
+echo "🚀 AI Career Automation System Setup"
+echo "===================================="
+echo ""
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
     echo "❌ Docker is not installed. Please install Docker first."
+    echo "Visit: https://docs.docker.com/get-docker/"
     exit 1
 fi
 
-if ! command -v docker-compose &> /dev/null; then
-    echo "❌ Docker Compose is not installed. Please install Docker Compose first."
+# Check if Docker Compose is available
+if ! command -v docker &> /dev/null || ! docker compose version &> /dev/null; then
+    echo "❌ Docker Compose is not available. Please install Docker Compose."
     exit 1
 fi
 
-# Create necessary directories
-echo "📁 Creating directory structure..."
-mkdir -p {workflows,credentials,custom-nodes,models,backups,vpn-config}
+echo "✅ Docker and Docker Compose are available"
+echo ""
 
-# Copy environment file if it doesn't exist
+# Create .env file if it doesn't exist
 if [ ! -f .env ]; then
-    echo "📝 Creating environment configuration..."
+    echo "📝 Creating .env file from template..."
     cp .env.example .env
-    echo "⚠️  Please edit .env file with your specific settings before continuing."
-    echo "🔑 Generate encryption key with: openssl rand -base64 32"
-    read -p "Press Enter after configuring .env file..."
-fi
-
-# Check if .env is configured
-if grep -q "your-encryption-key-here" .env; then
-    echo "❌ Please configure .env file first!"
-    exit 1
-fi
-
-# Start the services
-echo "🐳 Starting Docker services..."
-
-# Ask user for deployment type
-echo "📋 Choose deployment type:"
-echo "1) Local development (no HTTPS)"
-echo "2) Production with HTTPS and Caddy"
-read -p "Enter choice (1 or 2): " deployment_choice
-
-case $deployment_choice in
-    1)
-        echo "🔧 Starting local development environment..."
-        docker-compose --env-file .env -f docker-compose.basic.yml up -d
-        ENDPOINT="http://localhost:5678"
-        ;;
-    2)
-        echo "🔧 Starting production environment with HTTPS..."
-        docker-compose --env-file .env -f docker-compose.reverse-proxy.yml up -d
-        ENDPOINT="https://$(grep DOMAIN .env | cut -d '=' -f2)"
-        ;;
-    *)
-        echo "❌ Invalid choice. Exiting."
-        exit 1
-        ;;
-esac
-
-# Wait for services to start
-echo "⏳ Waiting for services to start..."
-sleep 30
-
-# Check if n8n is running
-echo "🔍 Checking n8n status..."
-if docker ps | grep -q "n8n"; then
-    echo "✅ n8n container is running"
+    
+    # Generate a random encryption key
+    if command -v openssl &> /dev/null; then
+        ENCRYPTION_KEY=$(openssl rand -base64 32)
+        # Escape special characters for sed
+        ENCRYPTION_KEY_ESCAPED=$(echo "$ENCRYPTION_KEY" | sed 's/[[\.*^$()+?{|]/\\&/g')
+        sed -i "s/CHANGE_ME_TO_STRONG_32_CHAR_KEY/$ENCRYPTION_KEY_ESCAPED/" .env
+        echo "✅ Generated encryption key automatically"
+    else
+        echo "⚠️  Please manually set N8N_ENCRYPTION_KEY in .env file"
+    fi
+    
+    echo "📝 Please edit .env file to configure:"
+    echo "   - VPN credentials (if using VPN features)"
+    echo "   - Database passwords"
+    echo "   - Other service settings"
+    echo ""
 else
-    echo "❌ n8n container failed to start"
-    docker logs n8n
-    exit 1
+    echo "✅ .env file already exists"
+    echo ""
 fi
 
-# Check if PostgreSQL is running
-if docker ps | grep -q "n8n-postgres"; then
-    echo "✅ PostgreSQL container is running"
+# Ask user if they want to start the system
+read -p "🚀 Start the automation system now? (y/n): " -n 1 -r
+echo ""
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "🚀 Starting AI Career Automation System..."
+    echo ""
+    
+    # Pull latest images
+    echo "📦 Pulling latest Docker images..."
+    docker compose pull
+    
+    # Start the system
+    echo "🚀 Starting all services..."
+    docker compose up -d
+    
+    echo ""
+    echo "⏳ Waiting for services to start..."
+    sleep 10
+    
+    # Check status
+    echo "📊 Service Status:"
+    docker compose ps
+    
+    echo ""
+    echo "✅ Setup Complete!"
+    echo ""
+    echo "🌐 Access Points:"
+    echo "   - n8n Interface: http://localhost:5678"
+    echo "   - Ollama AI API: http://localhost:11434"
+    echo "   - HTTP Proxy: http://localhost:8888 (if VPN enabled)"
+    echo ""
+    echo "📚 Next Steps:"
+    echo "   1. Open http://localhost:5678 to access n8n"
+    echo "   2. Create your first workflow"
+    echo "   3. Import sample workflows from ./workflows/ directory"
+    echo "   4. Configure API connections for your services"
+    echo ""
+    echo "📖 For detailed setup instructions, see: README-n8n-setup.md"
+    echo ""
+    
+    # Ask if user wants to open n8n
+    read -p "🌐 Open n8n in browser now? (y/n): " -n 1 -r
+    echo ""
+    
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if command -v xdg-open &> /dev/null; then
+            xdg-open http://localhost:5678
+        elif command -v open &> /dev/null; then
+            open http://localhost:5678
+        else
+            echo "Please open http://localhost:5678 in your browser"
+        fi
+    fi
+    
 else
-    echo "❌ PostgreSQL container failed to start"
-    docker logs n8n-postgres
-    exit 1
+    echo "📝 Configuration complete. Run 'docker compose up -d' when ready to start."
 fi
 
-# Import workflow
-echo "📥 Importing Balaji's complete automation workflow..."
-if [ -f "workflows/balaji-complete-automation.json" ]; then
-    echo "✅ Workflow file found"
-    echo "📋 Please import workflow manually from n8n web interface:"
-    echo "   1. Go to $ENDPOINT"
-    echo "   2. Login with balaji.web.design1@gmail.com"
-    echo "   3. Go to Workflows → Import"
-    echo "   4. Upload workflows/balaji-complete-automation.json"
-else
-    echo "❌ Workflow file not found"
-fi
-
-# Setup AI models
-echo "🤖 Setting up Local AI models..."
-if [ -d "models" ]; then
-    echo "📁 Models directory exists"
-    echo "📥 Please download AI models manually:"
-    echo "   - Gemma 3n model → models/gemma-3n/"
-    echo "   - SHAKTI model → models/shakti/"
-else
-    echo "❌ Models directory not found"
-fi
-
-# VPN Configuration
-echo "🔒 Setting up VPN configuration..."
-if [ -d "vpn-config" ]; then
-    echo "📁 VPN config directory exists"
-    echo "⚙️  Please configure VPN settings in .env file"
-else
-    echo "❌ VPN config directory not found"
-fi
-
-# Display final information
 echo ""
-echo "🎉 Setup Complete!"
-echo "════════════════════════════════════════════"
-echo "📊 n8n Dashboard: $ENDPOINT"
-echo "📧 Primary Email: balaji.web.design1@gmail.com"
-echo "🎓 University Email: 22034563001@paruluniversity.ac.in"
-echo "🆔 Instance ID: 8f75859920be976c80a11c1dd4be8852c698c893b1073cb8716ee93cd8d6a3c9"
-echo "🔧 Version: 1.108.1"
-echo ""
-echo "📋 Next Steps:"
-echo "1. Access $ENDPOINT"
-echo "2. Create account with balaji.web.design1@gmail.com"
-echo "3. Import workflow from workflows/balaji-complete-automation.json"
-echo "4. Configure credentials for Gmail accounts"
-echo "5. Download and install AI models"
-echo "6. Test all workflow components"
-echo "7. Verify email notifications"
-echo ""
-echo "📚 Documentation:"
-echo "- Setup Guide: portfolio-automation-system/QUICK_START_GUIDE.md"
-echo "- n8n Documentation: README-n8n-setup.md"
-echo "- GitHub Automation: portfolio-automation-system/prompts/"
-echo ""
-echo "🔧 Useful Commands:"
-echo "- View logs: docker logs n8n"
-echo "- Stop services: docker-compose down"
-echo "- Restart services: docker-compose restart"
-echo "- Check status: docker ps"
-echo ""
-echo "🎯 Success! Your n8n automation system is ready!"
-echo "📧 You will receive email confirmations once workflows are active."
+echo "🎯 Happy Automating! 🎯"

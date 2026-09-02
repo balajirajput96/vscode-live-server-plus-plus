@@ -29,6 +29,22 @@ export const extensionConfig = {
   reloadingStrategy: {
     get: () => getSettings<ReloadingStrategy>('reloadingStrategy'),
     set: (value: ReloadingStrategy) => setSettings('reloadingStrategy', value)
+  },
+  github: {
+    enabled: {
+      get: () => getSettings<boolean>('github.enabled'),
+      set: (value: boolean) => setSettings('github.enabled', value)
+    },
+    token: {
+      get: () => getSettings<string>('github.token'),
+      set: (value: string) => setSettings('github.token', value)
+    }
+  },
+  api: {
+    messageEndpoint: {
+      get: () => getSettings<string>('api.messageEndpoint'),
+      set: (value: string) => setSettings('api.messageEndpoint', value)
+    }
   }
 };
 
