@@ -133,10 +133,18 @@
 
 ## 🚀 Quick Start Guide
 
-### Step 1: Open Your Dashboard
+### Step 1: Choose Your Setup Path
+
+#### Option A: Manual Career Tools (Original)
 ```bash
 # Open the main dashboard in your browser
 open index.html
+```
+
+#### Option B: Unified API System (Automated)
+```bash
+# Quick setup with automated API integration
+./setup-unified-api.sh complete
 ```
 
 ### Step 2: Set Up AI Tools
@@ -161,6 +169,12 @@ Register for these free/premium AI tools:
 - **Wednesday**: Generate LinkedIn posts highlighting M365 expertise  
 - **Friday**: Update resume with Copilot achievements
 - **Sunday**: Plan next Copilot implementation project
+
+### Step 5: Monitor & Scale
+- GitHub Actions for health checks
+- Real-time Telegram notifications
+- Google Sheets analytics
+- Automated error reporting
 
 ---
 
@@ -227,7 +241,7 @@ Register for these free/premium AI tools:
 4. Prepare for interviews
 5. Analyze success patterns
 
-### 3. Automation Guide (`AI_Career_Automation_Guide.md`)
+### 4. Automation Guide (`AI_Career_Automation_Guide.md`)
 **Contents:**
 - Step-by-step setup instructions
 - AI tools comparison
@@ -235,7 +249,7 @@ Register for these free/premium AI tools:
 - Copy-paste prompts
 - Troubleshooting tips
 
-### 4. Social Media Templates (`Social_Media_Templates.md`)
+### 5. Social Media Templates (`Social_Media_Templates.md`)
 **Contents:**
 - 25+ LinkedIn post templates
 - Facebook personal updates
