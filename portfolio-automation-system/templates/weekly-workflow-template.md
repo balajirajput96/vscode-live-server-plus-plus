@@ -331,15 +331,10 @@ Include: meta descriptions, content optimization, keyword placement"
 1. **Perplexity AI** - Industry research
 2. **LinkedIn** - Professional networking
 3. **Industry Forums** - Community engagement
-4. **n8n Automation** - Automated research workflows
 
 #### Specific Actions:
 ```bash
-# 1. Industry Research (Automated via n8n + Perplexity AI Pro)
-# Weekly research automation runs every Monday at 9 AM
-# Email: balaji.web.design1@gmail.com receives automated reports
-
-# Manual research prompts for Perplexity AI:
+# 1. Industry Research
 Prompt for Perplexity AI:
 "Research the latest developments in:
 - Pharmaceutical data analysis
@@ -347,19 +342,13 @@ Prompt for Perplexity AI:
 - Emerging technologies in biotech
 - Top companies hiring bioinformatics professionals"
 
-# 2. n8n Workflow Monitoring
-- Check automated research reports in email
-- Review generated content in Google Sheets
-- Validate LinkedIn content suggestions
-- Monitor workflow execution logs
-
-# 3. Professional Networking
+# 2. Professional Networking
 - Connect with industry professionals
 - Join relevant discussions
 - Share insights and knowledge
 - Build relationships
 
-# 4. Content Engagement
+# 3. Content Engagement
 - Comment on industry posts
 - Share valuable resources
 - Participate in discussions

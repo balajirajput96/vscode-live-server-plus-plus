@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Powered Career Automation Dashboard | बायोटेक करियर सिस्टम</title>
+    <title>🚀 AI-Powered Career Automation Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -18,157 +19,253 @@
             color: #333;
         }
 
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
         }
 
         .header h1 {
-            color: #2c3e50;
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            opacity: 0.9;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+        .research-banner {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .research-banner h3 {
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .university-logos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .university-logos span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
 
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #e0e0e0;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
 
-        .card-icon {
+        .card-header i {
             font-size: 2rem;
-            margin-right: 1rem;
+            margin-right: 15px;
+            color: #667eea;
         }
 
-        .card-title {
+        .card-header h3 {
+            color: #333;
             font-size: 1.4rem;
-            color: #2c3e50;
-            font-weight: 600;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #34495e;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
             transition: border-color 0.3s ease;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
         .btn-secondary {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-            margin-top: 0.5rem;
+            background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
         }
 
-        .output-area {
+        .output-box {
             background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-top: 1rem;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
             min-height: 150px;
-            white-space: pre-wrap;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+
+        .prompt-library {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .prompt-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .prompt-item:hover {
+            background: #e9ecef;
+        }
+
+        .prompt-item h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .companies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .company-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .company-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
         }
 
         .tabs {
             display: flex;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #e1e8ed;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
         .tab {
-            padding: 0.75rem 1.5rem;
-            background: none;
-            border: none;
+            padding: 12px 20px;
             cursor: pointer;
-            font-size: 1rem;
-            color: #7f8c8d;
-            transition: color 0.3s ease;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         .tab.active {
+            border-bottom-color: #667eea;
             color: #667eea;
-            border-bottom: 2px solid #667eea;
         }
 
         .tab-content {
@@ -179,77 +276,130 @@
             display: block;
         }
 
-        .prompt-card {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 5px;
-        }
-
-        .prompt-title {
-            font-weight: 600;
-            color: #1976d2;
-            margin-bottom: 0.5rem;
-        }
-
         .copy-btn {
             background: #28a745;
             color: white;
             border: none;
-            padding: 0.25rem 0.75rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .automation-steps {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .automation-steps h4 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .research-tool {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .research-tool input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .research-tool textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .research-tool button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.8rem;
-            float: right;
+            margin-top: 10px;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #e1e8ed;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 1rem 0;
+        .research-tool button:hover {
+            background: #5a6fd8;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .stat-item {
+        .attention-timer {
             text-align: center;
-            padding: 1rem;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
+            margin: 15px 0;
         }
 
-        .stat-number {
+        .attention-timer #timerDisplay {
             font-size: 2rem;
             font-weight: bold;
             color: #667eea;
+            margin: 10px 0;
         }
 
-        .stat-label {
-            color: #7f8c8d;
-            font-size: 0.9rem;
+        .habit-stack-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
         }
 
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 3rem;
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .analytics {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .history-entry {
+            background: white;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border-left: 3px solid #667eea;
         }
 
         @media (max-width: 768px) {
@@ -258,818 +408,819 @@
             }
             
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 2rem;
             }
             
-            .container {
-                padding: 0 0.5rem;
+            .card {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <h1>🚀 AI-Powered Career Automation Dashboard</h1>
-        <p>बायोटेक्नोलॉजी + बायोइन्फॉर्मेटिक्स करियर सिस्टम | Complete Professional Growth Solution</p>
-    </header>
-
     <div class="container">
+        <div class="header">
+            <h1>🚀 AI-Powered Career Automation Dashboard</h1>
+            <p>आपका Complete Biotech & Bioinformatics Career Success System</p>
+            
+            <div class="research-banner">
+                <h3>🧠 दुनिया की शीर्ष विश्वविद्यालयों के अनुसार टालमटोल का समाधान</h3>
+                <p>Research-backed procrastination solutions from top universities + YouTube experts</p>
+                <div class="university-logos">
+                    <span>🎓 Harvard (77%)</span>
+                    <span>🎓 Oxford (12%)</span>
+                    <span>🎓 Stanford (28%)</span>
+                    <span>🎓 MIT (37%)</span>
+                    <span>🎓 Cambridge (47s)</span>
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 10px;">
+                    <strong>सभी विशेषज्ञ एक ही बात कहते हैं:</strong> टालमटोल एक भावनात्मक समस्या है, समय प्रबंधन की नहीं
+                </p>
+            </div>
+        </div>
+
         <div class="dashboard-grid">
-            <!-- Portfolio Builder Card -->
+            <!-- Portfolio Builder Section -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-icon">🔬</div>
-                    <div class="card-title">Portfolio Builder</div>
+                    <i class="fas fa-briefcase"></i>
+                    <h3>🔬 Portfolio Builder</h3>
                 </div>
                 
                 <div class="form-group">
-                    <label for="project-name">Project Name:</label>
-                    <input type="text" id="project-name" placeholder="e.g., Gene Expression Analysis">
+                    <label>Project Name:</label>
+                    <input type="text" id="projectName" placeholder="e.g., DNA Sequence Analysis">
                 </div>
                 
                 <div class="form-group">
-                    <label for="project-type">Project Type:</label>
-                    <select id="project-type">
-                        <option value="bioinformatics">Bioinformatics Analysis</option>
-                        <option value="data-analysis">Data Analysis</option>
-                        <option value="web-design">Web Design</option>
-                        <option value="digital-marketing">Digital Marketing</option>
+                    <label>Tools Used:</label>
+                    <input type="text" id="toolsUsed" placeholder="e.g., Python, Pandas, Matplotlib">
+                </div>
+                
+                <div class="form-group">
+                    <label>Key Finding:</label>
+                    <textarea id="keyFinding" rows="3" placeholder="Main insight or result from your analysis"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Platform:</label>
+                    <select id="targetPlatform">
+                        <option value="github">GitHub README</option>
+                        <option value="portfolio">Portfolio Website</option>
+                        <option value="linkedin">LinkedIn Project</option>
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="tools-used">Tools Used:</label>
-                    <input type="text" id="tools-used" placeholder="Python, Pandas, Matplotlib">
-                </div>
+                <button class="btn" onclick="generatePortfolioContent()">
+                    <i class="fas fa-magic"></i> Generate AI Content
+                </button>
                 
-                <div class="form-group">
-                    <label for="key-finding">Key Finding/Result:</label>
-                    <textarea id="key-finding" rows="3" placeholder="Main insight or result from your project"></textarea>
+                <div class="output-box" id="portfolioOutput">
+                    Generated content will appear here...
                 </div>
-                
-                <button class="btn" onclick="generatePortfolioPrompts()">Generate AI Prompts</button>
-                <div class="output-area" id="portfolio-output">AI prompts will appear here...</div>
             </div>
 
-            <!-- Social Media Generator Card -->
+            <!-- Social Media Generator -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-icon">📱</div>
-                    <div class="card-title">Social Media Generator</div>
+                    <i class="fas fa-share-alt"></i>
+                    <h3>📱 Social Media Generator</h3>
                 </div>
                 
                 <div class="tabs">
-                    <button class="tab active" onclick="switchTab('linkedin-tab', 'linkedin')">LinkedIn</button>
-                    <button class="tab" onclick="switchTab('facebook-tab', 'facebook')">Facebook</button>
-                    <button class="tab" onclick="switchTab('twitter-tab', 'twitter')">Twitter</button>
+                    <div class="tab active" onclick="switchTab('linkedin')">LinkedIn</div>
+                    <div class="tab" onclick="switchTab('facebook')">Facebook</div>
+                    <div class="tab" onclick="switchTab('twitter')">Twitter</div>
                 </div>
                 
-                <div id="linkedin" class="tab-content active">
+                <div class="tab-content active" id="linkedin">
                     <div class="form-group">
-                        <label for="linkedin-project">Project to Share:</label>
-                        <input type="text" id="linkedin-project" placeholder="Project name">
+                        <label>Post Topic:</label>
+                        <input type="text" id="linkedinTopic" placeholder="e.g., New Bioinformatics Project">
                     </div>
                     
                     <div class="form-group">
-                        <label for="linkedin-achievement">Key Achievement:</label>
-                        <input type="text" id="linkedin-achievement" placeholder="Main result or insight">
+                        <label>Achievement/Update:</label>
+                        <textarea id="linkedinUpdate" rows="2" placeholder="What did you accomplish?"></textarea>
                     </div>
                     
-                    <button class="btn" onclick="generateSocialPost('linkedin')">Generate LinkedIn Post</button>
+                    <button class="btn" onclick="generateSocialPost('linkedin')">
+                        <i class="fab fa-linkedin"></i> Generate LinkedIn Post
+                    </button>
                 </div>
                 
-                <div id="facebook" class="tab-content">
+                <div class="tab-content" id="facebook">
                     <div class="form-group">
-                        <label for="facebook-topic">Topic:</label>
-                        <input type="text" id="facebook-topic" placeholder="Career update or project">
+                        <label>Update Type:</label>
+                        <select id="facebookType">
+                            <option value="achievement">Achievement</option>
+                            <option value="learning">Learning Update</option>
+                            <option value="project">Project Launch</option>
+                        </select>
                     </div>
                     
-                    <button class="btn" onclick="generateSocialPost('facebook')">Generate Facebook Post</button>
+                    <button class="btn btn-secondary" onclick="generateSocialPost('facebook')">
+                        <i class="fab fa-facebook"></i> Generate Facebook Post
+                    </button>
                 </div>
                 
-                <div id="twitter" class="tab-content">
+                <div class="tab-content" id="twitter">
                     <div class="form-group">
-                        <label for="twitter-topic">Quick Update:</label>
-                        <input type="text" id="twitter-topic" placeholder="Short achievement or insight">
+                        <label>Tweet Topic:</label>
+                        <input type="text" id="twitterTopic" placeholder="Brief topic for tweet">
                     </div>
                     
-                    <button class="btn" onclick="generateSocialPost('twitter')">Generate Tweet</button>
+                    <button class="btn btn-secondary" onclick="generateSocialPost('twitter')">
+                        <i class="fab fa-twitter"></i> Generate Tweet
+                    </button>
                 </div>
                 
-                <div class="output-area" id="social-output">Social media posts will appear here...</div>
-            </div>
-
-            <!-- Resume & LinkedIn Optimizer Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">📄</div>
-                    <div class="card-title">Resume & LinkedIn Optimizer</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="current-role">Current Role/Goal:</label>
-                    <input type="text" id="current-role" placeholder="e.g., Bioinformatics Analyst">
-                </div>
-                
-                <div class="form-group">
-                    <label for="key-skills">Key Skills:</label>
-                    <input type="text" id="key-skills" placeholder="Python, SQL, Data Analysis, Web Design">
-                </div>
-                
-                <div class="form-group">
-                    <label for="experience">Experience:</label>
-                    <textarea id="experience" rows="3" placeholder="Brief description of your experience and internships"></textarea>
-                </div>
-                
-                <button class="btn" onclick="generateResumeContent()">Generate Resume Content</button>
-                <button class="btn btn-secondary" onclick="generateLinkedInProfile()">Optimize LinkedIn Profile</button>
-                
-                <div class="output-area" id="resume-output">Optimized content will appear here...</div>
-            </div>
-
-            <!-- Job Tracker Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">💼</div>
-                    <div class="card-title">Job Tracker</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="company-name">Company Name:</label>
-                    <input type="text" id="company-name" placeholder="e.g., Sun Pharma, Zydus">
-                </div>
-                
-                <div class="form-group">
-                    <label for="job-title">Job Title:</label>
-                    <input type="text" id="job-title" placeholder="e.g., Bioinformatics Analyst">
-                </div>
-                
-                <div class="form-group">
-                    <label for="application-status">Status:</label>
-                    <select id="application-status">
-                        <option value="planning">Planning to Apply</option>
-                        <option value="applied">Applied</option>
-                        <option value="interview">Interview Scheduled</option>
-                        <option value="follow-up">Follow-up</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="offer">Offer Received</option>
-                    </select>
-                </div>
-                
-                <button class="btn" onclick="addJobApplication()">Add Job Application</button>
-                <button class="btn btn-secondary" onclick="generateFollowUpEmail()">Generate Follow-up Email</button>
-                
-                <div class="stats-grid" id="job-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="total-applications">0</div>
-                        <div class="stat-label">Total Applications</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="pending-applications">0</div>
-                        <div class="stat-label">Pending</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="interviews">0</div>
-                        <div class="stat-label">Interviews</div>
-                    </div>
-                </div>
-                
-                <div class="output-area" id="job-output">Job tracking information will appear here...</div>
-            </div>
-
-            <!-- AI Prompt Library Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🤖</div>
-                    <div class="card-title">AI Prompt Library</div>
-                </div>
-                
-                <div class="tabs">
-                    <button class="tab active" onclick="switchTab('website-prompts', 'website')">Website</button>
-                    <button class="tab" onclick="switchTab('github-prompts', 'github')">GitHub</button>
-                    <button class="tab" onclick="switchTab('content-prompts', 'content')">Content</button>
-                </div>
-                
-                <div id="website" class="tab-content active">
-                    <div class="prompt-card">
-                        <div class="prompt-title">Wix AI Website Builder Prompt</div>
-                        <button class="copy-btn" onclick="copyToClipboard('wix-prompt')">Copy</button>
-                        <div id="wix-prompt">Create a professional portfolio website for a biotechnology professional transitioning into bioinformatics and data analysis. The website should showcase skills in Python, SQL, web design, and digital marketing. Use modern, clean design in blue, white, grey colors. Include pages: Home, About Me, Skills, Projects, Blog, Contact. Target audience: pharmaceutical and clinical research companies in India.</div>
-                    </div>
-                    
-                    <div class="prompt-card">
-                        <div class="prompt-title">Framer AI Builder Prompt</div>
-                        <button class="copy-btn" onclick="copyToClipboard('framer-prompt')">Copy</button>
-                        <div id="framer-prompt">Design a scientific portfolio website for a biotech specialist. Include sections for bioinformatics projects, data analysis work, and professional experience. Use a modern, professional layout with scientific color scheme. Add contact form and project showcase gallery.</div>
-                    </div>
-                </div>
-                
-                <div id="github" class="tab-content">
-                    <div class="prompt-card">
-                        <div class="prompt-title">README Generator Prompt</div>
-                        <button class="copy-btn" onclick="copyToClipboard('readme-prompt')">Copy</button>
-                        <div id="readme-prompt">Analyze this Python project and create a comprehensive README.md file including: 1) Project Title, 2) Description (for non-technical readers), 3) Dataset source, 4) Tools used (Pandas, Matplotlib, etc.), 5) Key findings and results, 6) How to run the code (requirements.txt), 7) Future improvements. Make it professional and suitable for job applications.</div>
-                    </div>
-                    
-                    <div class="prompt-card">
-                        <div class="prompt-title">Code Documentation Prompt</div>
-                        <button class="copy-btn" onclick="copyToClipboard('doc-prompt')">Copy</button>
-                        <div id="doc-prompt">Generate professional documentation for this bioinformatics code. Include function descriptions, parameter explanations, usage examples, and output descriptions. Make it suitable for a portfolio that will be reviewed by hiring managers in pharmaceutical companies.</div>
-                    </div>
-                </div>
-                
-                <div id="content" class="tab-content">
-                    <div class="prompt-card">
-                        <div class="prompt-title">Blog Post Generator</div>
-                        <button class="copy-btn" onclick="copyToClipboard('blog-prompt')">Copy</button>
-                        <div id="blog-prompt">Write a 600-word blog post explaining [TOPIC] for fresh biotech graduates and data science recruiters. Use an educational yet engaging tone. Include practical examples and make complex concepts easy to understand. Add a professional conclusion that showcases expertise.</div>
-                    </div>
-                    
-                    <div class="prompt-card">
-                        <div class="prompt-title">LinkedIn Article Prompt</div>
-                        <button class="copy-btn" onclick="copyToClipboard('linkedin-article-prompt')">Copy</button>
-                        <div id="linkedin-article-prompt">Create a LinkedIn article about [TOPIC] that positions me as a knowledgeable biotechnology professional. Include industry insights, practical applications, and a call-to-action for networking. Target audience: pharmaceutical industry professionals and recruiters in India.</div>
-                    </div>
+                <div class="output-box" id="socialOutput">
+                    Generated social media content will appear here...
                 </div>
             </div>
 
-            <!-- Analytics Dashboard Card -->
+            <!-- Resume & LinkedIn Optimizer -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Analytics Dashboard</div>
+                    <i class="fas fa-user-tie"></i>
+                    <h3>📄 Resume & LinkedIn Optimizer</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label>Current Role/Goal:</label>
+                    <input type="text" id="currentRole" placeholder="e.g., Biotech Graduate seeking Bioinformatics role">
+                </div>
+                
+                <div class="form-group">
+                    <label>Key Skills:</label>
+                    <input type="text" id="keySkills" placeholder="Python, SQL, Biotechnology, Data Analysis">
+                </div>
+                
+                <div class="form-group">
+                    <label>Target Companies:</label>
+                    <input type="text" id="targetCompanies" placeholder="Sun Pharma, Zydus, Alembic Pharma">
+                </div>
+                
+                <button class="btn" onclick="generateResumeContent('headline')">
+                    <i class="fas fa-heading"></i> LinkedIn Headline
+                </button>
+                
+                <button class="btn btn-secondary" onclick="generateResumeContent('summary')">
+                    <i class="fas fa-align-left"></i> Professional Summary
+                </button>
+                
+                <div class="output-box" id="resumeOutput">
+                    Generated resume content will appear here...
+                </div>
+            </div>
+
+            <!-- Job Tracker -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-search"></i>
+                    <h3>💼 Job Tracker</h3>
                 </div>
                 
                 <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number" id="projects-completed">0</div>
-                        <div class="stat-label">Projects Completed</div>
+                    <div class="stat-card">
+                        <h4>15</h4>
+                        <p>Applications</p>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="social-posts">0</div>
-                        <div class="stat-label">Social Posts</div>
+                    <div class="stat-card">
+                        <h4>5</h4>
+                        <p>Interviews</p>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="profile-views">0</div>
-                        <div class="stat-label">Profile Views</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="network-connections">0</div>
-                        <div class="stat-label">New Connections</div>
+                    <div class="stat-card">
+                        <h4>2</h4>
+                        <p>Offers</p>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>Career Progress</label>
+                <h4 style="margin: 20px 0 15px 0; color: #667eea;">🏢 Top Pharma Companies in India</h4>
+                <div class="companies-grid">
+                    <div class="company-card">
+                        <h4>Sun Pharma</h4>
+                        <p>Bioinformatics Roles</p>
+                        <button class="btn" style="font-size: 12px; padding: 8px 12px;">Apply</button>
+                    </div>
+                    <div class="company-card">
+                        <h4>Zydus Cadila</h4>
+                        <p>Data Analyst</p>
+                        <button class="btn" style="font-size: 12px; padding: 8px 12px;">Apply</button>
+                    </div>
+                    <div class="company-card">
+                        <h4>Alembic Pharma</h4>
+                        <p>Research Associate</p>
+                        <button class="btn" style="font-size: 12px; padding: 8px 12px;">Apply</button>
+                    </div>
+                    <div class="company-card">
+                        <h4>Lupin</h4>
+                        <p>Biotech Specialist</p>
+                        <button class="btn" style="font-size: 12px; padding: 8px 12px;">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Prompt Library -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-robot"></i>
+                    <h3>🤖 AI Prompt Library</h3>
+                </div>
+                
+                <div class="prompt-library">
+                    <div class="prompt-item" onclick="copyPrompt('github')">
+                        <h4>GitHub README Generator</h4>
+                        <p>Professional documentation for your projects</p>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item" onclick="copyPrompt('website')">
+                        <h4>Portfolio Website Builder</h4>
+                        <p>AI prompt for Wix/Squarespace</p>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item" onclick="copyPrompt('linkedin-headline')">
+                        <h4>LinkedIn Headline</h4>
+                        <p>Attention-grabbing professional headlines</p>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item" onclick="copyPrompt('blog-post')">
+                        <h4>Technical Blog Writer</h4>
+                        <p>Educational biotech content</p>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item" onclick="copyPrompt('job-application')">
+                        <h4>Job Application Letter</h4>
+                        <p>Customized cover letters</p>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    
+                    <div class="prompt-item" onclick="copyPrompt('interview-prep')">
+                        <h4>Interview Preparation</h4>
+                        <p>Common biotech interview questions</p>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procrastination Research Tools -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-brain"></i>
+                    <h3>🧠 Research-Based Anti-Procrastination Tools</h3>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">🎯 Harvard Future Self Visualization (77% Effectiveness)</h4>
+                    <div id="futureSelfTool"></div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">😊 Oxford Mood-Productivity Tracker (12% Boost)</h4>
+                    <div id="moodTracker"></div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">🧠 Cambridge Attention Tracker (47-Second Cycles)</h4>
+                    <div id="attentionTracker"></div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #667eea;">🔗 James Clear Habit Stacking (65% Effectiveness)</h4>
+                    <div id="habitStacker"></div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>📊 Analytics Dashboard</h3>
+                </div>
+                
+                <h4 style="color: #667eea; margin-bottom: 15px;">Career Progress</h4>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Portfolio Completion</label>
                     <div class="progress-bar">
-                        <div class="progress-fill" id="career-progress" style="width: 25%"></div>
+                        <div class="progress-fill" style="width: 75%"></div>
                     </div>
-                    <small>Portfolio: 25% Complete</small>
+                    <small>75% Complete</small>
                 </div>
                 
-                <div class="form-group">
-                    <label>Weekly Goals</label>
+                <div style="margin-bottom: 20px;">
+                    <label>LinkedIn Optimization</label>
                     <div class="progress-bar">
-                        <div class="progress-fill" id="weekly-goals" style="width: 60%"></div>
+                        <div class="progress-fill" style="width: 60%"></div>
                     </div>
-                    <small>3 out of 5 goals completed this week</small>
+                    <small>60% Complete</small>
                 </div>
                 
-                <button class="btn" onclick="updateAnalytics()">Refresh Analytics</button>
-                <div class="output-area" id="analytics-output">Analytics data will appear here...</div>
+                <div style="margin-bottom: 20px;">
+                    <label>GitHub Projects</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <small>45% Complete</small>
+                </div>
+                
+                <div class="automation-steps">
+                    <h4>🔄 Weekly Automation Schedule</h4>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <strong>Monday:</strong> LinkedIn post generation और publishing
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <strong>Wednesday:</strong> GitHub repository documentation update
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <strong>Friday:</strong> Job applications और follow-ups
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <strong>Sunday:</strong> Weekly progress review और planning
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer class="footer">
-        <p>🚀 AI-Powered Career System | Made with ❤️ for Biotech Professionals</p>
-        <p>सफलता आपका इंतज़ार कर रही है! | Success is waiting for you!</p>
-    </footer>
-
     <script>
-        // Global variables for tracking
-        let jobApplications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
-        let projectsData = JSON.parse(localStorage.getItem('projectsData') || '[]');
-        let analyticsData = JSON.parse(localStorage.getItem('analyticsData') || '{"projects": 0, "posts": 0, "views": 0, "connections": 0}');
+        // AI Prompt Templates
+        const prompts = {
+            'github': `Analyze this Python/R project and create a comprehensive README.md file including:
 
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            updateJobStats();
-            updateAnalyticsDisplay();
-        });
+1. **Project Title:** Clear, descriptive title
+2. **Description:** Brief overview for non-technical readers explaining the biological/medical relevance
+3. **Dataset:** Source and type of data used (mention if public/private)
+4. **Methodology:** 
+   - Data preprocessing steps
+   - Analysis techniques used
+   - Statistical methods applied
+5. **Key Findings:** 
+   - Main biological insights
+   - Statistical significance
+   - Clinical relevance (if applicable)
+6. **Technologies Used:** Python libraries, R packages, databases
+7. **How to Run:** 
+   - Installation requirements
+   - Step-by-step execution guide
+   - Expected output format
+8. **Future Work:** Potential extensions or improvements
 
-        // Tab switching functionality
-        function switchTab(contentId, tabName) {
-            // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
+Make it professional yet accessible to both technical and non-technical audiences in the biotech industry.`,
+
+            'website': `Create a professional portfolio website for a biotechnology professional transitioning into bioinformatics and data analysis.
+
+**Website Goal:** Attract job opportunities from pharmaceutical and clinical research companies in India (Sun Pharma, Zydus, Alembic Pharma, Lupin, etc.)
+
+**Required Pages:**
+1. **Home:** Powerful headline + brief introduction highlighting unique value proposition
+2. **About Me:** Journey from Biotechnology education to bioinformatics passion, including internship experience
+3. **Skills:** 
+   - Biotechnology: Molecular biology, genetics, biochemistry
+   - Bioinformatics & Data Analysis: Python, R, SQL, statistical analysis
+   - Web Technologies: HTML, CSS, JavaScript
+   - Digital Marketing: SEO, content creation
+4. **Projects:** Gallery showcasing bioinformatics analysis, web projects, and research work
+5. **Blog:** Educational content explaining complex biotech topics in simple terms
+6. **Contact:** Professional contact form + LinkedIn/GitHub links
+
+**Design Requirements:**
+- Clean, modern, scientific aesthetic
+- Color palette: Blue, white, grey (professional medical/scientific feel)
+- Mobile-responsive design
+- Fast loading speed
+- SEO optimized for biotech keywords
+
+**Content Tone:** Professional, innovative, scientifically credible, approachable`,
+
+            'linkedin-headline': `Act as a professional career coach specializing in biotechnology careers. Create 5 powerful LinkedIn headlines for a biotech professional.
+
+**Background:**
+- Education: Diploma in Biotechnology
+- Skills: Python, SQL, data analysis, web design, digital marketing
+- Goal: Secure bioinformatics/data analysis role in pharmaceutical industry
+- Target companies: Sun Pharma, Zydus, Alembic Pharma, Lupin, Dr. Reddy's
+
+**Requirements:**
+- Maximum 220 characters each
+- Include relevant keywords for recruiter searches
+- Highlight unique cross-disciplinary skills
+- Show career progression and ambition
+- Use action-oriented language
+- Appeal to hiring managers in pharma/biotech
+
+**Format:** Provide 5 different options with varying approaches (skill-focused, goal-oriented, industry-specific, etc.)`,
+
+            'blog-post': `Write a 600-800 word educational blog post on a biotechnology/bioinformatics topic.
+
+**Target Audience:** 
+- Fresh biotech graduates
+- Career changers interested in bioinformatics
+- Hiring managers in pharmaceutical companies
+- Non-technical stakeholders in biotech companies
+
+**Content Requirements:**
+1. **Engaging Introduction:** Hook readers with real-world relevance
+2. **Clear Explanation:** Break down complex concepts into digestible parts
+3. **Practical Applications:** How this applies to drug discovery, clinical research, or healthcare
+4. **Career Relevance:** Job opportunities and required skills
+5. **Conclusion:** Key takeaways and next steps for readers
+
+**Writing Style:**
+- Conversational yet professional
+- Use analogies and examples
+- Include relevant statistics or recent research
+- Avoid excessive jargon
+- Include actionable insights
+
+**SEO Considerations:** Include relevant keywords naturally for biotech job searches`,
+
+            'job-application': `Act as a professional resume writer specializing in biotechnology careers. Create a compelling cover letter for a specific job application.
+
+**Job Details:** [Paste job description here]
+
+**Candidate Profile:**
+- Biotechnology background with bioinformatics skills
+- Experience in Python, data analysis, web technologies
+- Passion for pharmaceutical research and drug discovery
+- Strong analytical and problem-solving abilities
+
+**Letter Structure:**
+1. **Opening:** Attention-grabbing introduction referencing specific job/company
+2. **Value Proposition:** How candidate's unique skill combination benefits the company
+3. **Relevant Experience:** Specific examples of projects and achievements
+4. **Company Research:** Demonstrate knowledge of company's work and values
+5. **Call to Action:** Professional closing with interview request
+
+**Tone:** Professional, confident, enthusiastic, research-focused`,
+
+            'interview-prep': `Generate comprehensive interview preparation materials for biotech/bioinformatics positions.
+
+**Create:**
+1. **Common Technical Questions (10-15):**
+   - Bioinformatics algorithms and tools
+   - Statistical analysis methods
+   - Programming concepts (Python, R, SQL)
+   - Database management
+   - Data visualization techniques
+
+2. **Behavioral Questions (8-10):**
+   - Problem-solving scenarios
+   - Team collaboration examples
+   - Learning and adaptation stories
+   - Research methodology questions
+
+3. **Industry-Specific Questions (5-8):**
+   - Drug discovery process
+   - Clinical trial phases
+   - Regulatory requirements
+   - Quality control in pharma
+
+4. **Questions to Ask Interviewer (5-7):**
+   - Company research direction
+   - Team structure and collaboration
+   - Technology stack and tools
+   - Career development opportunities
+
+**For each question provide:**
+- Sample answer framework
+- Key points to emphasize
+- Common mistakes to avoid
+- Industry-specific terminology to use`
+        };
+
+        function switchTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            // Show selected content and activate tab
-            document.getElementById(tabName).classList.add('active');
+            // Add active class to clicked tab and corresponding content
             event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
         }
 
-        // Portfolio Builder Functions
-        function generatePortfolioPrompts() {
-            const projectName = document.getElementById('project-name').value;
-            const projectType = document.getElementById('project-type').value;
-            const toolsUsed = document.getElementById('tools-used').value;
-            const keyFinding = document.getElementById('key-finding').value;
+        function generatePortfolioContent() {
+            const projectName = document.getElementById('projectName').value;
+            const toolsUsed = document.getElementById('toolsUsed').value;
+            const keyFinding = document.getElementById('keyFinding').value;
+            const platform = document.getElementById('targetPlatform').value;
             
             if (!projectName || !toolsUsed || !keyFinding) {
-                alert('कृपया सभी फील्ड भरें / Please fill all fields');
+                alert('कृपया सभी फ़ील्ड भरें');
                 return;
             }
             
-            const prompts = generateProjectPrompts(projectName, projectType, toolsUsed, keyFinding);
-            document.getElementById('portfolio-output').textContent = prompts;
+            let generatedContent = '';
             
-            // Save project data
-            projectsData.push({
-                name: projectName,
-                type: projectType,
-                tools: toolsUsed,
-                finding: keyFinding,
-                date: new Date().toISOString()
-            });
-            localStorage.setItem('projectsData', JSON.stringify(projectsData));
+            if (platform === 'github') {
+                generatedContent = `# ${projectName}
+
+## 🔬 Project Overview
+This project focuses on ${projectName.toLowerCase()} using advanced bioinformatics techniques to provide insights relevant to pharmaceutical and clinical research.
+
+## 🛠️ Technologies Used
+- **Primary Tools:** ${toolsUsed}
+- **Programming Languages:** Python, SQL
+- **Libraries:** Pandas, NumPy, Matplotlib, Seaborn, BioPython
+- **Data Processing:** Data cleaning, statistical analysis, visualization
+
+## 📊 Key Findings
+${keyFinding}
+
+## 🚀 How to Run
+1. Clone this repository
+2. Install required dependencies: \`pip install -r requirements.txt\`
+3. Run the main analysis script: \`python main.py\`
+4. View results in the generated output files
+
+## 📈 Business Impact
+This analysis provides valuable insights for:
+- Drug discovery and development
+- Clinical trial optimization
+- Personalized medicine approaches
+- Regulatory decision-making
+
+## 🔮 Future Enhancements
+- Integration with additional datasets
+- Advanced machine learning models
+- Real-time data processing capabilities
+- Web-based dashboard for results visualization
+
+---
+**Created by:** [Your Name] | **Contact:** [Your LinkedIn/Email]`;
+            } else if (platform === 'linkedin') {
+                generatedContent = `🔬 Excited to share my latest ${projectName} project!
+
+🎯 **What I accomplished:**
+${keyFinding}
+
+🛠️ **Technical Stack:**
+${toolsUsed}
+
+💡 **Why this matters for pharma industry:**
+This analysis demonstrates the power of bioinformatics in driving evidence-based decisions for drug discovery and clinical research.
+
+🚀 **Key skills demonstrated:**
+✅ Data preprocessing and cleaning
+✅ Statistical analysis and hypothesis testing
+✅ Data visualization and interpretation
+✅ Biological data mining
+✅ Reproducible research practices
+
+I'm passionate about leveraging data science to solve complex biological problems and contribute to healthcare innovation.
+
+🔗 Full project details and code available on my GitHub: [link]
+
+#Bioinformatics #DataAnalysis #Biotechnology #PharmaJobs #ClinicalResearch #Python #DataScience #HealthcareInnovation
+
+What applications do you see for this type of analysis in your organization? I'd love to hear your thoughts!`;
+            } else {
+                generatedContent = `**${projectName}**
+
+**Project Summary:**
+${keyFinding}
+
+**Technical Implementation:**
+- Tools: ${toolsUsed}
+- Methodology: Comprehensive data analysis pipeline
+- Output: Actionable insights for biotech applications
+
+**Professional Impact:**
+This project showcases my ability to:
+- Handle complex biological datasets
+- Apply statistical methods to real-world problems
+- Generate insights relevant to pharmaceutical research
+- Communicate technical findings effectively
+
+**Technologies Demonstrated:**
+- Programming: Python, SQL
+- Analysis: Statistical modeling, data visualization
+- Domain Knowledge: Biotechnology, bioinformatics
+- Soft Skills: Problem-solving, research methodology
+
+This work exemplifies my commitment to using data science for advancing healthcare and pharmaceutical research.`;
+            }
             
-            // Update analytics
-            analyticsData.projects++;
-            localStorage.setItem('analyticsData', JSON.stringify(analyticsData));
-            updateAnalyticsDisplay();
+            document.getElementById('portfolioOutput').textContent = generatedContent;
         }
 
-        function generateProjectPrompts(name, type, tools, finding) {
-            return `🔬 AI PROMPTS FOR PROJECT: ${name}
-
-📄 README.md GENERATOR PROMPT:
-Create a comprehensive README.md for my ${type} project titled "${name}". 
-
-Project Details:
-- Tools Used: ${tools}
-- Key Finding: ${finding}
-- Target Audience: Pharmaceutical industry recruiters and hiring managers
-
-Include sections:
-1. Project Title and Description
-2. Dataset Source and Methodology  
-3. Tools and Technologies Used
-4. Key Results and Insights
-5. How to Run the Code
-6. Future Improvements
-7. Contact Information
-
-Make it professional and suitable for job applications in biotech/pharma industry.
-
-🌐 WEBSITE CONTENT PROMPT:
-Write a project showcase section for my portfolio website about "${name}".
-
-Include:
-- Engaging project title
-- Problem statement (what you solved)
-- Methodology (${tools})
-- Key insight: ${finding}
-- Visual description (what charts/graphs to include)
-- Professional conclusion
-
-Tone: Professional, scientific, accessible to non-technical readers.
-
-📱 SOCIAL MEDIA PROMPT:
-Create a LinkedIn post about completing "${name}" project.
-
-Format:
-- Hook: Exciting opening line
-- Project overview in simple terms
-- Tools used: ${tools}
-- Key result: ${finding}
-- Call to action: Visit portfolio
-- Hashtags: #Bioinformatics #DataAnalysis #Biotechnology #Python #PharmaJobs
-
-Make it engaging for pharmaceutical industry professionals.
-
-📧 EMAIL PITCH PROMPT:
-Write a professional email to send to biotech companies showcasing this project.
-
-Structure:
-- Subject line
-- Brief introduction
-- Project highlight: "${name}"
-- Key achievement: ${finding}
-- Skills demonstrated: ${tools}
-- Portfolio link
-- Professional closing
-
-Target: HR managers at pharmaceutical companies in India.`;
-        }
-
-        // Social Media Generator Functions
         function generateSocialPost(platform) {
-            let content = '';
+            let topic, update, type;
+            let generatedPost = '';
             
             if (platform === 'linkedin') {
-                const project = document.getElementById('linkedin-project').value;
-                const achievement = document.getElementById('linkedin-achievement').value;
+                topic = document.getElementById('linkedinTopic').value;
+                update = document.getElementById('linkedinUpdate').value;
                 
-                if (!project || !achievement) {
-                    alert('कृपया सभी फील्ड भरें / Please fill all fields');
+                if (!topic || !update) {
+                    alert('कृपया सभी फ़ील्ड भरें');
                     return;
                 }
                 
-                content = `🚀 LINKEDIN POST PROMPT:
+                generatedPost = `🚀 Exciting update: ${topic}
 
-Act as a social media expert for the biotech industry. Create an engaging LinkedIn post about my project "${project}".
+${update}
 
-Key Achievement: ${achievement}
+This achievement reflects my commitment to advancing in the bioinformatics and data analysis field. Each project brings me closer to my goal of contributing to pharmaceutical research and drug discovery.
 
-Requirements:
-- Start with an attention-grabbing hook
-- Explain the project in simple, professional terms
-- Highlight the key result: ${achievement}
-- Mention skills used (Python, data analysis, etc.)
-- Add call-to-action to visit portfolio
-- Include 5-7 relevant hashtags
-- Target audience: Pharmaceutical industry professionals and recruiters
-- Tone: Professional, confident, approachable
+🔬 **Skills in action:**
+✅ Python programming
+✅ Statistical analysis
+✅ Data visualization
+✅ Biological data interpretation
 
-COPY-PASTE THIS INTO CHATGPT OR ANY AI TOOL ⬆️
+💡 **Next steps:** Continuing to build my portfolio with projects that demonstrate real-world applications in healthcare and pharmaceutical research.
 
-📋 READY-TO-USE LINKEDIN POST:
+I'm actively seeking opportunities in bioinformatics, clinical data analysis, or research roles where I can apply these skills to make a meaningful impact.
 
-🔬 Excited to share my latest bioinformatics project: "${project}"!
+🔗 Check out my full portfolio: [Your Website Link]
 
-Just completed an in-depth analysis that revealed: ${achievement}
+#Bioinformatics #DataAnalysis #Biotechnology #PharmaJobs #ClinicalResearch #Python #CareerGrowth #HealthcareInnovation
 
-🛠️ Technical approach:
-✅ Data cleaning and preprocessing
-✅ Statistical analysis with Python
-✅ Visualization with advanced plotting libraries
-✅ Results interpretation for actionable insights
+What trends are you seeing in biotech data analysis? I'd love to connect and learn from your experiences!`;
+                
+            } else if (platform === 'facebook') {
+                type = document.getElementById('facebookType').value;
+                
+                if (type === 'achievement') {
+                    generatedPost = `🎉 मिल गई एक और सफलता!
 
-This project reinforces my passion for applying data science to solve real biological problems - exactly the kind of work I want to do in the pharmaceutical industry!
+आज मैंने अपना latest bioinformatics project complete किया है। यह journey biotechnology से bioinformatics तक का रहा है, और हर step में कुछ नया सीखने को मिला।
 
-🎯 Next goal: Contributing these skills to a forward-thinking biotech company where data drives drug discovery and patient outcomes.
+🔬 **Project highlights:**
+- Python और data analysis का उपयोग
+- Real biological data के साथ काम
+- Pharmaceutical industry के लिए relevant insights
 
-Check out the full case study on my portfolio: [Your Portfolio Link]
+यह सिर्फ एक project नहीं, बल्कि मेरे career goal की दिशा में एक important step है।
 
-#Bioinformatics #DataAnalysis #Biotechnology #Python #PharmaJobs #ClinicalResearch #DataScience
+💪 **अगला लक्ष्य:** Sun Pharma, Zydus, या Alembic जैसी companies में bioinformatics role पाना।
+
+Thanks to सभी friends और family का support! 🙏
+
+#BiotechCareer #BioinformaticsJourney #DataAnalysis #PharmaJobs #CareerGoals`;
+                    
+                } else if (type === 'learning') {
+                    generatedPost = `📚 आज कुछ नया सीखा!
+
+Bioinformatics की दुनिया में हर दिन कुछ न कुछ नया सीखने को मिलता है। आज Python में advanced data visualization techniques सीखीं।
+
+🧬 **क्यों important है:**
+- Biological data को समझना आसान हो जाता है
+- Research findings को effectively present कर सकते हैं
+- Pharmaceutical companies में इन skills की high demand है
+
+💡 **Key learning:** Data storytelling बहुत important है - सिर्फ analysis करना काफी नहीं, results को effectively communicate करना भी जरूरी है।
+
+🎯 **Next up:** Machine learning applications in drug discovery
+
+Keep learning, keep growing! 🌱
+
+#ContinuousLearning #BioinformaticsSkills #DataVisualization #ProfessionalDevelopment`;
+                }
+                
+            } else if (platform === 'twitter') {
+                topic = document.getElementById('twitterTopic').value;
+                
+                if (!topic) {
+                    alert('कृपया topic भरें');
+                    return;
+                }
+                
+                generatedPost = `🧬 Just completed a ${topic} project using Python & bioinformatics tools!
+
+🔬 Key insight: [Your main finding here]
+🛠️ Tech stack: Python, Pandas, Matplotlib
+🎯 Goal: Contributing to pharma research & drug discovery
+
+#Bioinformatics #DataAnalysis #Biotech #PharmaJobs #Python
+
+Portfolio: [Your link] 🔗`;
+            }
+            
+            document.getElementById('socialOutput').textContent = generatedPost;
+        }
+
+        function generateResumeContent(type) {
+            const currentRole = document.getElementById('currentRole').value;
+            const keySkills = document.getElementById('keySkills').value;
+            const targetCompanies = document.getElementById('targetCompanies').value;
+            
+            if (!currentRole || !keySkills) {
+                alert('कृपया सभी required फ़ील्ड भरें');
+                return;
+            }
+            
+            let generatedContent = '';
+            
+            if (type === 'headline') {
+                generatedContent = `**LinkedIn Headlines (Choose the best one):**
+
+1. Biotechnology Graduate | Python & Data Analysis Expert | Seeking Bioinformatics Roles in Pharmaceutical Research
+
+2. Bioinformatics Enthusiast | Biotech + Data Science | Transforming Biological Data into Healthcare Insights
+
+3. ${currentRole} | ${keySkills} | Passionate About Drug Discovery & Clinical Research Innovation
+
+4. Data-Driven Biotechnologist | Python, SQL & Statistical Analysis | Ready to Impact Pharmaceutical R&D
+
+5. Biotech Professional Transitioning to Bioinformatics | ${keySkills} | Targeting ${targetCompanies}
+
+**Pro Tips:**
+- Use keywords that recruiters search for
+- Keep it under 220 characters
+- Show your unique value proposition
+- Include your target industry`;
+                
+            } else if (type === 'summary') {
+                generatedContent = `**LinkedIn Professional Summary:**
+
+Passionate biotechnology professional with a unique blend of scientific knowledge and data analysis expertise, seeking to drive innovation in pharmaceutical research and drug discovery.
+
+🔬 **Background:** Diploma in Biotechnology with specialized training in bioinformatics and hands-on experience through internship programs.
+
+💻 **Technical Skills:** ${keySkills}
+
+🎯 **Career Vision:** To leverage my cross-disciplinary expertise in biotechnology and data science to solve complex biological problems, contribute to evidence-based drug development, and advance personalized medicine initiatives.
+
+📊 **Proven Abilities:**
+• Biological data analysis and interpretation
+• Statistical modeling and hypothesis testing  
+• Database management and data visualization
+• Research methodology and scientific communication
+• Web technologies and digital marketing
+
+🏢 **Target Impact:** Seeking opportunities with leading pharmaceutical companies like ${targetCompanies} where I can apply my analytical skills to clinical research, biomarker discovery, and therapeutic development.
+
+I'm committed to continuous learning and staying current with emerging technologies in bioinformatics, genomics, and computational biology.
+
+🤝 **Let's Connect:** Always open to discussing bioinformatics applications, career opportunities, and industry trends in pharmaceutical research.
 
 ---
 
-💡 Want to connect and discuss bioinformatics opportunities? I'd love to hear from you!`;
-                
-            } else if (platform === 'facebook') {
-                const topic = document.getElementById('facebook-topic').value;
-                
-                content = `📱 FACEBOOK POST PROMPT:
+**Alternative Shorter Version (150 words):**
 
-Create a Facebook post about: ${topic}
+Biotechnology graduate with expertise in ${keySkills}, passionate about applying data science to pharmaceutical research and drug discovery.
 
-Make it:
-- Personal and relatable
-- Professional but friendly
-- Include career journey elements
-- Add relevant emojis
-- Encourage engagement from friends and family
-- Mention career goals in biotech/pharma
+My unique combination of biological knowledge and technical skills positions me to bridge the gap between complex biological data and actionable insights for healthcare innovation.
 
-READY-TO-USE FACEBOOK POST:
+🔬 Experience in bioinformatics through internship and self-directed projects
+💻 Proficient in Python, SQL, statistical analysis, and data visualization  
+🎯 Goal: Contributing to clinical research and therapeutic development at companies like ${targetCompanies}
 
-🧬 Career Update! 🚀
+I thrive on transforming raw biological data into meaningful patterns that can advance our understanding of disease mechanisms and treatment efficacy.
 
-I'm thrilled to share that I'm making great progress in my journey from biotechnology to bioinformatics! 
+Currently seeking bioinformatics, clinical data analyst, or research associate roles where I can apply my analytical skills to real-world healthcare challenges.
 
-Recent achievement: ${topic}
-
-It's amazing how Python and data analysis are opening up new possibilities in understanding biological systems. Every project teaches me something new about the intersection of technology and life sciences.
-
-My goal? To work with a leading pharmaceutical company where I can use these skills to contribute to drug discovery and improve patient lives. 🎯
-
-Thanks to everyone who's been supporting this journey! Your encouragement means the world to me. 💙
-
-#BiotechCareer #Bioinformatics #CareerGrowth #DataScience #PharmaIndustry`;
-                
-            } else if (platform === 'twitter') {
-                const topic = document.getElementById('twitter-topic').value;
-                
-                content = `🐦 TWITTER THREAD PROMPT:
-
-Create a Twitter thread about: ${topic}
-
-Requirements:
-- Start with an engaging tweet
-- Break into 3-4 connected tweets
-- Include relevant hashtags
-- Professional but conversational tone
-- End with call-to-action
-
-READY-TO-USE TWITTER THREAD:
-
-🧬 Thread: Just completed another bioinformatics project! ${topic} 
-
-Here's what I learned: 🧵 (1/4)
-
-2/4 The intersection of biology and data science continues to amaze me. Every dataset tells a story about life itself - from gene expression patterns to protein interactions.
-
-3/4 Tools like Python, Pandas, and visualization libraries are becoming essential for modern biological research. The future of medicine is data-driven! 📊
-
-4/4 Excited to bring these skills to the pharmaceutical industry. If you're working in biotech/pharma and want to connect, let's chat! 🤝
-
-#Bioinformatics #DataScience #Biotechnology #Python #PharmaJobs`;
+Open to connecting with professionals in pharmaceutical research, clinical trials, and biotech innovation.`;
             }
             
-            document.getElementById('social-output').textContent = content;
-            
-            // Update analytics
-            analyticsData.posts++;
-            localStorage.setItem('analyticsData', JSON.stringify(analyticsData));
-            updateAnalyticsDisplay();
+            document.getElementById('resumeOutput').textContent = generatedContent;
         }
 
-        // Resume & LinkedIn Optimizer Functions
-        function generateResumeContent() {
-            const role = document.getElementById('current-role').value;
-            const skills = document.getElementById('key-skills').value;
-            const experience = document.getElementById('experience').value;
+        function copyPrompt(promptType) {
+            const promptText = prompts[promptType];
             
-            if (!role || !skills || !experience) {
-                alert('कृपया सभी फील्ड भरें / Please fill all fields');
-                return;
-            }
+            // Create a temporary textarea to copy text
+            const textarea = document.createElement('textarea');
+            textarea.value = promptText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
             
-            const content = `📄 RESUME OPTIMIZATION PROMPTS:
-
-🎯 PROFESSIONAL SUMMARY PROMPT:
-Act as a professional resume writer. Create a powerful professional summary for a ${role} with skills in ${skills}.
-
-Experience context: ${experience}
-
-Requirements:
-- 3-4 sentences maximum
-- Highlight unique combination of biotech + tech skills
-- Target pharmaceutical and clinical research companies
-- Include quantifiable achievements where possible
-- Professional, confident tone
-
-🛠️ SKILLS SECTION PROMPT:
-Organize these skills into professional categories for a biotech resume: ${skills}
-
-Create sections like:
-- Technical Skills
-- Laboratory Skills  
-- Software & Programming
-- Data Analysis Tools
-- Soft Skills
-
-Make each section impactful for pharmaceutical industry applications.
-
-💼 EXPERIENCE DESCRIPTION PROMPT:
-Rewrite this experience description for maximum impact: "${experience}"
-
-Requirements:
-- Use action verbs and quantifiable results
-- Highlight transferable skills for pharma industry
-- Show progression and learning
-- Professional formatting
-- ATS-friendly keywords
-
-📧 COVER LETTER PROMPT:
-Write a compelling cover letter for a ${role} position at a pharmaceutical company.
-
-Key points to include:
-- Skills: ${skills}
-- Experience: ${experience}
-- Passion for biotech/pharma industry
-- How I can contribute to their goals
-- Professional closing
-
-COPY THESE PROMPTS TO CHATGPT FOR INSTANT RESULTS! ⬆️`;
-            
-            document.getElementById('resume-output').textContent = content;
+            // Show confirmation
+            alert('Prompt copied to clipboard! अब इसे किसी भी AI tool में paste करें।');
         }
 
-        function generateLinkedInProfile() {
-            const role = document.getElementById('current-role').value;
-            const skills = document.getElementById('key-skills').value;
-            const experience = document.getElementById('experience').value;
-            
-            const content = `🔗 LINKEDIN PROFILE OPTIMIZATION PROMPTS:
-
-💡 HEADLINE GENERATOR PROMPT:
-Act as a LinkedIn optimization expert. Create 5 powerful LinkedIn headlines for a biotech professional.
-
-Details:
-- Target role: ${role}
-- Key skills: ${skills}
-- Experience: ${experience}
-- Goal: Attract pharmaceutical industry recruiters
-- Include keywords for searchability
-
-📝 ABOUT SECTION PROMPT:
-Write a compelling LinkedIn About section (150-200 words) that tells my professional story.
-
-Include:
-- Journey from biotech education to current skills
-- Unique combination: ${skills}
-- Experience highlights: ${experience}
-- Career goals in pharmaceutical industry
-- Call-to-action for connections
-- Professional yet personable tone
-
-🎯 EXPERIENCE DESCRIPTIONS PROMPT:
-Rewrite my experience entries for LinkedIn to maximize impact:
-
-"${experience}"
-
-Requirements:
-- Start with strong action verbs
-- Include quantifiable achievements
-- Use industry keywords
-- Show skills progression
-- Highlight relevant projects
-- Professional formatting
-
-🤝 CONNECTION REQUEST TEMPLATES:
-Create 3 different LinkedIn connection request messages for:
-1. Pharmaceutical industry professionals
-2. Biotech recruiters  
-3. Fellow bioinformatics professionals
-
-Each should be:
-- Personal but professional
-- Mention common interests
-- Clear value proposition
-- Under 200 characters
-
-USE THESE PROMPTS WITH ANY AI TOOL FOR INSTANT OPTIMIZATION! ⚡`;
-            
-            document.getElementById('resume-output').textContent = content;
-        }
-
-        // Job Tracker Functions
-        function addJobApplication() {
-            const company = document.getElementById('company-name').value;
-            const jobTitle = document.getElementById('job-title').value;
-            const status = document.getElementById('application-status').value;
-            
-            if (!company || !jobTitle) {
-                alert('कृपया कंपनी और जॉब टाइटल भरें / Please fill company and job title');
-                return;
-            }
-            
-            const application = {
-                id: Date.now(),
-                company: company,
-                jobTitle: jobTitle,
-                status: status,
-                dateAdded: new Date().toLocaleDateString('hi-IN'),
-                lastUpdated: new Date().toLocaleDateString('hi-IN')
-            };
-            
-            jobApplications.push(application);
-            localStorage.setItem('jobApplications', JSON.stringify(jobApplications));
-            
-            // Clear form
-            document.getElementById('company-name').value = '';
-            document.getElementById('job-title').value = '';
-            document.getElementById('application-status').value = 'planning';
-            
-            updateJobStats();
-            displayJobApplications();
-        }
-
-        function updateJobStats() {
-            const total = jobApplications.length;
-            const pending = jobApplications.filter(app => app.status === 'applied' || app.status === 'planning').length;
-            const interviews = jobApplications.filter(app => app.status === 'interview').length;
-            
-            document.getElementById('total-applications').textContent = total;
-            document.getElementById('pending-applications').textContent = pending;
-            document.getElementById('interviews').textContent = interviews;
-        }
-
-        function displayJobApplications() {
-            const output = document.getElementById('job-output');
-            
-            if (jobApplications.length === 0) {
-                output.textContent = 'No job applications tracked yet. Add your first application above!';
-                return;
-            }
-            
-            let content = '📊 YOUR JOB APPLICATIONS:\n\n';
-            
-            jobApplications.forEach((app, index) => {
-                content += `${index + 1}. ${app.company} - ${app.jobTitle}\n`;
-                content += `   Status: ${app.status.toUpperCase()}\n`;
-                content += `   Added: ${app.dateAdded}\n\n`;
-            });
-            
-            content += '\n💡 NEXT STEPS:\n';
-            content += '- Follow up on pending applications\n';
-            content += '- Prepare for upcoming interviews\n';
-            content += '- Update LinkedIn with new skills\n';
-            content += '- Network with industry professionals';
-            
-            output.textContent = content;
-        }
-
-        function generateFollowUpEmail() {
-            const content = `📧 FOLLOW-UP EMAIL GENERATOR PROMPTS:
-
-🎯 GENERAL FOLLOW-UP PROMPT:
-Act as a career coach. Write a professional follow-up email for a job application.
-
-Context:
-- Applied for biotech/pharma position 1-2 weeks ago
-- Want to show continued interest
-- Highlight relevant skills
-- Request status update politely
-
-Requirements:
-- Professional subject line
-- Polite and concise tone
-- Reaffirm qualifications
-- Show enthusiasm
-- Clear call-to-action
-
-📞 POST-INTERVIEW FOLLOW-UP PROMPT:
-Create a thank-you email after a job interview.
-
-Include:
-- Thank interviewer for their time
-- Reiterate interest in position
-- Mention specific discussion points
-- Highlight key qualifications
-- Next steps inquiry
-- Professional closing
-
-🤝 NETWORKING FOLLOW-UP PROMPT:
-Write a LinkedIn message to follow up after connecting with a pharmaceutical industry professional.
-
-Goals:
-- Build relationship
-- Show genuine interest in their work
-- Mention common ground
-- Suggest coffee chat or informational interview
-- Professional and friendly tone
-
-COPY THESE TO AI TOOLS FOR INSTANT EMAIL TEMPLATES! ⚡
-
-📋 READY-TO-USE FOLLOW-UP EMAIL:
-
-Subject: Following up on [Job Title] Application - [Your Name]
-
-Dear [Hiring Manager Name],
-
-I hope this email finds you well. I wanted to follow up on my application for the [Job Title] position at [Company Name] that I submitted on [Date].
-
-I remain very interested in this opportunity and believe my combination of biotechnology education and data analysis skills would be valuable to your team. My experience with Python, bioinformatics tools, and passion for pharmaceutical research aligns well with your requirements.
-
-I would welcome the opportunity to discuss how I can contribute to [Company Name]'s mission. Please let me know if you need any additional information from me.
-
-Thank you for your consideration. I look forward to hearing from you.
-
-Best regards,
-[Your Name]
-[Your Contact Information]`;
-            
-            document.getElementById('job-output').textContent = content;
-        }
-
-        // Analytics Functions
-        function updateAnalyticsDisplay() {
-            document.getElementById('projects-completed').textContent = analyticsData.projects;
-            document.getElementById('social-posts').textContent = analyticsData.posts;
-            document.getElementById('profile-views').textContent = analyticsData.views;
-            document.getElementById('network-connections').textContent = analyticsData.connections;
-        }
-
-        function updateAnalytics() {
-            // Simulate analytics update
-            analyticsData.views += Math.floor(Math.random() * 10) + 1;
-            analyticsData.connections += Math.floor(Math.random() * 3);
-            
-            localStorage.setItem('analyticsData', JSON.stringify(analyticsData));
-            updateAnalyticsDisplay();
-            
-            const output = document.getElementById('analytics-output');
-            output.textContent = `📊 ANALYTICS UPDATED!\n\nCareer Progress Summary:\n\n✅ Portfolio Projects: ${analyticsData.projects}\n📱 Social Media Posts: ${analyticsData.posts}\n👀 Profile Views: ${analyticsData.views}\n🤝 New Connections: ${analyticsData.connections}\n\n🎯 WEEKLY GOALS:\n- Complete 1 new project\n- Post 2-3 times on LinkedIn\n- Apply to 5 relevant positions\n- Connect with 10 industry professionals\n- Update portfolio with latest work\n\n💡 RECOMMENDATIONS:\n- Focus on pharmaceutical companies in your area\n- Engage with biotech content on LinkedIn\n- Share your project insights regularly\n- Network with alumni and industry professionals`;
-        }
-
-        // Utility Functions
-        function copyToClipboard(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('प्रॉम्प्ट कॉपी हो गया! / Prompt copied to clipboard!');
-            });
-        }
-
-        // Initialize job applications display
-        displayJobApplications();
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI-Powered Career Dashboard loaded successfully!');
+        });
     </script>
+    
+    <!-- Load the career automation system with procrastination research -->
+    <script src="career-automation-system/script.js"></script>
 </body>
 </html>

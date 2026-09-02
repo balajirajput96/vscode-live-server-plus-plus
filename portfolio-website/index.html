@@ -274,65 +274,16 @@
                 
                 <form class="contact-form">
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="text" placeholder="Your Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Your Email" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" placeholder="Company/Organization">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" placeholder="Street Address">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="text" placeholder="City">
-                        </div>
-                        <div class="form-group">
-                            <select required>
-                                <option value="">Select State</option>
-                                <option value="CA">California (CA)</option>
-                                <option value="WA">Washington (WA)</option>
-                                <option value="NY">New York (NY)</option>
-                                <option value="TX">Texas (TX)</option>
-                                <option value="FL">Florida (FL)</option>
-                                <option value="IL">Illinois (IL)</option>
-                                <option value="MA">Massachusetts (MA)</option>
-                                <option value="NJ">New Jersey (NJ)</option>
-                                <option value="GA">Georgia (GA)</option>
-                                <option value="PA">Pennsylvania (PA)</option>
-                                <option value="CO">Colorado (CO)</option>
-                                <option value="AZ">Arizona (AZ)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" placeholder="ZIP Code">
-                        </div>
+                        <input type="email" placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
                         <input type="text" placeholder="Subject">
                     </div>
-                    
-                    <!-- Address Fields -->
                     <div class="form-group">
-                        <input type="text" name="street" placeholder="Street Address" id="streetAddress">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="text" name="city" placeholder="City" id="cityInput" autocomplete="off">
-                            <div id="citySuggestions" class="city-suggestions"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="state" placeholder="State Code (e.g., CA)" id="stateInput" maxlength="2" style="text-transform: uppercase;">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="zip" placeholder="ZIP Code" id="zipInput" pattern="[0-9]{5}(-[0-9]{4})?">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                        <textarea placeholder="Your Message" rows="5" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
