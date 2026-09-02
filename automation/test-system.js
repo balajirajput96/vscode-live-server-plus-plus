@@ -4,6 +4,9 @@
  * Test script for the career automation system
  */
 
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const CareerAutomationWebhook = require('./webhook-integration');
 
 async function runTests() {
@@ -28,12 +31,18 @@ async function runTests() {
     // Test 2: Config template generation
     testsTotal++;
     console.log('Test 2: Configuration template generation');
+    const tempConfigPath = path.join(os.tmpdir(), `career-automation-${process.pid}.env`);
     try {
-        webhook.generateConfigTemplate();
+        const generatedPath = webhook.generateConfigTemplate(tempConfigPath);
+        if (generatedPath !== tempConfigPath || !fs.existsSync(tempConfigPath)) {
+            throw new Error('Configuration template was not written to the isolated temporary path');
+        }
         testsPass++;
         console.log('✅ Template generation passed\n');
     } catch (error) {
         console.error('❌ Template generation failed:', error.message);
+    } finally {
+        fs.rmSync(tempConfigPath, { force: true });
     }
 
     // Test 3: Webhook connectivity (only when an integration URL is configured)
