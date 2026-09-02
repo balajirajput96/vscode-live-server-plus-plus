@@ -51,6 +51,12 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   private serverErrorEvent: vscode.EventEmitter<ServerErrorEvent>;
   private middlewares: IMiddlewareTypes[] = [];
   private wsWatcherList: IWsWatcher[] = [];
+  
+  // Performance optimizations
+  private broadcastDebounceTimer: NodeJS.Timeout | null = null;
+  private clientCache: Map<string, WebSocket> = new Map();
+  private lastBroadcastTime: number = 0;
+  private readonly BROADCAST_THROTTLE_MS = 100; // Throttle broadcasts to 100ms
 
   constructor(config: ILiveServerPlusPlusConfig) {
     this.init(config);
@@ -180,7 +186,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     return 'reload';
   }
 
-  private listenServer(): Promise<void> {
+  private listenServer() {
     return new Promise<void>((resolve, reject) => {
       if (!this.cwd) {
         const error = new LSPPError('CWD is not defined', 'cwdUndefined');
@@ -200,7 +206,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  private closeServer(): Promise<void> {
+  private closeServer() {
     return new Promise<void>((resolve, reject) => {
       this.server!.close(err => {
         return err ? reject(err) : resolve();
@@ -209,7 +215,7 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  private closeWs(): Promise<void> {
+  private closeWs() {
     return new Promise<void>((resolve, reject) => {
       if (!this.ws) return resolve();
       this.ws.close(err => (err ? reject(err) : resolve()));
@@ -222,37 +228,78 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   ) {
     if (!this.ws) return;
 
-    const WebSocket = getWebSocket();
-    let clients: WebSocketType[] = this.ws.clients as any;
-
-    // Improved file watching: check if file is in watching list for any supported file type
-    // Not just injectable files (HTML), but also CSS, JS, and other supported files
-    const isInWatchingPath = this.wsWatcherList.some(({ watchingPaths }) => 
-      this.isInWatchingList(data.fileName, watchingPaths)
-    );
-
-    if (isInWatchingPath || isSupportedFile(data.fileName)) {
-      clients = this.wsWatcherList.reduce(
-        (allClients, { client, watchingPaths }) => {
-          if (this.isInWatchingList(data.fileName, watchingPaths)) {
-            allClients.push(client);
-          }
-          return allClients;
-        },
-        [] as WebSocketType[]
-      );
+    // Throttle broadcasts to prevent spam
+    const now = Date.now();
+    if (now - this.lastBroadcastTime < this.BROADCAST_THROTTLE_MS) {
+      return;
     }
+    this.lastBroadcastTime = now;
+
+    // Clear existing debounce timer
+    if (this.broadcastDebounceTimer) {
+      clearTimeout(this.broadcastDebounceTimer);
+    }
+
+    // Debounce broadcasts to batch multiple file changes
+    this.broadcastDebounceTimer = setTimeout(() => {
+      this._executeBroadcast(data, action);
+    }, this.debounceTimeout || 50);
+  }
+
+  private _executeBroadcast(
+    data: { dom?: string; fileName: string },
+    action: BroadcastActions
+  ) {
+    if (!this.ws) return;
+
+    let clients: WebSocket[] = this.ws.clients as any;
+
+    // Optimize client filtering for injectable files
+    if (isInjectableFile(data.fileName)) {
+      clients = this._getFilteredClients(data.fileName);
+    }
+
+    // Batch send to all clients
+    const message = JSON.stringify({ data, action });
+    const deadClients: WebSocket[] = [];
 
     clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ data, action }));
+        try {
+          client.send(message);
+        } catch (error) {
+          deadClients.push(client);
+        }
+      } else {
+        deadClients.push(client);
       }
+    });
+
+    // Clean up dead clients
+    this._cleanupDeadClients(deadClients);
+  }
+
+  private _getFilteredClients(fileName: string): WebSocket[] {
+    const filteredClients: WebSocket[] = [];
+    
+    for (const { client, watchingPaths } of this.wsWatcherList) {
+      if (this.isInWatchingList(fileName, watchingPaths)) {
+        filteredClients.push(client);
+      }
+    }
+    
+    return filteredClients;
+  }
+
+  private _cleanupDeadClients(deadClients: WebSocket[]) {
+    deadClients.forEach(client => {
+      this.removeFromWsWatcherList(client);
     });
   }
 
   isInWatchingList(target: string, dirList: string[]) {
     for (let i = 0; i < dirList.length; i++) {
-      let dir = dirList[i];
+      let dir = dirList[i] || '';
 
       // Improved logic: check if dir is actually a directory path or file path
       // Don't just rely on extension presence, as folders can contain dots
@@ -281,22 +328,45 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
   private attachWSListeners() {
     if (!this.server) throw new Error('Server is not defined');
 
-    const WebSocket = getWebSocket();
-    this.ws = new WebSocket.Server({ noServer: true });
+    this.ws = new WebSocket.Server({ 
+      noServer: true,
+      // Performance optimizations
+      maxPayload: 1024 * 1024 // 1MB max payload
+    });
 
     this.ws.on('connection', ws => {
-      ws.send(JSON.stringify({ action: 'connected' }));
-      ws.on('message', (_data: string) => {
-        const { watchList } = JSON.parse(_data);
-        if (watchList) {
-          this.addToWsWatcherList(ws as any, watchList);
+      // Generate unique client ID for caching
+      const clientId = this._generateClientId();
+      this.clientCache.set(clientId, ws as any);
+      
+      ws.send(JSON.stringify({ action: 'connected', clientId }));
+      
+      ws.on('message', (data: string) => {
+        try {
+          const { watchList } = JSON.parse(data);
+          if (watchList) {
+            this.addToWsWatcherList(ws as any, watchList);
+          }
+        } catch (error) {
+          console.warn('Invalid WebSocket message:', error);
         }
       });
-      ws.on('close', () => this.removeFromWsWatcherList(ws as any));
+      
+      ws.on('close', () => {
+        this.removeFromWsWatcherList(ws as any);
+        this.clientCache.delete(clientId);
+      });
+      
+      ws.on('error', (error) => {
+        console.warn('WebSocket error:', error);
+        this.removeFromWsWatcherList(ws as any);
+        this.clientCache.delete(clientId);
+      });
     });
 
     this.ws.on('close', () => {
-      console.log('disconnected');
+      console.log('WebSocket server disconnected');
+      this.clientCache.clear();
     });
 
     this.server.on('upgrade', (request, socket, head) => {
@@ -310,7 +380,11 @@ export class LiveServerPlusPlus implements ILiveServerPlusPlus {
     });
   }
 
-  private removeFromWsWatcherList(client: WebSocketType) {
+  private _generateClientId(): string {
+    return Math.random().toString(36).substr(2, 9);
+  }
+
+  private removeFromWsWatcherList(client: WebSocket) {
     const index = this.wsWatcherList.findIndex(e => e.client === client);
     if (index !== -1) {
       this.wsWatcherList.splice(index, 1);

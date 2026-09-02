@@ -3,53 +3,26 @@
 
 ---
 
-## 🎉 **AUTOFLOW AI - LIVE DEPLOYMENT AVAILABLE!**
-
-### 📡 **New: API-Powered Automated Deployment**
-🚀 **Status**: Infrastructure Ready | Phase 2 Active | Ready to Deploy
-
-**Deployment ID**: `autoflow-ai-live-deploy-1726553544`
-
-✅ All automation components ready  
-✅ 8+ workflow templates prepared  
-✅ Multi-cloud deployment support  
-✅ Real-time monitoring configured  
-
-**👉 [Launch AutoFlow AI Deployment →](./AUTOFLOW-AI-DEPLOYMENT.md)**
-
----
-
 ## ⚡ DEPLOY NOW - One Command Setup
 
-### 🚀 One-Click Cloud Deployment
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
-
 ```bash
-# Automated cloud deployment
-./deploy-to-cloud.sh
-
-# OR traditional Docker deployment
 ./deploy-complete.sh
 ```
 
-**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md)
+**📚 New to deployment?** Start here: [START-HERE.md](./START-HERE.md) | [DEPLOYMENT-FLOW.md](./DEPLOYMENT-FLOW.md)
 
 ### Complete Deployment System Included
-- ✅ **One-click cloud deployment** to Railway, Render, Vercel, Netlify
-- ✅ **Automated Docker deployment** with interactive setup
+- ✅ **One-command deployment** with interactive setup
 - ✅ **Automated verification** of all components
 - ✅ **Comprehensive documentation** for every scenario
 - ✅ **Status tracking** and progress monitoring
 - ✅ **GitHub Pages auto-deployment** for web components
 - ✅ **n8n automation platform** with Docker
 - ✅ **Pre-flight checklist** to ensure smooth setup
-- ✅ **Multiple deployment modes** (local/production/custom/cloud)
+- ✅ **Multiple deployment modes** (local/production/custom)
 
 ### Quick Links
-🚀 [AUTOFLOW-AI-DEPLOYMENT.md](./AUTOFLOW-AI-DEPLOYMENT.md) - **AutoFlow AI Live Deployment** 🆕
 📖 [START-HERE.md](./START-HERE.md) - Begin deployment
-☁️ [CLOUD-DEPLOYMENT.md](./CLOUD-DEPLOYMENT.md) - Cloud deployment guide
 🎯 [QUICK-DEPLOY.md](./QUICK-DEPLOY.md) - Quick reference
 📊 [DEPLOYMENT-STATUS.md](./DEPLOYMENT-STATUS.md) - Track progress
 ✅ [PRE-DEPLOYMENT-CHECKLIST.md](./PRE-DEPLOYMENT-CHECKLIST.md) - Pre-flight checks

@@ -35,17 +35,21 @@
     "onCommand:extension.live-server++.close"
   ],
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run build",
+    "build": "npm run build:ts && npm run build:assets",
+    "build:ts": "tsc -p ./",
+    "build:assets": "webpack --config webpack.config.js",
+    "build:watch": "npm run build:ts:watch & npm run build:assets:watch",
+    "build:ts:watch": "tsc -watch -p ./",
+    "build:assets:watch": "webpack --config webpack.config.js --watch",
     "copy-assets": "cpx \"./src/core/assets/**/*\" \"./out/core/assets\"",
     "copy-assets:watch": "npm run copy-assets -- --w",
-    "compile": "tsc -p ./ && npm run copy-assets",
-    "watch": "npm run copy-assets  && tsc -watch -p ./",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test",
-    "migrate-account": "node ./scripts/migrate-account.js",
-    "setup-n8n": "bash ./scripts/setup-n8n.sh",
-    "n8n:setup": "docker compose --env-file .env -f docker-compose.basic.yml up -d",
-    "n8n:setup-production": "docker compose --env-file .env -f docker-compose.reverse-proxy.yml up -d",
-    "n8n:stop": "docker compose down"
+    "compile": "npm run build",
+    "watch": "npm run build:watch",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run build && node ./node_modules/vscode/bin/test",
+    "clean": "rimraf out dist",
+    "analyze": "webpack --config webpack.config.js --profile --json > stats.json && webpack-bundle-analyzer stats.json"
   },
   "main": "./out/extension/index.js",
   "contributes": {
@@ -114,18 +118,28 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/plugin-proposal-class-properties": "^7.18.0",
+    "@babel/plugin-transform-runtime": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
     "@types/mime-types": "^2.1.0",
     "@types/node": "^22.17.0",
     "@types/open": "^6.1.0",
     "@types/vscode": "^1.33.0",
     "@types/ws": "^6.0.1",
+    "babel-loader": "^9.1.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "core-js": "^3.30.0",
     "cpx": "^1.5.0",
-    "puppeteer": "^24.37.2",
+    "rimraf": "^5.0.0",
+    "terser-webpack-plugin": "^5.3.0",
     "tslint": "^5.12.1",
-    "typescript": "^3.3.1",
-    "vscode": "^1.1.37"
+    "typescript": "^5.9.3",
+    "vscode": "^1.1.37",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@babel/runtime": "^7.29.7",
     "mime-types": "^2.1.22",
     "open": "^6.1.0",
     "ws": "^6.2.3"
