@@ -36,7 +36,7 @@ function switchTab(tabName) {
     // Add active class to selected tab and content
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
     document.getElementById(tabName).classList.add('active');
-    
+
     currentTab = tabName;
 }
 
@@ -63,14 +63,14 @@ function generatePortfolioContent() {
     // Simulate AI processing
     setTimeout(() => {
         const generatedContent = generatePortfolioText(projectName, projectType, description, tools, dataset, findings);
-        
+
         document.getElementById('portfolioContent').innerHTML = generatedContent;
         document.getElementById('portfolioOutput').style.display = 'block';
-        
+
         // Reset button
         button.innerHTML = originalText;
         button.disabled = false;
-        
+
         showMessage('कंटेंट सफलतापूर्वक जनरेट किया गया!', 'success');
     }, 2000);
 }
@@ -87,20 +87,20 @@ function generatePortfolioText(name, type, description, tools, dataset, findings
         <div class="portfolio-content">
             <h3>${name}</h3>
             <p><strong>प्रोजेक्ट प्रकार:</strong> ${typeLabels[type]}</p>
-            
+
             <h4>प्रोजेक्ट अवलोकन</h4>
             <p>${description}</p>
-            
+
             <h4>तकनीकी विवरण</h4>
             <ul>
                 <li><strong>उपयोग किए गए टूल्स:</strong> ${tools || 'केवल अपने verified tools जोड़ें'}</li>
                 <li><strong>डेटासेट स्रोत:</strong> ${dataset || 'स्रोत और अनुमति सत्यापित करके जोड़ें'}</li>
             </ul>
-            
+
             <h4>मुख्य निष्कर्ष</h4>
             <p>${findings || 'केवल सत्यापित निष्कर्ष और उनका स्रोत जोड़ें।'}</p>
             <p><em>Draft template: publish या portfolio में जोड़ने से पहले हर claim को अपने records से verify करें।</em></p>
-            
+
             <h4>GitHub README.md</h4>
             <pre><code># ${name}
 
@@ -147,7 +147,7 @@ function saveProject() {
 
     projects.push(projectData);
     localStorage.setItem('projects', JSON.stringify(projects));
-    
+
     // Clear form
     clearPortfolioForm();
     showMessage('प्रोजेक्ट सफलतापूर्वक सेव किया गया!', 'success');
@@ -184,13 +184,13 @@ function generateSocialPost() {
 
     setTimeout(() => {
         const generatedPost = generateSocialContent(platform, postType, content, tone, hashtags);
-        
+
         document.getElementById('socialContent').innerHTML = generatedPost;
         document.getElementById('socialOutput').style.display = 'block';
-        
+
         button.innerHTML = originalText;
         button.disabled = false;
-        
+
         showMessage('सोशल मीडिया पोस्ट जनरेट किया गया!', 'success');
     }, 2000);
 }
@@ -217,14 +217,14 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
     };
 
     const defaultHashtags = '#Draft #ReviewBeforePublishing';
-    
+
     return `
         <div class="social-content">
             <h4>${platformNames[platform]} पोस्ट</h4>
             <div class="post-preview">
                 <p><strong>पोस्ट प्रकार:</strong> ${postTypes[postType]}</p>
                 <p><strong>टोन:</strong> ${tones[tone]}</p>
-                
+
                 <div class="post-text">
                     <p><strong>Draft topic:</strong> ${content}</p>
                     <p>[अपनी verified सीख या finding यहाँ जोड़ें।]</p>
@@ -233,7 +233,7 @@ function generateSocialContent(platform, postType, content, tone, hashtags) {
                     <p>${hashtags || defaultHashtags}</p>
                 </div>
             </div>
-            
+
             <div class="post-tips">
                 <h5>पोस्टिंग टिप्स:</h5>
                 <ul>
@@ -287,13 +287,13 @@ function optimizeContent() {
 
     setTimeout(() => {
         const optimizedContent = generateOptimizedContent(optimizeType, currentContent, targetRole, targetCompany);
-        
+
         document.getElementById('resumeContent').innerHTML = optimizedContent;
         document.getElementById('resumeOutput').style.display = 'block';
-        
+
         button.innerHTML = originalText;
         button.disabled = false;
-        
+
         showMessage('कंटेंट सफलतापूर्वक optimize किया गया!', 'success');
     }, 2000);
 }
@@ -325,7 +325,7 @@ function generateOptimizedContent(type, content, role, company) {
             });
             optimizedText += '</ul>';
             break;
-            
+
         case 'summary':
             optimizedText = `<h4>${typeLabels[type]} विकल्प:</h4><ul>`;
             summaries.forEach(summary => {
@@ -333,7 +333,7 @@ function generateOptimizedContent(type, content, role, company) {
             });
             optimizedText += '</ul>';
             break;
-            
+
         default:
             optimizedText = `
                 <h4>Optimized ${typeLabels[type]}:</h4>
@@ -358,7 +358,7 @@ function searchJobs() {
     const company = document.getElementById('jobCompany').value;
 
     showMessage(`Local UI draft results तैयार हो रहे हैं: ${role} in ${location} at ${company}. ये verified job listings नहीं हैं।`, 'info');
-    
+
     // Simulate job search
     setTimeout(() => {
         updateJobList();
@@ -420,7 +420,7 @@ function copyPrompt(button) {
         const originalText = button.textContent;
         button.textContent = 'Copied!';
         button.style.background = '#48bb78';
-        
+
         setTimeout(() => {
             button.textContent = originalText;
             button.style.background = '';
@@ -432,7 +432,7 @@ function copyPrompt(button) {
 function updateAnalytics() {
     const projectCount = projects.length;
     const socialCount = socialPosts.length;
-    
+
     // Update metrics
     document.querySelector('.analytics-card:nth-child(1) .metric').textContent = projectCount;
     document.querySelector('.analytics-card:nth-child(2) .metric').textContent = socialCount;
@@ -448,11 +448,11 @@ function showMessage(message, type) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
     messageDiv.textContent = message;
-    
+
     // Insert at top of main content
     const mainContent = document.querySelector('.main-content');
     mainContent.insertBefore(messageDiv, mainContent.firstChild);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         messageDiv.remove();
@@ -510,7 +510,7 @@ function exportData() {
         socialPosts: socialPosts,
         exportDate: new Date().toISOString()
     };
-    
+
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -612,7 +612,7 @@ function showCopilotProjectResult(template) {
                             <i class="fas fa-copy"></i> Copy LinkedIn Post
                         </button>
                     </div>
-                    
+
                     <h4><i class="fas fa-file-alt"></i> Resume Bullet Point</h4>
                     <div class="content-box">
                         <p><strong>${template.resumeBullet}</strong></p>
@@ -624,7 +624,7 @@ function showCopilotProjectResult(template) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
 }
 
@@ -650,8 +650,8 @@ async function sendToWebhook(data) {
 
 function getWebhookUrl() {
     // Try to get webhook URL from various sources
-    return localStorage.getItem('webhookUrl') || 
-           window.WEBHOOK_URL || 
+    return localStorage.getItem('webhookUrl') ||
+           window.WEBHOOK_URL ||
            (typeof process !== 'undefined' && process?.env?.N8N_WEBHOOK_URL) ||
            null;
 }
@@ -694,7 +694,7 @@ async function saveProjectWithWebhook() {
 function showWebhookConfig() {
     const currentUrl = getWebhookUrl() || '';
     const newUrl = prompt('n8n Webhook URL enter करें:', currentUrl);
-    
+
     if (newUrl && newUrl.trim()) {
         setWebhookUrl(newUrl.trim());
     }
@@ -709,5 +709,173 @@ document.addEventListener('DOMContentLoaded', function() {
     const webhookUrl = getWebhookUrl();
     if (webhookUrl) {
         console.log('Webhook URL configured:', webhookUrl.substring(0, 30) + '...');
+    }
+});
+
+// Premium Subscription Functions
+let selectedPlan = null;
+
+function selectPlan(planType) {
+    selectedPlan = planType;
+    document.getElementById('paymentForm').style.display = 'block';
+
+    // Update form title based on selected plan
+    const formTitle = document.querySelector('#paymentForm h3');
+    const planNames = {
+        basic: 'Basic Premium - ₹999/माह',
+        pro: 'Pro Premium - ₹1999/माह'
+    };
+    formTitle.textContent = `भुगतान विवरण - ${planNames[planType]}`;
+
+    // Scroll to payment form
+    document.getElementById('paymentForm').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+
+    showMessage(`${planNames[planType]} चुना गया। कृपया भुगतान विवरण भरें।`, 'success');
+}
+
+function cancelPayment() {
+    document.getElementById('paymentForm').style.display = 'none';
+    selectedPlan = null;
+
+    // Clear form data
+    document.getElementById('cardholderName').value = '';
+    document.getElementById('cardNumber').value = '';
+    document.getElementById('expiryDate').value = '';
+    document.getElementById('cvv').value = '';
+    document.getElementById('billingAddress').value = '';
+
+    showMessage('भुगतान रद्द किया गया।', 'info');
+}
+
+function processPayment() {
+    if (!selectedPlan) {
+        showMessage('कृपया पहले एक प्लान चुनें।', 'error');
+        return;
+    }
+
+    // Get form values
+    const cardholderName = document.getElementById('cardholderName').value.trim();
+    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+    const expiryDate = document.getElementById('expiryDate').value.trim();
+    const cvv = document.getElementById('cvv').value.trim();
+    const isTestMode = document.getElementById('testMode').checked;
+
+    // Validate required fields
+    if (!cardholderName || !cardNumber || !expiryDate || !cvv) {
+        showMessage('कृपया सभी आवश्यक फील्ड भरें।', 'error');
+        return;
+    }
+
+    // Validate test mode requirements
+    if (isTestMode) {
+        const validTestNames = ['test user', 'example name', 'john doe', 'jane doe'];
+        const validTestCards = ['4111111111111111', '5555555555554444', '378282246310005'];
+
+        if (!validTestNames.includes(cardholderName.toLowerCase())) {
+            showMessage('टेस्ट मोड में कृपया वैध टेस्ट नाम का उपयोग करें: Test User, John Doe, Jane Doe, या Example Name', 'error');
+            return;
+        }
+
+        if (!validTestCards.includes(cardNumber)) {
+            showMessage('टेस्ट मोड में कृपया केवल आधिकारिक टेस्ट कार्ड नंबर का उपयोग करें।', 'error');
+            return;
+        }
+    }
+
+    // Validate card number format
+    if (!/^\d{13,19}$/.test(cardNumber)) {
+        showMessage('कृपया वैध कार्ड नंबर दर्ज करें।', 'error');
+        return;
+    }
+
+    // Validate expiry date format
+    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+        showMessage('कृपया वैध समाप्ति तिथि दर्ज करें (MM/YY)।', 'error');
+        return;
+    }
+
+    // Validate CVV
+    if (!/^\d{3,4}$/.test(cvv)) {
+        showMessage('कृपया वैध CVV दर्ज करें।', 'error');
+        return;
+    }
+
+    // Simulate payment processing
+    const submitBtn = document.querySelector('.payment-actions .btn-primary');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> प्रोसेसिंग...';
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+        if (isTestMode) {
+            showMessage('✅ टेस्ट भुगतान सफल! यह एक नकली लेनदेन था।', 'success');
+        } else {
+            showMessage('⚠️ लाइव मोड में वास्तविक भुगतान प्रोसेसिंग लागू नहीं की गई है।', 'error');
+        }
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (isTestMode) {
+            // Clear form after successful test payment
+            setTimeout(() => {
+                cancelPayment();
+            }, 2000);
+        }
+    }, 2000);
+}
+
+// Card number formatting
+document.addEventListener('DOMContentLoaded', function() {
+    const cardNumberInput = document.getElementById('cardNumber');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value;
+        });
+    }
+
+    const expiryInput = document.getElementById('expiryDate');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+
+    const cvvInput = document.getElementById('cvv');
+    if (cvvInput) {
+        cvvInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    }
+});
+
+// Test mode toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const testModeToggle = document.getElementById('testMode');
+    const testDataSection = document.getElementById('testDataSection');
+    const livePaymentWarning = document.getElementById('livePaymentWarning');
+
+    if (testModeToggle) {
+        testModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                testDataSection.style.display = 'block';
+                livePaymentWarning.style.display = 'none';
+                showMessage('टेस्ट मोड सक्रिय - केवल नकली डेटा का उपयोग करें', 'info');
+            } else {
+                testDataSection.style.display = 'none';
+                livePaymentWarning.style.display = 'block';
+                showMessage('⚠️ लाइव मोड सक्रिय - सावधान रहें!', 'warning');
+            }
+        });
     }
 });
